@@ -1,0 +1,9 @@
+{
+    "dependLibs": [
+        {
+            "cfg": "xiaomi-1409143031427", 
+            "type": "user,pay", 
+            "name": "xiaomi"
+        }
+    ]
+}

@@ -1,0 +1,56 @@
+<html ng-app="demo">
+  <head>
+    <meta charset=utf-8 />
+    <title>angular listview</title>
+  </head>
+   <body>
+    <div ng-controller="DemoCtrl">
+      <div 
+           data-listview=""
+           data-template="listview.html"
+           data-items="items"
+           data-columns="title, date, filesize, dimension, tags"
+           data-methods="listview.methods">
+      </div>
+    </div>
+  </body>
+</html>
+<script type="text/ng-template" id="listview.html">
+<div class="listview">
+  <table class="table">
+    <thead>
+      <tr>
+        <th ng-repeat="column in columns">
+          {{column | capitalize}}
+        </th>
+      </tr>
+
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in items" class="item">
+        <td ng-repeat="column in columns" class="column column-{{column}}" ng-include="getTemplate(column)"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</script>
+<!-- default -->
+<script type="text/ng-template" id="column-default.html">
+  {{_format(column,item)}}
+</script>
+
+<!-- customize column -->
+<script type="text/ng-template" id="column-title.html">
+  <div class="thumb">
+    <img ng-src="{{methods.thumb(item)}}" alt="">
+  </div>
+  <span>{{_format(column,item)}}</span>
+</script>
+<script type="text/ng-template" id="column-dimension.html">
+  <span>{{_format(column,item)}}</span>
+</script>
+<script type="text/ng-template" id="column-tags.html">
+  <div ng-repeat="tag in item[column]" class="tag">
+    <span>{{tag}}</span>
+  </div>
+</script>

@@ -1,0 +1,58 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="prj.chameleon.test.LoginActivity">
+
+    <!-- Login progress -->
+
+    <!-- Login form -->
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout style="@style/LoginFormContainer"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@id/prj_chameleon_test_user"
+                android:longClickable="true">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="test_0 登录支付都成功"
+                    android:id="@+id/prj_chameleon_test_user_0"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="test_1登录即失败"
+                    android:id="@+id/prj_chameleon_test_user_1"
+                    android:checked="false" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="test_2登录成功支付失败"
+                    android:id="@+id/prj_chameleon_test_user_2"
+                    android:checked="false" />
+            </RadioGroup>
+
+            <Button android:id="@+id/prj_chameleon_test_signin_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/action_sign_in_register"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:layout_gravity="right"
+                android:onClick="onClickLoginGuest" />
+
+        </LinearLayout>
+
+    </ScrollView>
+</merge>

@@ -1,0 +1,19 @@
+<div class="listview">
+  <table class="table">
+    <thead>
+      <tr>
+        <th ng-repeat="column in columns">
+          {{column.name}}
+        </th>
+      </tr>
+
+    </thead>
+    <tbody>
+      <tr ng-repeat="project in projects" class="item">
+        <td ng-repeat="column in columns" class="column column-{{column}}" >
+            <span>{{project[column.key]}}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

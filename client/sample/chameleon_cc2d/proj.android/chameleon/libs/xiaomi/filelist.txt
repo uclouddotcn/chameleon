@@ -1,0 +1,8 @@
+AndroidManifest.xml
+build.gradle
+build.xml
+project.properties
+assets/MiGameCenterSDKService.apk
+libs/SDK_TY_3.4.0.jar
+src/prj/chameleon/xiaomi/XiaomiChannelAPI.java
+AndroidManifest.xml.template

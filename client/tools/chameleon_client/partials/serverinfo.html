@@ -1,0 +1,54 @@
+<div class="container-fluid">
+<div class="modal-header">
+    <h3>Chameleon Server配置</h3>
+</div>
+<div class="modal-body">
+    <form class="form-horizontal" name="svrsetting" novalidate>
+        <div ng-class="{'form-group':true, 'has-error':svrsetting.nick.$invalid}">
+            <label class="control-label col-sm-4" for="nick">游戏在server中的代号</label>
+            <div class="col-sm-8">
+                <input type="text" placeholder="例如: AGAME" ng-model="svrinfo.nick" class="form-control" id="nick" name="nick" require/>
+                <div ng-show="svrsetting.nick.$invalid">
+                    <span class="error">代号不能为空</span>
+                </div>
+            </div>
+        </div>
+        <div ng-class="{'form-group':true, 'has-error':svrsetting.paycburl.$invalid}">
+            <label class="control-label col-sm-4" for="paycburl">接收服务器回调的地址</label>
+            <div class="col-sm-8">
+                <input type="url" placeholder="例如: http://10.10.10.10/paycb" ng-model="svrinfo.paycbUrl" id="paycburl" name="paycburl" class="form-control" required/>
+                <div ng-show="svrsetting.paycburl.$invalid">
+                    <span class="error">服务器回调地址非法</span>
+                </div>
+            </div>
+        </div>
+    <div class="panel panel-primary" style="height:200px;">
+        <h4>{{project.appname}}</h4>
+        <div class="row">
+            <div class="col-md-4">验证签名URL</div>
+            <div class="col-md-8">/{{ svrinfo.nick || prjid}}/verify_login</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">准备充值请求URL</div>
+            <div class="col-md-8">/{{svrinfo.nick || prjid}}/pending_charge</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">准备购买请求URL</div>
+            <div class="col-md-8">/{{svrinfo.nick || prjid}}/pending_buy</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">支持的渠道</div>
+            <div class="col-md-8">
+                <pre>{{channels}}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="control-group" pull-right>
+        <button class="btn btn-default" ng-click="dumpServerCfg()" ng-disabled="svrsetting.$invalid" pull-right>导出配置</button>
+    </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="close(svrsetting.$dirty)">关闭</button>
+</div>
+</div>

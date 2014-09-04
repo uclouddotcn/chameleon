@@ -1,0 +1,9 @@
+{
+    "dependLibs": [
+        {
+            "cfg": "sdddd", 
+            "type": "user,pay", 
+            "name": "nd91"
+        }
+    ]
+}

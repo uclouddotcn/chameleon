@@ -1,0 +1,4 @@
+<splashscreen>
+    <item image="chameleon/splashscreen/first.png" duration="1000"/>
+    <item image="chameleon/splashscreen/second.png" duration="2000"/>
+</splashscreen>

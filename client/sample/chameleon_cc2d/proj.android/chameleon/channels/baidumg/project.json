@@ -1,0 +1,13 @@
+{
+    "icons": {
+        "position": 2
+    }, 
+    "dependLibs": [
+        {
+            "cfg": "baidumg-1409134868058", 
+            "type": "user,pay", 
+            "name": "baidumg"
+        }
+    ], 
+    "splashscreen": "assets/chameleon/chameleon_splashscreen_0.png"
+}

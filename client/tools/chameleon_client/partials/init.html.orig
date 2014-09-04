@@ -1,0 +1,23 @@
+<div class="container-fluid">
+    <div class="modal-header">
+        <h3>设置环境</h3>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-info" role="alert" ng-show="!isInited">无法找到对应的环境变量，请您先设置工具所需的环境变量</div>
+        <div class="row-fluid">
+            <form class="form-horizontal" submit="submit()" name="initform">
+                <div class="control-group">
+                    <label class="control-label col-sm-4" for="androidSDK">Android SDK的路径</label>
+                    <div class="controls col-sm-7">
+                        <input ng-model="env.sdk_root" type="text" ng-disabled="true" style="width:100%;"></input>
+		    </div>
+                    <button class="controls btn btn-default col-sm-1" type="button" ng-click="setSDKRoot()">设置</button>
+		</div>
+	    </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="submit()">确认</button>
+        <button class="btn btn-default" ng-show="inited" ng-click="close()">关闭</button>
+    </div>
+</div>

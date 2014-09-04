@@ -1,0 +1,17 @@
+local.properties
+.DS_STORE
+.gradle
+.idea
+*.swp
+build
+*.pyc
+*/src/*/obj/*
+test/chameleon_cc2d/proj.android/obj
+*.o
+*.o.d
+sample/chameleon_cc2d/proj.android/obj
+*.class
+_book
+*.iml
+sample/chameleon_cc2d/proj.android/bin
+bin

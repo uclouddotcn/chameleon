@@ -1,0 +1,25 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="prj.chameleon.qihu">
+    <!-- CHAMELEON OVERWRITE -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- CHAMELEON OVERWRITE -->
+
+    <application>
+        <activity
+            android:name="com.qihoopay.insdk.activity.ContainerActivity"
+            android:configChanges="fontScale|orientation|keyboardHidden|locale|navigation|screenSize|uiMode"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+         <service  android:name="com.nd.commplatform.service.NdDownloadService"
+            android:process=":com.nd.commplatform.download"
+            android:enabled="true"
+            android:exported="false"/>
+
+        <!-- UnionPay end -->
+    </application>
+
+
+</manifest>
+

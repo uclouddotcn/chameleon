@@ -1,0 +1,44 @@
+<div class="container-fluid">
+	<div class="row-fluid">
+            <div cg-busy="{promise:newProjectPromise, message:'创建工程中', templateUrl:'bower_components/angular-busy/angular-busy.html'}"></div>
+		<div class="span12">
+			<form name="newprj" class="form-horizontal" ng-submit="create()">
+				<div class="control-group">
+					<label class="control-label" for="gameName">游戏名称</label>
+					<div class="controls">
+                                            <input id="gameName" name="appName" ng-model="gameName" type="text" type="width:50%" required><p ng-show="newprj.appName.$invalid && !newprj.appName.$pristine" class="help-block">游戏名称不能为空</p></input>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="gamePath"name="gamePath">游戏工程路径</label>
+					<div class="controls" >
+                                            <input name="prjpath" type="file" onchange="angular.element(this).scope().setFiles(this)" webkitdirectory required />
+                                            <p ng-show="newprj.prjpath.$invalid && !newprj.prjpath.$pristine" class="help-block">游戏工程路径不能为空</p>
+					</div>
+				</div>
+				<div class="control-group">
+                                    <label class="control-label" for="orientation">方向</label>
+                                    <div class="controls">
+	                                <div class="btn-group">
+                                            <label class="btn btn-primary" ng-model="portrait" btn-radio="false">LANDSCAPE</label>
+                                            <label class="btn btn-primary" ng-model="portrait" btn-radio="true">PORTRAIT</label>
+	                                </div>
+                                    </div>
+					<div class="controls">
+						<label class="checkbox"><input type="checkbox" ng-model="unity"/> 支持Unity</label>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+							<label class="checkbox"><input type="checkbox" ng-model="force"/> 强制覆盖现有的Chameleon工程(如果所在目录已有)！</label>
+						</div>
+						<div>
+							<button class="btn-large btn-success has-spinner" type="submit" >
+                                                            <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
+                                                            创建</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

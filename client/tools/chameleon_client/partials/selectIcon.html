@@ -1,0 +1,23 @@
+<div class="container-fluid">
+<div class="modal-header">
+    <h3>选择图标</h3>
+</div>
+<div class="modal-body">
+    <div class="row" >
+        <label>角标位置</label>
+        <div class="btn-group">
+            <label class="btn btn-primary" ng-model="shownimages.selected.position" btn-radio="0" >左上</label>
+            <label class="btn btn-primary" ng-model="shownimages.selected.position" btn-radio="1" >右上</label>
+            <label class="btn btn-primary" ng-model="shownimages.selected.position" btn-radio="2" >左下</label>
+            <label class="btn btn-primary" ng-model="shownimages.selected.position" btn-radio="3" >右下</label>
+        </div>
+    </div>
+    <div class="row">
+      <champic base-icon="{{shownimages}}" dump="dump"></champic>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="useImage()">添加</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
+</div>
+</div>

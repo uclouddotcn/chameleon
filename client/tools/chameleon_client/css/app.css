@@ -1,0 +1,89 @@
+/* app css stylesheet */
+
+/*style.css*/
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    width: 'auto'; 
+    height: 300px;
+}
+
+
+.pre-scrollable-channelinfo {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+.logdiv {
+    width: 'auto';
+    height: 400px;
+    overflow: scroll;
+}
+
+.red {
+  color: red;
+}
+
+.outdated_reconfig {
+    color: white;
+    background-color: red;
+}
+.center {
+     float: none;
+     margin-left: auto;
+     margin-right: auto;
+}
+
+
+
+#cham_icon_parent {
+    width: 720px;
+    height: 210px;
+    position: relative;
+}
+
+#cham_icon_medium {
+    display: inline-block;
+    position: static;
+    width: 48px;
+    height: 48px;
+    left: 10px;
+    top: 162px;
+}
+
+#cham_icon_high {
+    display: inline-block;
+    position: static;
+    width: 72px;
+    height: 72px;
+    left: 68px;
+    top: 138px;
+}
+
+#cham_icon_xhigh {
+    display: inline-block;
+    position: static;
+    width: 96px;
+    height: 96px;
+    left: 150px;
+    top: 104px;
+}
+
+#cham_icon_xxhigh {
+    display: inline-block;
+    position: static;
+    width: 144px;
+    height: 144px;
+    left: 256px;
+    top: 66px;
+}
+
+#cham_icon_xxxhigh {
+    display: inline-block;
+    position: static;
+    width: 192px;
+    height: 192px;
+    left: 410px;
+    top: 18px;
+}
+
+

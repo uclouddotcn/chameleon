@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">testwrapper</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Login First</string>
+    <string name="pay_button">pay</string>
+    <string name="switch_button">switch</string>
+    <string name="addiction_button">addiction</string><string name="login_button">login</string><string name="charge_txt">charge</string><string name="buy_txt">buy</string><string name="toggle_tb">Toggle Toolbar</string><string name="login_guest">Login Guest</string><string name="logout">Log out</string>
+    <string name="regist_btn">regist guest</string>
+
+</resources>

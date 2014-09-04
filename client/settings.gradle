@@ -1,0 +1,12 @@
+include ':app', ':cbinding', 'chameleon', ':chameleon_unity'
+def channelDir = new File(rootDir, "channels");
+def channelPrj = channelDir.listFiles().findAll { 
+     it.isDirectory() && 
+     !( it =~ ".*/\\..*") && // don't add directories starting with '.' 
+     !( it =~ "^\\..*") // don't add directories starting with '.'
+    }.collect { 
+        ":channels:${it.getName()}"
+    } as String[]
+
+include channelPrj
+

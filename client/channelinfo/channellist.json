@@ -1,0 +1,35 @@
+{
+    "test": {
+        "name": "chameleon测试",
+        "pkgsuffix": ".chameleon",
+        "sdk": "test"
+    },
+    "qihu": {
+        "name": "奇虎",
+        "pkgsuffix": ".qihu",
+        "sdk": "qihu"
+    },
+    "nd91": {
+        "name": "91手机助手",
+        "pkgsuffix": "",
+        "sdk": "nd91"
+    },
+    "xiaomi": {
+        "name": "小米",
+        "pkgsuffix": ".mi",
+        "sdk": "xiaomi"
+    },
+    "wandoujia": {
+        "name": "豌豆荚",
+        "pkgsuffix": ".wdj",
+        "sdk": "wandoujia"
+    },
+    "baidumg": {
+        "name": "百度移动游戏",
+        "pkgsuffix": "",
+        "sdk": "baidumg",
+        "splashscreen": 1,
+        "icon": 1
+    }
+}
+

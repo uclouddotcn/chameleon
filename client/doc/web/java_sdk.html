@@ -1,0 +1,1064 @@
+<!DOCTYPE HTML>
+<html lang="en-US" manifest="./manifest.appcache">
+    <head prefix="og: http://ogp.me/ns# book: http://ogp.me/ns/book#">
+        
+        <meta charset="UTF-8">
+        <title>Chameleon SDK | Book Example</title>
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="robots" content="index, follow">
+        <meta name="author" content="">
+        <meta name="description" content="Book generated using GitBook">
+        <meta name="keywords" content="gitbook,github" >
+        <meta name="generator" content="www.gitbook.io">
+
+        
+        <link rel="next" href="./cpp_binding.html" />
+        
+        
+        <link rel="prev" href="./cocos2d_x.html" />
+        
+
+        <meta property="og:title" content="Chameleon SDK | Book Example">
+        <meta property="og:site_name" content="Book Example">
+        <meta property="og:type" content="book">
+        <meta property="og:locale" content="en_US">
+
+        <meta property="book:author" content="https://github.com/">
+        <meta property="book:tag" content="GitBook">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+        <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+        
+    </head>
+    <body>
+        
+
+        <link rel="stylesheet" href="gitbook/style.css">
+        
+
+
+        
+    <div class="book"  data-level="4" data-basepath="." data-revision="1399361912437">
+    <div class="book-header">
+    <!-- Actions Left -->
+    
+    <a href="https://github.com/null" target="_blank" class="btn pull-left"><i class="fa fa-bookmark-o"></i></a>
+    
+    <a href="#" class="btn pull-left toggle-summary"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search"><i class="fa fa-search"></i></a>
+    <span id="font-settings-wrapper">
+        <a href="#" class="btn pull-left toggle-font-settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+	<div class="dropdown-caret">
+  <span class="caret-outer"></span>
+  <span class="caret-inner"></span>
+</div>
+
+	<div class="btn-group btn-block">
+		<button id="reduce-font-size" class="btn btn-default">A</button>
+		<button id="enlarge-font-size" class="btn btn-default">A</button>
+	</div>
+
+	<ul class="list-group font-family-list">
+		<li class="list-group-item" data-font="0">Serif</li>
+		<li class="list-group-item" data-font="1">Sans</li>
+	</ul>
+
+	<div class="btn-group btn-group-xs btn-block color-theme-list">
+	  <button type="button" class="btn btn-default" id="color-theme-preview-0" data-theme="0">White</button>
+	  <button type="button" class="btn btn-default" id="color-theme-preview-1" data-theme="1">Sepia</button>
+	  <button type="button" class="btn btn-default" id="color-theme-preview-2" data-theme="2">Night</button>
+	</div>
+</div>
+
+    </span>
+
+    <!-- Actions Right -->
+    
+    <a href="#" target="_blank" class="btn pull-right" data-sharing="google-plus"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right" data-sharing="facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right" data-sharing="twitter"><i class="fa fa-twitter"></i></a>
+    
+
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-spinner fa-spin"></i>
+        <a href="./" >Book Example</a>
+    </h1>
+</div>
+
+    <div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+
+        
+        <li>
+            <a href="https://github.com/null/issues" target="blank">Questions and Issues</a>
+        </li>
+        
+
+        
+        <li>
+            <a href="https://github.com/null/edit/master/java_sdk.md" target="blank">Edit and Contribute</a>
+        </li>
+        
+
+        
+
+        <li data-level="0" data-path="index.html">
+            <a href="./"><i class="fa fa-check"></i> Introduction</a>
+        </li>
+        
+            <li  data-level="1" data-path="chameleon_package.html">
+                
+                <a href="./chameleon_package.html">
+                    <i class="fa fa-check"></i> <b>1.</b> Chameleon的概况
+                </a>
+                
+                
+            </li>
+        
+            <li  data-level="2" data-path="HelloWorld.html">
+                
+                <a href="./HelloWorld.html">
+                    <i class="fa fa-check"></i> <b>2.</b> 在标准Android工程下搭建环境
+                </a>
+                
+                
+            </li>
+        
+            <li  data-level="3" data-path="cocos2d_x.html">
+                
+                <a href="./cocos2d_x.html">
+                    <i class="fa fa-check"></i> <b>3.</b> 在Cocos2d-x项目中使用Chameleon
+                </a>
+                
+                
+            </li>
+        
+            <li  data-level="4" data-path="java_sdk.html">
+                
+                <a href="./java_sdk.html">
+                    <i class="fa fa-check"></i> <b>4.</b> Chameleon SDK
+                </a>
+                
+                
+            </li>
+        
+            <li  data-level="5" data-path="cpp_binding.html">
+                
+                <a href="./cpp_binding.html">
+                    <i class="fa fa-check"></i> <b>5.</b> Chameleon SDK c++ binding
+                </a>
+                
+                
+            </li>
+        
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="http://www.gitbook.io/" target="blank">Generated using GitBook</a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="page-wrapper" tabindex="-1">
+                <div class="book-progress">
+    <div class="bar">
+        <div class="inner" style="width: 80%;min-width: 60%;"></div>
+    </div>
+    <div class="chapters">
+    
+        <a href="./index.html" title="Introduction" class="chapter done new-chapter" data-progress="0" style="left: 0%;"></a>
+    
+        <a href="./chameleon_package.html" title="Chameleon的概况" class="chapter done new-chapter" data-progress="1" style="left: 20%;"></a>
+    
+        <a href="./HelloWorld.html" title="在标准Android工程下搭建环境" class="chapter done new-chapter" data-progress="2" style="left: 40%;"></a>
+    
+        <a href="./cocos2d_x.html" title="在Cocos2d-x项目中使用Chameleon" class="chapter done new-chapter" data-progress="3" style="left: 60%;"></a>
+    
+        <a href="./java_sdk.html" title="Chameleon SDK" class="chapter done new-chapter" data-progress="4" style="left: 80%;"></a>
+    
+        <a href="./cpp_binding.html" title="Chameleon SDK c++ binding" class="chapter  new-chapter" data-progress="5" style="left: 100%;"></a>
+    
+    </div>
+</div>
+
+                <div class="page-inner">
+                
+                    <section class="normal" id="section-gitbook_6">
+                    
+                        <h1 id="chameleon-sdk">Chameleon SDK</h1>
+<h2 id="api-">API设计</h2>
+<h3 id="-">回调接口的设计</h3>
+<p>IDispatcherCb是所有接口的通用回调接口。retCode是操作的错误码，data则是一个json的object，内容在不同接口里面有不同的定义。</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IDispatcherCb</span> {</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onFinished</span>(<span class="hljs-keyword">int</span> retCode, JSONObject data);
+}
+</code></pre>
+<h3 id="-">账号行为监听接口</h3>
+<p>不少平台都会有由平台组件触发的账号行为，例如切换账号，退出登录等。这部分由于不是有开发者的APP发起的，所以一般需要注册一个回调接口来响应这些事件。
+这个接口需要实现四个回调函数，对应不同的账号变化事件。</p>
+<ul>
+<li>preAccountSwitch: 用户即将开始切换账号，此时登录态已然是正常的，一般应用可以在这里保存一些玩家数据</li>
+<li>afterAccountSwitch: 之前用户已经登出，之后的用户可能登录完成，也可能取消登录了</li>
+<li>onAccountLogout: 用户已经退出登录</li>
+<li>onGuestBind: 如果应用支持游客账户登录，那么这个接口可以监听到游客已经完成了注册或者关联了一个现有的账号</li>
+</ul>
+<pre><code>public interface IAccountActionListener {
+    /**
+     *  called just before the user switch the account, the uin and session is still valid here
+     *  APP can save the user data here
+     */
+    public void preAccountSwitch();
+
+    /**
+     * Previous user has logged out, and maybe has logged in here
+     * @param code ERR_OK means the another account has logged in, otherwise the no one
+     *             has logged in APP maybe need to show the login activity again
+     * @param newUserInfo if another account has logged in, then the user info is passed
+     *                    here, the structure is same as PlatformInterface.login
+     */
+    public void afterAccountSwitch(int code, JSONObject newUserInfo);
+
+    /**
+     * callback when the user has logged out
+     */
+    public void onAccountLogout();
+
+    /**
+     * if the user logged in as a guest and later an account is bound to this guest,
+     * this callback will be fired with the new account info.
+     * @param newUserInfo the bound account info. The structure is same as PlatformInterface.login
+     */
+    public void onGuestBind(JSONObject newUserInfo);
+}
+</code></pre><h3 id="platforminterface-">PlatformInterface的静态函数</h3>
+<h4 id="-">初始化（必选）</h4>
+<p>在创建activity之后，可以调用此接口初始化整个SDK</p>
+<pre><code class="lang-java">    <span class="hljs-javadoc">/**
+     * init the SDK
+     *<span class="hljs-javadoctag"> @param</span> activity the activity to give the real SDK
+     *<span class="hljs-javadoctag"> @param</span> cb callback function when the request is finished, the JSON object is null
+     */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span>(Activity activity, IDispatcherCb cb)
+</code></pre>
+<p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON object为null</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>例如</p>
+<pre><code class="lang-java">PlatformInterface.init(<span class="hljs-keyword">this</span>, <span class="hljs-keyword">true</span>, <span class="hljs-keyword">new</span> IDispatcherCb() {
+
+            <span class="hljs-annotation">@Override</span>
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onFinished</span>(<span class="hljs-keyword">int</span> retCode, JSONObject data) {
+                <span class="hljs-comment">// do something after initialization</span>
+            }
+
+        });
+</code></pre>
+<h4 id="-">游客登录(可选)</h4>
+<p>如果游戏希望玩家可以使用游客身份快速开始游戏，那么可以调用此接口。不过不是所有平台都支持游客登录，所以在不支持游客登录的平台，这个函数还是会发起正常的登录流程。因此这个函数的回调里面需要判断是否是游客登录还是正常账户登录。</p>
+<pre><code>    /**
+     * login as a guest
+     * @param activity the activity to give the real SDK
+     * @param loginCallback callback when login guest if finished ,JSON object
+     *                         will have one or three fields
+     *                      guest : if this is non-zero, then the user login as a guest,
+     *                                 following two fields will not exists
+     *                      token : the access token from the platform
+     *                      others: a segment of json string for SDK server
+     * @param accountActionListener listener of the user account actions,
+     *                                  refer to the interface definition
+     */
+    public static void loginGuest(Activity activity,
+                                  IDispatcherCb loginCallback,
+                                  IAccountActionListener accountActionListener)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">loginCallback</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+<tr>
+<td style="text-align:center">accountActionListener</td>
+<td style="text-align:center">这个session的账号活动监听</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON类型有</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">guest</td>
+<td style="text-align:center">int</td>
+<td style="text-align:center">必须</td>
+<td style="text-align:center">0表示不是游客登录，应该走整成的登录流程。1表示是游客登录</td>
+</tr>
+<tr>
+<td style="text-align:center">loginInfo</td>
+<td style="text-align:center">object</td>
+<td style="text-align:center">可选</td>
+<td style="text-align:center">如果不是游客登录，那么这个object是登录用户的信息，结构同login接口的返回参数</td>
+</tr>
+</tbody>
+</table>
+<p>例如</p>
+<pre><code class="lang-java">    PlatformInterface.loginGuest(<span class="hljs-keyword">this</span>,
+        <span class="hljs-keyword">new</span> IDispatcherCb() {
+
+        <span class="hljs-annotation">@Override</span>
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onFinished</span>(<span class="hljs-keyword">int</span> retCode, <span class="hljs-keyword">final</span> JSONObject data) {
+            <span class="hljs-keyword">int</span> guest = data.getInt(<span class="hljs-string">"guest"</span>);
+            <span class="hljs-keyword">if</span> (guest != <span class="hljs-number">0</span>) {
+                <span class="hljs-comment">// 用户以游客身份登录，做相关的处理</span>
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-comment">// 用户正常登录, 走登录的鉴权流程</span>
+            }
+        }
+    });
+</code></pre>
+<h4 id="-">登陆（必选）</h4>
+<pre><code>  /**
+     * user login to platform
+     * @param activity the activity to give the real SDK
+     * @param cb JSON object will have two fields
+     *           token : the access token from the platform
+     *           others: a segment of json string for SDK server
+     */
+    public static void login(Activity activity, IDispatcherCb cb)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+<tr>
+<td style="text-align:center">accountActionListener</td>
+<td style="text-align:center">这个session的账号活动监听</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON类型有</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">token</td>
+<td style="text-align:center">String</td>
+<td style="text-align:center">必须</td>
+<td style="text-align:center">平台给出的会话session的token</td>
+</tr>
+<tr>
+<td style="text-align:center">others</td>
+<td style="text-align:center">String</td>
+<td style="text-align:center">必须</td>
+<td style="text-align:center">SDK的透传字段，验证账号时候需要APP的服务器传给SDK服务器</td>
+</tr>
+</tbody>
+</table>
+<h4 id="-">提示游客注册</h4>
+<p>APP可以通过这个接口主动发起游客绑定的流程</p>
+<pre><code>    /**
+     * register guest, if the user is not login as a guest, this function does nothing
+     * @param activity  the activity to give the real SDK
+     * @param tips the tips for the register, not all platform support customize the tips
+     * @param cb callback of the binding request
+     *
+     * @return boolean, true when user login as a guest
+     *                     and the register can continue, otherwise false
+     */
+    public static boolean registGuest(Activity activity, String tips, IDispatcherCb cb)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+<tr>
+<td style="text-align:center">accountActionListener</td>
+<td style="text-align:center">这个session的账号活动监听</td>
+</tr>
+</tbody>
+</table>
+<p>返回值</p>
+<p>true表示已经开始发起，false表示当前用户不是游客，无法发起这个请求</p>
+<p>这个函数的回调中得JSON类型同登录接口</p>
+<h4 id="-">充值虚拟货币(依据支付类型可选）</h4>
+<pre><code>   /**
+     * user charge the currency in the game
+     * @param activity
+     * @param orderId the order id from server
+     * @param uid the user id of the platform
+     * @param accessToken the session token of the platform
+     * @param uidInGame player id in the game
+     * @param userNameInGame  player name in the game
+     * @param serverId  current server id
+     * @param currencyName the currency name
+     * @param rate the rate of the game currency to RMB,
+     *                e.g. ￥1.0 can buy 10 game currency, then rate = 10
+     * @param realPayMoney the real money to pay
+     * @param allowUserChange can user change the amnout he paid
+     * @param cb JSON object will be null
+     */
+    public static void charge(Activity activity,
+                              String orderId,
+                              String uid,
+                              String accessToken,
+                              String uidInGame,
+                              String userNameInGame,
+                              String serverId,
+                              String currencyName,
+                              int rate,
+                              int realPayMoney,
+                              boolean allowUserChange,
+                              IDispatcherCb cb)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">orderId</td>
+<td style="text-align:center">购买的订单ID</td>
+</tr>
+<tr>
+<td style="text-align:center">uid</td>
+<td style="text-align:center">平台的用户id</td>
+</tr>
+<tr>
+<td style="text-align:center">accessToken</td>
+<td style="text-align:center">平台下发的token</td>
+</tr>
+<tr>
+<td style="text-align:center">appUid</td>
+<td style="text-align:center">app中的用户ID</td>
+</tr>
+<tr>
+<td style="text-align:center">appUserName</td>
+<td style="text-align:center">app中得用户昵称</td>
+</tr>
+<tr>
+<td style="text-align:center">serverId</td>
+<td style="text-align:center">server的id</td>
+</tr>
+<tr>
+<td style="text-align:center">currencyName</td>
+<td style="text-align:center">虚拟货币的名称</td>
+</tr>
+<tr>
+<td style="text-align:center">rate</td>
+<td style="text-align:center">虚拟货币和RMB之间兑换的汇率，例如￥1.0可以买10个虚拟货币的话,那么这里就填10</td>
+</tr>
+<tr>
+<td style="text-align:center">realPayMoney</td>
+<td style="text-align:center">实际支付的RMB,单位: 分</td>
+</tr>
+<tr>
+<td style="text-align:center">allowUserChange</td>
+<td style="text-align:center">是否允许玩家修改</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON object是NULL</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h4 id="-">购买道具(依据支付类型可选)</h4>
+<pre><code>   /**
+     *  user buy a product
+     * @param activity the activity to give the real SDK
+     * @param orderId the order id from server
+     * @param uid the user id of the platform
+     * @param accessToken the session token of the platform
+     * @param uidInGame player id in the game
+     * @param userNameInGame player name in the game
+     * @param serverId  current server id
+     * @param productName the name of the product
+     * @param productID the id of the product
+     * @param productCount the count of product
+     * @param realPayMoney the real money to pay
+     * @param cb JSON object will be null
+     */
+    public static void buy(android.app.Activity activity,
+                           String orderId,
+                           String uid,
+                           String accessToken,
+                           String uidInGame,
+                           String userNameInGame,
+                           int serverId,
+                           String productName,
+                           String productID,
+                           int productCount,
+                           int realPayMoney,
+                           IDispatcherCb cb)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">orderId</td>
+<td style="text-align:center">购买的订单ID</td>
+</tr>
+<tr>
+<td style="text-align:center">uid</td>
+<td style="text-align:center">平台的用户id</td>
+</tr>
+<tr>
+<td style="text-align:center">accessToken</td>
+<td style="text-align:center">平台下发的token</td>
+</tr>
+<tr>
+<td style="text-align:center">appUid</td>
+<td style="text-align:center">app中的用户ID</td>
+</tr>
+<tr>
+<td style="text-align:center">appUserName</td>
+<td style="text-align:center">app中得用户昵称</td>
+</tr>
+<tr>
+<td style="text-align:center">serverId</td>
+<td style="text-align:center">server的id</td>
+</tr>
+<tr>
+<td style="text-align:center">productName</td>
+<td style="text-align:center">道具的名称</td>
+</tr>
+<tr>
+<td style="text-align:center">productID</td>
+<td style="text-align:center">道具的ID</td>
+</tr>
+<tr>
+<td style="text-align:center">productCount</td>
+<td style="text-align:center">道具的数量</td>
+</tr>
+<tr>
+<td style="text-align:center">realPayMoney</td>
+<td style="text-align:center">真是需要支付的RMB，单位: 分</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON object是NULL</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h4 id="-">登出(必须)</h4>
+<pre><code>  /**
+     * user logout
+     * @param activity the activity to give the real SDK
+     * @param cb can be null, JSON object will be null
+     */
+    public static void logout(Activity activity, IDispatcherCb cb)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON object是NULL</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h4 id="-">切换账号(可选)</h4>
+<pre><code>   /**
+     * for user to switch the account, to many platform it performs logout then login
+     * @param activity the activity to give the real SDK
+     * @param cb JSON object is the same as the login callback
+     */
+    public static void switchAccount(Activity activity, IDispatcherCb cb)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON情况同<strong>登陆</strong></p>
+<h4 id="-">创建浮动按钮(可选)</h4>
+<pre><code>   /**
+     * create the float tool bar ( required by 91, UC)
+     * @param activity the activity to give the real SDK
+     * @param cb JSON object will contain a flag:
+     *           SDK_UI_OPEN indicates the SDK UI is opend
+     *           SDK_UI_CLOSE indicates the SDK UI is closed
+     */
+    public static void createToolBar(Activity activity, IDispatcherCb cb)
+</code></pre><p>创建浮动按钮，但是不显示这个按钮，需要主动调用显示函数来显示它。</p>
+<p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+</tbody>
+</table>
+<p>回调的接口用来响应SDK界面打开和关闭的事件，这个函数的回调中得JSON类型有</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">flag</td>
+<td style="text-align:center">int</td>
+<td style="text-align:center">必须</td>
+<td style="text-align:center">SDK_UI_OPEN表示SDK界面将要打开的事件，SDK_UI_CLOSE表示SDK界面关闭的事件</td>
+</tr>
+</tbody>
+</table>
+<h4 id="-">显示或者隐藏浮动按钮(可选)</h4>
+<pre><code>  /**
+     *  show or hide the float tool bar (required by 91, UC)
+     * @param activity the activity to give the real SDK
+     * @param x the width parameter, locate in x%
+     * @param y the height parameter, locate in y%
+     * @param visible true for show, false for hide
+     */
+    public static void showFloatBar(Activity activity, int x, int y, boolean visible)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">x</td>
+<td style="text-align:center">按钮位置参数，表示在x轴上得x%的位置</td>
+</tr>
+<tr>
+<td style="text-align:center">y</td>
+<td style="text-align:center">按钮位置参数，表示在y轴上得y%的位置</td>
+</tr>
+<tr>
+<td style="text-align:center">visible</td>
+<td style="text-align:center">true表示显示，false表示隐藏</td>
+</tr>
+</tbody>
+</table>
+<h4 id="-">销毁移动按钮(可选)</h4>
+<pre><code>  /**
+     *  destroy the tool bar
+     * @param activity the activity to give the real SDK
+     */
+    public static void destroyToolBar(Activity activity)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+</tbody>
+</table>
+<h4 id="-">暂停(可选)</h4>
+<pre><code>  /**
+     *  when the app is activate from the background( refer to 91 doc, only required by 91)
+     * @param activity the activity to give the real SDK
+     * @param cb JSON object will be null
+     */
+    public static void onPause(Activity activity, IDispatcherCb cb)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON object是null</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h4 id="-">防沉迷查询(可选)</h4>
+<pre><code>  /**
+     *  check if the user is adult, if the platform doesn&#39;t provide this interface, user will be
+     *  treated as adult
+     * @param activity the activity to give the real SDK
+     * @param uid platform user id
+     * @param accessToken access token
+     * @param cb JSON object will receive flag:
+     *           ANTI_ADDITION_ADULT
+     *           ANTI_ADDITION_CHILD
+     *           ANTI_ADDITION_UNKNOWN
+     */
+    public static void antiAddiction(Activity activity,
+                                     String uid,
+                                     String accessToken,
+                                     IDispatcherCb cb)
+</code></pre><p>检查防沉迷信息，如果平台无这种接口，一定会返回成人</p>
+<p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">uid</td>
+<td style="text-align:center">平台的user id</td>
+</tr>
+<tr>
+<td style="text-align:center">accessToken</td>
+<td style="text-align:center">平台下发的token</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON类型有</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">flag</td>
+<td style="text-align:center">int</td>
+<td style="text-align:center">必须</td>
+<td style="text-align:center">ANTI_ADDITION_ADULT表示成人，ANTI_ADDITION_CHILD表示小孩，ANTI_ADDITION_UNKNOWN表示没有信息</td>
+</tr>
+</tbody>
+</table>
+<h4 id="-">销毁(必须)</h4>
+<pre><code> /**
+     * destroy the sdk instance
+     * @param activity
+     * @param cb can be null, otherwise it will called when the sdk is desctoryed, JSON will be null
+     */
+    public static void destroy(Activity activity, IDispatcherCb cb)
+</code></pre><p>输入的参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">activity</td>
+<td style="text-align:center">就是activity了</td>
+</tr>
+<tr>
+<td style="text-align:center">cb</td>
+<td style="text-align:center">异步操作的回调</td>
+</tr>
+</tbody>
+</table>
+<p>这个函数的回调中得JSON object是null</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">重要性</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+
+                    
+                    </section>
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="./cocos2d_x.html" class="navigation navigation-prev "><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="./cpp_binding.html" class="navigation navigation-next "><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-javascript.js"></script>
+        <script src="gitbook/jsrepl/jsrepl.js" id="jsrepl-script"></script>
+        <script src="gitbook/app.js"></script>
+        
+
+    
+    <script src="gitbook/plugins/gitbook-plugin-mixpanel/plugin.js"></script>
+    
+
+    
+    <script src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+    
+    <script src="gitbook/plugins/gitbook-plugin-mathjax/plugin.js"></script>
+    
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {};
+    gitbook.start(config);
+});
+</script>
+
+    </body>
+</html>

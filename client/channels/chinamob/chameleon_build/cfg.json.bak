@@ -1,0 +1,42 @@
+{
+    "desc": "中国移动游戏基地", 
+    "name": "chinamob",
+    "chamversion": "1.0",
+    "version": "1.0.0",
+    "cfgitem": {
+        "appId" : {
+            "type" : "string",
+            "desc" : "YOUR_APP_ID"
+        },
+        
+        "appKey" : {
+            "type" : "string",
+            "desc" : "YOUR_APP_KEY"
+        },
+        
+        "appSecret" : {
+            "type" : "string",
+            "desc" : "YOUR_APP_SECRET",
+            "ignoreInA" : 1
+        },
+        
+        "isBGTransparent" : {
+            "type" : "boolean", 
+            "desc" : "whether the background is transparent",
+            "default": "true"
+        },
+        
+        "uri" : {
+            "type" : "url",
+            "desc": "the payment callback uri"
+        },
+
+        "channel": {
+            "type": "string",
+            "desc": "用于标识应用方的子渠道",
+            "default": "default",
+            "ignoreInA" : 1
+        }
+    }
+}
+

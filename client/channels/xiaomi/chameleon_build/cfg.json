@@ -1,0 +1,24 @@
+{
+    "desc": "小米",
+    "name": "xiaomi",
+    "chamversion": "1.0",
+    "version": "3.4.0",
+    "cfgitem": {
+        "appId" : {
+            "type": "string",
+            "desc": "app id"
+        },
+
+        "appKey" : {
+            "type": "string",
+            "desc": "app key"
+        },
+
+        "appSecret": {
+            "type": "string",
+            "desc": "app secret",
+            "ignoreInA" : 1
+        }
+    }
+}
+

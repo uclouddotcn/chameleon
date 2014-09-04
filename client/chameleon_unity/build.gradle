@@ -1,0 +1,35 @@
+apply plugin: 'android-library'
+android {
+    compileSdkVersion 19
+    buildToolsVersion '19.0.1'
+    defaultConfig {
+        minSdkVersion 7
+        targetSdkVersion 16
+        versionCode 1
+        versionName "1.0"
+    }
+    release {
+        runProguard false
+        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+    }
+}
+
+android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+    print name
+    if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {
+        return; // Skip debug builds.
+    }
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    print "jar${name.capitalize()}"
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    artifacts.add('archives', task);
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:+'
+    compile project(':chameleon')
+    compile fileTree(dir: "libs", includes: ["*.jar"])
+}
+

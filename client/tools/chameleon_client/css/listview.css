@@ -1,0 +1,101 @@
+body {
+  color: #444;
+}
+.tag {
+  position: relative;
+  background-color: #DAE6F5;
+  display: inline-block;
+  margin: 5px;
+  padding: 0px 8px;
+  border-radius: 3px;
+  border: 1px solid #bbb;
+}
+div[data-project-list-view] table {
+  max-width: 100%;
+  background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+div[data-project-list-view] .table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+div[data-project-list-view] .table th,
+div[data-project-list-view] .table td {
+  padding: 8px;
+  line-height: 20px;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid #dddddd;
+}
+
+div[data-project-list-view] .table th {
+  font-weight: bold;
+}
+
+div[data-project-list-view] .table thead th {
+  vertical-align: bottom;
+}
+
+div[data-project-list-view] .table caption + thead tr:first-child th,
+div[data-project-list-view] .table caption + thead tr:first-child td,
+div[data-project-list-view] .table colgroup + thead tr:first-child th,
+div[data-project-list-view] .table colgroup + thead tr:first-child td,
+div[data-project-list-view] .table thead:first-child tr:first-child th,
+div[data-project-list-view] .table thead:first-child tr:first-child td {
+  border-top: 0;
+}
+
+div[data-project-list-view] .table tbody + tbody {
+  border-top: 2px solid #dddddd;
+}
+
+div[data-project-list-view] .table .table {
+  background-color: #ffffff;
+}
+
+div[data-project-list-view] table th {
+  text-align: left;
+} 
+
+div[data-project-list-view] .item {
+    border: 1px solid white;
+    cursor: pointer;
+    padding: 5px;
+}
+
+div[data-project-list-view] .item:hover {
+    background-color: #EFF7FF;
+    border: 1px solid #9CB9F7;
+}
+
+div[data-project-list-view] .item .thumb img {
+  width: 30px;
+  height: 30px;
+}
+
+div[data-project-list-view] .item .thumb {
+  position: relative;
+  border: 1px solid gray;
+  display: inline-block;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-right: 3px;
+  width: 30px;
+  height: 30px;
+}
+
+div[data-project-list-view] .column-title {
+  white-space: nowrap;
+}
+
+div[data-project-list-view] .column-title span {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 85%;
+  position: relative;
+  margin-left: 5px;
+  top: 2px;
+}

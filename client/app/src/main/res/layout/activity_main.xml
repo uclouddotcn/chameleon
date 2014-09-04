@@ -1,0 +1,117 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity"
+    android:onClick="onClickRegistGuest">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_world"
+        android:editable="true"
+        android:enabled="true" />
+
+    <Button
+        android:id="@+id/charge_btn"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="@string/charge_txt"
+        android:onClick="onClickCharge"
+        android:visibility="visible"
+        android:layout_alignTop="@+id/buy_btn"
+        android:layout_toRightOf="@+id/buy_btn" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="@string/switch_button"
+        android:id="@+id/switch_btn"
+        android:onClick="onClickSwitch"
+        android:layout_above="@+id/addiction"
+        android:layout_toRightOf="@+id/login_btn" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="@string/addiction_button"
+        android:id="@+id/addiction"
+        android:onClick="onClickAddiction"
+        android:layout_marginBottom="52dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="@string/login_button"
+        android:id="@+id/login_btn"
+        android:onClick="sendMessage"
+        android:height="20dp"
+        android:layout_above="@+id/addiction"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="@string/buy_txt"
+        android:id="@+id/buy_btn"
+        android:onClick="onClickBuy"
+        android:layout_alignTop="@+id/addiction"
+        android:layout_toRightOf="@+id/addiction" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:text="@string/toggle_tb"
+        android:id="@+id/btn_toggle_tb"
+        android:layout_alignTop="@+id/switch_btn"
+        android:layout_alignLeft="@+id/charge_btn"
+        android:layout_alignStart="@+id/charge_btn"
+        android:onClick="onClickToggleToolbar" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_guest"
+        android:id="@+id/btn_loginguest"
+        android:layout_above="@+id/switch_btn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:onClick="onClickLoginGuest" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/logout"
+        android:id="@+id/btn_logout"
+        android:onClick="onClickLogout"
+        android:layout_alignTop="@+id/btn_loginguest"
+        android:layout_alignRight="@+id/btn_toggle_tb"
+        android:layout_alignEnd="@+id/btn_toggle_tb" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/regist_btn"
+        android:id="@+id/btn_regist_guest"
+        android:layout_alignTop="@+id/btn_loginguest"
+        android:layout_toRightOf="@+id/btn_loginguest" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exit"
+        android:id="@id/btn_exit"
+        android:layout_below="@+id/buy_btn"
+        android:layout_toRightOf="@+id/textView1"
+        android:onClick="onClickExit" />
+
+</RelativeLayout>

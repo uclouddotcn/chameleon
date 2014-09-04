@@ -1,0 +1,26 @@
+{
+    "desc": "91手机助手",
+    "name": "nd91",
+    "chamversion": "1.0",
+    "version": "3.2.6.4",
+    "enableWrapPackage": 0,
+    "cfgitem": {
+
+        "appId" : {
+            "type": "int",
+            "desc": "app id"
+        },
+
+        "appKey" : {
+            "type": "string",
+            "desc": "app key"
+        },
+
+        "isForceUpdate" : {
+            "type": "boolean",
+            "desc": "whether force client to update",
+            "default": "false"
+        }
+    }
+}
+

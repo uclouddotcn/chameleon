@@ -1,0 +1,11 @@
+[
+    {
+        "cfg": {}, 
+        "productFlavor": "qihu", 
+        "dependency": "src/qihu/libs/360SDK.jar"
+    },
+    {
+        "cfg": {},
+        "productFlavor": "nd91"
+    }
+]

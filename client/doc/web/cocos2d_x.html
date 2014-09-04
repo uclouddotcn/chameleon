@@ -1,0 +1,341 @@
+<!DOCTYPE HTML>
+<html lang="en-US" manifest="./manifest.appcache">
+    <head prefix="og: http://ogp.me/ns# book: http://ogp.me/ns/book#">
+        
+        <meta charset="UTF-8">
+        <title>在Cocos2d-x项目中使用Chameleon | Book Example</title>
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="robots" content="index, follow">
+        <meta name="author" content="">
+        <meta name="description" content="Book generated using GitBook">
+        <meta name="keywords" content="gitbook,github" >
+        <meta name="generator" content="www.gitbook.io">
+
+        
+        <link rel="next" href="./java_sdk.html" />
+        
+        
+        <link rel="prev" href="./HelloWorld.html" />
+        
+
+        <meta property="og:title" content="在Cocos2d-x项目中使用Chameleon | Book Example">
+        <meta property="og:site_name" content="Book Example">
+        <meta property="og:type" content="book">
+        <meta property="og:locale" content="en_US">
+
+        <meta property="book:author" content="https://github.com/">
+        <meta property="book:tag" content="GitBook">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+        <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+        
+    </head>
+    <body>
+        
+
+        <link rel="stylesheet" href="gitbook/style.css">
+        
+
+
+        
+    <div class="book"  data-level="3" data-basepath="." data-revision="1399361912437">
+    <div class="book-header">
+    <!-- Actions Left -->
+    
+    <a href="https://github.com/null" target="_blank" class="btn pull-left"><i class="fa fa-bookmark-o"></i></a>
+    
+    <a href="#" class="btn pull-left toggle-summary"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search"><i class="fa fa-search"></i></a>
+    <span id="font-settings-wrapper">
+        <a href="#" class="btn pull-left toggle-font-settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+	<div class="dropdown-caret">
+  <span class="caret-outer"></span>
+  <span class="caret-inner"></span>
+</div>
+
+	<div class="btn-group btn-block">
+		<button id="reduce-font-size" class="btn btn-default">A</button>
+		<button id="enlarge-font-size" class="btn btn-default">A</button>
+	</div>
+
+	<ul class="list-group font-family-list">
+		<li class="list-group-item" data-font="0">Serif</li>
+		<li class="list-group-item" data-font="1">Sans</li>
+	</ul>
+
+	<div class="btn-group btn-group-xs btn-block color-theme-list">
+	  <button type="button" class="btn btn-default" id="color-theme-preview-0" data-theme="0">White</button>
+	  <button type="button" class="btn btn-default" id="color-theme-preview-1" data-theme="1">Sepia</button>
+	  <button type="button" class="btn btn-default" id="color-theme-preview-2" data-theme="2">Night</button>
+	</div>
+</div>
+
+    </span>
+
+    <!-- Actions Right -->
+    
+    <a href="#" target="_blank" class="btn pull-right" data-sharing="google-plus"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right" data-sharing="facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right" data-sharing="twitter"><i class="fa fa-twitter"></i></a>
+    
+
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-spinner fa-spin"></i>
+        <a href="./" >Book Example</a>
+    </h1>
+</div>
+
+    <div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+
+        
+        <li>
+            <a href="https://github.com/null/issues" target="blank">Questions and Issues</a>
+        </li>
+        
+
+        
+        <li>
+            <a href="https://github.com/null/edit/master/cocos2d_x.md" target="blank">Edit and Contribute</a>
+        </li>
+        
+
+        
+
+        <li data-level="0" data-path="index.html">
+            <a href="./"><i class="fa fa-check"></i> Introduction</a>
+        </li>
+        
+            <li  data-level="1" data-path="chameleon_package.html">
+                
+                <a href="./chameleon_package.html">
+                    <i class="fa fa-check"></i> <b>1.</b> Chameleon的概况
+                </a>
+                
+                
+            </li>
+        
+            <li  data-level="2" data-path="HelloWorld.html">
+                
+                <a href="./HelloWorld.html">
+                    <i class="fa fa-check"></i> <b>2.</b> 在标准Android工程下搭建环境
+                </a>
+                
+                
+            </li>
+        
+            <li  data-level="3" data-path="cocos2d_x.html">
+                
+                <a href="./cocos2d_x.html">
+                    <i class="fa fa-check"></i> <b>3.</b> 在Cocos2d-x项目中使用Chameleon
+                </a>
+                
+                
+            </li>
+        
+            <li  data-level="4" data-path="java_sdk.html">
+                
+                <a href="./java_sdk.html">
+                    <i class="fa fa-check"></i> <b>4.</b> Chameleon SDK
+                </a>
+                
+                
+            </li>
+        
+            <li  data-level="5" data-path="cpp_binding.html">
+                
+                <a href="./cpp_binding.html">
+                    <i class="fa fa-check"></i> <b>5.</b> Chameleon SDK c++ binding
+                </a>
+                
+                
+            </li>
+        
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="http://www.gitbook.io/" target="blank">Generated using GitBook</a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="page-wrapper" tabindex="-1">
+                <div class="book-progress">
+    <div class="bar">
+        <div class="inner" style="width: 60%;min-width: 40%;"></div>
+    </div>
+    <div class="chapters">
+    
+        <a href="./index.html" title="Introduction" class="chapter done new-chapter" data-progress="0" style="left: 0%;"></a>
+    
+        <a href="./chameleon_package.html" title="Chameleon的概况" class="chapter done new-chapter" data-progress="1" style="left: 20%;"></a>
+    
+        <a href="./HelloWorld.html" title="在标准Android工程下搭建环境" class="chapter done new-chapter" data-progress="2" style="left: 40%;"></a>
+    
+        <a href="./cocos2d_x.html" title="在Cocos2d-x项目中使用Chameleon" class="chapter done new-chapter" data-progress="3" style="left: 60%;"></a>
+    
+        <a href="./java_sdk.html" title="Chameleon SDK" class="chapter  new-chapter" data-progress="4" style="left: 80%;"></a>
+    
+        <a href="./cpp_binding.html" title="Chameleon SDK c++ binding" class="chapter  new-chapter" data-progress="5" style="left: 100%;"></a>
+    
+    </div>
+</div>
+
+                <div class="page-inner">
+                
+                    <section class="normal" id="section-gitbook_4">
+                    
+                        <h1 id="-cocos2d-x-chameleon">在Cocos2d-x项目中使用Chameleon</h1>
+<h2 id="-">搭建开发环境</h2>
+<h3 id="-">添加环境变量</h3>
+<p>一开始需要添加一个指向Android Studio的SDK路径的环境变量
+例如</p>
+<pre><code class="lang-shell">export ANROID_HOME=/path/to/Android\ Studio/sdk
+</code></pre>
+<h3 id="-chameleon-py-">使用chameleon.py生成平台相关的代码和资源</h3>
+<p>使用chameleon.py会在cocos2d-x工程的proj.android目录底下生成一个chameleon的目录，包含了chameleon的SDK，C++的Module，各渠道的资源，以及编译所需的一些工具。
+例如</p>
+<pre><code class="lang-shell">shaukwu-nb:build wushauk$ ./chameleon.py generate_cc2dx2 ../../platform/qihu.json ../sample/chameleon_cc2d/
+loading config file for platform qihu...
+generating the whole product flavors...
+copying source tree for platform qihu...
+ignore copying existing manifest file ../sample/chameleon_cc2d/proj.android/chameleon/src/qihu/AndroidManifest.xml
+writing productflavor.json...
+done
+copy chameleoncb
+copy gradle to cocos2dx 2.x.x project
+../sample/chameleon_cc2d/proj.android/chameleon/build.gradle.default
+../sample/chameleon_cc2d/proj.android/chameleon/build_native.sh.default
+../sample/chameleon_cc2d/proj.android/chameleon/cocos2dx_prj
+../sample/chameleon_cc2d/proj.android/chameleon/gradle
+../sample/chameleon_cc2d/proj.android/chameleon/gradlew
+../sample/chameleon_cc2d/proj.android/chameleon/settings.gradle
+</code></pre>
+<h3 id="-">使用编译模板</h3>
+<p>使用工具生成代码之后，chameleon的目录底下会有两个文件，build.gradle.default和build_native.sh.default。build.gradle.deault是标准的gradle编译脚本，build_native.sh.default是用来替换标准的Cocos2d-x的build_native.sh。
+对于新建的工程，可以直接替换之</p>
+<pre><code class="lang-shell">shaukwu-nb:chameleon_cc2d wushauk$ mv proj.android/chameleon/build.gradle.default proj.android/chameleon/build.gradle
+shaukwu-nb:chameleon_cc2d wushauk$ mv proj.android/chameleon/build_native.sh.default proj.android/build_native.sh
+</code></pre>
+<h3 id="-android-mk">修改Android.mk</h3>
+<p>修改proj.android/jni/Android.mk，增加以下两行</p>
+<pre><code class="lang-make">LOCAL_WHOLE_STATIC_LIBRARIES += chameleoncb
+</code></pre>
+<pre><code class="lang-make">$(call import-module,chameleoncb)
+</code></pre>
+<h3 id="-sdk-init-">增加SDK的init函数</h3>
+<p>在proj.android/src底下，找到主Activity的代码，在onCreateView里面增加一行</p>
+<pre><code class="lang-java">    CPlatformInterface.init(<span class="hljs-keyword">this</span>, glSurfaceView, <span class="hljs-keyword">true</span>);
+</code></pre>
+<p>在proj.android/jni/hellocpp/main.cpp中的JNI_OnLoad函数里添加</p>
+<pre><code class="lang-c++">    Chameleon::ChameleonPlatformAPI::setJavaVM(vm);
+</code></pre>
+<h2 id="-chameleon-sdk">开始使用Chameleon SDK</h2>
+<p>经过上面几个步骤，Chameleon的环境就已经搭建好了。接下来就可以像使用普通的C++库一样来使用Chameleon的SDK
+例如可以使用一个管理用户信息的类，即用来对Chameleon发送请求，同时自己也作为事件的监听者。</p>
+<pre><code class="lang-c++">class UserAccountMgr : public Chameleon::CPlatformAPICallbackInf {
+
+public:
+    UserAccountMgr() {
+        // 将自己作为事件监听者注册给ChameleonSDK
+        ChameleonPlatformAPI::registCallback(this);
+    }
+
+    int Login() {
+        // 调用ChameleonPlatformAPI的login，有时候我们不会同时
+        // 发起多个同样的请求，这个时候id就可以随便传什么了。。
+        return ChameleonPlatformAPI::login(0);
+    }
+    int LoginGuest() {
+        return ChameleonPlatformAPI::loginGuest(0);
+    }
+    ///// other user account api
+
+
+    // 发起以游客身份登陆之后，有可能会触发游客完成登陆的事件
+    virtual void onLoginGuest(int id, int code) {
+        setGuestLogined();
+    }
+    // 如果玩家正常登陆了，那么就会触发这个callback
+    virtual void onLogin(int id, int code,
+        const Chameleon::UserLoginInfo * loginInfo) {
+        //玩家正常登陆，向后台发起登陆检测
+        verifyLogin(*loginInfo);
+    }
+
+    ///// other callback inf implementation
+</code></pre>
+<h2 id="-">编译</h2>
+<p>完成了代码编写之后，只需要进入proj.android/chameleon目录底下，调用</p>
+<pre><code class="lang-shell">./gradlew assemble
+</code></pre>
+<p>就可以编译出支持各平台的APK包了</p>
+<h2 id="sample">Sample</h2>
+<p>具体例子参见体Sample参见sample/chameleon_cc2d</p>
+
+                    
+                    </section>
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="./HelloWorld.html" class="navigation navigation-prev "><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="./java_sdk.html" class="navigation navigation-next "><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-javascript.js"></script>
+        <script src="gitbook/jsrepl/jsrepl.js" id="jsrepl-script"></script>
+        <script src="gitbook/app.js"></script>
+        
+
+    
+    <script src="gitbook/plugins/gitbook-plugin-mixpanel/plugin.js"></script>
+    
+
+    
+    <script src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+    
+    <script src="gitbook/plugins/gitbook-plugin-mathjax/plugin.js"></script>
+    
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {};
+    gitbook.start(config);
+});
+</script>
+
+    </body>
+</html>

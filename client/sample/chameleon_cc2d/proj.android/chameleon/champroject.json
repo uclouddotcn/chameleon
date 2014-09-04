@@ -1,0 +1,14 @@
+{
+    "globalcfg": {
+        "sappname": "sample", 
+        "blandscape": "true"
+    }, 
+    "version": "1.0.0", 
+    "target": "android-19", 
+    "sign": {
+        "keypass": "ucloud.cn", 
+        "keystroke": "key/mykey.jks", 
+        "storepass": "ucloud.cn", 
+        "alias": "samplekey"
+    }
+}

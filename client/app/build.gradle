@@ -1,0 +1,96 @@
+apply plugin: 'android'
+
+// loading the productFlavor.json
+import groovy.json.JsonSlurper
+def loadProductFlavors() {
+    try {
+        def slurper = new JsonSlurper()
+        File f = new File("${projectDir}/productflavor.json")
+        def result = slurper.parseText(f.text)
+        return result
+    } catch(e) {
+        print e
+        return []
+    }
+}
+
+def platformFlavors = loadProductFlavors()
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion '19.0.1'
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 18
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    productFlavors {
+        chameleon {
+
+        }
+        qqmob {
+
+        }
+        nd91 {
+
+        }
+        qihu {
+
+        }
+        chinamob {
+
+        }
+        wandoujia {
+
+        }
+        xiaomi {
+            packageName "cn.ucloud.game.chameleon.mi"
+        }
+        baidumg {
+
+        }
+    }
+
+    // generate productFlavors according to the setting of productFlavor.json
+    /*
+    productFlavors {
+        platformFlavors.each { x ->
+            "$x.productFlavor" {
+                x.cfg.each { item, value ->
+                    "$item" "$value"
+                }
+                flavorGroup "chameleon"
+            }
+        }
+    }
+    */
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:+'
+    compile files('libs/android-async-http-1.4.4.jar')
+    compile project(':chameleon')
+    chameleonCompile project(':channels:test')
+    qqmobCompile project(':channels:qqmob')
+    nd91Compile project(':channels:nd91')
+    qihuCompile project(':channels:qihu')
+    chinamobCompile project(':channels:chinamob')
+    wandoujiaCompile project(':channels:wandoujia')
+    xiaomiCompile project(':channels:xiaomi')
+    baidumgCompile project(':channels:baidumg')
+    // generate the compile dependency
+    /*
+    platformFlavors.each {x ->
+        "${x.productFlavor}Compile" project(":channels:${x.productFlavor}")
+    }
+    */
+}
+
+
+

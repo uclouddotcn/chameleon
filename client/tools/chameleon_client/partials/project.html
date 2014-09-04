@@ -1,0 +1,64 @@
+<div class="container-fluid">
+    <section id="brief">
+        <div class="row">
+            <div class="page-header row">
+                <div class="col-md-10">
+                    <h3 pull-left>{{project.obj.globalcfg.globalcfg.appname}}</h3>
+                </div>
+                <div class="btn-group col-md-2" dropdown pull-right>
+                    <button type="button" class="btn btn-primary dropdown-toggle">
+                        更多命令 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a ng-click="openBuildDialog()">编译工程</a></li>
+                        <li class="divider"></li>
+                        <li><a ng-click="openServerDialog()">生成服务器配置</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label>工程地址:</label>
+            </div>
+            <div class="col-md-8">
+                <label>{{projectDoc.path}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label>Chameleon版本:</label>
+            </div>
+            <div class="col-md-4">
+                <label>{{project.version}}</label>
+            </div>
+            <div class="col-md-1">
+                <a class="btn" ng-show="isOutdated" ng-class="{red: isOutdated}" ng-click="openUpgradePanel()">升级到{{toolversion}}!!!</a>
+            </div>
+        </div>
+	        <div class="row">
+	            <div class="col-md-4">
+                        <tabset>
+                            <tab heading="SDK配置" active="tab[0].active" select="selectSDKPanel()">
+                                <div id="sdktable" class="gridStyle" ng-grid="installedSDKTable"></div>
+                                <div>
+                                    <button class="btn btn-small" ng-click="addSDK()">添加</button>
+                                </div>
+                            </tab>
+                            <tab heading="渠道配置" active="tab[1].active" select="selectChannelPanel()">
+                                <div id="chtable" class="gridStyle" ng-grid="installedChTable"></div>
+                                <div>
+                                    <button class="btn btn-small" ng-click="addChannel()">添加</button>
+                                </div>
+                            </tab>
+                        </tabset>
+	            </div>
+	            <div class="col-md-8" style>
+                        <div class = "pre-scrollable-channelinfo" ng-controller="ChannelCfgController" >
+                            <ui-view>xxxxxx</ui-view>
+                        </div>
+	            </div>
+                </div>
+    </section>
+</div>
+

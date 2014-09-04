@@ -1,0 +1,18 @@
+<div class="container-fluid">
+<div class="modal-header">
+    <h3>编译工程</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="gridStyle" ng-grid="channelTable" ng-disabled="compiling"></div>
+    </div>
+    <div class="row">
+        <button class="btn btn-default" ng-click="startCompile()" ng-show="!compiling">开始编译</button>
+        <button class="btn btn-default" ng-click="stopCompile()" ng-show="compiling">终止编译</button>
+        <button class="btn btn-default" ng-click="showBuildLog()">显示编译详情</button>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="close()">关闭</button>
+</div>
+</div>

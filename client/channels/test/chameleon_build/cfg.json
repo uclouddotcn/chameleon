@@ -1,0 +1,9 @@
+{
+    "desc": "chameleon测试渠道",
+    "name": "test",
+    "chamversion": "1.0",
+    "version": "1.0.0",
+    "cfgitem": {
+    }
+}
+

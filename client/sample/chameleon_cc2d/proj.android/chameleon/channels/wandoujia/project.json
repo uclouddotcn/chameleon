@@ -1,0 +1,9 @@
+{
+    "dependLibs": [
+        {
+            "cfg": "wandoujia-1409143512180", 
+            "type": "user,pay", 
+            "name": "wandoujia"
+        }
+    ]
+}
