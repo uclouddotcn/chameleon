@@ -1,0 +1,14 @@
+{
+    "name" : "sdk",
+    "version" : "0.0.1",
+    "dependencies" : 
+    {
+        "restify": "*",
+        "verror": "1.4.0",
+        "async": "0.2.10",
+        "levelup": "0.18.2",
+        "leveldown": "0.10.2",
+        "bunyan": "0.22.1"
+    }
+}
+

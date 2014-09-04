@@ -1,0 +1,15 @@
+{
+    "name" : "sdk",
+    "version" : "0.0.1",
+    "dependencies" : 
+    {
+        "restify": "*",
+        "optimist": "0.6.1",
+        "verror": "1.4.0",
+        "validator": "3.5.0",
+        "uuid": "1.4.1",
+        "async": "0.2.10",
+        "bunyan": "0.22.1"
+    }
+}
+

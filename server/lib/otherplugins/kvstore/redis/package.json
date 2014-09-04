@@ -1,0 +1,13 @@
+{
+    "name": "chameleon-redis-kv",
+    "description": "redis for kv store",
+    "main": "./redis.js",
+    "author": {
+        "name": "Shauk Wu"
+    },
+    "dependencies": {
+        "redis": "0.10.1"
+    },
+    "version": "1.0.0"
+}
+

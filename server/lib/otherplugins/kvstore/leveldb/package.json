@@ -1,0 +1,14 @@
+{
+    "name": "chameleon-leveldb-kv",
+    "description": "redis for kv store",
+    "main": "./leveldb.js",
+    "author": {
+        "name": "Shauk Wu"
+    },
+    "dependencies": {
+        "levelup": "0.18.2",
+        "leveldown": "0.10.2"
+    },
+    "version": "1.0.0"
+}
+

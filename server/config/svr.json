@@ -1,0 +1,29 @@
+{
+    "debug" : 0,
+    "sdkSvr" : {
+        "port" : 8081,
+        "host" : "0.0.0.0"
+    },
+
+    "admin" : {
+        "port" : 8083,
+        "host" : "0.0.0.0"
+    },
+
+    "pendingOrderStoreCfg" : {
+        "type": "leveldb",
+        "ttl" : 900
+    },
+     
+    "channelCbSvr" :  {
+        "port" : 8082,
+        "host" : "0.0.0.0"
+    },
+
+    "billCfg" : {
+        "name": "bunyanlogger",
+        "cfg": {
+            "path": "./log/bill.log"
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "name": "chameleon-bunyan-eventlog",
+    "description": "bunyan logger for event",
+    "main": "./index.js",
+    "author": {
+        "name": "Shauk Wu"
+    },
+    "dependencies": {
+        "bunyan": "0.22.1"
+    },
+    "version": "1.0.0"
+}
+

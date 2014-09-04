@@ -1,0 +1,13 @@
+{
+    "gamesvr": {
+        "port": 7900
+    },
+
+    "adminsvr": {
+        "host" : "localhost",
+        "port" : 8080
+    },
+
+    "chameleonsvr" : "http://localhost:8081"
+}
+
