@@ -273,7 +273,7 @@ chameleonControllers
                                                 desc: sdk.desc,
                                                 name: infoObj.libs[i].name, 
                                                 from: infoObj.libs[i].fromdesc,
-                                                to: infoObj.libs[i].todesc,
+                                                to: infoObj.libs[i].todesc
                                             })
                                         }
                                         res.push({
@@ -438,7 +438,7 @@ chameleonControllers
                         resolve: {
                             project: function () {
                                 return project;
-                            },
+                            }
                         }
                     });
                     instance.result.then(function (serverInfoStat) {

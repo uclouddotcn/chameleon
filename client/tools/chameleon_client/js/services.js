@@ -524,7 +524,7 @@ var ChannelCfg = (function () {
 
 
         Object.defineProperty(this, 'sdk', {
-            get: function () {return this._sdk;},
+            get: function () {return this._sdk;}
         });
 
         Object.defineProperty(this, 'requiredSDK', {
@@ -847,15 +847,17 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         var buildscript = this.pathLib.join(project.__doc.path, 'chameleon_build.py');
         var inputParams = [buildscript, 'build', 'debug', target];
         this.exec('python', inputParams, {
-                timeout: 120000
+                timeout: 120000,
+                maxBuffer: 1024*1024
             }, function (error, stdout, stderr) {
                 $log.log("std out " + stdout);
+                $log.log("std err " + stderr);
                 var compileResult = null;
                 if (error) {
                     compileResult = {
                         code: error.code,
                         target: target,
-                        s: stderr + '\n' + stdout
+                        s: stderr + '\n\n 详细log是：\n' + stdout
                     };
                     return defered.resolve(compileResult);
                 }
@@ -1208,7 +1210,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 throw new Error();
             }
             return {
-                target: result[1],
+                target: result[1]
             };
         } catch (e) {
             $log.log("exception: " + e.message + '\n' + e.stacktrace);

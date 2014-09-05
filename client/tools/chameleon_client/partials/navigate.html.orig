@@ -1,6 +1,0 @@
-
-                <ul class="breadcrumb" contenteditable="true">
-                  <li><a href="#">主页</a> <span class="divider">/</span></li>
-                  <li><a href="#">类目</a> <span class="divider">/</span></li>
-                  <li class="active">主题</li>
-                </ul>

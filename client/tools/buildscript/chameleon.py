@@ -123,7 +123,7 @@ def win32_utf8_argv():
             return [argv[i] for i in                                                                 
                     xrange(start, argc.value)]                                                                       
     except Exception:                                                                                                
-        pass
+        return sys.argv
 
 
 def parseArgs(chamInfo):
@@ -133,7 +133,6 @@ def parseArgs(chamInfo):
         if sys.stdin.encoding:
             encoding = sys.stdin.encoding
         for i, val in enumerate(sys.argv):
-            print >> sys.stderr, 'get param ', val.decode('utf8')
             argv.append(val.decode(encoding))
 
     if len(argv) < 2:
