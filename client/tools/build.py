@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, shutil, codecs, json, subprocess, sys
+import os, shutil, codecs, json, subprocess, sys, zipfile
 from collections import namedtuple
 
 BASEDIR = os.path.split(os.path.realpath(__file__))[0]
@@ -185,15 +185,74 @@ def getversion():
         l = f.readline()
         return l.strip('\n')
 
+
+def unzipFiles(zf, targetDir):
+    with zipfile.ZipFile(zf) as zipf:
+        zipf.extractall(targetDir)
+
+def exportChamleonClient(clientZipTarget):
+    oldpath = os.getcwd()
+    try:
+        os.chdir('chameleon_client')
+        ret = subprocess.call(['git', 'archive', '--format', 
+            'zip', '-o', clientZipTarget, 'HEAD'])
+    finally:
+        os.chdir(oldpath)
+    if ret != 0:
+        raise RuntimeError('fail to export chameleon_client')
+
+def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
+    os.mkdir(targetFolder)
+    unzipFiles(zf, targetFolder)
+    shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
+    place(targetFolder)
+    downloadDependency(targetFolder)
+
+
+def placeNodeWebkitWin(targetFolder):
+    src = os.path.join('nodewebkit-bin', 'node-webkit-v0.10.3-win-ia32.zip')
+    unzipFiles(src, targetFolder)
+    
+def placeNodeWebkitOsx(targetFolder):
+    src = os.path.join('nodewebkit-bin', 'node-webkit.app')
+    shutil.copytree(src, os.path.join(targetFolder, 'node-webkit.app'))
+
+def downloadDependency(targetFolder):
+    olddir = os.getcwd()
+    try:
+        os.chdir(targetFolder)
+        ret = subprocess.check_call(['npm', 'install'])
+        if ret != 0:
+            raise RuntimeError('Fail to download dependency for %s' %targetFolder)
+        ret = subprocess.check_call(['bower', 'install'])
+        if ret != 0:
+            raise RuntimeError('Fail to download dependency for %s' %targetFolder)
+    finally:
+        os.chdir(olddir)
+
+
+def mergeToNodewebkit(targetFolder):
+    clientZipTarget = os.path.join(targetFolder, 'chameleon_client.zip')
+    chameleonFolder = os.path.join(targetFolder, 'chameleon')
+    exportChamleonClient(clientZipTarget)
+    buildChameleonClient(clientZipTarget, chameleonFolder, 
+            os.path.join(targetFolder, 'chameleon_client_win'),placeNodeWebkitWin)
+    buildChameleonClient(clientZipTarget, chameleonFolder,
+            os.path.join(targetFolder, 'chameleon_client_osx'),placeNodeWebkitOsx)
+
+
 def build():
     targetFolder = os.path.join(BASEDIR, 'build')
-    cleanOldBuild(targetFolder)
-    version = getversion()
-    print 'get version is %s' %version
-    print 'start initing build folder...'
-    initProjectFolder(targetFolder, version)
-    print 'build chameleon libs...'
-    buildChameleonLib(targetFolder)
+    #cleanOldBuild(targetFolder)
+    #version = getversion()
+    #chameleonTarget = os.path.join(targetFolder, 'chameleon')
+    #print 'get version is %s' %version
+    #print 'start initing build folder...'
+    #initProjectFolder(chameleonTarget, version)
+    #print 'build chameleon libs...'
+    #buildChameleonLib(chameleonTarget)
+    #print 'build chameleon client...'
+    mergeToNodewebkit(targetFolder)
     print 'done'
 
 build()
