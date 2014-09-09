@@ -178,7 +178,7 @@ def cleanOldBuild(targetFolder):
         print 'cleaning existing build folder %s ...' %(targetFolder)
         shutil.rmtree(targetFolder)
 
-def getversion():
+def getvesion():
     versionFolder = os.path.join(BASEDIR, 'version')
     versionFile = os.path.join(versionFolder, 'version.txt')
     with open(versionFile, 'r') as f:
@@ -210,7 +210,7 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
 
 
 def placeNodeWebkitWin(targetFolder):
-    src = os.path.join('nodewebkit-bin', 'node-webkit-v0.10.3-win-ia32.zip')
+    src = os.path.join('nodewebkit-bin', 'nodewebkit-win.zip')
     unzipFiles(src, targetFolder)
     
 def placeNodeWebkitOsx(targetFolder):
@@ -243,15 +243,15 @@ def mergeToNodewebkit(targetFolder):
 
 def build():
     targetFolder = os.path.join(BASEDIR, 'build')
-    #cleanOldBuild(targetFolder)
-    #version = getversion()
-    #chameleonTarget = os.path.join(targetFolder, 'chameleon')
-    #print 'get version is %s' %version
-    #print 'start initing build folder...'
-    #initProjectFolder(chameleonTarget, version)
-    #print 'build chameleon libs...'
-    #buildChameleonLib(chameleonTarget)
-    #print 'build chameleon client...'
+    cleanOldBuild(targetFolder)
+    version = getversion()
+    chameleonTarget = os.path.join(targetFolder, 'chameleon')
+    print 'get version is %s' %version
+    print 'start initing build folder...'
+    initProjectFolder(chameleonTarget, version)
+    print 'build chameleon libs...'
+    buildChameleonLib(chameleonTarget)
+    print 'build chameleon client...'
     mergeToNodewebkit(targetFolder)
     print 'done'
 
