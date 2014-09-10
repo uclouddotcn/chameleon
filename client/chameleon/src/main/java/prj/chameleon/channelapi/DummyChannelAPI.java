@@ -4,15 +4,39 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import java.util.TreeMap;
+
 /**
  * Created by wushauk on 3/24/14.
  * A dummy implementation of the platform API, if there are not implementation is specified, this one
  * will be used( can be used during development)
  */
 
-public class DummyChannelAPI extends ChannelAPI {
+public class DummyChannelAPI  {
 
-    private static class DummyChannelAPIImp extends SingleSDKChannelAPI.SingleSDK{
+    private static class ChannelAPIImp extends SingleSDKChannelAPI.SingleSDKInstantializer<DummyChannelAPIImp> {
+
+        public ChannelAPIImp(DummyChannelAPIImp imp) {
+            super(imp);
+        }
+
+        @Override
+        public String getChannelName() {
+            return "prj.chameleon.dummy";
+        }
+
+        @Override
+        protected Bundle getConfigBundle() {
+            Bundle bundle = new Bundle();
+            return bundle;
+        }
+    }
+
+    public static ChannelAPI instantialize() {
+        return new ChannelAPIImp(new DummyChannelAPIImp());
+    }
+
+    public static class DummyChannelAPIImp extends SingleSDKChannelAPI.SingleSDK{
         private IAccountActionListener mAccountActionListener;
         private String mUin;
         private String mToken;
@@ -265,25 +289,5 @@ public class DummyChannelAPI extends ChannelAPI {
         }
     }
 
-    private DummyChannelAPIImp mImp = new DummyChannelAPIImp();
 
-    @Override
-    public void init(Activity activity, boolean isDebug, IDispatcherCb cb) {
-        mImp.init(activity, isDebug, cb);
-    }
-
-    @Override
-    public void onApplicationEvent(int event, Object... arguments) {
-
-    }
-
-    @Override
-    public void exit(Activity activity, IDispatcherCb cb) {
-        mImp.exit(activity, cb);
-    }
-
-    @Override
-    public String getChannelName() {
-        return "prj.chameleon.dummy";
-    }
 }

@@ -337,7 +337,7 @@ public class ChannelInterface {
             Log.e(Constants.TAG, "while initing current channel imp", e);
         }
         if (!isInited) {
-            DummyChannelAPI inst = new DummyChannelAPI();
+            ChannelAPI inst = DummyChannelAPI.instantialize();
             _channelAPI = inst;
         }
 	}
