@@ -55,7 +55,6 @@ enum {
     FUNC_ID_CREATE_TOOLBAR,
     FUNC_ID_SHOW_TOOLBAR,
     FUNC_ID_DESTROY_TOOLBAR,
-    FUNC_ID_ON_PAUSE,
     FUNC_ID_ANTI_ADDICTION,
     FUNC_ID_EXIT,
     FUNC_ID_GET_CHANNEL,
@@ -80,7 +79,6 @@ static const char *FUNC_TYPE[][2] = {
     {"createAndShowToolBar", "(I)V"},
     {"showFloatBar", "(Z)V"},
     {"destroyToolBar", "()V"},
-    {"onPause", "(I)V"},
     {"antiAddiction", "(I)V"},
     {"exit", "()V"},
     {"getChannelName", "()[B"},
@@ -454,15 +452,6 @@ void destroyToolbar() {
         return;
     }
     callJniMethod(env, FUNC_ID_DESTROY_TOOLBAR, result);
-}
-
-int onPause(int id) {
-    void * result = NULL;
-    JNIEnv * env = g_apiLib.GetEnv();
-    if (env == NULL) {
-        return -1;
-    }
-    return callJniMethod(env, FUNC_ID_ON_PAUSE, result, (jint)id);
 }
 
 int antiAddiction(int id) {

@@ -178,7 +178,7 @@ def cleanOldBuild(targetFolder):
         print 'cleaning existing build folder %s ...' %(targetFolder)
         shutil.rmtree(targetFolder)
 
-def getvesion():
+def getversion():
     versionFolder = os.path.join(BASEDIR, 'version')
     versionFile = os.path.join(versionFolder, 'version.txt')
     with open(versionFile, 'r') as f:
