@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from optparse import OptionParser
-import subprocess, sys, traceback, os, re
+import subprocess, sys, traceback, os, re, json, codecs
 from collections import OrderedDict
 SCRIPTDIR = os.path.split(os.path.realpath(__file__))[0].decode(sys.getfilesystemencoding())
 VALID_BUILD_TYPES = ['debug', 'release']
@@ -93,10 +93,19 @@ class BuildCmd(object):
         return c
 
     def openTempProperty(self, channel, nextLibIndex):
-        t = 'android.library.reference.%d=chameleon/channels/%s\n' %(nextLibIndex, channel)
+        libDependency = []
+        with codecs.open(os.path.join('chameleon', 'channels', channel, 'project.json'), 'r', 'utf-8') as f:
+            cfg = json.load(f)
+            for dependLibs in cfg['dependLibs']:
+                libDependency.append(dependLibs['name'])
+        t = ['android.library.reference.%d=chameleon/channels/%s\n' %(nextLibIndex, channel)]
+        for l in libDependency:
+            nextLibIndex += 1
+            t.append('android.library.reference.%d=chameleon/libs/%s\n' %(nextLibIndex, l))
         tmpfile = ".chameleon-project-%s.properties" %channel
         with open(tmpfile, 'w') as f:
-            f.write(t)
+            print t
+            f.write('\n'.join(t))
         return TempFile(tmpfile)
         
 

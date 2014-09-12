@@ -44,10 +44,16 @@ def mergeLibManifestInst(cfg, libManifestInst, manifestInst):
     libManifestInst.replace(dict([(name[1:], value) for name, value in cfg.items()]))
     manifestInst.merge(libManifestInst)
 
+def makeBooleanValue(name, val):
+    if val: 
+        return 'bundle.putBoolean("%s", true);' %name 
+    else:
+        return 'bundle.putBoolean("%s", false);' %name
+
 TYPE_BUNDLE_CFG = {
         's' : lambda name, val: 'bundle.putString("%s", "%s");' %(name, val),
         'l' : lambda name, val: 'bundle.putLong("%s", %s);' %(name, val),
-        'b' : lambda name, val: 'bundle.putBoolean("%s", %s);' %(name, val),
+        'b' : makeBooleanValue, 
         'f' : lambda name, val: 'bundle.putFloat("%s", %s);' %(name, val),
         'h' : lambda name, val: ''
     }

@@ -8,30 +8,40 @@ var chameleonControllers = angular.module('chameleonControllers', ['ui.router'])
 chameleonControllers
 .controller('ToolInitCtrl', function($scope) {
 })
-.controller('InitController', function ($scope, $state, $modal, ProjectMgr) {
-    if (!ProjectMgr.isInited) {
-        var instance = $modal.open( {
-            templateUrl: 'partials/init.html.orig',
-            backdrop: false,
-            keyboard: false,
-            resolve: {
-                inited: function () {
-                    return ProjectMgr.isInited;
+.controller('InitController', function ($scope, $state, $modal, ProjectMgr, WaitingDlg) {
+    var promise = ProjectMgr.init();
+    promise = WaitingDlg.wait(promise, '初始化工具');
+    promise.then(function (chtool) {
+        if (chtool.isEnvSet())  {
+            $state.go('projectlist');
+        } else {
+            var instance = $modal.open( {
+                templateUrl: 'partials/init.html.orig',
+                backdrop: false,
+                keyboard: false,
+                resolve: {
+                    inited: function () {
+                        return chtool.isEnvSet();
+                    },
+                    sdkroot: function () {
+                        return '';
+                    }
+                },
+                controller: 'InitDlgController'
+            });
+            instance.result.then(
+                function () {
+                    $state.go('projectlist');
                 }
-            },
-            controller: 'InitDlgController'
-        });
-        instance.result.then(
-            function () {
-                $state.go('projectlist');
-            }
-        );
-    } else {
-        $state.go('projectlist');
-    }
+            );
+        }
+    }, function (err) {
+        alert(err.message);
+        exit();
+    })
 });
 
-function InitDlgController($scope, $modalInstance, fileDialog, ProjectMgr, inited) {
+function InitDlgController($scope, $modalInstance, fileDialog, ProjectMgr, inited, sdkroot) {
     $scope.inited = inited;
     $scope.setSDKRoot = function () {
         fileDialog.openDir(function (d) {
@@ -40,14 +50,14 @@ function InitDlgController($scope, $modalInstance, fileDialog, ProjectMgr, inite
         })
     }
     $scope.env = {
-        sdk_root: ProjectMgr.env.sdk_root
+        sdk_root: sdkroot
     };
     $scope.submit = function () {
-        var promise = ProjectMgr.SetEnv($scope.env);
+        var promise = ProjectMgr.setAndroidPath($scope.env.sdk_root);
         promise.then(function () {
             $modalInstance.close();
-        }, function () {
-            alert('保存失败，请重试');
+        }, function (err) {
+            alert(err.message);
         });
     };
     $scope.cancel = function () {
@@ -246,7 +256,6 @@ chameleonControllers
                     $scope.project = project;
                     $scope.projectDoc = project.__doc;
                     $scope.toolversion = ProjectMgr.version
-                    $scope.isOutdated = ProjectMgr.isVersionLower(project.version)
                     $scope.openUpgradePanel = function () {
                         var instance = $modal.open( {
                             templateUrl: 'partials/upgrade.html',
@@ -472,7 +481,7 @@ chameleonControllers
                 (function SettingUpChTable () {
                     $scope.channels = [];
                     var projectIcons =
-                        ProjectMgr.loadIcon(project.prjPath, project.icon);
+                        ProjectMgr.loadIcon(project.prjPath, project.am.getIcon());
                     var channels = project.getAllChannels();
                     for (var i in channels) {
                     /*
@@ -489,6 +498,34 @@ chameleonControllers
                     
                     $scope.channel = null;
                     var selectedChannel = [];
+                    var initShownChannel = function (nowChannel) {
+                        if (project.orient === 'portrait') {
+                            var scHeight = 180;
+                            var scWidth = 120;
+                        } else {
+                            var scHeight = 120;
+                            var scWidth = 180;
+                        }
+                        var iconshown = nowChannel.shownIcon;
+                        if (!iconshown) {
+                            iconshown = projectIcons['medium'] || projectIcons['high'] || projectIcons['xhigh'];
+                        }
+                        var sdk = null;
+                        if (nowChannel.userSDK) {
+                            sdk = project.getSDKCfg(nowChannel.userSDK);
+                        }
+                        $scope.channel = {
+                            desc: nowChannel.desc,
+                            splashscreen: nowChannel.splashscreen,
+                            sdk: sdk,
+                            data: nowChannel,
+                            scWidth: scWidth,
+                            scHeight: scHeight,
+                            iconshown: iconshown,
+                            icons: nowChannel.icons,
+                            packageName: project.am.getPkgName() + nowChannel.packageName
+                        };
+                    }
                     $scope.installedChTable = {
                         data: 'channels',
                         columnDefs: [
@@ -509,28 +546,8 @@ chameleonControllers
                             if (selectedChannel.length <= 0) {
                                 return;
                             }
-                            if (project.orient === 'portrait') {
-                                var scHeight = 180;
-                                var scWidth = 120;
-                            } else {
-                                var scHeight = 120;
-                                var scWidth = 180;
-                            }
-                            var iconshown = selectedChannel[0].shownIcon;
-                            if (!iconshown) {
-                                iconshown = projectIcons['medium'] || projectIcons['high'] || projectIcons['xhigh'];
-                            }
-                            $scope.channel = {
-                                desc: selectedChannel[0].desc,
-                                splashscreen: selectedChannel[0].splashscreen,
-                                sdk: selectedChannel[0].sdk,
-                                data: selectedChannel[0],
-                                scWidth: scWidth,
-                                scHeight: scHeight,
-                                iconshown: iconshown,
-                                icons: selectedChannel[0].icons,
-                                packageName: selectedChannel[0].packageName
-                            };
+                            var nowChannel = selectedChannel[0];
+                            initShownChannel(nowChannel);
                             $state.go('project.channel');
                         },
                         rowTemplate: '<div style="height: 100%" ng-class="{red: row.getProperty(\'outdated\')}"><div ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell "><div ng-cell></div></div></div>'
@@ -554,16 +571,16 @@ chameleonControllers
                     });
 
                     $scope.saveChannel = function () {
-                        var obj = $scope.channel.data.getSettingObj();
                         try {
-                            var updateCfg = obj.getUpdateCfg(
-                                $scope.channel.data, $scope.channel);
+                            $scope.channel.payLib = $scope.channel.sdk;
+                            $scope.channel.userLib = $scope.channel.sdk;
                             var promise = ProjectMgr.setChannel(
-                                project, $scope.channel.data, updateCfg);
+                                project, $scope.channel.data, $scope.channel);
                             promise = WaitingDlg.wait(promise, '更新配置中');
-                            promise.then(function () {
+                            promise.then(function (newcfg) {
                                 delete $scope.channel.isdirty;
                             }, function (e) {
+                                alert(e.message);
                             });
                         } catch (e) {
                             alert(e.message);
@@ -612,7 +629,7 @@ chameleonControllers
                             keyboard: false,
                             resolve: {
                                 images: function () {
-                                    var obj = $scope.channel.data.getSettingObj()
+                                    var obj = $scope.channel.data.metaInfo;
                                     var images = obj.getSplashScreen(
                                         project.orient);
                                     return images;
@@ -633,7 +650,7 @@ chameleonControllers
 
                     $scope.selectIcon = function () {
                         var icons = projectIcons;
-                        var images = $scope.channel.data.getSettingObj().getIconOverlay(icons);
+                        var images = $scope.channel.data.metaInfo.getIconOverlay(icons);
                         var instance = $modal.open( {
                             templateUrl: 'partials/selectIcon.html',
                             controller: 'SelectIconController',
@@ -700,7 +717,7 @@ chameleonControllers
                             }
                         });
                         instance.result.then(function (channel) {
-                            var newChannel = project.addChannel(channel.name);
+                            var newChannel = ProjectMgr.newChannel(project, channel.name);
                             $scope.channels.push(newChannel);
                             var l = $scope.channels.length-1;
                             gridEventHandler = function () {
@@ -744,7 +761,6 @@ chameleonControllers
                                 return;
                             }
                             var sdk = selected[0];
-                            console.log(sdk.sdkid)
                             if (sdk.sdkid) {
                                 var params = {
                                     sdkname: sdk.sdkid
@@ -766,7 +782,7 @@ chameleonControllers
                                 var cfg = project.cloneGlobalCfg();
                                 $scope.selectedsdk = {
                                     cfg: cfg,
-                                    signcfg: project.getGlobalSignCfg(),
+                                    signcfg: project.getSignCfg(),
                                     desc: '全局配置',
                                     isnew: false,
                                     outdated: false,
@@ -811,14 +827,19 @@ chameleonControllers
                             }
                         });
                         instance.result.then(function (info) {
-                            var newSDKObj = 
-                                ProjectMgr.newSDK(info.sdk.name, info.desc);
-                            $scope.sdks.push(newSDKObj);
-                            var l = $scope.sdks.length-1;
-                            gridEventHandler = function () {
-                                $scope.installedSDKTable.selectRow(
-                                    l, true);
-                            };
+                            var promise =
+                                ProjectMgr.newSDK(project, info.sdk.name, info.desc);
+                            promise = WaitingDlg.wait(promise, '创建新的SDK配置');
+                            promise.then(function (sdkcfg) {
+                                $scope.sdks.push(sdkcfg);
+                                var l = $scope.sdks.length-1;
+                                gridEventHandler = function () {
+                                    $scope.installedSDKTable.selectRow(
+                                        l, true);
+                                };
+                            }, function (err) {
+                                alert(err.message);
+                            });
                         }, function () {
                             console.log('dialog dismissed');
                         });
@@ -830,6 +851,7 @@ chameleonControllers
                         promise = WaitingDlg.wait(promise, '更新配置中');
                         promise.then(function () {
                         }, function (e) {
+                            alert(e.message);
                         });
                     };
                 })();
@@ -1073,9 +1095,10 @@ chameleonControllers
 
 function BuildProjectController($scope, $modalInstance, $modal, project, ProjectMgr) {
     $scope.channels = [];
-    for (var i in project.channels) {
+    var channels = project.getAllChannels();
+    for (var i in channels) {
         $scope.channels.push({
-            name: project.channels[i].name,
+            name: channels[i].name,
             status: 0
         });
     }
@@ -1251,13 +1274,15 @@ function ManageServerController($scope, $modalInstance, $log, project, ProjectMg
             var channels = project.getAllChannels();
             for (var c in channels) {
                 var ch = channels[c];
-                if (ch.sdk) {
+                var sdkName = ch.userSDK;
+                var sdk = project.getSDKCfg(sdkName);
+                if (sdk) {
                     zip.addFile(nick+'/'+ch.name+'.json', 
-                        new Buffer(JSON.stringify(ch.sdk.cloneCfg())), ""); 
+                        new Buffer(JSON.stringify(sdk.cloneCfg())), "");
                 }
             }
             fileDialog.saveAs(function (filename) {
-                zip.writeZip(filename);
+                zip.writeZip(filename+'.zip');
                 alert('保存成功');
             }, $scope.svrinfo.nick+'.zip');
         } catch (e) {
