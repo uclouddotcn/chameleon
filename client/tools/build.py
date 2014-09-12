@@ -31,7 +31,7 @@ def loadJsonFile(channelPath):
         return obj
 
 def getChannelScript(channelPath):
-    scriptPath = os.path.join(channelPath, 'chameleon_build', 'script.py')
+    scriptPath = os.path.join(channelPath, 'chameleon_build', 'script.js')
     if os.path.exists(scriptPath):
         return scriptPath
     else:
@@ -41,7 +41,7 @@ def getChannelInfo(channel, channelPath):
     scriptFile = getChannelScript(channelPath)
     cfg = loadJsonFile(channelPath)
     if scriptFile:
-        cfg['script'] = 'ChannelScript.%s_script' %channel
+        cfg['script'] = '%s_script' %channel
     return ChannelInfo(channel, channelPath, cfg, scriptFile)
 
 def collectChannelInfo(channelParentFolder):
@@ -95,8 +95,6 @@ def copyChannel(channel, channelPath, targetPath):
 def initTargetScriptFolder(targetScriptFolder):
     if not os.path.exists(targetScriptFolder):
         os.makedirs(targetScriptFolder)
-    with open(os.path.join(targetScriptFolder, '__init__.py'), 'w') as f:
-        pass
 
 def copyChameleonCpp(targetFolder):
     cppTargetFolder = os.path.join(targetFolder, 'Resource', 'chameleon', 'chameleoncb')
@@ -122,7 +120,7 @@ def initProjectFolder(targetFolder, version):
         json.dump(cfg, f, indent=4)
     for ci in channelInfos:
         if ci.script:
-            shutil.copy2(ci.script, os.path.join(targetScriptPath, ci.name+'_script.py'))
+            shutil.copy2(ci.script, os.path.join(targetScriptPath, ci.name+'_script.js'))
     shutil.copytree(CHANNELINFO_DIR, os.path.join(targetFolder, 'channelinfo'))
 
 def compileChannel(gradleCmd, channel):

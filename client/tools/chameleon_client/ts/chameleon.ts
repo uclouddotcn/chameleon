@@ -923,9 +923,15 @@ export class ChameleonTool {
             var newPrj = Project.createNewProject(name, landscape, this.infoObj.version, prjPath);
             var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
             async.series([function(callback) {
-                fs.copy(chameleonRes, chameleonPath, null, callback);
-                fs.mkdirSync(pathLib.join(chameleonPath, 'sdkcfg'));
-                fs.mkdirSync(pathLib.join(chameleonPath, 'channels'));
+                fs.copy(chameleonRes, chameleonPath, null, function (err) {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+                    fs.mkdirSync(pathLib.join(chameleonPath, 'sdkcfg'));
+                    fs.mkdirSync(pathLib.join(chameleonPath, 'channels'));
+                    callback(null);
+                });
             }, function (callback) {
                 newPrj.dumpProjectJson(callback);
             }, function (callback) {
@@ -1222,7 +1228,9 @@ export class Project {
             chcfg.setPayLib(paySDK);
             chcfg.setUserLib(userSDK);
             chcfg.splashscreen = updateCfg.cfg.splashscreen;
-            chcfg.setIconPos(updateCfg.cfg.icons.position);
+            if (updateCfg.cfg.icons) {
+                chcfg.setIconPos(updateCfg.cfg.icons.position);
+            }
             var filename = pathLib.join(this.prjPath, 'chameleon', 'channels', name, 'project.json');
             var jsonobj = chcfg.dumpJsonObj();
             fs.writeJson(filename, jsonobj, {encoding: 'utf-8'}, callback);

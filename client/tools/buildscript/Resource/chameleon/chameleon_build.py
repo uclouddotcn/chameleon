@@ -104,7 +104,6 @@ class BuildCmd(object):
             t.append('android.library.reference.%d=chameleon/libs/%s\n' %(nextLibIndex, l))
         tmpfile = ".chameleon-project-%s.properties" %channel
         with open(tmpfile, 'w') as f:
-            print t
             f.write('\n'.join(t))
         return TempFile(tmpfile)
         

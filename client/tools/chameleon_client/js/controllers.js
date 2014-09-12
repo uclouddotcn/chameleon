@@ -224,7 +224,7 @@ function ($scope, $state, ProjectMgr) {
                     $state.go('project.globalsdk', {projectId: projectId});
                 }, 
                 function (err) {
-                    // error handling
+                    alert(err.message);
                 });
         } catch (e) {
             console.log(e);
