@@ -1,0 +1,11 @@
+{
+  "cfg": {
+    "sappKey": "Xlmj6pfw3URIGDWhhkl7V83A",
+    "happSecret": "G7tFRDNaIXwxKXu6bVvfl7kYwrTC5CwW",
+    "sappId": "3327133"
+  },
+  "desc": "baidu",
+  "id": "baidumg",
+  "ver": "3.2.6.4",
+  "chamver": "1.0"
+}

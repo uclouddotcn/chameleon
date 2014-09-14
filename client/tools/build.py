@@ -203,8 +203,9 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
     os.mkdir(targetFolder)
     unzipFiles(zf, targetFolder)
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
-    place(targetFolder)
-    downloadDependency(targetFolder)
+    if place is not None:
+        place(targetFolder)
+        downloadDependency(targetFolder)
 
 
 def placeNodeWebkitWin(targetFolder):
@@ -234,7 +235,7 @@ def mergeToNodewebkit(targetFolder):
     chameleonFolder = os.path.join(targetFolder, 'chameleon')
     exportChamleonClient(clientZipTarget)
     buildChameleonClient(clientZipTarget, chameleonFolder, 
-            os.path.join(targetFolder, 'chameleon_client_win'),placeNodeWebkitWin)
+            os.path.join(targetFolder, 'chameleon_client_win'),None)
     buildChameleonClient(clientZipTarget, chameleonFolder,
             os.path.join(targetFolder, 'chameleon_client_osx'),placeNodeWebkitOsx)
 

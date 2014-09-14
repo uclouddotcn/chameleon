@@ -146,7 +146,6 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 int _statuscode = 0;
                 try {
                     JSONObject _jsonObj = new JSONObject(s);
-                    Log.e(Constants.TAG, DkProtocolKeys.FUNCTION_STATE_CODE);
                     _statuscode = _jsonObj.getInt(DkProtocolKeys.FUNCTION_STATE_CODE);
                 } catch (JSONException e) {
                     Log.e(Constants.TAG, "Fail to parse the message", e);

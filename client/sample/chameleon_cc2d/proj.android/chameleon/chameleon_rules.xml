@@ -6,6 +6,9 @@
     <condition property="out.dir.base" value="bin/${chameleon.library}" else="bin/default">
         <isset property="chameleon.library" />
     </condition>
+    <condition property="chameleon.propertyfile" value=".chameleon-project-${chameleon.library}.properties" else="chameleon/empty.properties">
+        <isset property="chameleon.library" />
+    </condition>
     <property name="out.dir" value="${out.dir.base}/build" />
     <property name="out.absolute.dir" value="${out.dir}"/>
     <property name="out.classes.absolute.dir" location="${out.dir}/classes" />
@@ -16,7 +19,7 @@
     <property name="out.dexed.absolute.dir" location="${out.dir}/dexedLibs" />
     <property name="out.manifest.abs.file" location="${out.dir}/AndroidManifest.xml" />
     <property name="gen.absolute.dir" location="${out.dir.base}/gen" />
-    <loadproperties srcFile=".chameleon-project-${chameleon.library}.properties" />
+    <loadproperties srcFile="${chameleon.propertyfile}" />
 
     <!-- rewrite code-gen for supporting generating code -->
     <target name="-code-gen">
@@ -79,14 +82,21 @@
                 <res path="${resource.absolute.dir}" />
             </aapt>
 
-            <exec executable="python" failonerror="true">
-                <arg value="chameleon/tools/chameleon_gen.py"/>
-                <arg value="${chameleon.library}"/>
-                <arg value="${out.manifest.abs.file}"/>
-                <arg value="${gen.absolute.dir}"/>
-                <arg value="${project.app.package}"/>
-            </exec>
+            <if>
+                <condition>
+                    <isset property="chameleon.library"/>
+                </condition>
+                <then>
+                    <exec executable="python" failonerror="true">
+                        <arg value="chameleon/tools/chameleon_gen.py"/>
+                        <arg value="${chameleon.library}"/>
+                        <arg value="${out.manifest.abs.file}"/>
+                        <arg value="${gen.absolute.dir}"/>
+                        <arg value="${project.app.package}"/>
+                    </exec>
 
+                </then>
+            </if>
             <echo level="info">----------</echo>
             <echo level="info">Handling BuildConfig class...</echo>
             <buildconfig

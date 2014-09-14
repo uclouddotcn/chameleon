@@ -6,11 +6,12 @@ _ANDROID_PROJECT_DIR = os.path.join(os.path.split(__file__)[0], '../../').decode
 
 JAR_SIGNER_CMD = 'jarsigner'
 def loadGlobalKeyCfg():
-    globalCfgPath = os.path.join(_PROJECT_DIR, 'champroject.json')
-    f = codecs.open(globalCfgPath, 'r', 'utf-8')
-    cfg = json.load(f)
-    signCfg = cfg.get('sign', None)
-    return signCfg
+    signcfgPath = os.path.join(_PROJECT_DIR, 'sign.json')
+    if not os.path.exists(signcfgPath):
+        return None
+    with codecs.open(signcfgPath, 'r', 'utf-8') as f: 
+        cfg = json.load(f)
+        return cfg
 
 #def loadChannelKeyCfg(channel):
 #   if channel is None:
@@ -55,6 +56,7 @@ def main():
         runKeyCfg(keycfg, input, output)
     else:
         print >> sys.stderr, 'non config found, escape signing'
+        shutil.copy2(input, output)
     return 0    
 
 try:

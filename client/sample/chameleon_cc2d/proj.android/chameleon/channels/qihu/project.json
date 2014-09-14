@@ -1,9 +1,10 @@
 {
-    "dependLibs": [
-        {
-            "cfg": "qihu-1409209167372", 
-            "type": "user,pay", 
-            "name": "qihu"
-        }
-    ]
+  "splashscreen": null,
+  "dependLibs": [
+    {
+      "name": "qihu",
+      "cfg": "qihu-1410494211554",
+      "type": "user,pay"
+    }
+  ]
 }

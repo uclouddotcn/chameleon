@@ -38,9 +38,14 @@ public class chameleon_cc2d extends Cocos2dxActivity{
     @Override
     public void onResume() {
         super.onResume();
-        //NativeChannelInterface.onPause(1);
+        NativeChannelInterface.onResume(1);
     }
 
+    @Override
+    public void onPause() {
+        super.onResume();
+        NativeChannelInterface.onPause();
+    }
 
     public Cocos2dxGLSurfaceView onCreateView() {
     	Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);

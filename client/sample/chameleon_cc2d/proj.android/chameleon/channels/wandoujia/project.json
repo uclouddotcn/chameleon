@@ -1,9 +1,10 @@
 {
-    "dependLibs": [
-        {
-            "cfg": "wandoujia-1409143512180", 
-            "type": "user,pay", 
-            "name": "wandoujia"
-        }
-    ]
+  "splashscreen": null,
+  "dependLibs": [
+    {
+      "name": "wandoujia",
+      "cfg": "wandoujia-1410494285367",
+      "type": "user,pay"
+    }
+  ]
 }

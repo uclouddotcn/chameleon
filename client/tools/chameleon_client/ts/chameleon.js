@@ -1426,10 +1426,10 @@ var Project = (function () {
                     try  {
                         for (var i in subfolders) {
                             var folderP = pathLib.join(channeldir, subfolders[i]);
-                            if (!fs.statSync(folderP).isDirectory()) {
+                            var p = pathLib.join(folderP, 'project.json');
+                            if (!fs.statSync(folderP).isDirectory() || !fs.existsSync(p)) {
                                 continue;
                             }
-                            var p = pathLib.join(folderP, 'project.json');
                             var content = fs.readFileSync(p, 'utf-8');
                             var meta = infoJson.getChannelMeta(subfolders[i]);
                             if (!meta) {

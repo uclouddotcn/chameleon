@@ -1,9 +1,10 @@
 {
-    "dependLibs": [
-        {
-            "cfg": "sdddd", 
-            "type": "user,pay", 
-            "name": "nd91"
-        }
-    ]
+  "splashscreen": null,
+  "dependLibs": [
+    {
+      "name": "nd91",
+      "cfg": "nd91-1410494130186",
+      "type": "user,pay"
+    }
+  ]
 }
