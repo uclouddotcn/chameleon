@@ -76,7 +76,6 @@ dependencies {
     compile 'com.android.support:support-v4:+'
     compile files('libs/android-async-http-1.4.4.jar')
     compile project(':chameleon')
-    chameleonCompile project(':channels:test')
     qqmobCompile project(':channels:qqmob')
     nd91Compile project(':channels:nd91')
     qihuCompile project(':channels:qihu')

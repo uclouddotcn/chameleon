@@ -1,9 +1,4 @@
 {
-    "test": {
-        "name": "chameleon测试",
-        "pkgsuffix": ".chameleon",
-        "sdk": "test"
-    },
     "qihu": {
         "name": "奇虎",
         "pkgsuffix": ".qihu",

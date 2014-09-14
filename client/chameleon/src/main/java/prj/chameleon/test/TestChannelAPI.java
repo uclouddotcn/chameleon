@@ -46,7 +46,6 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             }
         });
     }
-    String mChannel;
 
     @Override
     public void initCfg(Bundle cfg) {
