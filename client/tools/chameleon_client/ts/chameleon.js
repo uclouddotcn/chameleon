@@ -312,7 +312,7 @@ var SDKCfg = (function () {
     function SDKCfg(name, cfg, desc, ver, chamver, metaInfo) {
         this.name = name;
         this.cfg = cfg;
-        this.desc = desc;
+        this._desc = desc;
         this.ver = ver;
         this.chamver = new Version(chamver);
         this.metaInfo = metaInfo;
@@ -351,12 +351,24 @@ var SDKCfg = (function () {
         cfg = this.metaInfo.scriptRewriteCfg(cfg);
         fs.writeJson(filename, {
             cfg: cfg,
-            desc: this.desc,
+            desc: this._desc,
             id: this.metaInfo.name,
             ver: this.ver,
             chamver: this.chamver.toString()
         }, { encoding: 'utf-8' }, cb);
     };
+
+    Object.defineProperty(SDKCfg.prototype, "desc", {
+        get: function () {
+            if (!this._desc) {
+                return this.name;
+            } else {
+                return this._desc;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
 
     SDKCfg.loadFromJson = function (infoJson, name, jsonobj) {
         var metaInfo = infoJson.getSDKMeta(jsonobj['id']);
@@ -928,8 +940,8 @@ var ChameleonTool = (function () {
                             callback(err);
                             return;
                         }
-                        fs.mkdirSync(pathLib.join(chameleonPath, 'sdkcfg'));
-                        fs.mkdirSync(pathLib.join(chameleonPath, 'channels'));
+                        fs.ensureDir(pathLib.join(chameleonPath, 'sdkcfg'));
+                        fs.ensureDir(pathLib.join(chameleonPath, 'channels'));
                         callback(null);
                     });
                 }, function (callback) {

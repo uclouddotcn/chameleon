@@ -16,18 +16,19 @@ function PouchDBWrapper(db) {
 
 PouchDBWrapper.prototype.set = function(table, key, value, cb) {
     var realKey = table + '-' + key;
-    this.db.put(value, realKey, cb);
+    value._id = realKey;
+    this.db.insert(value, cb);
 }
 
 PouchDBWrapper.prototype.get = function (table, key, cb) {
     var realKey = table + '-' + key;
-    this.db.get(realKey, cb);
+    this.db.findOne({_id: realKey}, cb);
 }
 
 
 PouchDBWrapper.prototype.del = function (table, key, cb) {
     var realKey = table + '-' + key;
-    this.db.remove(realKey, cb);
+    this.db.remove({_id: realKey}, {}, cb);
 }
 
 
@@ -57,8 +58,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         this.setPythonMgrPath(
             pathLib.join(globalenv.APP_FOLDER, this.env.pythonPath));
             */
-        this.db = new PouchDB('projects');
         globalenv.createTempFolder();
+        var Database = require('nedb');
+        this.sdkdb = new Database({filename: this.pathLib.join(globalenv.APP_FOLDER, 'sdkdb.nedb'), autoload: true});
+        this.db = new Database({filename: this.pathLib.join(globalenv.APP_FOLDER, 'productdb.nedb'), autoload: true});
     };
 
     ProjectMgr.prototype.getTempFile = function(project, name) {
@@ -68,7 +71,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     ProjectMgr.prototype.init = function () {
         var defered = $q.defer();
         var self = this;
-        chameleon.ChameleonTool.initTool(new PouchDBWrapper(this.db), function (err, chtool) {
+        chameleon.ChameleonTool.initTool(new PouchDBWrapper(self.sdkdb), function (err, chtool) {
             if (err) {
                 defered.reject(err);
                 return;
@@ -80,7 +83,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     }
 
     ProjectMgr.prototype.removeProject = function(project) {
-        this.db.remove(project);
+        this.db.remove({_id: project._id});
     };
 
     ProjectMgr.prototype.loadTempProject = function (path) {
@@ -108,7 +111,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     ProjectMgr.prototype.compileProject = function(project, target) {
         var defered = $q.defer();
         var buildscript = this.pathLib.join(project.__doc.path, 'chameleon_build.py');
-        var inputParams = [buildscript, 'build', 'debug', target];
+        var inputParams = [buildscript, 'build', 'release', target];
         this.exec('python', inputParams, {
                 timeout: 120000,
                 maxBuffer: 1024*1024
@@ -310,17 +313,17 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             if (err) {
                 return defered.reject(err);
             }
-            self.db.put({
-                _id: 'product-'+Math.round(new Date().getTime()/1000).toString(),
+            var projectDoc = {
                 path: params.path,
                 name: params.name,
                 version: self.chtool.version.toString()
-            }, function (err, result) {
+            };
+            self.db.insert(projectDoc, function (err, result) {
                 if (err) {
                     $log.log('Fail to put in pouchDB ' + err);
                     return defered.reject(new Error('创建工程失败: 未知错误'));
                 }
-                return defered.resolve(result.id);
+                return defered.resolve(result._id);
             });
         });
         return defered.promise;
@@ -412,7 +415,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     ProjectMgr.prototype.loadProject = function (projectId) {
         var defered = $q.defer();
         var self = this;
-        self.db.get(projectId, function (err, doc) {
+        self.db.findOne({_id: projectId}, function (err, doc) {
             if (err) {
                 $log.log('Fail to load project ' + err);
                 return defered.reject(new Error('加载工程失败!!'));
@@ -440,19 +443,14 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     };
 
     ProjectMgr.prototype.updateProjectDoc = function (projectDoc) {
-        this.db.put(projectDoc);
+        this.db.update({_id: projectDoc._id}, projectDoc, {});
     };
 
     ProjectMgr.prototype.getProjectList = function () {
         var defered = $q.defer();
         try {
-            this.db.allDocs({include_docs: true}, function(err, response) {
-                var res = response.rows.filter(function (row) {
-                    return row.id.substr(0, 8) === 'product-';
-                }).map(function (row) {
-                    return row.doc;
-                });
-                defered.resolve(res);
+            this.db.find({}, function(err, response) {
+                defered.resolve(response);
             });
         } catch (e) {
             $log.log('Fail to fetch project list ' + e.message);

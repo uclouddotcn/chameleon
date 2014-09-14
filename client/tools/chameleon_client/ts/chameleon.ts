@@ -332,7 +332,7 @@ interface SDKCfgDesc {
 
 export class SDKCfg {
     cfg: any;
-    desc: string;
+    _desc: string;
     ver: string;
     chamver: Version;
     metaInfo: SDKMetaInfo;
@@ -341,7 +341,7 @@ export class SDKCfg {
     constructor(name: string, cfg: any, desc: string, ver: string, chamver: string, metaInfo: SDKMetaInfo) {
         this.name = name;
         this.cfg = cfg;
-        this.desc = desc;
+        this._desc = desc;
         this.ver = ver;
         this.chamver = new Version(chamver);
         this.metaInfo = metaInfo;
@@ -373,11 +373,19 @@ export class SDKCfg {
         cfg = this.metaInfo.scriptRewriteCfg(cfg);
         fs.writeJson(filename, {
             cfg: cfg,
-            desc: this.desc,
+            desc: this._desc,
             id: this.metaInfo.name,
             ver: this.ver,
             chamver: this.chamver.toString()
         }, {encoding : 'utf-8'}, cb);
+    }
+
+    get desc(): string {
+        if (!this._desc) {
+            return this.name;
+        } else {
+            return this._desc;
+        }
     }
 
     static loadFromJson(infoJson: InfoJson, name: string , jsonobj: any): SDKCfg {
@@ -928,8 +936,8 @@ export class ChameleonTool {
                         callback(err);
                         return;
                     }
-                    fs.mkdirSync(pathLib.join(chameleonPath, 'sdkcfg'));
-                    fs.mkdirSync(pathLib.join(chameleonPath, 'channels'));
+                    fs.ensureDir(pathLib.join(chameleonPath, 'sdkcfg'));
+                    fs.ensureDir(pathLib.join(chameleonPath, 'channels'));
                     callback(null);
                 });
             }, function (callback) {
