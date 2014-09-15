@@ -28,7 +28,7 @@ android.libraryVariants.all { variant ->
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:19.1.0'
     compile project(':chameleon')
     compile fileTree(dir: "libs", includes: ["*.jar"])
 }
