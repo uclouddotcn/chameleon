@@ -234,10 +234,10 @@ def mergeToNodewebkit(targetFolder):
     clientZipTarget = os.path.join(targetFolder, 'chameleon_client.zip')
     chameleonFolder = os.path.join(targetFolder, 'chameleon')
     exportChamleonClient(clientZipTarget)
-    buildChameleonClient(clientZipTarget, chameleonFolder, 
-            os.path.join(targetFolder, 'chameleon_client_win'),None)
-    buildChameleonClient(clientZipTarget, chameleonFolder,
-            os.path.join(targetFolder, 'chameleon_client_osx'),placeNodeWebkitOsx)
+    if sys.platform == 'win32':
+        buildChameleonClient(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_win'), placeNodeWebkitWin)
+    else:
+        buildChameleonClient(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
 
 
 def build():

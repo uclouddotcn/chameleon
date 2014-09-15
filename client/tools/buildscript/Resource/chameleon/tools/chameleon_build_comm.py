@@ -15,7 +15,7 @@ def _loadCfg(p):
 
 def _mergeCfg(to, f):
     to.update(f)
-    if f['blandscape'] == 'true':
+    if f['blandscape']:
         to['horientation'] = 'landscape'
     else:
         to['horientation'] = 'portrait'
