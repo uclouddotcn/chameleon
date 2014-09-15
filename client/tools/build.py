@@ -134,11 +134,16 @@ def compileChannel(gradleCmd, channel):
     if ret != 0:
         raise RuntimeError('Fail to assemble the chameleon sdk')
 
+if sys.platform == 'win32':
+    GRADLE_CWD = 'gradlew.bat'
+else:
+    GRADLE_CWD = 'gradlew'
+
 def compileAllChannels(channels):
     olddir = os.getcwd()
     os.chdir(BASEDIR)
     try:
-        gradleCmd = os.path.join(BASEDIR, 'gradlew')
+        gradleCmd = os.path.join(BASEDIR, GRADLE_CWD)
         for channel in channels:
             compileChannel(gradleCmd, channel)
     finally:
@@ -151,7 +156,7 @@ def buildChameleonLib(targetFolder):
     olddir = os.getcwd()
     os.chdir(BASEDIR)
     try:
-        gradleCmd = os.path.join(BASEDIR, 'gradlew')
+        gradleCmd = os.path.join(BASEDIR, GRADLE_CWD)
         ret = subprocess.check_call([gradleCmd, 'chameleon:clean'])
         if ret != 0:
             raise RuntimeError('Fail to clean the chameleon sdk')
