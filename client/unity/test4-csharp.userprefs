@@ -1,0 +1,14 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../suite/Assets/guilayer.cs">
+    <Files>
+      <File FileName="../suite/Assets/guilayer.cs" Line="1" Column="1" />
+      <File FileName="../suite/Assets/GUITouchScroll/GUITouchScroll.cs" Line="1" Column="1" />
+      <File FileName="../suite/Assets/guilayer.cs" Line="34" Column="91" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
