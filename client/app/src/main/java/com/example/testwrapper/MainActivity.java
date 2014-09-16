@@ -41,7 +41,9 @@ public class MainActivity extends Activity implements IAccountActionListener {
             RequestParams req = new RequestParams();
 
             try {
-                req.put("others", (String) data.get("others"));
+                if (data.has("others")) {
+                    req.put("others", (String) data.get("others"));
+                }
                 req.put("token", (String) data.get("token"));
                 req.put("channel", (String) data.get("channel"));
                 PlatformAPIRestClient.get("/sdkapi/login",
@@ -238,11 +240,20 @@ public class MainActivity extends Activity implements IAccountActionListener {
     @Override
     public void onPause() {
         super.onPause();
+        ChannelInterface.onPause(this);
+        Log.i(Constants.TAG, "on pause");
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        ChannelInterface.onResume(this, new IDispatcherCb() {
+            @Override
+            public void onFinished(int retCode, JSONObject data) {
+
+            }
+        });
+        Log.i(Constants.TAG, "on resume");
     }
 
     public void sendMessage(View view) {

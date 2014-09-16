@@ -192,5 +192,4 @@ public interface IChannelUserAPI {
      * @param activity
      */
     public abstract void exit(Activity activity, IDispatcherCb cb);
-
 }

@@ -1,4 +1,4 @@
-include ':app', ':cbinding', 'chameleon', ':chameleon_unity'
+include ':app', ':cbinding', 'chameleon', ':chameleon_unity', ':uc'
 def channelDir = new File(rootDir, "channels");
 def channelPrj = channelDir.listFiles().findAll { 
      it.isDirectory() && 
@@ -10,3 +10,4 @@ def channelPrj = channelDir.listFiles().findAll {
 
 include channelPrj
 
+project(':uc').projectDir = new File('channels/uc')
