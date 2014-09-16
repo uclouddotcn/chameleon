@@ -18,9 +18,9 @@ def platformFlavors = loadProductFlavors()
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.1'
+    buildToolsVersion '19.1.0'
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 7
         targetSdkVersion 18
     }
     buildTypes {
@@ -50,10 +50,12 @@ android {
 
         }
         xiaomi {
-            packageName "cn.ucloud.game.chameleon.mi"
+            // applicationId "cn.ucloud.game.chameleon.mi"
         }
         baidumg {
 
+        }
+        uc {
         }
     }
 
@@ -73,7 +75,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:+'
+    compile 'com.android.support:support-v4:19.1.0'
     compile files('libs/android-async-http-1.4.4.jar')
     compile project(':chameleon')
     qqmobCompile project(':channels:qqmob')
@@ -83,6 +85,7 @@ dependencies {
     wandoujiaCompile project(':channels:wandoujia')
     xiaomiCompile project(':channels:xiaomi')
     baidumgCompile project(':channels:baidumg')
+    ucCompile project(':channels:uc')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
