@@ -406,4 +406,16 @@ public class UnityChannelInterface {
         return ChannelInterface.onLoginRsp(rsp);
     }
 
-}
+    public static void submitPlayerInfo(String roleId,
+                                        String roleName,
+                                        String roleLevel,
+                                        int zoneId,
+                                        String zoneName) {
+        ChannelInterface.submitPlayerInfo(mActivity,
+                roleId,
+                roleName,
+                roleLevel,
+                zoneId,
+                zoneName);
+    }
+

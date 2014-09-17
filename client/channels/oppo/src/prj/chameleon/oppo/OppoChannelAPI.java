@@ -37,6 +37,7 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private String mAppKey;
     private String mAppSecret;
     private String mCallbackUrl;
+    private String mGameId;
     private String mUid = "";
     private boolean mAllowSwitchAccount;
     private boolean mIsLandscape;
@@ -44,6 +45,7 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void initCfg(Bundle cfg) {
         mIsLandscape = cfg.getBoolean("landscape");
+        mGameId = cfg.getString("gameId");
         mAppKey = cfg.getString("appKey");
         mAppSecret = cfg.getString("appSecret");
         mCallbackUrl = cfg.getString("payCallback");
@@ -420,6 +422,32 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         String token = sid;
         return JsonMaker.makeLoginResponse(token, null, mChannel);
     }
+
+    @Override
+    public void submitPlayerInfo(Activity activity,
+                                 String roleId,
+                                 String roleName,
+                                 String roleLevel,
+                                 int zoneId,
+                                 String zoneName) {
+        String extendInfo = new StringBuilder()
+                .append("gameId=").append(mGameId)
+                .append("&service=").append(String.valueOf(zoneId))
+                .append("&role=").append(roleId)
+                .append("&grade=").append(roleLevel).toString();
+        GameCenterSDK.getInstance().doSubmitExtendInfo(new ApiCallback() {
+            @Override
+            public void onSuccess(String content, int code) {
+
+            }
+
+            @Override
+            public void onFailure(String content, int code) {
+
+            }
+        }, extendInfo, activity);
+    }
+
 
     @Override
     public boolean runProtocol(Activity activity, String protocol, String message, final IDispatcherCb cb) {

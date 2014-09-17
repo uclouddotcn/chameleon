@@ -281,10 +281,33 @@ public class ChannelInterface {
         return _channelAPI.getmUserAPI().runProtocol(activity, protocol, message, cb);
     }
 
+    /**
+     * 当前SDK是否支持该函数
+     * @param protocol protocol名称
+     * @return
+     */
     public static boolean isSupportProtocol(String protocol) {
         return _channelAPI.getmUserAPI().isSupportProtocol(protocol);
     }
 
+    /**
+     * submit player login info, for uc, oppo
+     * @param activity activity
+     * @param roleId player id
+     * @param roleName player name
+     * @param roleLevel player level
+     * @param zoneId zone id
+     * @param zoneName zone name
+     */
+    public static void submitPlayerInfo(Activity activity,
+                                        String roleId,
+                                        String roleName,
+                                        String roleLevel,
+                                        int zoneId,
+                                        String zoneName) {
+        _channelAPI.getmUserAPI().submitPlayerInfo(activity, roleId, roleName, roleLevel,
+                zoneId, zoneName);
+    }
 
     /**
      *

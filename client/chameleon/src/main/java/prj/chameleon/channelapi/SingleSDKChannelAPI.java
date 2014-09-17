@@ -139,6 +139,17 @@ public class SingleSDKChannelAPI {
         public void onApplicationEvent(int event, Object... arguments) {
 
         }
+
+        @Override
+        public void submitPlayerInfo(Activity activity,
+                                     String roleId,
+                                     String roleName,
+                                     String roleLevel,
+                                     int zoneId,
+                                     String zoneName) {
+
+        }
+
     }
 
     public static abstract class SingleSDKInstantializer<T extends SingleSDK> extends ChannelAPI{
