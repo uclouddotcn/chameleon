@@ -423,8 +423,13 @@ public class MainActivity extends Activity implements IAccountActionListener {
 
 	@Override
     protected void onDestroy() {
+        MainActivity.super.onDestroy();
         // call destroy when this activity is being destroyed to release the resource used by sdk
-    	super.onDestroy();
+        ChannelInterface.exit(this, new IDispatcherCb() {
+            @Override
+            public void onFinished(int retCode, JSONObject data) {
+            }
+        });
     }
 
     public void printData(int code, final JSONObject s) {

@@ -25,6 +25,16 @@
         "sdk": "baidumg",
         "splashscreen": 1,
         "icon": 1
+    }, 
+    "uc": {
+        "name": "UC九游",
+        "pkgsuffix": ".uc",
+        "sdk": "uc"
+    },
+    "oppo": {
+        "name": "Oppo",
+        "pkgsuffix": ".nearme.gamecenter",
+        "sdk": "oppo"
     }
 }
 
