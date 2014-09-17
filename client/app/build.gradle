@@ -57,6 +57,8 @@ android {
         }
         uc {
         }
+        oppo {
+        }
     }
 
     // generate productFlavors according to the setting of productFlavor.json
@@ -86,6 +88,7 @@ dependencies {
     xiaomiCompile project(':channels:xiaomi')
     baidumgCompile project(':channels:baidumg')
     ucCompile project(':channels:uc')
+    oppoCompile project(':channels:oppo')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
