@@ -273,6 +273,13 @@ public class ChameleonSDK : MonoBehaviour  {
 			return mBridge.callFunc<bool>("onLoginRsp", rsp);
 		}
 
+		public static void submitPlayerInfo(string roleId,
+		                                    string roleName,
+		                                    string roleLevel,
+		                                    int zoneId,
+		                                    string zoneName) {
+			return mBridge.callFunc (roleId, roleName, roleLevel, zoneId, zoneName);
+		}
 		/**
 		 * register the listener of the channel event
 		 */

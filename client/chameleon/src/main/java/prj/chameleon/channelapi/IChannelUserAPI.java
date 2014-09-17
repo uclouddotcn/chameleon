@@ -187,6 +187,23 @@ public interface IChannelUserAPI {
      */
     public void onApplicationEvent(int event, Object... arguments);
 
+
+    /**
+     * submit player login info, for uc, oppo
+     * @param activity activity
+     * @param roleId player id
+     * @param roleName player name
+     * @param roleLevel player level
+     * @param zoneId zone id
+     * @param zoneName zone name
+     */
+    public void submitPlayerInfo(Activity activity,
+                                 String roleId,
+                                 String roleName,
+                                 String roleLevel,
+                                 int zoneId,
+                                 String zoneName);
+
     /**
      * exit the user sdk
      * @param activity

@@ -22,6 +22,7 @@ import cn.uc.gamesdk.info.OrderInfo;
 import cn.uc.gamesdk.info.PaymentInfo;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
+import prj.chameleon.channelapi.IChannelUserAPI;
 import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
@@ -459,26 +460,34 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         return JsonMaker.makeLoginResponse(token, null, mChannel);
     }
 
+
+    @Override
+    public void submitPlayerInfo(Activity activity,
+                                 String roleId,
+                                 String roleName,
+                                 String roleLevel,
+                                 int zoneId,
+                                 String zoneName) {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("roleId", roleId);
+            obj.put("roleName", roleName);
+            obj.put("roleLevel", roleLevel);
+            obj.put("zoneId", zoneId);
+            obj.put("zoneName", zoneName);
+            UCGameSDK.defaultSDK().submitExtendData("loginGameRole", obj);
+        } catch (JSONException e) {
+            Log.e(Constants.TAG, "Fail to submit player info", e);
+        }
+    }
+
     @Override
     public boolean runProtocol(Activity activity, String protocol, String message, IDispatcherCb cb) {
-        if (protocol == "submitExtendData") {
-            try {
-                JSONObject obj = new JSONObject(message);
-                UCGameSDK.defaultSDK().submitExtendData(obj.getString("type"), obj.getJSONObject("data"));
-                return true;
-            } catch (JSONException e) {
-                Log.e(Constants.TAG, "Fail to call submit extend data", e);
-                return false;
-            }
-        }
         return false;
     }
 
     @Override
     public boolean isSupportProtocol(String protocol) {
-        if (protocol == "submitExtendData") {
-            return true;
-        }
         return false;
     }
 }
