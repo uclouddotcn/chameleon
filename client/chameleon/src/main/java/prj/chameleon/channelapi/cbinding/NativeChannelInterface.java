@@ -640,7 +640,7 @@ public class NativeChannelInterface {
                                         int zoneId,
                                         byte[] zoneName) {
         try {
-            return ChannelInterface.submitPlayerInfo(mActivity
+            ChannelInterface.submitPlayerInfo(mActivity,
                     new String(roleId, "UTF-8"),
                     new String(roleName, "UTF-8"),
                     new String(roleLevel, "UTF-8"),
