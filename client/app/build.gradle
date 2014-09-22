@@ -2,20 +2,6 @@ apply plugin: 'android'
 
 // loading the productFlavor.json
 import groovy.json.JsonSlurper
-def loadProductFlavors() {
-    try {
-        def slurper = new JsonSlurper()
-        File f = new File("${projectDir}/productflavor.json")
-        def result = slurper.parseText(f.text)
-        return result
-    } catch(e) {
-        print e
-        return []
-    }
-}
-
-def platformFlavors = loadProductFlavors()
-
 android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
@@ -87,8 +73,8 @@ dependencies {
     wandoujiaCompile project(':channels:wandoujia')
     xiaomiCompile project(':channels:xiaomi')
     baidumgCompile project(':channels:baidumg')
-    ucCompile project(':channels:uc')
-    oppoCompile project(':channels:oppo')
+    ucCompile project(':uc')
+    oppoCompile project(':oppo')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->

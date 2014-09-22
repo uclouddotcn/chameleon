@@ -14,6 +14,7 @@ import com.tencent.tauth.UiError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IChannelPayAPI;
@@ -128,15 +129,15 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     }
 
-    @Override
-    public void initCfg(Bundle cfg) {
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mAppId = cfg.getString("appId");
         mPrivilege = cfg.getString("privilege");
     }
 
     @Override
-    public void init(Activity activity, boolean isDebug, final IDispatcherCb cb) {
+    public void init(Activity activity, final IDispatcherCb cb) {
 
+        boolean isDebug = true;
         // init kv store
         mTencent = Tencent.createInstance(mAppId, activity.getApplicationContext());
         String prefId = activity.getPackageName() + ".chameleon.qq.pref";

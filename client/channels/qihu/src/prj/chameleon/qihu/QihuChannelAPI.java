@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.ChameleonError;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
@@ -123,16 +124,15 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private UserInfo mUserInfo;
 
 
-    @Override
-    public void initCfg(Bundle cfg) {
-        mCfgLandscape = cfg.getBoolean("landscape");
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
+        mCfgLandscape = commCfg.mIsLandscape;
         mCfgBGTransparent = cfg.getBoolean("bgTransparent");
         mCfgUri = cfg.getString("uri");
-        mCfgAppName = cfg.getString("appName");
+        mCfgAppName = commCfg.mAppName;
     }
 
     @Override
-    public void init(final Activity context, boolean isDebug, final IDispatcherCb cb) {
+    public void init(final Activity context, final IDispatcherCb cb) {
 
         Matrix.init(context, false, new IDispatcherCallback() {
 

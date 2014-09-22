@@ -20,6 +20,7 @@ import cn.uc.gamesdk.info.FeatureSwitch;
 import cn.uc.gamesdk.info.GameParamInfo;
 import cn.uc.gamesdk.info.OrderInfo;
 import cn.uc.gamesdk.info.PaymentInfo;
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IChannelUserAPI;
@@ -80,9 +81,8 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private String mUid = "";
     private FloatBarInfo mFloatBarInfo = new FloatBarInfo();
 
-    @Override
-    public void initCfg(Bundle cfg) {
-        boolean isLandScape = cfg.getBoolean("landscape");
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
+        boolean isLandScape = commCfg.mIsLandscape;
         if (isLandScape) {
             mOrientation = UCOrientation.LANDSCAPE;
         } else {
@@ -100,7 +100,6 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void init(android.app.Activity activity,
-                     boolean isDebug,
                      final IDispatcherCb cb) {
 
         GameParamInfo gpi = new GameParamInfo();
@@ -108,6 +107,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         gpi.setGameId((int) mGameID);
         gpi.setFeatureSwitch(new FeatureSwitch(true, true));
         UCLogLevel logLevel;
+        boolean isDebug = true;
         if (isDebug) {
             logLevel = UCLogLevel.DEBUG;
         } else {

@@ -8,7 +8,7 @@
     <uses-feature android:glEsVersion="0x00020000" />
 
     <application android:label="@string/app_name"
-        android:icon="@drawable/icon" android:debuggable="true"
+        android:icon="@drawable/icon"
         android:name="prj.chameleon.channelapi.ChameleonApplication">
 
         <activity android:name="prj.chamelon.cc2d.chameleon_cc2d"

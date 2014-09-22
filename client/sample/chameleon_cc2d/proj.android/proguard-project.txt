@@ -18,3 +18,29 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+#
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+-keep class org.cocos2dx.lib.** {*;}
+-keep class prj.chameleon.channelapi.cbinding.** { *; }
+-keep class com.qihoo.gamecenter.sdk.common.** { *; } 
+-keep class com.qihoo.gamecenter.sdk.protocols.pay.** { *; }
+-keep class com.qihoo.gamecenter.sdk.plugin.res.drawable.** {*;} 
+-keep class com.qihoo.gamecenter.plugin.common.drawable.** {*;}
+
+-keep class com.qihoopay.outsdk.res.drawable.** {*;} 
+-keep class com.qihoopay.insdk.** { *; }
+-keep class com.qihoopay.insdk.activity.** { *; } 
+-keep class com.qihoopay.insdk.interfaces.** { *; } 
+-keep class com.qihoopay.insdk.matrix.** { *; } 
+-keep class com.qihoopay.insdk.utils.** { *; } 
+-keep class com.qihoopay.sdk.protocols.** { *; } 
+-keep class com.qihoopp.framework.** { *; } 
+-keep class com.qihoopp.qcoinpay.** { *; }
+-keep class cn.paypalm.pppayment.** { *; }
+-keep class cn.paypalm.pppayment.a.** { *; } 
+-keep class cn.paypalm.pppayment.global.** { *; }
+
+
+-dontwarn org.apache.http.conn.ssl.SSLSocketFactory

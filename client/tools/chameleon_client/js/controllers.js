@@ -37,7 +37,8 @@ chameleonControllers
         }
     }, function (err) {
         alert(err.message);
-        exit();
+        var gui = require('nw.gui');
+        gui.App.quit();
     })
 });
 
