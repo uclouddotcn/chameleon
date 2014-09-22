@@ -49,19 +49,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         this.tmpLib = require('tmp');
         this.fs = require('fs');
         this.pathLib = require('path');
-        /*
-        var content = 
-            fs.readFileSync(pathLib.join(globalenv.APP_FOLDER, 'env.json'), {
-            encoding:'utf-8'
-            });
-        this.env = JSON.parse(content);
-        this.setPythonMgrPath(
-            pathLib.join(globalenv.APP_FOLDER, this.env.pythonPath));
-            */
         globalenv.createTempFolder();
-        var Database = require('nedb');
-        this.sdkdb = new Database({filename: this.pathLib.join(globalenv.APP_FOLDER, 'sdkdb.nedb'), autoload: true});
-        this.db = new Database({filename: this.pathLib.join(globalenv.APP_FOLDER, 'productdb.nedb'), autoload: true});
     };
 
     ProjectMgr.prototype.getTempFile = function(project, name) {
@@ -71,13 +59,22 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     ProjectMgr.prototype.init = function () {
         var defered = $q.defer();
         var self = this;
-        chameleon.ChameleonTool.initTool(new PouchDBWrapper(self.sdkdb), function (err, chtool) {
+        ChameleonTool.checkSingleLock(function (err) {
             if (err) {
                 defered.reject(err);
-                return;
             }
-            self.chtool = chtool;
-            defered.resolve(chtool);
+            var Database = require('nedb');
+            self.homeDir = ChameleonTool.getChameleonHomePath();
+            self.sdkdb = new Database({filename: pathLib.join(self.homeDir, 'sdkdb.nedb'), autoload: true});
+            self.db = new Database({filename: pathLib.join(self.homeDir, 'productdb.nedb'), autoload: true});
+            chameleon.ChameleonTool.initTool(new PouchDBWrapper(self.sdkdb), function (err, chtool) {
+                if (err) {
+                    defered.reject(err);
+                    return;
+                }
+                self.chtool = chtool;
+                defered.resolve(chtool);
+            });
         });
         return defered.promise;
     }

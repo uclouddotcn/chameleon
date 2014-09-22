@@ -17,6 +17,7 @@ import com.duoku.platform.ui.DKPaycenterActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
@@ -122,17 +123,16 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         });
     }
 
-    @Override
-    public void initCfg(Bundle cfg) {
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Cfg();
         mCfg.mAppID = cfg.getString("appId");
         mCfg.mAppKey = cfg.getString("appKey");
-        mCfg.mScreenOrientation = cfg.getBoolean("landscape") ? DkPlatformSettings.SCREEN_ORIENTATION_LANDSCAPE:
+        mCfg.mScreenOrientation = commCfg.mIsLandscape ? DkPlatformSettings.SCREEN_ORIENTATION_LANDSCAPE:
                 DkPlatformSettings.SCREEN_ORIENTATION_PORTRAIT;
     }
 
     @Override
-    public void init(Activity activity, boolean isDebug, IDispatcherCb cb) {
+    public void init(Activity activity, IDispatcherCb cb) {
         DkPlatformSettings appInfo = new DkPlatformSettings();
         appInfo.setAppid(mCfg.mAppID);
         appInfo.setAppkey(mCfg.mAppKey);

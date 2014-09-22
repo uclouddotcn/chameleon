@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.os.Bundle;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
@@ -32,13 +33,12 @@ public final class ChinamobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private TreeMap<String, String> mProductMap;
     private IAccountActionListener mAccountActionListener;
 
-    @Override
-    public void initCfg(Bundle cfg) {
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mProductMap = (TreeMap<String, String>) cfg.getSerializable("productMap");
     }
 
     @Override
-    public void init(final Activity context, boolean isDebug, final IDispatcherCb cb) {
+    public void init(final Activity context, final IDispatcherCb cb) {
 
         mUserInfo = new UserInfo();
 

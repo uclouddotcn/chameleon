@@ -6,6 +6,7 @@
 /// <reference path="declare/ncp.d.ts"/>
 /// <reference path="declare/fs-extra.d.ts"/>
 /// <reference path="declare/xml2js.d.ts"/>
+/// <reference path="declare/adm-zip.d.ts"/>
 
 import fs = require('fs-extra');
 import childprocess = require("child_process");
@@ -14,6 +15,7 @@ import os = require('os');
 import async = require('async');
 import xml2js = require('xml2js');
 import util = require('util');
+import AdmZip = require('adm-zip');
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -406,6 +408,23 @@ export class Version {
         var t = ver.split('.');
         this.major = parseInt(t[0]);
         this.minor = parseInt(t[1]);
+    }
+
+    cmp (that: Version): number {
+        if (this.major > that.major) {
+            return 1;
+        } else if (this.major < that.major) {
+            return -1;
+        } else {
+            if (this.minor < that.minor) {
+                return -1;
+            } else if (this.minor > that.minor) {
+                return 1;
+            } else {
+                return 0;
+            }
+
+        }
     }
 
     toString(): string {
@@ -841,18 +860,37 @@ export class ChannelCfg {
     }
 }
 
+function guessWorkDir() : string {
+    var p = pathLib.join(pathLib.dirname(process.execPath), 'env.json');
+    if (fs.existsSync(p)) {
+        return pathLib.dirname(process.execPath);
+    }
+    p = pathLib.join(process.cwd(), 'env.json');
+    if (fs.existsSync(p)) {
+        return process.cwd();
+    }
+    return null;
+}
+
 export class ChameleonTool {
     androidEnv: AndroidEnv;
     infoObj: InfoJson;
     chameleonPath: string;
     db: DB
+    homePath: string;
+    private upgradeMgr: UpgradeMgr;
 
     static initTool(db: DB, cb: CallbackFunc<ChameleonTool>) {
         var res = new ChameleonTool();
         res.db = db;
-        var content = fs.readFileSync(pathLib.join(__dirname, '..', 'env.json'), 'utf-8');
+        var workdir = guessWorkDir();
+        if (workdir == null) {
+            setImmediate(cb, new ChameleonError(ErrorCode.OP_FAIL, "无法找到合法的工具路径"));
+            return;
+        }
+        var content = fs.readFileSync(pathLib.join(workdir, 'env.json'), 'utf-8');
         var envObj = JSON.parse(content);
-        var chameleonPath = pathLib.join(__dirname, '..', envObj['pythonPath']);
+        var chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
         res.chameleonPath = chameleonPath;
 
         function loadInfoJsonObj(callback: CallbackFunc<any>) {
@@ -865,6 +903,8 @@ export class ChameleonTool {
                 try {
                     var jsonobj = JSON.parse(s);
                     res.infoObj = InfoJson.loadFromJson(jsonobj, chameleonPath);
+
+                    res.upgradeMgr = new UpgradeMgr(workdir, res.infoObj.version);
                     return callback(null);
                 } catch (e) {
                     Logger.log('fail to parse json', e);
@@ -887,6 +927,29 @@ export class ChameleonTool {
         })
     }
 
+    static checkSingleLock(callback) {
+        var homePath = ChameleonTool.getChameleonHomePath();
+        fs.ensureDir(homePath, function (err) {
+            var name = pathLib.join(homePath, '.lock');
+            try {
+                var fd = fs.openSync(name, 'wx');
+                process.on('exit', function () {
+                    fs.unlinkSync(name);
+                });
+                try { fs.closeSync(fd) } catch (err) {}
+                callback(null);
+            } catch (err) {
+                Logger.log("Fail to lock", err);
+                callback(new ChameleonError(ErrorCode.OP_FAIL, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
+            }
+        });
+
+    }
+
+    static getChameleonHomePath() : string {
+        return pathLib.join(ChameleonTool.getUserPath(), '.prj_chameleon');
+    }
+
     getChannelList(): ChannelMetaInfo[] {
         return this.infoObj.getChannelMetaInfos();
     }
@@ -903,6 +966,9 @@ export class ChameleonTool {
         return this.infoObj.getSDKMetaInfos();
     }
 
+    readUpgradeFileInfo(zipFile: string) : any {
+        return this.upgradeMgr.readManifest(zipFile);
+    }
 
     get(): ChannelMetaInfo[] {
         return this.infoObj.getChannelMetaInfos();
@@ -1093,6 +1159,15 @@ export class ChameleonTool {
                 cb(null);
             })
         });
+    }
+
+    static getUserPath() : string {
+        return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+    }
+
+    upgradeFromFile(filePath) {
+        var newver = this.upgradeMgr.upgradeFromZip(filePath);
+        this.version = newver;
     }
 }
 
@@ -1557,6 +1632,62 @@ class AndroidManifest {
 
     getPkgName(): string {
         return this.xmlobj['$']['package'];
+    }
+}
+
+class UpgradeMgr {
+    workdir: string;
+    curver: Version;
+
+    constructor(workdir: string, curver: Version) {
+        this.workdir = workdir;
+        this.curver = curver;
+    }
+
+    readManifest(fpath: string): any {
+        try {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            if (content == null || content.length == 0) {
+                throw new ChameleonError(ErrorCode.OP_FAIL, '不正确的升级包格式: 无法读取升级信息');
+            }
+            var obj = JSON.parse(content);
+            return {
+                from: obj.prevVer,
+                to: obj.toVer
+            };
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                Logger.log('Fail to read upgrade package', e);
+                throw new ChameleonError(ErrorCode.OP_FAIL, '不正确的升级包格式: ' + e.message);
+            }
+        }
+    }
+
+    upgradeFromZip(fpath: string) : Version{
+        try {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            var obj = JSON.parse(content);
+            var baseVer = new Version(obj.prevVer);
+            var tover = new Version(obj.toVer);
+            if (this.curver.cmp(baseVer) != 0) {
+                Logger.log("Fail to upgrade");
+                throw new ChameleonError(ErrorCode.OP_FAIL, "升级包并不是针对当前版本："+ fpath + '\n' +
+                    'base: ' + baseVer.toString() + ', current: ' + this.curver.toString());
+            }
+            zip.extractAllTo(this.workdir, true);
+            this.curver = tover;
+            return tover;
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                throw ChameleonError.newFromError(e, ErrorCode.OP_FAIL);
+            }
+        }
     }
 }
 

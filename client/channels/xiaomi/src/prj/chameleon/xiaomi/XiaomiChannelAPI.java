@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
@@ -171,16 +172,15 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 });
     }
 
-    @Override
-    public void initCfg(Bundle cfg) {
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mAppId = cfg.getString("appId");
         mAppKey = cfg.getString("appKey");
-        mScreenOrientation = cfg.getBoolean("landscape") ? ScreenOrientation.horizontal :
+        mScreenOrientation = commCfg.mIsLandscape ? ScreenOrientation.horizontal :
                 ScreenOrientation.vertical;
     }
 
     @Override
-    public void init(Activity activity, boolean isDebug, IDispatcherCb cb) {
+    public void init(Activity activity, IDispatcherCb cb) {
 
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }

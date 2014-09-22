@@ -7,24 +7,7 @@ import android.os.Bundle;
 /**
  *   Interface for the real platform SDK
  */
-public interface IChannelUserAPI {
-
-    /**
-     * init the config of this channel
-     * @param cfg config of this channel
-     */
-    public abstract void initCfg(Bundle cfg);
-
-    /**
-     * init the SDK
-     * @param activity the activity to give the real SDK
-     * @param isDebug whether set it in debug mode
-     * @param cb callback function when the request is finished, the JSON object is null
-     */
-	public abstract void init(android.app.Activity activity,
-                              boolean isDebug,
-							  IDispatcherCb cb);
-
+public interface IChannelUserAPI extends IAPIBase {
 
     /**
      * login as a guest
@@ -111,19 +94,6 @@ public interface IChannelUserAPI {
     public abstract void destroyToolBar(Activity activity);
 
     /**
-     *  when the app is activate from the background( refer to 91 doc, only required by 91)
-     * @param activity the activity to give the real SDK
-     * @param cb JSON object will be null
-     */
-    public abstract void onResume(Activity activity, IDispatcherCb cb);
-
-    /**
-     *  when the app is stopped
-     * @param activity the activity to give the real SDK
-     */
-    public abstract void onPause(Activity activity);
-
-    /**
      *  check if the user is adult, if the platform doesn't provide this interface, user will be
      *  treated as adult
      * @param activity the activity to give the real SDK
@@ -155,14 +125,6 @@ public interface IChannelUserAPI {
     public boolean isSupportProtocol(String protocol);
 
     /**
-     * on activity result, the parameter is the same as Activity.onActivityResult
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    public void onActivityResult(int requestCode, int resultCode, Intent data);
-
-    /**
      * get user id
      * @return user id of the login user, or empty string if not logined
      */
@@ -181,14 +143,6 @@ public interface IChannelUserAPI {
     public boolean isLogined();
 
     /**
-     *
-     * @param event refer to Constants.ApplicationEvent
-     * @param arguments the var-arguments for this event
-     */
-    public void onApplicationEvent(int event, Object... arguments);
-
-
-    /**
      * submit player login info, for uc, oppo
      * @param activity activity
      * @param roleId player id
@@ -203,10 +157,4 @@ public interface IChannelUserAPI {
                                  String roleLevel,
                                  int zoneId,
                                  String zoneName);
-
-    /**
-     * exit the user sdk
-     * @param activity
-     */
-    public abstract void exit(Activity activity, IDispatcherCb cb);
 }

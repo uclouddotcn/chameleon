@@ -2,12 +2,13 @@ package prj.chameleon.channelapi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *  ChannelInterface is the only interface for client to use
@@ -17,14 +18,15 @@ public class ChannelInterface {
     /**
      * init the SDK
      * @param activity the activity to give the real SDK
-     * @param isDebug whether set sdk to debug mode
+     *
+     * @deprecated @param isDebug (deprecated) whether set sdk to debug mode
      * @param cb callback function when the request is finished, the JSON object is null
      */
 	public static void init(final Activity activity,
                             boolean isDebug,
 			  		        final IDispatcherCb cb) {
         Log.d(Constants.TAG, "on init from channel interface");
-        _channelAPI.init(activity, isDebug, cb);
+        _plugins.init(activity, cb);
 	}
 
     /**
@@ -32,7 +34,7 @@ public class ChannelInterface {
      * @return channel user id
      */
     public static String getUin() {
-        return _channelAPI.getmUserAPI().getUid();
+        return _plugins.mUserApi.getUid();
     }
 
     /**
@@ -40,7 +42,7 @@ public class ChannelInterface {
      * @return true if the user have already logged in
      */
     public static boolean isLogined() {
-        return _channelAPI.getmUserAPI().isLogined();
+        return _plugins.mUserApi.isLogined();
     }
 
     /**
@@ -48,7 +50,7 @@ public class ChannelInterface {
      * @return the token of the channel
      */
     public static String getToken() {
-        return _channelAPI.getmUserAPI().getToken();
+        return _plugins.mUserApi.getToken();
     }
 
     /**
@@ -56,16 +58,16 @@ public class ChannelInterface {
      * @return the pay token of this channel
      */
     public static String getPayToken() {
-        return _channelAPI.getmPayAPI().getPayToken();
+        return _plugins.mPayApi.getPayToken();
     }
 
     /**
      * feed the login rsp from the chameleon server to SDK
      * @param rsp the login rsp from chameleon server
-     * @return
+     * @return true if login rsp succeeds, false otherwise
      */
     public static boolean onLoginRsp(String rsp) {
-        return _channelAPI.getmUserAPI().onLoginRsp(rsp);
+        return _plugins.mUserApi.onLoginRsp(rsp);
     }
 
     /**
@@ -81,7 +83,7 @@ public class ChannelInterface {
     public static void loginGuest(Activity activity,
                                   IDispatcherCb loginCallback,
                                   IAccountActionListener accountActionListener) {
-        _channelAPI.getmUserAPI().loginGuest(activity, loginCallback, accountActionListener);
+        _plugins.mUserApi.loginGuest(activity, loginCallback, accountActionListener);
     }
 
     /**
@@ -93,7 +95,7 @@ public class ChannelInterface {
      * @return boolean, true when user login as a guest and the register can continue, otherwise false
      */
     public static boolean registGuest(Activity activity, String tips, IDispatcherCb cb) {
-        return _channelAPI.getmUserAPI().registGuest(activity, tips, cb);
+        return _plugins.mUserApi.registGuest(activity, tips, cb);
     }
 
     /**
@@ -107,7 +109,7 @@ public class ChannelInterface {
     public static void login(Activity activity,
                              IDispatcherCb cb,
                              IAccountActionListener accountActionListener) {
-		_channelAPI.getmUserAPI().login(activity, cb, accountActionListener);
+		_plugins.mUserApi.login(activity, cb, accountActionListener);
 	}
 
 
@@ -137,7 +139,7 @@ public class ChannelInterface {
                               int realPayMoney,
                               boolean allowUserChange,
                               IDispatcherCb cb) {
-		_channelAPI.getmPayAPI().charge(activity, orderId, uidInGame, userNameInGame,
+		_plugins.mPayApi.charge(activity, orderId, uidInGame, userNameInGame,
                 serverId, currencyName, payInfo, rate, realPayMoney,
                 allowUserChange, cb);
 	}
@@ -167,7 +169,7 @@ public class ChannelInterface {
                            int productCount,
                            int realPayMoney,
                            IDispatcherCb cb) {
-        _channelAPI.getmPayAPI().buy(activity, orderId, uidInGame, userNameInGame,
+        _plugins.mPayApi.buy(activity, orderId, uidInGame, userNameInGame,
                 serverId, productName, productID, payInfo, productCount,
                 realPayMoney, cb);
     }
@@ -177,11 +179,11 @@ public class ChannelInterface {
      * @param activity the activity to give the real SDK
      */
     public static void logout(Activity activity) {
-        _channelAPI.getmUserAPI().logout(activity);
+        _plugins.mUserApi.logout(activity);
     }
 
     public static boolean isSupportSwitchAccount() {
-        return _channelAPI.getmUserAPI().isSupportSwitchAccount();
+        return _plugins.mUserApi.isSupportSwitchAccount();
     }
     /**
      * for user to switch the account, to many channel it performs logout then login
@@ -190,7 +192,7 @@ public class ChannelInterface {
      * @return boolean, whether the switch account starts
      */
     public static boolean switchAccount(Activity activity, IDispatcherCb cb) {
-        return _channelAPI.getmUserAPI().switchAccount(activity, cb);
+        return _plugins.mUserApi.switchAccount(activity, cb);
     }
 
     /**
@@ -199,7 +201,7 @@ public class ChannelInterface {
      * @param position refer to Constant.Toolbar*
      */
     public static void createToolBar(Activity activity, int position) {
-        _channelAPI.getmUserAPI().createToolBar(activity, position);
+        _plugins.mUserApi.createToolBar(activity, position);
     }
 
     /**
@@ -208,7 +210,7 @@ public class ChannelInterface {
      * @param visible true for show, false for hide
      */
     public static void showFloatBar(Activity activity, boolean visible) {
-        _channelAPI.getmUserAPI().showFloatBar(activity, visible);
+        _plugins.mUserApi.showFloatBar(activity, visible);
     }
 
     /**
@@ -216,7 +218,7 @@ public class ChannelInterface {
      * @param activity the activity to give the real SDK
      */
     public static void destroyToolBar(Activity activity) {
-        _channelAPI.getmUserAPI().destroyToolBar(activity);
+        _plugins.mUserApi.destroyToolBar(activity);
     }
 
     /**
@@ -225,7 +227,7 @@ public class ChannelInterface {
      * @param cb JSON object will be null
      */
     public static void onResume(Activity activity, IDispatcherCb cb) {
-        _channelAPI.getmUserAPI().onResume(activity, cb);
+        _plugins.mUserApi.onResume(activity, cb);
     }
 
     /**
@@ -233,7 +235,7 @@ public class ChannelInterface {
      * @param activity the activity to give the real SDK
      */
     public static void onPause(Activity activity) {
-        _channelAPI.getmUserAPI().onPause(activity);
+        _plugins.mUserApi.onPause(activity);
     }
 
     /**
@@ -247,7 +249,7 @@ public class ChannelInterface {
      */
     public static void antiAddiction(Activity activity,
                                      IDispatcherCb cb) {
-        _channelAPI.getmUserAPI().antiAddiction(activity, cb);
+        _plugins.mUserApi.antiAddiction(activity, cb);
     }
 
     /**
@@ -255,13 +257,10 @@ public class ChannelInterface {
      * @param activity
      */
     public static void exit(Activity activity, final IDispatcherCb cb) {
-        _channelAPI.exit(activity, new IDispatcherCb() {
+        _plugins.exit(activity, new IDispatcherCb() {
 
             @Override
             public void onFinished(int retCode, JSONObject data) {
-                if (retCode == Constants.ErrorCode.ERR_OK) {
-                    _channelAPI = null;
-                }
                 cb.onFinished(retCode, data);
             }
         });
@@ -278,7 +277,7 @@ public class ChannelInterface {
                                String protocol,
                                String message,
                                IDispatcherCb cb) {
-        return _channelAPI.getmUserAPI().runProtocol(activity, protocol, message, cb);
+        return _plugins.mUserApi.runProtocol(activity, protocol, message, cb);
     }
 
     /**
@@ -287,7 +286,7 @@ public class ChannelInterface {
      * @return
      */
     public static boolean isSupportProtocol(String protocol) {
-        return _channelAPI.getmUserAPI().isSupportProtocol(protocol);
+        return _plugins.mUserApi.isSupportProtocol(protocol);
     }
 
     /**
@@ -305,7 +304,7 @@ public class ChannelInterface {
                                         String roleLevel,
                                         int zoneId,
                                         String zoneName) {
-        _channelAPI.getmUserAPI().submitPlayerInfo(activity, roleId, roleName, roleLevel,
+        _plugins.mUserApi.submitPlayerInfo(activity, roleId, roleName, roleLevel,
                 zoneId, zoneName);
     }
 
@@ -315,7 +314,7 @@ public class ChannelInterface {
      * @param arguments the var-arguments for this event
      */
     public static void onApplicationEvent(int event, Object... arguments) {
-        _channelAPI.onApplicationEvent(event, arguments);
+        _plugins.onApplicationEvent(event, arguments);
     }
 
     /**
@@ -323,7 +322,7 @@ public class ChannelInterface {
      * @return get current channel name
      */
 	public static String getChannelName() {
-		return _channelAPI.getChannelName();
+		return _plugins.getChannelName();
 	}
 
     /**
@@ -333,35 +332,147 @@ public class ChannelInterface {
      * @param data
      */
     public static void onActivityResult(int requestCode, int resultCode, Intent data) {
-        _channelAPI.onActivityResult(requestCode, resultCode, data);
+        _plugins.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
      *  the channel implementation for current package
      */
-	private static ChannelAPI _channelAPI = null;
-    /**
-     * loading the channel implementation according to the meta data
-     */
-	public static void loadChannelImp() {
-        boolean isInited = false;
-        try {
-            Class<?> instClass = Class.forName("prj.chameleon.entry.Instantializer");
-            Method m = instClass.getMethod("instantialize");
-            _channelAPI = (ChannelAPI) m.invoke(null);
-            isInited = true;
-        } catch (ClassNotFoundException e) {
-            Log.e(Constants.TAG, "while initing current channel imp", e);
-        } catch (IllegalAccessException e) {
-            Log.e(Constants.TAG, "while initing current channel imp", e);
-        } catch (NoSuchMethodException e) {
-            Log.e(Constants.TAG, "while initing current channel imp", e);
-        } catch (InvocationTargetException e) {
-            Log.e(Constants.TAG, "while initing current channel imp", e);
+    private static class Plugins {
+        private ArrayList<APIGroup> mApiGroups = new ArrayList<APIGroup>();
+        private IChannelUserAPI mUserApi;
+        private IChannelPayAPI mPayApi;
+        private String mChannelName;
+
+        public void onResume(final Activity activity, final IDispatcherCb cb) {
+            final Iterator<APIGroup> iterator = mApiGroups.iterator();
+            final Runnable initProc = new Runnable() {
+                @Override
+                public void run() {
+                    if (!iterator.hasNext()) {
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                        return;
+                    }
+                    APIGroup group = iterator.next();
+                    group.onResume(activity, new IDispatcherCb() {
+                        @Override
+                        public void onFinished(int retCode, JSONObject data) {
+                            if (retCode != Constants.ErrorCode.ERR_OK) {
+                                cb.onFinished(retCode, null);
+                                return;
+                            }
+                            run();
+                        }
+                    });
+                }
+            };
+            initProc.run();
         }
-        if (!isInited) {
-            ChannelAPI inst = DummyChannelAPI.instantialize();
-            _channelAPI = inst;
+
+        public void onPause(Activity activity) {
+            for (APIGroup group : mApiGroups) {
+                group.onPause(activity);
+            }
         }
-	}
+
+        public void init(final Activity activity, final IDispatcherCb cb) {
+            final Iterator<APIGroup> iterator = mApiGroups.iterator();
+            final Runnable initProc = new Runnable() {
+                @Override
+                public void run() {
+                    if (!iterator.hasNext()) {
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                        return;
+                    }
+                    APIGroup group = iterator.next();
+                    group.init(activity, new IDispatcherCb() {
+                        @Override
+                        public void onFinished(int retCode, JSONObject data) {
+                            if (retCode != Constants.ErrorCode.ERR_OK) {
+                                cb.onFinished(retCode, null);
+                                return;
+                            }
+                            run();
+                        }
+                    });
+                }
+            };
+            initProc.run();
+        }
+
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            for (APIGroup group : mApiGroups) {
+                group.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+
+        public void onApplicationEvent(int event, Object... arguments) {
+            for (APIGroup group : mApiGroups) {
+                group.onApplicationEvent(event, arguments);
+            }
+        }
+
+        public void exit(final Activity activity, final IDispatcherCb cb) {
+            // only user api can blocks the exit, other callback will be ignored
+            mUserApi.exit(activity, new IDispatcherCb() {
+                @Override
+                public void onFinished(int retCode, JSONObject data) {
+                    if (retCode != Constants.ErrorCode.ERR_OK) {
+                        cb.onFinished(retCode, null);
+                    }
+                }
+            });
+            final Iterator<APIGroup> iterator = mApiGroups.iterator();
+            final Runnable initProc = new Runnable() {
+                @Override
+                public void run() {
+                    if (!iterator.hasNext()) {
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                        return;
+                    }
+                    APIGroup group = iterator.next();
+                    if (group == mUserApi) {
+                        run();
+                        return;
+                    }
+                    group.exit(activity, new IDispatcherCb() {
+                        @Override
+                        public void onFinished(int retCode, JSONObject data) {
+                            run();
+                        }
+                    });
+                }
+            };
+            initProc.run();
+        }
+
+        private void addApiGroup(APIGroup group) {
+            if (group == null) {
+                throw new RuntimeException("empty api group");
+            }
+            if (group.testType(Constants.PluginType.USER_API)) {
+                if (mUserApi != null) {
+                    throw new RuntimeException("user api is already registered");
+                }
+                mUserApi = (IChannelUserAPI) group.getApi();
+            }
+            if (group.testType(Constants.PluginType.PAY_API)) {
+                if (mPayApi != null) {
+                    throw new RuntimeException("pay api is already registered");
+                }
+                mPayApi = (IChannelPayAPI) group.getApi();
+            }
+            mApiGroups.add(group);
+        }
+
+        public String getChannelName() {
+            return mChannelName;
+        }
+    }
+    private static Plugins _plugins = new Plugins();
+
+    public static void addApiGroup(APIGroup apiGroup) {
+        _plugins.addApiGroup(apiGroup);
+    }
+
 }

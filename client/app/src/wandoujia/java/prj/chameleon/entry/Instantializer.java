@@ -2,32 +2,30 @@ package prj.chameleon.entry;
 
 import android.os.Bundle;
 
-import prj.chameleon.channelapi.ChannelAPI;
-import prj.chameleon.channelapi.SingleSDKChannelAPI;
+import prj.chameleon.channelapi.APIGroup;
+import prj.chameleon.channelapi.ApiCommonCfg;
+import prj.chameleon.channelapi.ChannelInterface;
+import prj.chameleon.channelapi.Constants;
+import prj.chameleon.channelapi.IInstantializer;
 import prj.chameleon.wandoujia.WandoujiaChannelAPI;
 
-class Instantializer {
-    public static class ChannelAPIImp extends SingleSDKChannelAPI.SingleSDKInstantializer<WandoujiaChannelAPI> {
-        public ChannelAPIImp(WandoujiaChannelAPI imp) {
-            super(imp);
-        }
+class Instantializer implements IInstantializer {
+    @Override
+    public void initChameleon() {
 
-        @Override
-        protected Bundle getConfigBundle() {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("landscape", true);
-            bundle.putLong("appId", 100012000);
-            bundle.putString("appKey", "ed5bcac197c55de1a06cf31bd91a1fc4");
-            return bundle;
-        }
+        ApiCommonCfg commCfg = new ApiCommonCfg();
+        commCfg.mAppName = "123";
+        commCfg.mChannel = "wandoujia";
+        commCfg.mIsLandscape = true;
+        commCfg.mIsDebug = true;
 
-        @Override
-        public String getChannelName() {
-            return "wandoujia";
-        }
-    }
+        Bundle bundle = new Bundle();
+        bundle.putLong("appId", 100012000);
+        bundle.putString("appKey", "ed5bcac197c55de1a06cf31bd91a1fc4");
+        WandoujiaChannelAPI api = new WandoujiaChannelAPI();
+        api.initCfg(commCfg, bundle);
 
-    public static ChannelAPI instantialize() {
-        return new ChannelAPIImp(new WandoujiaChannelAPI());
+        ChannelInterface.addApiGroup(new APIGroup(Constants.PluginType.USER_API | Constants.PluginType.PAY_API,
+                api));
     }
 }

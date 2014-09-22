@@ -10,6 +10,7 @@ import com.nd.commplatform.entry.NdAppInfo;
 import com.nd.commplatform.entry.NdBuyInfo;
 import com.nd.commplatform.gc.widget.NdToolBar;
 import com.nd.commplatform.gc.widget.NdToolBarPlace;
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IChannelPayAPI;
@@ -54,9 +55,8 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private boolean mIsForceUpdate;
     private String mCfgAppKey;
 
-    @Override
-    public void initCfg(Bundle cfg) {
-        mCfgLandScape = cfg.getBoolean("landscape");
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
+        mCfgLandScape = commCfg.mIsLandscape;
         mIsForceUpdate  = cfg.getBoolean("forceUpdate");
         mCfgAppID = cfg.getLong("appId");
         mCfgAppKey = cfg.getString("appKey");
@@ -69,15 +69,16 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void init(android.app.Activity activity,
-                     boolean isDebug,
 		             final IDispatcherCb cb) {
         String pkgName =  activity.getPackageName();
         int rsid = activity.getResources().getIdentifier("nd3_frame", "layout", pkgName);
         Log.d(Constants.TAG, String.format("get pkg name %s and %d", pkgName, rsid));
+        /*
         // set debug mode
         if (isDebug) {
             NdCommplatform.getInstance().ndSetDebugMode(0);
         }
+        */
         OnInitCompleteListener listener = new OnInitCompleteListener(){
             @Override
             protected void onComplete(int ndFlag) {

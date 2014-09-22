@@ -1,3 +1,12 @@
+/**
+* Created by wushauk on 9/5/14.
+*/
+/// <reference path="declare/node.d.ts"/>
+/// <reference path="declare/async.d.ts"/>
+/// <reference path="declare/ncp.d.ts"/>
+/// <reference path="declare/fs-extra.d.ts"/>
+/// <reference path="declare/xml2js.d.ts"/>
+/// <reference path="declare/adm-zip.d.ts"/>
 var fs = require('fs-extra');
 var childprocess = require("child_process");
 var pathLib = require("path");
@@ -5,6 +14,7 @@ var os = require('os');
 var async = require('async');
 var xml2js = require('xml2js');
 var util = require('util');
+var AdmZip = require('adm-zip');
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -388,6 +398,22 @@ var Version = (function () {
         this.major = parseInt(t[0]);
         this.minor = parseInt(t[1]);
     }
+    Version.prototype.cmp = function (that) {
+        if (this.major > that.major) {
+            return 1;
+        } else if (this.major < that.major) {
+            return -1;
+        } else {
+            if (this.minor < that.minor) {
+                return -1;
+            } else if (this.minor > that.minor) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    };
+
     Version.prototype.toString = function () {
         return this.major + '.' + this.minor;
     };
@@ -847,15 +873,32 @@ var ChannelCfg = (function () {
 })();
 exports.ChannelCfg = ChannelCfg;
 
+function guessWorkDir() {
+    var p = pathLib.join(pathLib.dirname(process.execPath), 'env.json');
+    if (fs.existsSync(p)) {
+        return pathLib.dirname(process.execPath);
+    }
+    p = pathLib.join(process.cwd(), 'env.json');
+    if (fs.existsSync(p)) {
+        return process.cwd();
+    }
+    return null;
+}
+
 var ChameleonTool = (function () {
     function ChameleonTool() {
     }
     ChameleonTool.initTool = function (db, cb) {
         var res = new ChameleonTool();
         res.db = db;
-        var content = fs.readFileSync(pathLib.join(__dirname, '..', 'env.json'), 'utf-8');
+        var workdir = guessWorkDir();
+        if (workdir == null) {
+            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, "无法找到合法的工具路径"));
+            return;
+        }
+        var content = fs.readFileSync(pathLib.join(workdir, 'env.json'), 'utf-8');
         var envObj = JSON.parse(content);
-        var chameleonPath = pathLib.join(__dirname, '..', envObj['pythonPath']);
+        var chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
         res.chameleonPath = chameleonPath;
 
         function loadInfoJsonObj(callback) {
@@ -868,6 +911,8 @@ var ChameleonTool = (function () {
                 try  {
                     var jsonobj = JSON.parse(s);
                     res.infoObj = InfoJson.loadFromJson(jsonobj, chameleonPath);
+
+                    res.upgradeMgr = new UpgradeMgr(workdir, res.infoObj.version);
                     return callback(null);
                 } catch (e) {
                     Logger.log('fail to parse json', e);
@@ -890,6 +935,31 @@ var ChameleonTool = (function () {
         });
     };
 
+    ChameleonTool.checkSingleLock = function (callback) {
+        var homePath = ChameleonTool.getChameleonHomePath();
+        fs.ensureDir(homePath, function (err) {
+            var name = pathLib.join(homePath, '.lock');
+            try  {
+                var fd = fs.openSync(name, 'wx');
+                process.on('exit', function () {
+                    fs.unlinkSync(name);
+                });
+                try  {
+                    fs.closeSync(fd);
+                } catch (err) {
+                }
+                callback(null);
+            } catch (err) {
+                Logger.log("Fail to lock", err);
+                callback(new ChameleonError(3 /* OP_FAIL */, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
+            }
+        });
+    };
+
+    ChameleonTool.getChameleonHomePath = function () {
+        return pathLib.join(ChameleonTool.getUserPath(), '.prj_chameleon');
+    };
+
     ChameleonTool.prototype.getChannelList = function () {
         return this.infoObj.getChannelMetaInfos();
     };
@@ -904,6 +974,10 @@ var ChameleonTool = (function () {
 
     ChameleonTool.prototype.getAllSDKs = function () {
         return this.infoObj.getSDKMetaInfos();
+    };
+
+    ChameleonTool.prototype.readUpgradeFileInfo = function (zipFile) {
+        return this.upgradeMgr.readManifest(zipFile);
     };
 
     ChameleonTool.prototype.get = function () {
@@ -1102,6 +1176,15 @@ var ChameleonTool = (function () {
                 cb(null);
             });
         });
+    };
+
+    ChameleonTool.getUserPath = function () {
+        return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+    };
+
+    ChameleonTool.prototype.upgradeFromFile = function (filePath) {
+        var newver = this.upgradeMgr.upgradeFromZip(filePath);
+        this.version = newver;
     };
     return ChameleonTool;
 })();
@@ -1569,5 +1652,57 @@ var AndroidManifest = (function () {
         return this.xmlobj['$']['package'];
     };
     return AndroidManifest;
+})();
+
+var UpgradeMgr = (function () {
+    function UpgradeMgr(workdir, curver) {
+        this.workdir = workdir;
+        this.curver = curver;
+    }
+    UpgradeMgr.prototype.readManifest = function (fpath) {
+        try  {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            if (content == null || content.length == 0) {
+                throw new ChameleonError(3 /* OP_FAIL */, '不正确的升级包格式: 无法读取升级信息');
+            }
+            var obj = JSON.parse(content);
+            return {
+                from: obj.prevVer,
+                to: obj.toVer
+            };
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                Logger.log('Fail to read upgrade package', e);
+                throw new ChameleonError(3 /* OP_FAIL */, '不正确的升级包格式: ' + e.message);
+            }
+        }
+    };
+
+    UpgradeMgr.prototype.upgradeFromZip = function (fpath) {
+        try  {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            var obj = JSON.parse(content);
+            var baseVer = new Version(obj.prevVer);
+            var tover = new Version(obj.toVer);
+            if (this.curver.cmp(baseVer) != 0) {
+                Logger.log("Fail to upgrade");
+                throw new ChameleonError(3 /* OP_FAIL */, "升级包并不是针对当前版本：" + fpath + '\n' + 'base: ' + baseVer.toString() + ', current: ' + this.curver.toString());
+            }
+            zip.extractAllTo(this.workdir, true);
+            this.curver = tover;
+            return tover;
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                throw ChameleonError.newFromError(e, 3 /* OP_FAIL */);
+            }
+        }
+    };
+    return UpgradeMgr;
 })();
 //# sourceMappingURL=chameleon.js.map

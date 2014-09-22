@@ -17,6 +17,7 @@ import com.wandoujia.mariosdk.plugin.api.model.model.UnverifiedPlayer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
@@ -84,14 +85,14 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
         });
     }
 
-    @Override
-    public void initCfg(Bundle cfg) {
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mAppId = cfg.getLong("appId");
         mAppKey = cfg.getString("appKey");
     }
 
     @Override
-    public void init(Activity activity, boolean isDebug, IDispatcherCb cb) {
+    public void init(Activity activity, IDispatcherCb cb) {
+        boolean isDebug = true;
         mWandouGamesApi.init(activity);
         mWandouGamesApi.setLogEnabled(isDebug);
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);

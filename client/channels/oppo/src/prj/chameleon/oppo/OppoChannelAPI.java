@@ -14,6 +14,9 @@ import com.nearme.gamecenter.open.api.RatePayInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
@@ -42,15 +45,15 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private boolean mAllowSwitchAccount;
     private boolean mIsLandscape;
 
-    @Override
-    public void initCfg(Bundle cfg) {
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mIsLandscape = cfg.getBoolean("landscape");
         mGameId = cfg.getString("gameId");
         mAppKey = cfg.getString("appKey");
         mAppSecret = cfg.getString("appSecret");
         mCallbackUrl = cfg.getString("payCallback");
         mAllowSwitchAccount = cfg.getBoolean("allowSwitchAccount");
-        mIsDebug = cfg.getBoolean("debug");
+        mChannel = commCfg.mChannel;
+        mIsDebug = commCfg.mIsDebug;
     }
 
     /**
@@ -61,7 +64,6 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void init(android.app.Activity activity,
-                     boolean isDebug,
                      final IDispatcherCb cb) {
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
