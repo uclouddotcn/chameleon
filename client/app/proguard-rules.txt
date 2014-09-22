@@ -1,0 +1,10 @@
+-keep class com.nearme.** {*;}
+-keep class com.oppo.** {*;}
+-keep class org.apache.** {*;}
+-keep class com.nearme.wappay.** {*;}
+-keep class **.R$* {*;}
+-dontwarn com.ehoo.**
+-keep class com.ehoo.** {*;}
+-dontwarn com.unipay.dialog.**
+-dontwarn android.**
+-keep class com.example.testwrapper.** {*;}
