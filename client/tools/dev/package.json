@@ -1,0 +1,15 @@
+{
+  "name": "chameleon-dev",
+  "version": "0.0.0",
+  "description": "chameleon项目添加渠道的辅助工具",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "fs-extra": "~0.11.1",
+    "optimist": "0.6.1"
+  },
+  "author": "",
+  "license": "MIT"
+}
