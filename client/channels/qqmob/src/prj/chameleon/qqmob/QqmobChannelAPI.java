@@ -23,9 +23,6 @@ import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
-/**
- * Created by wushauk on 7/21/14.
- */
 public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private Tencent mTencent;
     private String mPrivilege;

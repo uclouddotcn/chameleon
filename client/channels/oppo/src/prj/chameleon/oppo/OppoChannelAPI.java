@@ -451,10 +451,10 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean runProtocol(Activity activity, String protocol, String message, final IDispatcherCb cb) {
-        if (protocol == "oppo_doShowForum") {
+        if (protocol.equals("oppo_doShowForum")) {
             GameCenterSDK.getInstance().doShowForum(activity);
             return true;
-        } else if (protocol == "oppo_doGetUserNDou") {
+        } else if (protocol.equals("oppo_doGetUserNDou")) {
             GameCenterSDK.getInstance().doGetUserNDou(new ApiCallback() {
                 @Override
                 public void onSuccess(String content, int code) {
@@ -479,9 +479,9 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean isSupportProtocol(String protocol) {
-        if (protocol == "oppo_doShowForum") {
+        if (protocol.equals("oppo_doShowForum")) {
             return true;
-        } else if (protocol == "oppo_doGetUserNDou") {
+        } else if (protocol.equals("oppo_doGetUserNDou")) {
             return true;
         }
         return false;
