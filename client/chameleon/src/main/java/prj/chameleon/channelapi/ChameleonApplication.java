@@ -12,11 +12,12 @@ import java.util.ArrayList;
 public class ChameleonApplication extends Application {
     private void loadInit() {
         try {
-            Class<?> cls = Class.forName("prj.chameleon.entry.Instantializer");
+            Class<?> cls = Class.forName("prj.chameleon.channelapi.Instantializer");
             IInstantializer inst = (IInstantializer)cls.newInstance();
             inst.initChameleon();
         } catch (Exception e) {
             Log.e(Constants.TAG, "Fail to find Instantializer, use test channel instead", e);
+            DummyChannelAPI.init();
         }
     }
 

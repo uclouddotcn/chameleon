@@ -65,7 +65,7 @@ function(token, others, callback) {
                 }
             });
         } else {
-            req.log({body: res.body}, "Fail to verify login");
+            req.log.debug({body: res.body}, "Fail to verify login");
             callback(null, {
                 code: -1
             });
