@@ -5,10 +5,8 @@ import prj.chameleon.test.TestChannelAPI;
 
 public class DummyChannelAPI  {
     static void init() {
-        /*
-        ChannelInterface.registerApi("test",
-                Constants.PluginType.USER_API|Constants.PluginType.PAY_API,
-                new TestChannelAPI());
-                */
+        TestChannelAPI api = new TestChannelAPI();
+        ChannelInterface.addApiGroup(new APIGroup(Constants.PluginType.USER_API | Constants.PluginType.PAY_API,
+                api));
     }
 }

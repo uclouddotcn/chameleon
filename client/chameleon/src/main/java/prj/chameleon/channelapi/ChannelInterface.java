@@ -325,6 +325,9 @@ public class ChannelInterface {
 		return _plugins.getChannelName();
 	}
 
+    static void setChannelName(String channelName) {
+        _plugins.setChannelName(channelName);
+    }
     /**
      * on activity result, the parameter is the same as Activity.onActivityResult
      * @param requestCode
@@ -467,6 +470,10 @@ public class ChannelInterface {
 
         public String getChannelName() {
             return mChannelName;
+        }
+
+        public void setChannelName(String channelName) {
+            mChannelName = channelName;
         }
     }
     private static Plugins _plugins = new Plugins();

@@ -47,7 +47,7 @@ AddChannel.prototype.doit = function (argv, cb) {
         }
         var srcDir = pathLib.join(channelDir, 'src', 'prj', 'chameleon', args.channel);
         var filename = args.channel[0].toUpperCase() + 
-            args.channel.substr(1) + 'ChannelApi.java';
+            args.channel.substr(1) + 'ChannelAPI.java';
         fs.ensureFile(pathLib.join(srcDir, filename), function (err) {
             if (err) {
                 cb(new Error('无法创建: ' + srcDir + ' '+ err.message));

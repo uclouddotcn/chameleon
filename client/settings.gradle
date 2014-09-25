@@ -1,14 +1,17 @@
-include ':app', ':cbinding', 'chameleon', ':chameleon_unity', ':uc', ':oppo'
-def channelDir = new File(rootDir, "channels");
-def channelPrj = channelDir.listFiles().findAll { 
-     it.isDirectory() && 
-     !( it =~ ".*/\\..*") && // don't add directories starting with '.' 
-     !( it =~ "^\\..*") // don't add directories starting with '.'
-    }.collect { 
-        ":channels:${it.getName()}"
-    } as String[]
+include ':app', ':cbinding', 'chameleon', ':chameleon_unity', ':channels:dangle'
 
-include channelPrj
+ def channelDir = new File(rootDir, "channels");
+ def channelPrj = channelDir.listFiles().findAll {
+      it.isDirectory() &&
+      !( it =~ ".*/\\..*") && // don't add directories starting with '.'
+      !( it =~ "^\\..*") // don't add directories starting with '.'
+     }.collect {
+         ":channels:${it.getName()}"
+     } as String[]
 
-project(':uc').projectDir = new File('channels/uc')
-project(':oppo').projectDir = new File('channels/oppo')
+ for (c in channelPrj) {
+     include c
+ }
+
+//project(':uc').projectDir = new File('channels/uc')
+//project(':oppo').projectDir = new File('channels/oppo')

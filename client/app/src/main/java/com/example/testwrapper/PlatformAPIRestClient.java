@@ -8,7 +8,7 @@ import com.loopj.android.http.RequestParams;
 
 class PlatformAPIRestClient {
     //private static final String BASE_URL = "http://118.192.73.182:8080";
-      private static final String BASE_URL = "http://192.168.12.73:8080";
+      private static final String BASE_URL = "http://192.168.12.230:8080";
 	  private static AsyncHttpClient client = new AsyncHttpClient();
 
 	  public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
