@@ -2,6 +2,8 @@ package prj.chameleon.channelapi;
 
 import android.app.Activity;
 
+import org.json.JSONObject;
+
 public interface IChannelPayAPI extends IAPIBase {
 
 
@@ -46,22 +48,28 @@ public interface IChannelPayAPI extends IAPIBase {
      * @param realPayMoney the real money to pay
      * @param cb JSON object will be null
      */
-    public abstract void buy(Activity activity,
-                             String orderId,
-                             String uidInGame,
-                             String userNameInGame,
-                             String serverId,
-                             String productName,
-                             String productID,
-                             String payInfo,
-                             int productCount,
-                             int realPayMoney,
-                             IDispatcherCb cb);
+    public void buy(Activity activity,
+                    String orderId,
+                    String uidInGame,
+                    String userNameInGame,
+                    String serverId,
+                    String productName,
+                    String productID,
+                    String payInfo,
+                    int productCount,
+                    int realPayMoney,
+                    IDispatcherCb cb);
 
     /**
-     * get token for pay
-     * @return the token for payment
+     * pay info from SDK
+     * @return the pay info from sdk
      */
-    public String getPayToken();
+    public JSONObject getPayInfo();
+
+    /**
+     * get the id of this sdk
+      * @return the id of this sdk
+     */
+    public String getId();
 
 }

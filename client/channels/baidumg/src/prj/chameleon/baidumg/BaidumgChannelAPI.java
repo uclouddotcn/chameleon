@@ -24,9 +24,6 @@ import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
-/**
- * Created by wushauk on 8/11/14.
- */
 public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private IAccountActionListener mAccountListener;
     private static class UserInfo {
@@ -53,6 +50,10 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
+        if (realPayMoney > 99999) {
+            Log.e(Constants.TAG, "baidumg: excceeds money limit");
+            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+        }
         Bundle bundle = new Bundle();
         bundle.putInt(DkProtocolKeys.FUNCTION_CODE, DkProtocolConfig.FUNCTION_Pay);
         if (allowUserChange) {
@@ -63,7 +64,8 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         bundle.putString(DkProtocolKeys.FUNCTION_EXCHANGE_RATIO, String.valueOf(rate));
         bundle.putString(DkProtocolKeys.FUNCTION_ORDER_ID, orderId);
         bundle.putString(DkProtocolKeys.FUNCTION_GAMEBI_NAME, currencyName);
-        bundle.putString(DkProtocolKeys.FUNCTION_PAY_DESC, "none");
+        bundle.putString(DkProtocolKeys.FUNCTION_PAY_DESC, composePayExt(null));
+
         Intent intent = new Intent(activity, DKPaycenterActivity.class);
         intent.putExtras(bundle);
         DkPlatform.invokeActivity(activity, intent, new IDKSDKCallBack() {
@@ -96,13 +98,17 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,
                     int realPayMoney,
                     final IDispatcherCb cb) {
+        if (realPayMoney > 99999) {
+            Log.e(Constants.TAG, "baidumg: excceeds money limit");
+            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+        }
         Bundle bundle = new Bundle();
         bundle.putInt(DkProtocolKeys.FUNCTION_CODE, DkProtocolConfig.FUNCTION_Pay);
         bundle.putString(DkProtocolKeys.FUNCTION_AMOUNT, String.valueOf(realPayMoney/100));
         bundle.putString(DkProtocolKeys.FUNCTION_EXCHANGE_RATIO, String.valueOf(realPayMoney/productCount));
         bundle.putString(DkProtocolKeys.FUNCTION_ORDER_ID, orderId);
         bundle.putString(DkProtocolKeys.FUNCTION_GAMEBI_NAME, productName);
-        bundle.putString(DkProtocolKeys.FUNCTION_PAY_DESC, String.format("%s*%d", productName, productCount));
+        bundle.putString(DkProtocolKeys.FUNCTION_PAY_DESC, composePayExt(productID));
         Intent intent = new Intent(activity, DKPaycenterActivity.class);
         intent.putExtras(bundle);
         DkPlatform.invokeActivity(activity, intent, new IDKSDKCallBack() {
@@ -123,6 +129,11 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         });
     }
 
+    @Override
+    public String getId() {
+        return "baidumg";
+    }
+
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Cfg();
         mCfg.mAppID = cfg.getString("appId");
@@ -138,7 +149,6 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         appInfo.setAppkey(mCfg.mAppKey);
         appInfo.setOrient(mCfg.mScreenOrientation);
         appInfo.setGameCategory(DkPlatformSettings.GameCategory.ONLINE_Game);
-        appInfo.setmVersionName("2.0.0.2");
         DkPlatform.init(activity, appInfo);
         DkPlatform.setDKSuspendWindowCallBack(new IDKSDKCallBack() {
             @Override
@@ -170,9 +180,8 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         DkPlatform.invokeActivity(activity, intent, new IDKSDKCallBack() {
             @Override
             public void onResponse(String s) {
-                int _loginState = 0;
+                int _loginState;
                 Log.d(Constants.TAG, "recv login rsp " + s);
-                String _userName;
                 UserInfo userInfo = new UserInfo();
                 JSONObject jsonObj;
                 try {
@@ -256,5 +265,13 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 cb.onFinished(Constants.ErrorCode.ERR_OK, null);
             }
         });
+    }
+
+    private String composePayExt(String productId) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(mChannel);
+        builder.append('|');
+        builder.append(productId);
+        return builder.toString();
     }
 }

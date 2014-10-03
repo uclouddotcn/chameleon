@@ -2,7 +2,6 @@ package prj.chameleon.channelapi;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -131,8 +130,8 @@ public class SingleSDKChannelAPI {
 
 
         @Override
-        public String getPayToken() {
-            return getToken();
+        public JSONObject getPayInfo() {
+            return null;
         }
 
         @Override

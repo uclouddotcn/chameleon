@@ -41,6 +41,11 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         });
     }
 
+    @Override
+    public String getId() {
+        return "test";
+    }
+
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
 
     }
@@ -112,11 +117,6 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         return mUserInfo.mIsLogined;
     }
 
-
-    @Override
-    public String getPayToken() {
-        return mUserInfo.mSession;
-    }
 
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {

@@ -257,7 +257,7 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             needPay = 0;
         }
 
-        NdCommplatform.getInstance().ndUniPayForCoin(orderId, needPay, "charge", activity);
+        NdCommplatform.getInstance().ndUniPayForCoin(orderId, needPay, getNote(), activity);
         mBackgroundListener.setNextCallback(new Runnable() {
             @Override
             public void run() {
@@ -299,7 +299,7 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         buyInfo.setProductOrginalPrice(((float)realPayMoney)/100);
         buyInfo.setProductPrice(((float)realPayMoney)/100);
         Log.d(Constants.TAG, String.format("buy pay money %f", ((float)realPayMoney)/100));
-        buyInfo.setPayDescription("buy");
+        buyInfo.setPayDescription(getNote());
         int error = NdCommplatform.getInstance().ndUniPay(buyInfo, activity,
                 new NdMiscCallbackListener.OnPayProcessListener() {
 
@@ -330,6 +330,11 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 }
             });
         }
+    }
+
+    @Override
+    public String getId() {
+        return "nd91";
     }
 
 
@@ -571,6 +576,10 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     public void enterPlatform(Activity activity, String message, IDispatcherCb cb) {
         NdCommplatform.getInstance().ndEnterPlatform(0, activity);
+    }
+
+    private String getNote() {
+        return mChannel;
     }
 
 }

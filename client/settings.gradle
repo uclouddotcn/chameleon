@@ -1,17 +1,14 @@
-include ':app', ':cbinding', 'chameleon', ':chameleon_unity', ':channels:dangle'
+include ':app'
+include 'chameleon'
+include ':chameleon_unity'
+include ':channels:dangle'
+include ':channels:baidumg'
+include ':channels:chinamob'
+include ':channels:nd91'
+include ':channels:oppo'
+include ':channels:qihu'
+include ':channels:qqmob'
+include ':channels:uc'
+include ':channels:wandoujia'
+include ':channels:xiaomi'
 
- def channelDir = new File(rootDir, "channels");
- def channelPrj = channelDir.listFiles().findAll {
-      it.isDirectory() &&
-      !( it =~ ".*/\\..*") && // don't add directories starting with '.'
-      !( it =~ "^\\..*") // don't add directories starting with '.'
-     }.collect {
-         ":channels:${it.getName()}"
-     } as String[]
-
- for (c in channelPrj) {
-     include c
- }
-
-//project(':uc').projectDir = new File('channels/uc')
-//project(':oppo').projectDir = new File('channels/oppo')

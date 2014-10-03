@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -58,7 +59,18 @@ public class ChannelInterface {
      * @return the pay token of this channel
      */
     public static String getPayToken() {
-        return _plugins.mPayApi.getPayToken();
+        JSONObject res = new JSONObject();
+        try {
+            res.put("ch", _plugins.getChannelName());
+            JSONObject obj = _plugins.mPayApi.getPayInfo();
+            if (obj != null) {
+                res.put("i", obj);
+            }
+            return res.toString();
+        } catch (JSONException e) {
+            Log.e(Constants.TAG, "Fail to compose pay token");
+            return "";
+        }
     }
 
     /**
