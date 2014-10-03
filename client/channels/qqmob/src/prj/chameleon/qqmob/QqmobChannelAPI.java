@@ -180,6 +180,11 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
+    public String getId() {
+        return "qqmob";
+    }
+
+    @Override
     public void login(Activity activity, final IDispatcherCb loginCallback, IAccountActionListener accountActionListener) {
         IUiListener listener = new IUiListener() {
 
@@ -233,7 +238,7 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     @Override
-    public String getPayToken() {
+    public JSONObject getPayInfo() {
         try {
             JSONObject obj = new JSONObject();
             obj.put("p", mPf);
@@ -243,10 +248,10 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             if (mIsDebug) {
                 obj.put("d", 1);
             }
-            return obj.toString();
+            return obj;
         } catch (JSONException e) {
             Log.e(Constants.TAG, "Fail to compose json", e);
-            return "";
+            return null;
         }
     }
 

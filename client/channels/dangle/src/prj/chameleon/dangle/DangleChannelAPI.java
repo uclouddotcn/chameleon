@@ -29,7 +29,6 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     private IAccountActionListener mAccountActionListener;
-    private boolean isLoginedAsGuest = false;
     private String mMerchantId;
     private String mAppId;
     private String mServerSeqNum;
@@ -91,7 +90,7 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                       final IDispatcherCb cb,
                       IAccountActionListener accountActionListener) {
         doLogin(activity, cb);
-        accountActionListener = accountActionListener;
+        mAccountActionListener = accountActionListener;
     }
 
     /**
@@ -124,6 +123,7 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         try {
             JSONObject obj = new JSONObject();
             obj.put("o", orderId);
+            obj.put("ch", mChannel);
             mDownJoy.openPaymentDialog(activity, money, currencyName, obj.toString(), new CallbackListener() {
 
                 @Override
@@ -187,6 +187,7 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             JSONObject obj = new JSONObject();
             obj.put("o", orderId);
             obj.put("p", productID);
+            obj.put("ch", mChannel);
             mDownJoy.openPaymentDialog(activity, money, productName, obj.toString(), new CallbackListener() {
 
                 @Override
@@ -217,6 +218,11 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 }
             });
         }
+    }
+
+    @Override
+    public String getId() {
+        return "dangle";
     }
 
 
@@ -465,7 +471,8 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        JSONObject obj = JsonMaker.makeLoginResponse(mUserInfo.mToken, null, mChannel);
+                        JSONObject obj = JsonMaker.makeLoginResponse(mUserInfo.mToken,
+                                null, mChannel);
                         if (obj != null) {
                             cb.onFinished(Constants.ErrorCode.ERR_OK, obj);
                         } else {

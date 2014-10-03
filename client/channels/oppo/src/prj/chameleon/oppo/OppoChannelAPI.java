@@ -175,10 +175,13 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                             int productCount,
                             int realPayMoney,
                             final IDispatcherCb cb) throws JSONException {
-        JSONObject attachInfo = new JSONObject();
-        attachInfo.put("u", mUid);
+        StringBuilder attachInfo = new StringBuilder();
+        attachInfo.append(mChannel);
+        attachInfo.append('|');
+        attachInfo.append(mUid);
+        attachInfo.append('|');
         if (productId != null) {
-            attachInfo.put("p", productId);
+            attachInfo.append(productId);
         }
         FixedPayInfo info = new FixedPayInfo(orderId, attachInfo.toString(), realPayMoney);
         info.setProductName(productName);
@@ -207,8 +210,10 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                            int rate,
                            final IDispatcherCb cb) throws JSONException {
 
-        JSONObject attachInfo = new JSONObject();
-        attachInfo.put("u", mUid);
+        StringBuilder attachInfo = new StringBuilder();
+        attachInfo.append(mChannel);
+        attachInfo.append('|');
+        attachInfo.append(mUid);
         RatePayInfo info = new RatePayInfo(orderId, attachInfo.toString());
         info.setProductName(productName);
         info.setRate(rate);
@@ -260,6 +265,11 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             Log.e(Constants.TAG, "Fail to pay", e);
             cb.onFinished(Constants.ErrorCode.ERR_INTERNAL, null);
         }
+    }
+
+    @Override
+    public String getId() {
+        return "oppo";
     }
 
 
