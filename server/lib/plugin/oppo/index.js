@@ -1,9 +1,13 @@
-var restify = require('restify');
-var querystring = require('querystring');
-var async = require('async');
 var crypto = require('crypto');
+var querystring = require('querystring');
+var util = require('util');
+
+var async = require('async');
+var restify = require('restify');
+
 var createSDKError = require('../../sdk-error').codeToSdkError;
-var _errorcode = require('../common/error-code');
+var _errorcode = require('../common/error-code').ErrorCode;
+var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
     requestUri: '?string',
@@ -12,42 +16,31 @@ var cfgDesc = {
     timeout: '?integer'
 };
 
-var OppoChannel = function(name, cfgItem, userAction, logger) {
-    this.defaultUri = "http://thapi.nearme.com.cn";
-    this.requestUri = cfgItem.requestUri || this.defaultUri;
-    this.name = name;
-    this.cfgItem = cfgItem;
-    this.userAction = userAction;
-    var timeout = cfgItem.timeout || 10;
+var OppoChannel = function(userAction, logger, cfgChecker) {
+    SDKPluginBase.call(this, userAction, logger, cfgChecker);
+    this.requestUri = "http://thapi.nearme.com.cn";
     this.client = restify.createStringClient({
         url: this.requestUri,
         retry: false,
+        connectTimeout: 10,
         log: logger
     });
-    this.logger = logger;
 };
+util.inherits(OppoChannel, SDKPluginBase);
 
-OppoChannel.prototype.getInfo = function () {
-    return {
-        cpId: this.cfgItem.cpId,
-        apiKey: this.cfgItem.apiKey,
-        requestUri: this.cfgItem.requestUri
-    };
-};
-
-OppoChannel.prototype.getAuthorization = function (token, secret) {
-    var time = new Date().getTime()
+OppoChannel.prototype.getAuthorization = function (cfgItem, token, secret) {
+    var time = new Date().getTime();
     var params =  {
-        oauth_consumer_key: this.cfgItem.appKey,
+        oauth_consumer_key: cfgItem.appKey,
         oauth_nonce: time + Math.round(Math.random() * 10),
         oauth_signature_method: 'HMAC-SHA1',
         oauth_timestamp: time/1000,
         oauth_version: '1.0',
         oauth_token: token
     };
-    var sortedParams = getSortedParamArray(params)
+    var sortedParams = getSortedParamArray(params);
     var requestUri = this.requestUri+'/account/GetUserInfoByGame';
-    var sign =  calcSign(sortedParams, requestUri, secret, this.cfgItem.appSecret);
+    var sign =  calcSign(sortedParams, requestUri, secret, cfgItem.appSecret);
     var res = 'OAuth ';
     for (var i in sortedParams) {
         res += sortedParams[i][0]+'="'+sortedParams[i][1]+'",';
@@ -57,9 +50,9 @@ OppoChannel.prototype.getAuthorization = function (token, secret) {
 };
 
 
-OppoChannel.prototype.verifyLogin = function(token, others, callback) {
+OppoChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
-    var auth = this.getAuthorization(token, others)
+    var auth = this.getAuthorization(wrapper.cfg, token, others);
     var opts = {
         path: '/account/GetUserInfoByGame',
         headers: {
@@ -67,29 +60,29 @@ OppoChannel.prototype.verifyLogin = function(token, others, callback) {
         }
     };
     this.client.post(opts, function (err, req, res, data) {
-        self.logger.debug({rsp: data}, 'recv from uc');
+        self._logger.debug({rsp: data}, 'recv from uc');
         if (err) {
             req.log.warn({err: err}, 'fail to get rsp from remote');
             callback(createSDKError(_errorcode.ERR_FAIL, req, 'Fail to verify login'));
             return;
         }
         try {
-            var res = null;
+            var result = null;
             var obj = JSON.parse(data);
             if (obj['BriefUser']) {
-                res = {
+                result = {
                     code: _errorcode.ERR_OK,
                     loginInfo: {
                         uid: obj['BriefUser']['id'],
-                        token: token,
+                        token: token
                     }
                 };
             } else {
-                res = {
+                result = {
                     code: _errorcode.ERR_FAIL
                 };
             }
-            callback(null, res);
+            callback(null, result);
         } catch (e) {
             req.log.debug({err: e}, 'unexpect exception from verfiy login rsp');
             callback(createSDKError(_errorcode.ERR_FAIL, req, 'Fail to verify login'));
@@ -118,33 +111,39 @@ OppoChannel.prototype.verifyPaySign = function (params, sign) {
     var verify = crypto.createVerify('RSA-SHA1');
     verify.write(t, 'utf-8');
     return verify.verify(PERMS, sign, 'base64');
-}
+};
 
-OppoChannel.prototype.respondsToPay = function (req, res, next) {
+OppoChannel.prototype.respondsToPay = function (wrapper, req, res, next) {
     var params = req.params;
-    this.logger.debug({params: params}, 'recv pay callback from uc');
-    var result = true
+    this._logger.debug({params: params}, 'recv pay callback from uc');
+    var result = true;
     try {
         if (!this.verifyPaySign(params, params.sign)) {
             send(res, false, 'sign not match');
             return next();
         }
-        var attachInfo = JSON.parse(params.attach);
-        var uid = attachInfo.u;
-        var productId = attachInfo.p;
+        var attachInfo = params.attach.split('|');
+        var wrapper = this._channels[attachInfo[0]];
+        if (!wrapper) {
+            this._userAction.payFail(attachInfo[0], params.partnerOrder, _errorcode.ERR_PAY_ILL_CHANNEL);
+            send(res, true);
+            return next();
+        }
+        var uid = attachInfo[1];
+        var productId = attachInfo[2];
         var others = {
-            notifyId: params.notifyId,
+            notifyId: params.notifyId
         };
-        self.userAction.pay(this.name, uid, null,
+        self._userAction.pay(wrapper.channelName, uid, null,
             params.partnerOrder, 0,
             productId, params.count, params.price, others,
             function (err, result) {
                 if (err) {
-                    self.logger.error({err: err}, "fail to pay");
+                    self._logger.error({err: err}, "fail to pay");
                     send(res, false, 'client responds error');
                     return next();
                 }
-                self.logger.debug({result: result}, "recv result");
+                self._logger.debug({result: result}, "recv result");
                 send(res, true);
                 return next();
             }
@@ -156,7 +155,7 @@ OppoChannel.prototype.respondsToPay = function (req, res, next) {
     }
 };
 
-OppoChannel.prototype.getChannelSubDir = function ()  {
+OppoChannel.prototype.getPayUrlInfo = function ()  {
     return [
         {
             method: 'post',
@@ -167,36 +166,27 @@ OppoChannel.prototype.getChannelSubDir = function ()  {
 };
 
 
-OppoChannel.prototype.reloadCfg = function (cfgItem) {
-    this.cfgItem = cfgItem;
-    this.client = restify.createJsonClient({
-        url: cfgItem.requestUri || this.defaultUri,
-        retry: false,
-        log: this.logger
-    });
-};
-
 function send(res, success, msg) {
     var t = 'OK';
     if (!success) {
         t = 'FAIL';
     }
-    var res = 'result='+t;
+    var result = 'result='+t;
     if (msg) {
-        res += '&' + 'resultMsg=' + msg;
+        result += '&' + 'resultMsg=' + msg;
     }
+    result = querystring.escape(result);
     res.writeHead(200, {
-        'Content-Length': Buffer.byteLength(res),
+        'Content-Length': Buffer.byteLength(result),
         'Content-Type': 'text/plain'
     });
-    res.write(res);
+    res.write(result);
 }
 
 function getSortedParamArray(params) {
-    var a = [];
-    for (var i in params) {
-        a.push([i, params[i].toString()]);
-    }
+    var a = Object.keys(params).map(function (key) {
+        return [key, params[key].toString()];
+    });
     return a.sort(compareParam);
 }
 
@@ -234,22 +224,8 @@ module.exports =
 {
     name: 'oppo',
     cfgDesc: cfgDesc,
-    create: function (name, cfgItem, userAction, logger) {
-        return new OppoChannel(name, cfgItem, userAction, logger);
+    createSDK: function (userAction, logger, cfgChecker) {
+        return new OppoChannel(userAction, logger, cfgChecker);
     }
 };
 
-/*
-var obj = {
-    oauth_consumer_key : 238569612,
-    oauth_nonce : 3297588989,
-    oauth_signature_method : 'HMAC-SHA1',
-    oauth_token : '8303b9b397f8779de36c4fb1ad85fb97',
-    oauth_timestamp : '1332742813',
-    oauth_version : "1.0"
-};
-
-var param = getSortedParamArray(obj)
-var p = calcSign(param, 'http://thapi.nearme.com.cn/account/queryUserInfo.xml', '2be3444192aabc2b1f4581ea3bf139f3', "Ff7Fde6EF3d54508a094eB8b66af619D" )
-console.log(p)
-*/

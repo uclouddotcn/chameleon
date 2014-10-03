@@ -1,7 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
 var pathLib =  require('path');
-var validator = require('validator');
 var util = require('util');
 var constants = require('./constants');
 var Product = require('./product');
@@ -13,7 +12,7 @@ var ProductMgr = function(pluginMgr, pendingOrderStore, logger) {
     this._pendingOrder = pendingOrderStore;
     this._logger = logger;
     EventEmitter.call(this);
-}
+};
 
 util.inherits(ProductMgr, EventEmitter);
 
@@ -21,10 +20,8 @@ util.inherits(ProductMgr, EventEmitter);
  * load products from local folders
  * @name ProductMgr.prototype._loadProducts
  * @function
- * @param cfgpath
  */
-ProductMgr.prototype.loadProductsSync = 
-function () {
+ProductMgr.prototype.loadProductsSync = function () {
     var cfgpath = constants.productDir;
     var self = this;
     fs.readdirSync(cfgpath).forEach(function (fileName) {
@@ -40,29 +37,28 @@ function () {
             throw err;
         }
     });
-}
+};
 
-ProductMgr.prototype.addProduct = 
+ProductMgr.prototype.addProduct =
 function (name, productCfg, cb) {
     var cfgpath = constants.productDir;
     var p = pathLib.join(cfgpath, name);
     var self = this;
     try {
-        var product = new Product(name, productCfg, this, this._pendingOrder, 
-            self._logger);
+        var product = Product.createProduct(name, p, productCfg, this, this._pendingOrder, self._pluginMgr, this._logger);
         self._newProductDir(name, p, productCfg, function (err) {
             if (err) {
                 return cb(err);
             }
             self.products[name] = product;
-            product.loadAllPlugins(self._pluginMgr, {});
+            product.loadAllChannels({});
             self.emit('start-product', {name: name, product: product});
             return cb();
         });
     } catch (e) {
         cb(new restify.InvalidArgumentError(e.message));
     }
-}
+};
 
 ProductMgr.prototype._newProductDir = 
 function (name, productPath, productCfg, cb) {
@@ -70,7 +66,7 @@ function (name, productPath, productCfg, cb) {
         if (err) {
             return cb(new restify.InternalError(err.message));
         }
-        productCfgPath = pathLib.join(productPath, 'product.json');
+        var productCfgPath = pathLib.join(productPath, 'product.json');
         fs.writeFile(productCfgPath, JSON.stringify(productCfg), 
             function (err) {
                 if (err) {
@@ -79,54 +75,43 @@ function (name, productPath, productCfg, cb) {
                 cb(err);
             });
     });
-}
+};
 
 
 /**
  * load single product synchronous
  * @name ProductMgr.prototype._loadProductSync
  * @function
- * @param {string} productName, the name of the product
- * @param {string} cfgpath, the path of the product config
+ * @param {string} productName the name of the product
+ * @param {string} cfgpath the path of the product config
  */
 ProductMgr.prototype._loadProductSync = 
 function (productName, cfgpath) {
     var self = this;    
     var productCfg = null;
-    var pluginCfgs = {};
+    var channelCfg = {};
     fs.readdirSync(cfgpath).forEach(function (fileName) {
         var p = cfgpath + '/' + fileName;
-        if (!fs.statSync(p).isFile(p) || pathLib.extname(fileName) !== '.json') {
+        if (!fs.statSync(p).isFile() || pathLib.extname(fileName) !== '.json') {
             return;
         }
-        if (fileName === 'product.json') {
+        if (fileName === '_product.json') {
             productCfg = constants.loadJsonCfgSync(p);
         } else {
             var name = pathLib.basename(fileName, '.json');
-            var data = fs.readFileSync(p, {encoding: 'utf8'}); 
-            pluginCfgs[name] = {
-                cfg: constants.loadJsonCfgSync(p),
-                p: p
-            }
+            channelCfg[name] = constants.loadJsonCfgSync(p);
         }
     });
     if (!productCfg) {
         throw new Error('Product '+productName+
         ' must have "product.json" under the config');
     }
-    var product = new Product(productName, productCfg, this, 
-        self._pendingOrder, self._logger);
-    product.loadAllPlugins(self._pluginMgr, pluginCfgs);
+    var product = Product.createProduct(productName, cfgpath, productCfg, this,
+        self._pendingOrder, self._pluginMgr, self._logger);
+    product.loadAllChannels(channelCfg);
     self.products[productName] = product;
     self.emit('start-product', {name: productName, product: product});
-}
-
-function nameToConfigPath(name) {
-    return constants.configDir + '/' + name + '.json';
-}
-
-function reloadPluginCfg(self, pluginInfo, cfg) {
-}
+};
 
 module.exports = ProductMgr;
 

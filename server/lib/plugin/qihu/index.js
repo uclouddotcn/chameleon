@@ -1,8 +1,14 @@
-var restify = require('restify');
-var querystring = require('querystring');
-var async = require('async');
+"use strict";
+
 var crypto = require('crypto');
-var sdkerror = require('../../sdk-error');
+var querystring = require('querystring');
+var util = require('util');
+
+var async = require('async');
+var restify = require('restify');
+
+var _errorcode = require('../common/error-code').ErrorCode;
+var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
     requestUri: '?string',
@@ -12,50 +18,38 @@ var cfgDesc = {
     timeout: '?integer'
 };
 
-var QihuChannel = function(name, cfgItem, userAction, logger) {
+var QihuChannel = function(userAction, logger, cfgChecker) {
+    SDKPluginBase.call(this, userAction, logger, cfgChecker);
+    var SDKPluginBase = require('../../SDKPluginBase');
     this.defaultUri = "https://openapi.360.cn";
-    this.name = name;
-    this.cfgItem = cfgItem;
-    this.privateKey = calcPrivateKey(cfgItem.appKey, cfgItem.appSecret);
     this.userAction = userAction;
-    var timeout = cfgItem.timeout || 10;
     this.client = restify.createJsonClient({
-        url: cfgItem.requestUri || this.defaultUri,
+        url: this.defaultUri,
         retry: false,
-        log: logger
+        log: logger,
+        connectTimeout: 10
     });
-    this.logger = logger;
 };
+util.inherits(QihuChannel, SDKPluginBase);
 
-QihuChannel.prototype.getInfo = function () {
-    return {
-        appid : this.cfgItem.appId,
-        appKey: this.cfgItem.appKey,
-        appSecret: this.cfgItem.appSecret,
-        appPrivate: this.privateKey,
-        requestUri: this.cfgItem.requestUri
-    };
-};
-
-QihuChannel.prototype.verifyLogin = 
-function(token, others, callback) {
+QihuChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
     async.waterfall([
         requestAccessToken.bind(
-            undefined, self.client, self.cfgItem, token, others),
-        requestUserInfo.bind(undefined, self.client),
+            undefined, self.client, wrapper.cfg, token, others),
+        requestUserInfo.bind(undefined, self.client)
     ], function (err, result){
         if (err) {
             return callback(err);
         }
         if (result.loginInfo) {
-            result.loginInfo.channel = self.name;
+            result.loginInfo.channel = wrapper.channelName;
         }
         callback(null, result);
     });
 };
 
-QihuChannel.prototype.getChannelSubDir = function ()  {
+QihuChannel.prototype.getPayUrlInfo = function ()  {
     var self = this;
     return [
         {
@@ -71,16 +65,6 @@ QihuChannel.prototype.getChannelSubDir = function ()  {
     ];
 };
 
-
-QihuChannel.prototype.reloadCfg = function (cfgItem) {
-    this.cfgItem = cfgItem;
-    this.client = restify.createJsonClient({
-        url: cfgItem.requestUri || this.defaultUri,
-        retry: false,
-        log: this.logger
-    });
-    this.privateKey = calcPrivateKey(cfgItem.appKey, cfgItem.appSecret);
-};
 
 function requestAccessToken(client, cfgItem, token, others, next) {
     var q = '/oauth2/access_token?' + 
@@ -130,7 +114,7 @@ function requestUserInfo(client, accessTokenObj, callback) {
                         area: obj.area,
                         nick: obj.nick
                     })
-                }
+                };
                 var result = {
                     code: 0,
                     loginInfo: loginInfo
@@ -152,35 +136,47 @@ function send(res, body) {
         'Content-Type': 'text/plain'
     });
     res.write(body);
-};
+}
 
 
 
 function respondsToPay(self, req, res, next) {
     var params = req.params;
-    var expectSign = calcPaySign(self.cfgItem.appSecret, params);
-    if (expectSign != params.sign) {
-        self.logger.warn({req: req, params: params}, "unmatched sign");
-        send(res, 'error');
-        return next();
-    }
-    var other = {
-        orderId: params.order_id,
-    };
-    self.userAction.pay(self.name, params.user_id, params.app_uid, 
-        params.app_order_id, getPayStatus(params.gateway_flag), 
-        params.product_id, null, params.amount, other,
-        function (err, result) {
-            if (err) {
-                self.logger.error({err: err}, "fail to pay");
-                send(res, err.message);
-                return next();
-            }
-            self.logger.debug({result: result}, "recv result");
+    try {
+        var wrapper = this._channels[params.ext1];
+        if (!wrapper) {
+            self._userAction.payFail(params.ext1, params.app_order_id, _errorcode.ERR_PAY_ILL_CHANNEL);
             send(res, 'ok');
             return next();
         }
-    );
+        var expectSign = calcPaySign(wrapper.cfg.appSecret, params);
+        if (expectSign != params.sign) {
+            self._logger.warn({req: req, params: params}, "unmatched sign");
+            send(res, 'error');
+            return next();
+        }
+        var other = {
+            orderId: params.order_id
+        };
+        self.userAction.pay(wrapper.channelName, params.user_id, params.app_uid,
+            params.app_order_id, getPayStatus(params.gateway_flag),
+            params.product_id, 0, params.amount, other,
+            function (err, result) {
+                if (err) {
+                    self._logger.error({err: err}, "fail to pay");
+                    send(res, err.message);
+                    return next();
+                }
+                self._logger.debug({result: result}, "recv result");
+                send(res, 'ok');
+                return next();
+            }
+        );
+    } catch (e) {
+        self._logger.warn({err: e}, "Fail to responds to pay");
+        send(res, 'error');
+        return next();
+    }
 }
 
 function compareParam(a, b) {
@@ -234,8 +230,8 @@ module.exports =
 {
     name: 'qihu',
     cfgDesc: cfgDesc,
-    create: function (name, cfgItem, userAction, logger) {
-                return new QihuChannel(name, cfgItem, userAction, logger);
+    createSDK: function (userAction, logger, cfgChecker) {
+                return new QihuChannel(userAction, logger, cfgChecker);
             }
 };
 
