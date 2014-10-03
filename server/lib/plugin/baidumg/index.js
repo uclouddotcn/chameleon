@@ -1,9 +1,12 @@
-var restify = require('restify');
-var querystring = require('querystring');
-var async = require('async');
 var crypto = require('crypto');
-var sdkerror = require('../../sdk-error');
+var querystring = require('querystring');
+var util = require('util');
+
+var async = require('async');
+var restify = require('restify');
+
 var ErrorCode = require('../common/error-code').ErrorCode;
+var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
     appId: 'string',
@@ -13,39 +16,29 @@ var cfgDesc = {
 };
 
 
-var BaidumgChannel = function(name, cfgItem, userAction, logger) {
-    this.requestUri = cfgItem.requestUri || "http://sdk.m.duoku.com";
-    this.name = name;
-    this.cfgItem = cfgItem;
-    this.userAction = userAction;
-    var timeout = cfgItem.timeout || 10;
+var BaidumgChannel = function(userAction, logger, cfgChecker) {
+    SDKPluginBase.call(this, userAction, logger, cfgChecker);
+    this.requestUri = "http://sdk.m.duoku.com";
     this.client = restify.createJsonClient({
         url: this.requestUri,
         retry: false,
-        log: logger
+        log: logger,
+        connectTimeout: 10
     });
-    this.logger = logger;
 };
+util.inherits(BaidumgChannel, SDKPluginBase);
 
-BaidumgChannel.prototype.getInfo = function () {
-    return {
-        appid : this.cfgItem.appId,
-        appKey: this.cfgItem.appKey,
-        appSecret: this.cfgItem.appSecret
-    };
-};
-
-BaidumgChannel.prototype.verifyLogin = 
-function(token, others, callback) {
+BaidumgChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
+    var cfgItem = wrapper.cfg;
     var q = '/openapi/sdk/checksession?' + 
         querystring.stringify({
-            appid: this.cfgItem.appId,
-            appKey: this.cfgItem.appKey,
+            appid: cfgItem.appId,
+            appKey: cfgItem.appKey,
             uid: others,
             sessionid: token,
-            clientsecret: this.calcSecret([this.cfgItem.appId, 
-                this.cfgItem.appKey, others, token, this.cfgItem.appSecret])
+            clientsecret: this.calcSecret([cfgItem.appId,
+                cfgItem.appKey, others, token, cfgItem.appSecret])
         });
     this.client.get(q, function (err, req, res, obj) {
         req.log.debug({req: req, err: err, obj: obj, q: q}, 'on result ');
@@ -59,7 +52,7 @@ function(token, others, callback) {
                 loginInfo: {
                     uid: others,
                     token: token,
-                    channel: self.name
+                    channel: wrapper.channelName
                 }
             });
         } else {
@@ -79,7 +72,7 @@ BaidumgChannel.prototype.calcSecret = function (params) {
     return md5sum.digest('hex').toLowerCase();
 };
 
-BaidumgChannel.prototype.getChannelSubDir = function ()  {
+BaidumgChannel.prototype.getPayUrlInfo = function ()  {
     var self = this;
     return [
         {
@@ -99,31 +92,39 @@ BaidumgChannel.prototype.respondsToPay = function (req, res, next) {
     var self = this;
     var params = req.params;
     req.log.debug({req: req, params: params}, 'recv pay rsp');
-    var expectSign = this.calcSecret([params.amount, params.cardtype, 
-        params.orderid, params.result, params.timetamp, 
-        this.cfgItem.appSecret, escape(params.aid)]); 
-    if (expectSign != params.client_secret) {
-        self.logger.warn({req: req, params: params}, "unmatched sign");
-        self.
-        self.send(res, 'ERROR_SIGN');
-        return next();
-    }
     try {
+        var customInfos = params.aid.split('|');
+        var channel = customInfos[0]
+        var wrapper = this._channels[channel];
+        if (!wrapper) {
+            this._userAction.payFail(channel, params.orderid, ErrorCode.ERR_PAY_ILL_CHANNEL);
+            self.send(res, 'SUCCESS');
+            return next();
+        }
+        var cfgItem = wrapper.cfg;
+        var expectSign = this.calcSecret([params.amount, params.cardtype,
+            params.orderid, params.result, params.timetamp,
+            cfgItem.appSecret, escape(params.aid)]);
+        if (expectSign != params.client_secret) {
+            self._logger.warn({req: req, params: params}, "unmatched sign");
+            self.send(res, 'ERROR_SIGN');
+            return next();
+        }
         var other = {
-            orderId: params.order_id,
+            orderId: params.order_id
         };
         var amount = Math.round(parseFloat(params.amount) * 100);
         var infoObj = querystring.parse(params.aid);
-        self.userAction.pay(self.name, infoObj.uid, infoObj.appuid, 
+        this._userAction.pay(wrapper.channelName, infoObj.uid, infoObj.appuid,
             params.orderid, getPayStatus(params.result), 
             infoObj.pid, null, amount, other,
             function (err, result) {
                 if (err) {
-                    self.logger.error({err: err}, "fail to pay");
+                    self._logger.error({err: err}, "fail to pay");
                     self.send(res, err.message);
                     return next();
                 }
-                self.logger.debug({result: result}, "recv result");
+                self._logger.debug({result: result}, "recv result");
                 self.send(res, 'SUCCESS');
                 return next();
             }
@@ -144,15 +145,6 @@ BaidumgChannel.prototype.send = function (res, body) {
     res.write(body);
 };
 
-
-BaidumgChannel.prototype.reloadCfg = function (cfgItem) {
-    this.cfgItem = cfgItem;
-    this.client = restify.createJsonClient({
-        url: this.requestUri,
-        retry: false,
-        log: this.logger
-    });
-};
 
 function getPayStatus(flag) {
     if (flag == '1') {
@@ -190,8 +182,8 @@ module.exports =
 {
     name: 'baidumg',
     cfgDesc: cfgDesc,
-    create: function (name, cfgItem, userAction, logger) {
-                return new BaidumgChannel(name, cfgItem, userAction, logger);
+    createSDK: function (userAction, logger, checker) {
+                return new BaidumgChannel(userAction, logger, checker);
             }
 };
 

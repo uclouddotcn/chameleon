@@ -4,11 +4,8 @@ var util = require('util');
 var constants = require('./constants');
 var fs = require('fs');
 
-var configDir = __dirname + '/../plugin_config';
-
 module.exports.createPluginMgr = function (logger) {
-    var mgr = new PluginMgr(logger);
-    return mgr;
+    return new PluginMgr(logger);
 };
 
 
@@ -30,10 +27,10 @@ function PluginMgr(logger) {
  * Get all plugin module infos
  * @name PluginMgr.prototype.getAllPluginInfos
  * @function
- * @return {array} a list of plugin info
+ * @return {Array} a list of plugin info
  */
 PluginMgr.prototype.getAllPluginInfos = function() {
-    ret = [];
+    var ret = [];
     for (var i in this.pluginModules) {
         ret.push(makePluginInfo(this.pluginModules[i]));
     }
@@ -45,15 +42,15 @@ PluginMgr.prototype.getAllPluginInfos = function() {
  * Add a plugin, plugin module must be placed under $ROOT/lib/plugin
  * @name PluginMgr.prototype.addPlugin
  * @function
- * @param {string} name, name of the plugin
- * @param {object} param, the request param item
+ * @param {string} name name of the plugin
+ * @param {object} param the request param item
  * @param {?object} param.cfg, the config item
  * @param {function} callback
  */
 PluginMgr.prototype.addPlugin = function(name, param, callback) {
     var self = this;
     var pluginModule = self.pluginModules[name];
-    if (pluginInfo) {
+    if (pluginModule) {
          return callback(Error("plugin " + name + " is already loaded"));
     }
 
@@ -80,7 +77,7 @@ function doLoadPluginModule(self, path) {
         throw new Error('plugin ' + path + 
             ' miss required field name');
     }
-    if (!pluginModule.create ) {
+    if (!pluginModule.createSDK ) {
         throw new Error('plugin ' + path + 
             ' miss required function create');
     }

@@ -1,9 +1,14 @@
-var restify = require('restify');
-var querystring = require('querystring');
-var async = require('async');
+"use strict";
+
 var crypto = require('crypto');
-var sdkerror = require('../../sdk-error');
+var querystring = require('querystring');
+var util = require('util');
+
+var async = require('async');
+var restify = require('restify');
+
 var ErrorCode = require('../common/error-code').ErrorCode;
+var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
     appId: 'string',
@@ -12,27 +17,17 @@ var cfgDesc = {
 };
 
 
-var DangleChannel = function(name, cfgItem, userAction, logger) {
-    this.logger = logger;
-    this.requestUri = cfgItem.requestUri || "http://connect.d.cn/";
-    this.name = name;
-    this.cfgItem = cfgItem;
-    this.userAction = userAction;
-    var timeout = cfgItem.timeout || 10;
+var DangleChannel = function(userAction, logger, cfgChecker) {
+    SDKPluginBase.call(this, userAction, logger, cfgChecker);
+    this.requestUri = "http://connect.d.cn/";
     this.client = restify.createJsonClient({
         url: this.requestUri,
         retry: false,
-        log: logger
+        log: logger,
+        connectTimeout: 10
     });
-    this.logger = logger;
 };
-
-DangleChannel.prototype.getInfo = function () {
-    return {
-        appId : this.cfgItem.appId,
-        appKey : this.cfgItem.appKey
-    };
-}
+util.inherits(DangleChannel, SDKPluginBase);
 
 DangleChannel.prototype.calcSecret = function (s) {
     var md5sum = crypto.createHash('md5');
@@ -41,45 +36,45 @@ DangleChannel.prototype.calcSecret = function (s) {
 };
 
 
-DangleChannel.prototype.verifyLogin =
-    function(token, others, callback) {
-        var self = this;
-        var sig = this.calcSecret(token+'|'+self.cfgItem.appKey);
-        var q = '/open/member/info?' +
-            querystring.stringify({
-                app_id: self.cfgItem.appId,
-                mid: others,
-                token: token,
-                sig: sig
-            });
-        this.client.get(q, function (err, req, res, obj) {
-            req.log.debug({req: req, err: err, obj: obj, q: q}, 'on result ');
-            if (err) {
-                req.log.warn({err: err}, 'request error');
-                return callback(err);
-            }
-            if (obj.error_code) {
-                req.log.debug({body: res.body}, "Fail to verify login");
-                callback(null, {
-                    code: self.mapError(obj.error_code),
-                    msg: obj.error_msg
-                });
-            } else {
-                callback(null, {
-                    code: 0,
-                    loginInfo: {
-                       uid: obj.memberId,
-                       token: obj.token,
-                       name: obj.nickname,
-                       channel: self.name
-                    }
-                });
-            }
+DangleChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
+    var self = this;
+    var cfgItem = wrapper.cfg;
+    var sig = this.calcSecret(token+'|'+cfgItem.appKey);
+    var q = '/open/member/info?' +
+        querystring.stringify({
+            app_id: cfgItem.appId,
+            mid: others,
+            token: token,
+            sig: sig
         });
-    };
+    this.client.get(q, function (err, req, res, obj) {
+        req.log.debug({req: req, err: err, obj: obj, q: q}, 'on result ');
+        if (err) {
+            req.log.warn({err: err}, 'request error');
+            return callback(err);
+        }
+        if (obj.error_code) {
+            req.log.debug({body: res.body}, "Fail to verify login");
+            callback(null, {
+                code: self.mapError(obj.error_code),
+                msg: obj.error_msg
+            });
+        } else {
+            callback(null, {
+                code: 0,
+                loginInfo: {
+                   uid: obj.memberId,
+                   token: obj.token,
+                   name: obj.nickname,
+                   channel: wrapper.channelName
+                }
+            });
+        }
+    });
+};
 
 
-DangleChannel.prototype.getChannelSubDir = function ()  {
+DangleChannel.prototype.getPayUrlInfo = function ()  {
     var self = this;
     return [
         {
@@ -104,6 +99,21 @@ DangleChannel.prototype.respondsToPay = function (req, res, next) {
     var self = this;
     var params = req.params;
     try {
+        var customInfos = params.ext.split('|');
+        var channel = customInfos[0];
+        var orderId = customInfos[1];
+        var wrapper = this._channels[channel];
+        if (!wrapper) {
+            this._userAction.payFail(channel, orderId, ErrorCode.ERR_PAY_ILL_CHANNEL);
+            self.send(res, 'success');
+            return next();
+        }
+        if (!orderId) {
+            req.log.error("illegal rsp format from dangle, missing order no");
+            self.send(res, 'incorrect ext');
+            return next();
+        }
+        var cfgItem = this._channels[channel].cfg;
         var success = 0;
         if (params.result !== '1') {
             success = -1;
@@ -118,31 +128,25 @@ DangleChannel.prototype.respondsToPay = function (req, res, next) {
             "&mid="+params.mid+
             "&result="+params.result+
             "&ext="+params.ext+
-            "&key="+self.cfgItem.paymentKey;
+            "&key="+cfgItem.paymentKey;
         var expectSign = self.calcSecret(calcString);
         if (expectSign !== calcString) {
             self.send(res, 'invalid sign');
             return next();
         }
-        var obj = JSON.parse(params.ext);
-        if (obj.o === undefined) {
-            req.log.error("illegal rsp format from dangle, missing order no");
-            self.send(res, 'missing correct ext');
-            return next();
-        }
         var other = {
             chOrderId: channelOrderNo,
             timestamp: timestamp
-        }
-        self.userAction.pay(self.name, uid, null, obj.o,
-            success, obj.p, null, money, other,
+        };
+        self._userAction.pay(wrapper.channelName, uid, null, obj.o,
+            success, obj.p, 0, money, other,
         function (err, result) {
             if (err) {
-                self.logger.error({err: err}, "fail to pay");
+                self._logger.error({err: err}, "fail to pay");
                 self.send(res, err.message);
                 return next();
             }
-            self.logger.debug({result: result}, "recv result");
+            self._logger.debug({result: result}, "recv result");
             self.send(res, 'success');
             return next();
         });
@@ -152,18 +156,8 @@ DangleChannel.prototype.respondsToPay = function (req, res, next) {
         return next();
     }
 
-}
-
-
-DangleChannel.prototype.reloadCfg = function (cfgItem) {
-    this.cfgItem = cfgItem;
-    this.requestUri = cfgItem.requestUri || "http://connect.d.cn/";
-    this.client = restify.createJsonClient({
-        url: this.requestUri,
-        retry: false,
-        log: this.logger
-    });
 };
+
 
 DangleChannel.prototype.mapError = function (errorCode) {
     switch (errorCode) {
@@ -185,15 +179,15 @@ DangleChannel.prototype.mapError = function (errorCode) {
         default:
             return ErrorCode.ERR_FAIL;
     }
-}
+};
 
 
 module.exports =
 {
     name: 'dangle',
     cfgDesc: cfgDesc,
-    create: function (name, cfgItem, userAction, logger) {
-        return new DangleChannel(name, cfgItem, userAction, logger);
+    createSDK: function (userAction, logger, cfgChecker) {
+        return new DangleChannel(userAction, logger, cfgChecker);
     }
 };
 

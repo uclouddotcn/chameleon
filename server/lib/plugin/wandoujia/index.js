@@ -1,53 +1,43 @@
-var restify = require('restify');
-var querystring = require('querystring');
-var async = require('async');
 var crypto = require('crypto');
-var sdkerror = require('../../sdk-error');
+var querystring = require('querystring');
+var util = require('util');
+
+var restify = require('restify');
+var async = require('async');
+
 var ErrorCode = require('../common/error-code').ErrorCode;
+var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
     appId: 'string',
-    appKey: 'string',
-    requestUri: '?string'
+    appKey: 'string'
 };
 
 
-var WandoujiaChannel = function(name, cfgItem, userAction, logger) {
-    this.logger = logger;
-    this.requestUri = cfgItem.requestUri || "https://pay.wandoujia.com/";
-    this.name = name;
-    this.cfgItem = cfgItem;
-    this.userAction = userAction;
+var WandoujiaChannel = function(userAction, logger, cfgChecker) {
+    SDKPluginBase.call(this, userAction, logger, cfgChecker);
+    this.requestUri = "https://pay.wandoujia.com/";
     this.wdjPublicKey = ["-----BEGIN PUBLIC KEY-----",
         "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCd95FnJFhPinpNiE/h4VA6bU1r",
         "zRa5+a25BxsnFX8TzquWxqDCoe4xG6QKXMXuKvV57tTRpzRo2jeto40eHKClzEgj",
         "x9lTYVb2RFHHFWio/YGTfnqIPTVpi7d7uHY+0FZ0lYL5LlW4E2+CQMxFOPRwfqGz",
         "Mjs1SDlH7lVrLEVy6QIDAQAB",
         "-----END PUBLIC KEY-----"].join('\n');
-    var timeout = cfgItem.timeout || 10;
     this.client = restify.createJsonClient({
         url: this.requestUri,
         retry: false,
-        log: logger
+        log: logger,
+        connectTimeout: 10
     });
-    this.logger = logger;
 };
+util.inherits(WandoujiaChannel, SDKPluginBase);
 
-WandoujiaChannel.prototype.getInfo = function () {
-    return {
-        appId : this.cfgItem.appId,
-        requestUri : this.requestUri
-    };
-};
-
-WandoujiaChannel.prototype.verifyLogin = 
-function(token, others, callback) {
-    var self = this;
-    var q = '/api/uid/check?' + 
+WandoujiaChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
+    var q = '/api/uid/check?' +
         querystring.stringify({
             uid: others,
             token: token,
-            appkey_id: this.cfgItem.appId,
+            appkey_id: wrapper.cfg.appId
         });
     this.client.get(q, function (err, req, res, obj) {
         req.log.debug({req: req, err: err, obj: obj, q: q}, 'on result ');
@@ -61,7 +51,7 @@ function(token, others, callback) {
                 loginInfo: {
                     uid: others,
                     token: token,
-                    channel: self.name
+                    channel: wrapper.channelName
                 }
             });
         } else {
@@ -78,9 +68,9 @@ WandoujiaChannel.prototype.verify = function (content, publickey, sign) {
     var verify = crypto.createVerify('RSA-SHA1');
     verify.write(content, 'utf-8');
     return verify.verify(publickey, sign, 'base64');
-}
+};
 
-WandoujiaChannel.prototype.getChannelSubDir = function ()  {
+WandoujiaChannel.prototype.getPayUrlInfo = function ()  {
     var self = this;
     return [
         {
@@ -104,9 +94,9 @@ WandoujiaChannel.prototype.send = function (res, body) {
 WandoujiaChannel.prototype.respondsToPay = function (req, res, next) {
     var self = this;
     var params = req.params;
-    self.logger.debug({req: req, params: params}, "on rsp for pay");
+    self._logger.debug({req: req, params: params}, "on rsp for pay");
     if (!self.verify(params.content, this.wdjPublicKey, params.sign)) {
-        self.logger.warn({req: req, params: params}, "invalid sign");
+        self._logger.warn({req: req, params: params}, "invalid sign");
         self.send(res, 'invalid sign');
         return next();
     }
@@ -118,18 +108,16 @@ WandoujiaChannel.prototype.respondsToPay = function (req, res, next) {
             chargeType: rspObj.chargeType,
             cardNo: rspObj.cardNo
         };
-        var amount = Math.round(parseFloat(params.amount) * 100);
-        var infoObj = querystring.parse(params.aid);
-        self.userAction.pay(self.name, rspObj.buyerId, null, 
+        self._userAction.pay(self.name, rspObj.buyerId, null,
             rspObj.out_trade_no, 0, 
             null, null, rspObj.money, other,
             function (err, result) {
                 if (err) {
-                    self.logger.error({err: err}, "fail to pay");
+                    self._logger.error({err: err}, "fail to pay");
                     self.send(res, err.message);
                     return next();
                 }
-                self.logger.debug({result: result}, "recv result");
+                self._logger.debug({result: result}, "recv result");
                 self.send(res, 'success');
                 return next();
             }
@@ -140,17 +128,6 @@ WandoujiaChannel.prototype.respondsToPay = function (req, res, next) {
         return next();
     }
 
-}
-
-
-WandoujiaChannel.prototype.reloadCfg = function (cfgItem) {
-    this.cfgItem = cfgItem;
-    this.requestUri = cfgItem.requestUri || "https://pay.wandoujia.com/";
-    this.client = restify.createJsonClient({
-        url: this.requestUri,
-        retry: false,
-        log: this.logger
-    });
 };
 
 
@@ -158,8 +135,8 @@ module.exports =
 {
     name: 'wandoujia',
     cfgDesc: cfgDesc,
-    create: function (name, cfgItem, userAction, logger) {
-                return new WandoujiaChannel(name, cfgItem, userAction, logger);
+    createSDK: function (userAction, logger, cfgChecker) {
+                return new WandoujiaChannel(userAction, logger, cfgChecker);
             }
 };
 
