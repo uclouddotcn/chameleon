@@ -90,6 +90,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
         mCpId = cfg.getLong("cpId");
         mGameID = cfg.getLong("gameId");
+        mChannel = commCfg.mChannel;
     }
 
     /**

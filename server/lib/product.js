@@ -42,6 +42,16 @@ Product.prototype.loadAllChannels = function (channelCfg) {
     Object.keys(channelCfg).forEach(function (key) {
         self.startChannel(key, channelCfg[key]);
     });
+    // start test channel
+    this.startChannel("test", {
+        sdks: [
+            {
+                name: 'test',
+                type: 'user,pay',
+                cfg: {}
+            }
+        ]
+    });
 };
 
 /**
@@ -99,11 +109,10 @@ Product.prototype.stopPlugin = function (channelName) {
 Product.prototype.verifyLogin = 
 function (req, res, next) {
     var params = req.params;
-    var channelName = params.ch;
-    var channel = this.channelMgr.getChannel(params.sdk);
+    var channelName = params.channel;
+    var channel = this.channelMgr.getChannel(params.channel);
     if (!channel) {
-        throw new Error(util.format('Not channel %s for product %s'), 
-            params.sdk, this._productName);
+        throw new Error(util.format('Not channel ' + params.channel + 'for product' + this._productName));
     }
     this._userAction.verifyUserLogin( channel,
         req.params.token,
@@ -126,11 +135,13 @@ function (req, res, next) {
 Product.prototype.parsePayToken = function (token) {
     var obj = JSON.parse(token);
     var channel = obj.ch;
-    var sdk = obj.sdk;
-    if (channel === undefined || sdk === undefined) {
+    if (channel === undefined ) {
         throw new Error("missing channel or sdk in token");
     }
-    return obj;
+    return {
+        channel: obj.ch,
+        i: obj.i
+    };
 };
 
 Product.prototype.pendingPay =function(req, res, next) {
@@ -140,8 +151,7 @@ Product.prototype.pendingPay =function(req, res, next) {
     var infoFromSDK = tokenInfo.i;
     var channel = this.channelMgr.getChannel(channelName);
     if (!channel) {
-        throw new restify.InvalidArgumentError(util.format('Not channel %s for product %s',
-            channelName, this._productName));
+        throw new restify.InvalidArgumentError('Not channel ' + channelName + ' for product ' + this._productName);
     }
     channel.pendingPay(params, infoFromSDK, function (err, orderId, payInfo) {
         if (err) {

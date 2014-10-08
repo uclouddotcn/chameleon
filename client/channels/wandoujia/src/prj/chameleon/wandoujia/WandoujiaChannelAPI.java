@@ -95,6 +95,7 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
         mAppId = cfg.getLong("appId");
         mAppKey = cfg.getString("appKey");
         mIsDebug = commCfg.mIsDebug;
+        mChannel = commCfg.mChannel;
     }
 
     @Override

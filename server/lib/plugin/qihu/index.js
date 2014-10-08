@@ -20,14 +20,13 @@ var cfgDesc = {
 
 var QihuChannel = function(userAction, logger, cfgChecker) {
     SDKPluginBase.call(this, userAction, logger, cfgChecker);
-    var SDKPluginBase = require('../../SDKPluginBase');
     this.defaultUri = "https://openapi.360.cn";
     this.userAction = userAction;
     this.client = restify.createJsonClient({
         url: this.defaultUri,
         retry: false,
         log: logger,
-        connectTimeout: 10
+        connectTimeout: 20000
     });
 };
 util.inherits(QihuChannel, SDKPluginBase);
@@ -141,11 +140,12 @@ function send(res, body) {
 
 
 function respondsToPay(self, req, res, next) {
+    self._logger.debug({req: req}, 'responds to pay');
     var params = req.params;
     try {
-        var wrapper = this._channels[params.ext1];
+        var wrapper = self._channels[params.app_ext1];
         if (!wrapper) {
-            self._userAction.payFail(params.ext1, params.app_order_id, _errorcode.ERR_PAY_ILL_CHANNEL);
+            self._userAction.payFail(params.app_ext1, params.app_order_id, _errorcode.ERR_PAY_ILL_CHANNEL);
             send(res, 'ok');
             return next();
         }

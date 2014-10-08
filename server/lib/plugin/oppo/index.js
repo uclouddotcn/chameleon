@@ -22,8 +22,8 @@ var OppoChannel = function(userAction, logger, cfgChecker) {
     this.client = restify.createStringClient({
         url: this.requestUri,
         retry: false,
-        connectTimeout: 10,
-        log: logger
+        log: logger,
+        connectTimeout: 20000
     });
 };
 util.inherits(OppoChannel, SDKPluginBase);

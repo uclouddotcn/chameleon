@@ -22,7 +22,7 @@ var XiaomiChannel = function(userAction, logger, cfgChecker) {
         url: this.requestUri,
         retry: false,
         log: this._logger,
-        connectTimeout: 10
+        connectTimeout: 20000
     });
 };
 util.inherits(XiaomiChannel, SDKPluginBase);
@@ -34,7 +34,7 @@ XiaomiChannel.prototype.verifyLogin = function(wrapper, token, others, callback)
         session: token,
         uid: others
     };
-    params.signature = this.calcSecret(params);
+    params.signature = this.calcSecret(wrapper, params);
     var q = '/api/biz/service/verifySession.do?' + 
         querystring.stringify(params);
     this._logger.debug({params: params}, 'sending ' + q);
@@ -122,7 +122,7 @@ XiaomiChannel.prototype.respondsToPay = function (req, res, next) {
             return next();
         }
 
-        var expectSign = this.calcSecret(params);
+        var expectSign = this.calcSecret(wrapper, params);
         if (expectSign != signature) {
             self._logger.warn({req: req, expectSign: expectSign,  params: params}, "unmatched sign");
             res.send(this.getRspMsg(1525));

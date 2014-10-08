@@ -51,6 +51,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
                         new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(final JSONObject ret) {
+                                Log.d("TEST", ret.toString());
                                 mActivity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -60,6 +61,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
                             }
                             @Override
                             public void onFailure(java.lang.Throwable e, org.json.JSONArray errorResponse) {
+                                Log.e("TEST", "on failure", e);
                                 if (errorResponse != null) {
                                     Log.e("TEST", errorResponse.toString(), e);
                                 }
@@ -67,11 +69,19 @@ public class MainActivity extends Activity implements IAccountActionListener {
                             }
                             @Override
                             public void onFailure(java.lang.Throwable e, org.json.JSONObject errorResponse) {
+                                Log.e("TEST", "on failure", e);
                                 if (errorResponse != null) {
                                     Log.e("TEST", errorResponse.toString(), e);
 
                                 }
                                                             }
+
+                            @Override
+                            protected java.lang.Object parseResponse(java.lang.String responseBody) throws org.json.JSONException
+                            {
+                                Object res = super.parseResponse(responseBody);
+                                return res;
+                            }
                         }
                 );
 

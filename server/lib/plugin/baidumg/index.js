@@ -23,7 +23,7 @@ var BaidumgChannel = function(userAction, logger, cfgChecker) {
         url: this.requestUri,
         retry: false,
         log: logger,
-        connectTimeout: 10
+        connectTimeout: 20000
     });
 };
 util.inherits(BaidumgChannel, SDKPluginBase);

@@ -1261,26 +1261,9 @@ function ManageServerController($scope, $modalInstance, $log, project, ProjectMg
         var url = require('url');
         try {
             var zip = new AdmZip();
-            var obj = url.parse($scope.svrinfo.paycbUrl);
-            var host = obj.protocol+'//'+obj.host;
-            var pathname = obj.pathname;
-            var productCfg = {
-                appcb: {
-                    host: host,
-                    payCbUrl: pathname
-                }
-            };
-            zip.addFile(nick+'/product.json', 
-                new Buffer(JSON.stringify(productCfg)), "");
-            var channels = project.getAllChannels();
-            for (var c in channels) {
-                var ch = channels[c];
-                var sdkName = ch.userSDK;
-                var sdk = project.getSDKCfg(sdkName);
-                if (sdk) {
-                    zip.addFile(nick+'/'+ch.name+'.json', 
-                        new Buffer(JSON.stringify(sdk.cloneCfg())), "");
-                }
+            var cfgs = project.genServerCfg($scope.svrinfo.paycbUrl);
+            for (var i in cfgs) {
+                zip.addFile(nick+'/'+i, new Buffer(JSON.stringify(cfgs[i])), "");
             }
             fileDialog.saveAs(function (filename) {
                 zip.writeZip(filename+'.zip');

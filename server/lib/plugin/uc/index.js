@@ -25,7 +25,7 @@ var UCChannel = function(userAction, logger, cfgChecker) {
         url: this.defaultUri,
         retry: false,
         log: logger,
-        connectTimeout: 10
+        connectTimeout: 20000
     });
 };
 

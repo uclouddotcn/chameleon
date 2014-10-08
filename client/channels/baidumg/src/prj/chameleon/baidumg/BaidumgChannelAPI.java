@@ -53,6 +53,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         if (realPayMoney > 99999) {
             Log.e(Constants.TAG, "baidumg: excceeds money limit");
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+            return;
         }
         Bundle bundle = new Bundle();
         bundle.putInt(DkProtocolKeys.FUNCTION_CODE, DkProtocolConfig.FUNCTION_Pay);
@@ -101,6 +102,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         if (realPayMoney > 99999) {
             Log.e(Constants.TAG, "baidumg: excceeds money limit");
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+            return;
         }
         Bundle bundle = new Bundle();
         bundle.putInt(DkProtocolKeys.FUNCTION_CODE, DkProtocolConfig.FUNCTION_Pay);
@@ -140,6 +142,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfg.mAppKey = cfg.getString("appKey");
         mCfg.mScreenOrientation = commCfg.mIsLandscape ? DkPlatformSettings.SCREEN_ORIENTATION_LANDSCAPE:
                 DkPlatformSettings.SCREEN_ORIENTATION_PORTRAIT;
+        mChannel = commCfg.mChannel;
     }
 
     @Override

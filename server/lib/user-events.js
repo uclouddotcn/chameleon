@@ -51,16 +51,16 @@ function(m, token, others, channel, callback) {
             }
             if (result.code === 0 && 
                 result.loginInfo  &&
-                (!result.loginInfo.channel ||
-                 !result.loginInfo.uid ||
+                (!result.loginInfo.uid ||
                  !result.loginInfo.token)) {
                 self.logger.error( {result: result},
                     "verify login result must have following fields: channel, uid, token");
                 return callback(
                     new SdkError({code:-1, message:'internal error'}));
             }
-            self._eventCenter.emit('login', self.productName, result.loginInfo.channel,
+            self._eventCenter.emit('login', self.productName, channel,
                 result.loginInfo.uid, result.loginInfo.others);
+            result.loginInfo.channel = channel;
             return callback(null, result);
         });
     return self;

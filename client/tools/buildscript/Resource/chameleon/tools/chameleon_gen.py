@@ -59,44 +59,47 @@ TYPE_BUNDLE_CFG = {
     }
 
 SINGLE_LIB_TEMPLATE = string.Template("""
-package prj.chameleon.entry;
+package prj.chameleon.channelapi;
 
 import android.os.Bundle;
-import prj.chameleon.channelapi.ChannelAPI;
-import prj.chameleon.channelapi.SingleSDKChannelAPI;
-import prj.chameleon.$lib.$libAPIImp;
 
-class Instantializer {
-    public static class ChannelAPIImp extends SingleSDKChannelAPI.SingleSDKInstantializer<$libAPIImp> {
-        public ChannelAPIImp($libAPIImp imp) {
-            super(imp);
-        }
+$importstrs
 
-        @Override
-        protected Bundle getConfigBundle() {
-$bundleCfg
-            return bundle;
-        }
+public class Instantializer implements IInstantializer{
 
-        @Override
-        public String getChannelName() {
-            return "$channel";
-        }
+    @Override
+    public void initChameleon() {
+
+        ApiCommonCfg commCfg = new ApiCommonCfg();
+        commCfg.mAppName = "$appName";
+        commCfg.mChannel = "$channel";
+        commCfg.mIsLandscape = $landscape;
+        commCfg.mIsDebug = $debug;
+        ChannelInterface.setChannelName("$channel");
+        
+        $initfuncs
     }
 
-    public static ChannelAPI instantialize() {
-        return new ChannelAPIImp(new $libAPIImp());
-    }
+    $initfuncbodys
 }
 """)
 
-def genBundleCfg(cfg):
+
+def getAPIType(t):
+    ts = t.split(',')
+    ts = map(lambda x : 'Constants.PluginType.%s_API' %x.upper(), ts)
+    return '|'.join(ts)
+
+def genBundleCfg(libAPIImp, t, cfg):
     x = ['Bundle bundle = new Bundle();']
     for name, val in cfg.items():
         typeChar = name[0]
         realName = name[1:]
         x.append(TYPE_BUNDLE_CFG[typeChar](realName, val))
-    return '\n\t\t\t'.join(x)
+    x += ['%s api = new %s();' %(libAPIImp, libAPIImp), 
+        'api.initCfg(commCfg, bundle);',
+        'ChannelInterface.addApiGroup(new APIGroup(%s, api));' %getAPIType(t)]
+    return '\tprivate void init%s(ApiCommonCfg commCfg) {\n' %libAPIImp+ '\n\t\t'.join(x) + '\n\t}'
 
 def checkDependency(genFilePath, depends):
     if not os.path.exists(genFilePath):
@@ -106,27 +109,39 @@ def checkDependency(genFilePath, depends):
             return True
     return False
 
+def doGenInstantializer(channel, globalcfg, libs, debug):
+    libStrs = [genLibInstantializer(l) for l in libs]
+    importStrs = '\t\t\n'.join([x[0] for x in libStrs])
+    initfuncs = '\t\t\n'.join([x[1] for x in libStrs])
+    initFuncBody = '\t\n'.join([x[2] for x in libStrs])
+    landscape = 'false'
+    if globalcfg['blandscape']:
+        landscape = 'true'
+    debugStr = 'false'
+    if debug == 'true':
+        debugStr = 'true'
+    content = SINGLE_LIB_TEMPLATE.substitute(lib=l.name, 
+            landscape=landscape, appName=globalcfg['sappname'],
+            channel=channel, debug=debugStr,
+            importstrs=importStrs, initfuncs=initfuncs,
+            initfuncbodys = initFuncBody)
+    return content
 
-def genInstantializer(channel, genPath, libs):
-    if len(libs) != 1:
-        raise RuntimeError('now not support multiple libs')
-    l = libs[0] 
-    bundleCfgStr = genBundleCfg(l.cfg)
-    genPkgPath = os.path.join(genPath, 'prj', 'chameleon', 'entry')
+def genInstantializer(channel, genPath, globalcfg, libs, debug):
+    genPkgPath = os.path.join(genPath, 'prj', 'chameleon', 'channelapi')
     genFilePath = os.path.join(genPkgPath, 'Instantializer.java')
     projectJsonPath = os.path.join('chameleon', 'channels', channel, 
             'project.json')
-    depends = [projectJsonPath] + [x.cfgpath for x in libs]
-    if not checkDependency(genFilePath, depends):
-        error('ignore gen, no modification found')
-        return
-    content = SINGLE_LIB_TEMPLATE.substitute(lib=l.name, 
-            libAPIImp=l.name[0].upper()+l.name[1:]+'ChannelAPI', 
-            bundleCfg=bundleCfgStr, channel=channel)
+    content = doGenInstantializer(channel, globalcfg, libs, debug)
     if not os.path.exists(genPkgPath):
         os.makedirs(genPkgPath)
     with codecs.open(genFilePath, 'w', 'utf-8') as f:
         f.write(content)
+
+def genLibInstantializer(l):
+    libAPIImp =l.name[0].upper()+l.name[1:]+'ChannelAPI'
+    bundleStr = genBundleCfg(libAPIImp, l.type, l.cfg)
+    return ('import prj.chameleon.%s.%s;' %(l.name, libAPIImp), 'init%s(commCfg);' %libAPIImp, bundleStr)
 
 def isNewerThan(a, b):
     return os.path.getmtime(a) > os.path.getmtime(b)
@@ -162,16 +177,17 @@ def getPkgSuffix(channel):
         return '' 
 
 def main():
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 5:
         return -1
     channel = sys.argv[1]
     manifestFilePath = sys.argv[2]
     genPath = sys.argv[3]
     pkgName = sys.argv[4]
+    debug = sys.argv[5]
     error(pkgName)
-    libs = getDependLibs(channel)   
+    globalcfg = getCommCfg()
+    libs = getDependLibs(channel, globalcfg)   
     modifyManifest(channel, libs, manifestFilePath) 
-    genInstantializer(channel, genPath, libs)
+    genInstantializer(channel, genPath, globalcfg, libs, debug)
 
 sys.exit(main())
-

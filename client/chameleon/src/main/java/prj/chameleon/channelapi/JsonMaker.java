@@ -11,7 +11,6 @@ public class JsonMaker {
      * @param token tokens from the platform
      * @param others other information from the platform SDK, useful for backend or using later.
      * @param channel the channel
-     * @param sdk the sdk info
      * @return Login Info
      */
 	public static JSONObject makeLoginResponse(String token,
@@ -28,7 +27,7 @@ public class JsonMaker {
                 ret.put("others", others);
             }
 			ret.put("token", token);
-			ret.put("ch", channel);
+			ret.put("channel", channel);
 		} catch (JSONException e) {
 			ret = null;
             Log.e(Constants.TAG, "fail to make json", e);

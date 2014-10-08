@@ -54,12 +54,15 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private long mCfgAppID;
     private boolean mIsForceUpdate;
     private String mCfgAppKey;
+    private boolean mIsDebug;
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfgLandScape = commCfg.mIsLandscape;
         mIsForceUpdate  = cfg.getBoolean("forceUpdate");
         mCfgAppID = cfg.getLong("appId");
         mCfgAppKey = cfg.getString("appKey");
+        mChannel = commCfg.mChannel;
+        mIsDebug = commCfg.mIsDebug;
     }
 
    /**
@@ -73,12 +76,10 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         String pkgName =  activity.getPackageName();
         int rsid = activity.getResources().getIdentifier("nd3_frame", "layout", pkgName);
         Log.d(Constants.TAG, String.format("get pkg name %s and %d", pkgName, rsid));
-        /*
         // set debug mode
-        if (isDebug) {
+        if (mIsDebug) {
             NdCommplatform.getInstance().ndSetDebugMode(0);
         }
-        */
         OnInitCompleteListener listener = new OnInitCompleteListener(){
             @Override
             protected void onComplete(int ndFlag) {

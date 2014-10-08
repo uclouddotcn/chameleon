@@ -10,7 +10,7 @@ function SDKPluginBase(userAction, logger, cfgChecker) {
 SDKPluginBase.prototype.createPluginWrapper = function (channelName, cfg) {
     this._checker.check(cfg);
     var wrapper = new Wrapper(channelName, cfg, this);
-    this._channels[channelName] = cfg;
+    this._channels[channelName] = wrapper;
     return wrapper;
 };
 
