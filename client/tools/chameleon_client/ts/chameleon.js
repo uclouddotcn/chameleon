@@ -15,6 +15,7 @@ var async = require('async');
 var xml2js = require('xml2js');
 var util = require('util');
 var AdmZip = require('adm-zip');
+var urlLib = require('url');
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -349,6 +350,10 @@ var SDKCfg = (function () {
             a[i] = this.cfg[i];
         }
         return a;
+    };
+
+    SDKCfg.prototype.serverCfg = function () {
+        return this.cfg;
     };
 
     SDKCfg.prototype.updateCfg = function (cfg) {
@@ -857,6 +862,22 @@ var ChannelCfg = (function () {
         this._icons = { position: icon };
     };
 
+    ChannelCfg.prototype.serverCfg = function () {
+        var res = {};
+        if (this.payLib == this.userLib) {
+            var dl = this.userLib.dumpJsonObj();
+            dl.type = 'user,pay';
+            res['sdks'] = [dl];
+        } else {
+            var dlUser = this.userLib.dumpJsonObj();
+            dlUser.type = 'user';
+            var dlPay = this.payLib.dumpJsonObj();
+            dlPay.type = 'pay';
+            res['sdks'] = [dlUser, dlPay];
+        }
+        return res;
+    };
+
     ChannelCfg.prototype.loadShownIcon = function () {
         if (this.hasIcon && this.channelPath) {
             var density = ['drawable-mdpi', 'drawable-hdpi', 'drawable-xhdpi'];
@@ -1239,6 +1260,33 @@ var Project = (function () {
 
     Project.prototype.addSDKCfg = function (name, sdkcfg) {
         this.sdkCfg[name] = sdkcfg;
+    };
+
+    Project.prototype.genServerCfg = function (paySvrCbUrl) {
+        var _this = this;
+        var res = {};
+        var obj = urlLib.parse(paySvrCbUrl);
+        var host = obj.protocol + '//' + obj.host;
+        var pathname = obj.pathname;
+        res['_product.json'] = {
+            appcb: {
+                host: host,
+                payCbUrl: pathname
+            }
+        };
+        for (var channelName in this.channelCfg) {
+            var chcfg = this.channelCfg[channelName];
+            var cfgs = chcfg.serverCfg();
+            cfgs['sdks'].forEach(function (libcfg) {
+                var replaceCfg = _this.sdkCfg[libcfg.cfg];
+                if (!replaceCfg) {
+                    throw new ChameleonError(3 /* OP_FAIL */, "Fail to find sdk cfg for " + libcfg.cfg + ", channel = " + channelName);
+                }
+                libcfg.cfg = replaceCfg.serverCfg();
+            });
+            res[channelName + '.json'] = cfgs;
+        }
+        return res;
     };
 
     Project.prototype.cloneGlobalCfg = function () {

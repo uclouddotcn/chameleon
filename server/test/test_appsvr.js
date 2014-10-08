@@ -1,6 +1,6 @@
 var restify = require('restify');
 
-var sdkSvrUri = "http://localhost:8081";
+var sdkSvrUri = "http://chameleon-dev:8081";
 
 function startSvr() {
     var server = restify.createServer();
@@ -39,7 +39,7 @@ function startSvr() {
             productUrl: "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif",
             singlePrice: 100,
             realPayMoney: req.params.count * 100, // all product costs ￥10 per one
-            ext: "abc", // something will return back when callback from server
+            ext: "abc" // something will return back when callback from server
         };
         client.post('/ucloud/pending_pay', params, function (err, _req, _res, obj) {
             if (err) {

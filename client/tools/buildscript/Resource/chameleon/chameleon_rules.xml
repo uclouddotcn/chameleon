@@ -93,6 +93,7 @@
                         <arg value="${out.manifest.abs.file}"/>
                         <arg value="${gen.absolute.dir}"/>
                         <arg value="${project.app.package}"/>
+                        <arg value="${build.is.packaging.debug}"/>
                     </exec>
 
                 </then>

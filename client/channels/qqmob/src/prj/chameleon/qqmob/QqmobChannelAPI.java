@@ -129,6 +129,7 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mAppId = cfg.getString("appId");
         mPrivilege = cfg.getString("privilege");
+        mChannel = commCfg.mChannel;
     }
 
     @Override

@@ -19,7 +19,7 @@ var Nd91Channel = (function () {
             url: requestUri,
             retry: false,
             log: logger,
-            connectTimeout: 10
+            connectTimeout: 20000
         });
     }
     util.inherits(Nd91Channel, SDKPluginBase);

@@ -25,7 +25,7 @@ var QQMobChannel = function(userAction, logger, cfgChecker) {
         url: QQ_MOB_URL,
         retry: false,
         log: logger,
-        connectTimeout: 10
+        connectTimeout: 20000
     });
 };
 util.inherits(QQMobChannel, SDKPluginBase);

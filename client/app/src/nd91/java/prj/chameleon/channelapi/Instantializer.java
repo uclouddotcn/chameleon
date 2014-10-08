@@ -1,9 +1,11 @@
 package prj.chameleon.channelapi;
 
+import android.os.Bundle;
+
 import prj.chameleon.nd91.Nd91ChannelAPI;
 
 
-public  Instantializer implements IInstantializer {
+public class Instantializer implements IInstantializer {
 
     @Override
     public void initChameleon() {

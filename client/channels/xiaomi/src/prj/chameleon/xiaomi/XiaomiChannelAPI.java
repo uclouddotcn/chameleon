@@ -183,6 +183,7 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mAppKey = cfg.getString("appKey");
         mScreenOrientation = commCfg.mIsLandscape ? ScreenOrientation.horizontal :
                 ScreenOrientation.vertical;
+        mChannel = commCfg.mChannel;
     }
 
     @Override

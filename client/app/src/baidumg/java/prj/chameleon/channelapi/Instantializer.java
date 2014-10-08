@@ -13,15 +13,17 @@ public class Instantializer implements IInstantializer{
         commCfg.mChannel = "baidumg";
         commCfg.mIsLandscape = true;
         commCfg.mIsDebug = true;
+        ChannelInterface.setChannelName(commCfg.mChannel);
+        initBaidumgChannelAPI(commCfg);
+    }
 
+    private void initBaidumgChannelAPI(ApiCommonCfg commCfg) {
         Bundle bundle = new Bundle();
-        bundle.putBoolean("landscape", true);
+        bundle.putBoolean("landscape", false);
         bundle.putString("appId", "3327133");
         bundle.putString("appKey", "Xlmj6pfw3URIGDWhhkl7V83A");
         BaidumgChannelAPI api = new BaidumgChannelAPI();
         api.initCfg(commCfg, bundle);
-
-        ChannelInterface.setChannelName(commCfg.mChannel);
         ChannelInterface.addApiGroup(new APIGroup(Constants.PluginType.USER_API | Constants.PluginType.PAY_API,
                 api));
     }

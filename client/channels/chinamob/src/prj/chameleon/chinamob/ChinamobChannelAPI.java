@@ -35,6 +35,7 @@ public final class ChinamobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mProductMap = (TreeMap<String, String>) cfg.getSerializable("productMap");
+        mChannel = commCfg.mChannel;
     }
 
     @Override
