@@ -1,0 +1,2 @@
+-ignorewarning
+-keep public class com.nd.commplatform.**
