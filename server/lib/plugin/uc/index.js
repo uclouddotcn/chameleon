@@ -1,9 +1,14 @@
-var restify = require('restify');
-var querystring = require('querystring');
+"use strict";
 var async = require('async');
 var crypto = require('crypto');
+var restify = require('restify');
+
+var querystring = require('querystring');
+var util = require('util');
+
 var createSDKError = require('../../sdk-error').codeToSdkError;
-var _errorcode = require('../common/error-code');
+var _errorcode = require('../common/error-code').ErrorCode;
+var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
     requestUri: '?string',
@@ -13,27 +18,18 @@ var cfgDesc = {
     timeout: '?integer'
 };
 
-var UCChannel = function(name, cfgItem, userAction, logger) {
+var UCChannel = function(userAction, logger, cfgChecker) {
+    SDKPluginBase.call(this, userAction, logger, cfgChecker);
     this.defaultUri = "http://sdk.g.uc.cn";
-    this.name = name;
-    this.cfgItem = cfgItem;
-    this.userAction = userAction;
-    var timeout = cfgItem.timeout || 10;
     this.client = restify.createJsonClient({
-        url: cfgItem.requestUri || this.defaultUri,
+        url: this.defaultUri,
         retry: false,
-        log: logger
+        log: logger,
+        connectTimeout: 20000
     });
-    this.logger = logger;
 };
 
-UCChannel.prototype.getInfo = function () {
-    return {
-        cpId: this.cfgItem.cpId,
-        apiKey: this.cfgItem.apiKey,
-        requestUri: this.cfgItem.requestUri
-    };
-};
+util.inherits(UCChannel, SDKPluginBase);
 
 UCChannel.prototype.calcSign = function (s) {
     var md5sum = crypto.createHash('md5');
@@ -41,10 +37,9 @@ UCChannel.prototype.calcSign = function (s) {
     return md5sum.digest('hex').toLocaleLowerCase();
 };
 
-UCChannel.prototype.verifyLogin =
-function(token, others, callback) {
+UCChannel.prototype.verifyLogin = function(cfgItem, token, others, callback) {
     var self = this;
-    var sign = this.calcSign(this.cfgItem.cpId+'sid='+token+this.cfgItem.apiKey);
+    var sign = this.calcSign(cfgItem.cpId+'sid='+token+cfgItem.apiKey);
     var params = {
         id: (new Date()).getTime()/1000,
         service: "ucid.user.sidInfo",
@@ -52,24 +47,24 @@ function(token, others, callback) {
             sid: token
         },
         game: {
-            cpId: this.cfgItem.cpId,
-            gameId: this.cfgItem.gameId,
+            cpId: cfgItem.cpId,
+            gameId: cfgItem.gameId,
             channelId: '2',
             serverId: 0
         },
         sign: sign
     };
     this.client.post('/ss', params, function (err, req, res, obj) {
-        self.logger.debug({rsp: obj}, 'recv from uc');
+        self._logger.debug({rsp: obj}, 'recv from uc');
         if (err) {
             req.log.warn({err: err}, 'fail to get rsp from remote');
             callback(createSDKError(_errorcode.ERR_FAIL, req, 'Fail to verify login'));
             return;
         }
         try {
-            var res = null;
+            var result = null;
             if (obj.state.code === 1) {
-                res = {
+                result = {
                     code: _errorcode.ERR_OK,
                     loginInfo: {
                         uid: obj.data.ucid,
@@ -80,16 +75,16 @@ function(token, others, callback) {
             } else {
                 if (obj.state.code === 10) {
                     req.log.warn({params: params}, 'param error');
-                    res = {
+                    result = {
                         code: _errorcode.ERR_FAIL
                     };
                 } else {
-                    res = {
+                    result = {
                         code: _errorcode.ERR_LOGIN_SESSION_INVALID
                     }
                 }
             }
-            callback(null, res);
+            callback(null, result);
         } catch (e) {
             req.log.warn({err: e}, 'unexpect exception from verfiy login rsp');
             callback(createSDKError(_errorcode.ERR_FAIL, req, 'Fail to verify login'));
@@ -99,11 +94,20 @@ function(token, others, callback) {
 
 UCChannel.prototype.respondsToPay = function (req, res, next) {
     var params = req.params;
-    this.logger.debug({params: params}, 'recv pay callback from uc');
-    var result = true
+    this._logger.debug({params: params}, 'recv pay callback from uc');
+    var result = true;
     try {
         var data = params.data;
-        var sign = this.calcSign(this.cfgItem.cpId+
+        var customInfos = data.callbackInfo.split('|');
+        var channel = customInfos[0];
+        var wrapper = this._channels[channel];
+        if (!wrapper) {
+            this._userAction.payFail(channel, data.cpOrderId, _errorcode.ERR_PAY_ILL_CHANNEL);
+            send(res, true);
+            return next();
+        }
+        var cfgItem = wrapper.cfg;
+        var sign = this.calcSign(cfgItem.cpId+
             'amount='+data.amount+
             'callbackInfo='+data.callbackInfo+
             'cpOrderId='+data.cpOrderId+
@@ -114,12 +118,12 @@ UCChannel.prototype.respondsToPay = function (req, res, next) {
             'payWay='+data.payWay+
             'serverId='+data.serverId+
             'ucid='+data.ucid+
-            this.cfgItem.apiKey);
-        if (data.gameId != this.cfgItem.gameId) {
+            cfgItem.apiKey);
+        if (data.gameId != cfgItem.gameId) {
             result = false;
         }
         if (params.sign !== sign) {
-            self.logger.warn({req: req, params: params}, "unmatched sign");
+            self._logger.warn({req: req, params: params}, "unmatched sign");
             send(res, false);
             return next();
         }
@@ -128,16 +132,16 @@ UCChannel.prototype.respondsToPay = function (req, res, next) {
             serverId: data.serverId,
             payWay: data.payWay
         };
-        self.userAction.pay(this.name, data.ucid, null,
+        self._userAction.pay(wrapper.channelName, data.ucid, null,
             data.orderId, getPayStatus(data.orderStatus),
-            null, null, amount, others,
+            null, 0, amount, others,
             function (err, result) {
                 if (err) {
-                    self.logger.error({err: err}, "fail to pay");
+                    self._logger.error({err: err}, "fail to pay");
                     send(res, false);
                     return next();
                 }
-                self.logger.debug({result: result}, "recv result");
+                self._logger.debug({result: result}, "recv result");
                 send(res, true);
                 return next();
             }
@@ -149,7 +153,7 @@ UCChannel.prototype.respondsToPay = function (req, res, next) {
     }
 };
 
-UCChannel.prototype.getChannelSubDir = function ()  {
+UCChannel.prototype.getPayUrlInfo = function ()  {
     return [
         {
             method: 'post',
@@ -157,16 +161,6 @@ UCChannel.prototype.getChannelSubDir = function ()  {
             callback: this.respondsToPay.bind(this)
         }
     ];
-};
-
-
-UCChannel.prototype.reloadCfg = function (cfgItem) {
-    this.cfgItem = cfgItem;
-    this.client = restify.createJsonClient({
-        url: cfgItem.requestUri || this.defaultUri,
-        retry: false,
-        log: this.logger
-    });
 };
 
 function send(res, success) {
@@ -193,8 +187,8 @@ module.exports =
 {
     name: 'uc',
     cfgDesc: cfgDesc,
-    create: function (name, cfgItem, userAction, logger) {
-                return new UCChannel(name, cfgItem, userAction, logger);
+    createSDK: function (userAction, logger, cfgChecker) {
+                return new UCChannel(userAction, logger, cfgChecker);
             }
 };
 

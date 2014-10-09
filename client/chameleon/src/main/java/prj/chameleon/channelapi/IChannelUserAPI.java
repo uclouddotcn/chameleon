@@ -157,4 +157,10 @@ public interface IChannelUserAPI extends IAPIBase {
                                  String roleLevel,
                                  int zoneId,
                                  String zoneName);
+
+    /**
+     * get the id of this sdk
+     * @return the id of this sdk
+     */
+    public String getId();
 }

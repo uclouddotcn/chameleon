@@ -17,7 +17,7 @@ public class Instantializer implements IInstantializer {
         Bundle bundle = new Bundle();
         bundle.putBoolean("landscape", false);
         bundle.putBoolean("bgTransparent", false);
-        bundle.putString("uri", "http://localhost/");
+        bundle.putString("uri", "http://118.192.73.182/ucloud/qihu/pay");
         bundle.putString("channelName", "qihu");
         bundle.putString("appName", "testexample");
         api.initCfg(commCfg, bundle);

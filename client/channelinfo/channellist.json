@@ -29,7 +29,8 @@
     "uc": {
         "name": "UC九游",
         "pkgsuffix": ".uc",
-        "sdk": "uc"
+        "sdk": "uc",
+        "icon": 1
     },
     "oppo": {
         "name": "Oppo",

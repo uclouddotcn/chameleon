@@ -1,6 +1,3 @@
-/**
- * Created by wushauk on 9/5/14.
- */
 /// <reference path="declare/node.d.ts"/>
 /// <reference path="declare/async.d.ts"/>
 /// <reference path="declare/ncp.d.ts"/>
@@ -16,6 +13,7 @@ import async = require('async');
 import xml2js = require('xml2js');
 import util = require('util');
 import AdmZip = require('adm-zip');
+import urlLib = require('url');
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -74,7 +72,7 @@ export enum ErrorCode {
     SDK_PATH_ILLEGAL,
     OP_FAIL,
     CFG_ERROR
-};
+}
 
 
 class Utils {
@@ -139,11 +137,11 @@ export class AndroidEnv {
 
     set sdkPath(p: string) {
         this._sdkPath = p;
-        this.androidBin = this.getAndroidBin(p);
+        this.androidBin = AndroidEnv.getAndroidBin(p);
         this.db.set('env', 'sdkpath', {value: p});
     }
 
-    private getAndroidBin(p: string) : string{
+    private static getAndroidBin(p: string) : string{
         var s = '';
         if (os.platform() === 'win32') {
             s = pathLib.join(p, 'tools', 'android.bat');
@@ -154,7 +152,7 @@ export class AndroidEnv {
     }
 
     verifySDKPath(p: string, cb: CallbackFunc<any>) {
-        var androidBin = this.getAndroidBin(p);
+        var androidBin = AndroidEnv.getAndroidBin(p);
         childprocess.execFile(androidBin, ['list', 'target'], {timeout: 30000}, function (err, stdout, stderr) {
             if (err) {
                 cb(new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, '非法的Android SDK路径，请确保路径在sdk路径下'));
@@ -363,6 +361,10 @@ export class SDKCfg {
             a[i] = this.cfg[i];
         }
         return a;
+    }
+
+    serverCfg(): any {
+        return this.cfg;
     }
 
     updateCfg(cfg: any) {
@@ -876,6 +878,22 @@ export class ChannelCfg {
         this._icons = {position: icon};
     }
 
+    serverCfg(): any {
+        var res = {};
+        if (this.payLib == this.userLib) {
+            var dl = this.userLib.dumpJsonObj();
+            dl.type = 'user,pay';
+            res['sdks'] = [dl];
+        } else {
+            var dlUser = this.userLib.dumpJsonObj();
+            dlUser.type = 'user';
+            var dlPay = this.payLib.dumpJsonObj();
+            dlPay.type = 'pay';
+            res['sdks'] = [dlUser, dlPay];
+        }
+        return res;
+    }
+
     private loadShownIcon() {
         if (this.hasIcon && this.channelPath) {
             var density = ['drawable-mdpi', 'drawable-hdpi', 'drawable-xhdpi'];
@@ -1255,6 +1273,33 @@ export class Project {
 
     addSDKCfg(name: string, sdkcfg: SDKCfg) {
         this.sdkCfg[name] = sdkcfg;
+    }
+
+    genServerCfg(paySvrCbUrl: string): any {
+        var res = {};
+        var obj = urlLib.parse(paySvrCbUrl);
+        var host = obj.protocol+'//'+obj.host;
+        var pathname = obj.pathname;
+        res['_product.json'] = {
+            appcb: {
+                host: host,
+                payCbUrl: pathname
+            }
+        };
+        for (var channelName in this.channelCfg) {
+            var chcfg = this.channelCfg[channelName];
+            var cfgs = chcfg.serverCfg();
+            cfgs['sdks'].forEach((libcfg) => {
+                var replaceCfg = this.sdkCfg[libcfg.cfg];
+                if (!replaceCfg) {
+                    throw new ChameleonError(ErrorCode.OP_FAIL,
+                            "Fail to find sdk cfg for " + libcfg.cfg + ", channel = " + channelName);
+                }
+                libcfg.cfg = replaceCfg.serverCfg();
+            });
+            res[channelName+'.json'] = cfgs;
+        }
+        return res;
     }
 
 

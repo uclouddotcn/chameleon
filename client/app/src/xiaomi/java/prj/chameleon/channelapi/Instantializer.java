@@ -10,7 +10,7 @@ public class Instantializer implements IInstantializer {
 
         ApiCommonCfg commCfg = new ApiCommonCfg();
         commCfg.mAppName = "123";
-        commCfg.mChannel = "wandoujia";
+        commCfg.mChannel = "xiaomi";
         commCfg.mIsLandscape = true;
         commCfg.mIsDebug = true;
 

@@ -48,7 +48,7 @@ function (orderId, orderInfo, callback) {
         {orderId: orderId, order: orderInfo}, 'add order');
     var realCallback = null;
     if (callback) {
-        realCallback = function (err, res)  {
+        realCallback = function (err)  {
             if (err) {
                 return callback(new WError(err, "store pending order failed"));
             }
@@ -99,7 +99,7 @@ function(orderId, callback) {
     }
     var realCallback = null;
     if (callback) {
-        realCallback = function (err, res)  {
+        realCallback = function (err)  {
             if (err) {
                 return callback(new WError(err, "delete pending order failed"));
             }
@@ -121,6 +121,6 @@ PendingOrderStore.prototype.loadKvPlugin = function(option) {
         throw new Error('Fail to load plugin at ' + pluginPath);
     }
     this.client = m.createClient(this, option);
-}
+};
 
 

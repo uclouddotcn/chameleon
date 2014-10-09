@@ -36,7 +36,7 @@ android {
 
         }
         xiaomi {
-            // applicationId "cn.ucloud.game.chameleon.mi"
+            applicationId "cn.ucloud.game.chameleon.mi"
         }
         baidumg {
 

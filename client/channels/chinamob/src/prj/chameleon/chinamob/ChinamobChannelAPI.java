@@ -35,6 +35,7 @@ public final class ChinamobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mProductMap = (TreeMap<String, String>) cfg.getSerializable("productMap");
+        mChannel = commCfg.mChannel;
     }
 
     @Override
@@ -94,7 +95,7 @@ public final class ChinamobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean onLoginRsp(String loginRsp) {
-        JSONObject obj = null;
+        JSONObject obj;
         try {
             obj = new JSONObject(loginRsp);
             mUserInfo.mSession = obj.getString("key");
@@ -136,10 +137,14 @@ public final class ChinamobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         if (billingIndex == null) {
             billingIndex = productID;
         }
-        GameInterface.doBilling(activity, true, false, mProductMap.get(productID), orderId, new GameInterface.IPayCallback() {
+        String cpparam = getCpParam(orderId);
+        if (cpparam.length() == 0) {
+            cb.onFinished(Constants.ErrorCode.ERR_INTERNAL, null);
+            return;
+        }
+        GameInterface.doBilling(activity, true, false, billingIndex, cpparam, new GameInterface.IPayCallback() {
             @Override
             public void onResult(int resultCode, String billingIndex, Object obj) {
-                String result = "";
                 switch (resultCode) {
                     case BillingResult.SUCCESS:
                         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
@@ -153,6 +158,11 @@ public final class ChinamobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 }
             }
         });
+    }
+
+    @Override
+    public String getId() {
+        return "chinamob";
     }
 
     @Override
@@ -190,14 +200,6 @@ public final class ChinamobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public String getPayToken() {
-        if (!isLogined()) {
-            return "";
-        }
-        return mUserInfo.mSession;
-    }
-
-    @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
         GameInterface.exit(activity, new GameExitCallback() {
             @Override
@@ -210,5 +212,17 @@ public final class ChinamobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
             }
         });
+    }
+
+    private String getCpParam(String orderId) {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("o", orderId);
+            obj.put("ch", mChannel);
+            return obj.toString();
+        } catch (JSONException e) {
+            Log.e(Constants.TAG, "Fail to compose param", e);
+            return "";
+        }
     }
 }

@@ -8,9 +8,11 @@ var util = require('util');
  *  the server listen to the callback request from channel
  * @class channelCallbackSvr
  * @constructor
- * @param {integer} port
+ * @param {object} productMgr
+ * @param {number} port
  * @param {?string} host
  * @param {?object} options
+ * @param {?object} logger
  *
  */
 var ChannelCallbackSvr = 
@@ -30,28 +32,28 @@ function (productMgr, port, host, options, logger) {
     });
     this.server.listen(port, host, options);
     this.subDirs = {};
-    productMgr.on('start-inst', this.onInstallPlugin.bind(self));
-    productMgr.on('end-inst', this.onRemovePlugin.bind(self));
+    productMgr.on('start-inst', self._onStartChannel.bind(self));
+    productMgr.on('end-inst', self._onRemoveChannel.bind(self));
     self.logger = logger;
 };
 
 
 /**
  * install the path for the plugin
- * @param {PluginInstInfo} pluginInstInfo
+ * @param {object} channelInfo
  */
-ChannelCallbackSvr.prototype.onInstallPlugin = function (pluginInstInfo) {
+ChannelCallbackSvr.prototype._onStartChannel = function (channelInfo) {
     var self = this;
-    var productName = pluginInstInfo.product;
-    var instInfo = pluginInstInfo.pluginInfo;
-    var subDirs = instInfo.inst.getChannelSubDir();
+    var productName = channelInfo.product;
+    var channel = channelInfo.channel;
+    var subDirs = channel.getPayUrl();
     var serverSubDirs = [];
     // walk through the sub dirs, make sure all of 
     // them are valid
     for (var i in subDirs) {
         if (!(subDirs[i].method in SUPPORT_METHOD)) {
             self.logger.error(
-                {name: instInfo.name, subdir: subDirs[i]},
+                {name: channel.name, subdir: subDirs[i]},
                 'unsupport method');
             return;
         }
@@ -59,36 +61,36 @@ ChannelCallbackSvr.prototype.onInstallPlugin = function (pluginInstInfo) {
         serverSubDirs.push({
             path: subDirs[i].path,
             method: method,
-            callback: subDirs[i].callback,
+            callback: subDirs[i].callback
         });
     }
-    addSubDir(self, productName, instInfo.name, serverSubDirs);
-    self.logger.info({product: productName, channel: instInfo.name}, 
+    addSubDir(self, productName, channel.name, serverSubDirs);
+    self.logger.info({product: productName, channel: channel.name},
         'install product')
 };
 
 
 /**
  *  While the a plugin instance is removed
- * @name ChannelCallbackSvr.prototype.onRemovePlugin
+ * @name ChannelCallbackSvr.prototype._onRemoveChannel
  * @function
- * @param {PluginInstInfo} pluginInstInfo
+ * @param {object} pluginInstInfo
  */
-ChannelCallbackSvr.prototype.onRemovePlugin = function (pluginInstInfo) {
-    var instInfo = pluginInstInfo.pluginInfo;
+ChannelCallbackSvr.prototype._onRemoveChannel = function (pluginInstInfo) {
+    var channel = pluginInstInfo.channel;
     var productName = pluginInstInfo.product;
-    var name = productName + ':' + instInfo.name
+    var name = productName + ':' + channel.name;
     var subDirInfo = self.subDirs[name];
     if (subDirInfo) {
         self.logger.error({name: name}, 
             'sub dir info does\' exists');
         return;
     }
-    subDirs.subpath.forEach(function (path) {
+    subDirInfo.subpath.forEach(function (path) {
         self.server.rm(path);
     });
-    delete subDirs[name];
-    self.logger.info({product: productName, channel: instInfo.name}, 
+    delete self.subDirs[name];
+    self.logger.info({product: productName, channel: channel.name},
         'uninstall product')
 };
 
