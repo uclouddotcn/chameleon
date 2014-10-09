@@ -587,6 +587,9 @@ export class ChannelMetaInfo {
 
     private _loadSplashInfo(resPath: string) : any {
         var scPath = pathLib.join(resPath, 'drawable', 'splashscreen');
+        if (!fs.existsSync(scPath)) {
+            return null;
+        }
         var res = {portrait: [], landscape: []};
         var files = fs.readdirSync(scPath);
         var TYPE_MAP = {
@@ -938,25 +941,24 @@ export class ChameleonTool {
         }
         var content = fs.readFileSync(pathLib.join(workdir, 'env.json'), 'utf-8');
         var envObj = JSON.parse(content);
-        var chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
-        res.chameleonPath = chameleonPath;
+        res.chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
 
         function loadInfoJsonObj(callback: CallbackFunc<any>) {
-            var infojsonPath = pathLib.join(chameleonPath, 'info.json');
+            var infojsonPath = pathLib.join(res.chameleonPath, 'info.json');
             fs.readFile(infojsonPath, 'utf-8', function (err, s) {
                 if (err) {
                     Logger.log('fail to parse json', err);
-                    return callback(new ChameleonError(ErrorCode.UNKNOWN, '无法读取info.json'));
+                    return callback(new ChameleonError(ErrorCode.UNKNOWN, '无法读取'+infojsonPath));
                 }
                 try {
                     var jsonobj = JSON.parse(s);
-                    res.infoObj = InfoJson.loadFromJson(jsonobj, chameleonPath);
+                    res.infoObj = InfoJson.loadFromJson(jsonobj, res.chameleonPath);
 
                     res.upgradeMgr = new UpgradeMgr(workdir, res.infoObj.version);
                     return callback(null);
                 } catch (e) {
                     Logger.log('fail to parse json', e);
-                    return callback(new ChameleonError(ErrorCode.UNKNOWN, '无法读取info.json'));
+                    return callback(new ChameleonError(ErrorCode.UNKNOWN, '无法读取'+infojsonPath));
                 }
             });
         }
@@ -1358,7 +1360,7 @@ export class Project {
         }
         if (splashscreen && cfg['splashscreenToCp']) {
             var sc = cfg['splashscreenToCp'];
-            var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/')
+            var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/');
             updateCfg.cfg.splashscreen = newsc;
             updateCfg.copyfile.push({
                 from: sc.path,
