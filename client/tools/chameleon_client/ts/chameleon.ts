@@ -1,6 +1,3 @@
-/**
- * Created by wushauk on 9/5/14.
- */
 /// <reference path="declare/node.d.ts"/>
 /// <reference path="declare/async.d.ts"/>
 /// <reference path="declare/ncp.d.ts"/>
@@ -75,7 +72,7 @@ export enum ErrorCode {
     SDK_PATH_ILLEGAL,
     OP_FAIL,
     CFG_ERROR
-};
+}
 
 
 class Utils {
@@ -140,11 +137,11 @@ export class AndroidEnv {
 
     set sdkPath(p: string) {
         this._sdkPath = p;
-        this.androidBin = this.getAndroidBin(p);
+        this.androidBin = AndroidEnv.getAndroidBin(p);
         this.db.set('env', 'sdkpath', {value: p});
     }
 
-    private getAndroidBin(p: string) : string{
+    private static getAndroidBin(p: string) : string{
         var s = '';
         if (os.platform() === 'win32') {
             s = pathLib.join(p, 'tools', 'android.bat');
@@ -155,7 +152,7 @@ export class AndroidEnv {
     }
 
     verifySDKPath(p: string, cb: CallbackFunc<any>) {
-        var androidBin = this.getAndroidBin(p);
+        var androidBin = AndroidEnv.getAndroidBin(p);
         childprocess.execFile(androidBin, ['list', 'target'], {timeout: 30000}, function (err, stdout, stderr) {
             if (err) {
                 cb(new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, '非法的Android SDK路径，请确保路径在sdk路径下'));

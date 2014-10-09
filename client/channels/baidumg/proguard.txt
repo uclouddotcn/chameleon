@@ -1,0 +1,5 @@
+-keep class com.duoku.** {*; }
+-keep class com.baidu.** { *; }
+-keep class com.weibo.sdk.android$*
+-keep class com.weibo.sdk.android$* {*;}
+-keep public class * extends android.os.IInterface
