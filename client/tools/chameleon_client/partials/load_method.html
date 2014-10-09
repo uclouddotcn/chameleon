@@ -1,0 +1,148 @@
+<div class="container-fluid">
+    <section id="brief">
+        <div class="row">
+            <div class="page-header row">
+                <div class="col-md-10">
+                    <h3 pull-left>{{project.obj.globalcfg.globalcfg.appname}}</h3>
+                </div>
+                <div class="btn-group col-md-2 moredirective" dropdown pull-right>
+                    <button type="button" class="btn btn-primary dropdown-toggle">
+                        更多命令 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a ng-click="openBuildDialog()">编译工程</a></li>
+                        <li class="divider"></li>
+                        <li><a ng-click="openServerDialog()">生成服务器配置</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-4">
+                <div id="chtable" class="gridStyle" ng-grid="installedChTable"></div>
+                <div>
+                    <button class="btn btn-small" ng-click="addChannel()">添加</button>
+                </div>
+            </div>
+            <div class="col-md-8" style>
+                <div class = "pre-scrollable-channelinfo" ng-controller="ChannelCfgController" >
+
+                    <ul class="nav nav-tabs" style="display: block" role="tablist" id="myTab">
+                        <li role="presentation" class="active"><a href="#home">基本信息</a></li>
+                        <li role="presentation" ><a href="#profile">SDK管理</a></li>
+
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="home">
+                            <div class="container">
+                                <div class="row-fluid">
+                                    <h4>{{channel.desc}}</h4>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-1">package</label>
+                                    <div class="col-md-5">
+                                        <span>{{channel.packageName}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="row" ng-show="channel.data.hasSplashScreen">
+                                    <div>
+                                        <label class="col-md-1">闪屏配置</label>
+                                        <div class="col-md-5">
+                                            <img ng-src="{{channel.splashscreen}}" width="{{channel.scWidth}}" height="{{channel.scHeight}}"></img>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn" ng-click="selectSpashScreen()">配置</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" ng-show="channel.data.hasIcon">
+                                    <div>
+                                        <label class="col-md-1">图标配置</label>
+                                        <div class="col-md-5">
+                                            <img ng-src="{{channel.iconshown}}" width="48" height="48"></img>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn" ng-click="selectIcon()">配置</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--<div clas="row" ng-if="channel.data.hasSplashScreen || channel.data.hasIcon || channel.data.sdk">-->
+                                    <!--<button class="btn btn-large" ng-disabled ="!channel.isdirty" ng-click="saveChannel()">保存</button>-->
+                                <!--</div>-->
+                            </div>
+
+
+
+
+                        </div>
+                        <div class="tab-pane fade" id="profile">
+                            <div class="row">
+                                <div ui-view class="col-md-6">
+                                    <div class="container-fluid">
+                                        <div class="modal-header">
+                                            <strong>已有SDK列表</strong>
+                                        </div>
+
+                                        <table class="table table-condensed" style="margin-top: 15px;">
+                                            <tbody>
+                                                <tr class="active">
+                                                    <td><strong>用户SDK</strong></td>
+                                                    <td>{{channel.sdk.desc}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+
+
+                                        <div clas="row"  >
+                                            <button class="btn btn-large" ng-class="{cancelSubmit : channel.isdirty}"   ng-disabled ="!channel.isdirty"  ng-click="saveChannel()">保存</button>
+                                        </div>
+
+
+                                    </div>
+
+
+
+                                </div>
+                                <div ui-view="sdkconfig" class="col-md-6">
+                                    <div class="container-fluid">
+                                        <div class="modal-header">
+                                            <strong>可用SDK列表</strong>
+                                        </div>
+
+                                        <div class="modal-body" >
+                                            <ol class="breadcrumb">
+                                                <li><a href="javascript:;">用户</a></li>
+                                                <li class="active">支付</li>
+                                                <li class="active">分享</li>
+                                            </ol>
+                                            <div class="gridStyle gridOptionsWidth" ng-grid="gridOptions"></div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <script>
+                        $('#myTab a').click(function (e) {
+                            e.preventDefault();
+
+                            $(this).tab('show')
+                        })
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+

@@ -97,7 +97,7 @@ var AndroidEnv = (function () {
                 console.log('exec update project error: \n' + err.message + '\n signal: ' + err['signal'] + ', code:' + err['code']);
                 console.log('stdout is \n' + stdout.toString('utf8'));
                 console.log('stderr is \n' + stderr.toString('utf8'));
-                cb(ChameleonError.newFromError(err));
+                cb(ChameleonError.newFromErrpror(err));
                 return;
             }
             cb(null);

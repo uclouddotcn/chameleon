@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/dk_login_dialog" 
+    android:layout_width="350dp" 
+    android:layout_height="202dp" 
+    android:layout_gravity="center"
+    >
+    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="40dp">
+        
+        <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            
+            <LinearLayout 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+                
+                <ImageView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/dk_user_login_dialog_icon"/>
+                
+	            <TextView 
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginLeft="6dp"
+	                android:textSize="16dp"
+	                android:textColor="@color/dk_color_333333"
+	                android:text="@string/dk_user_login_dialog_msg_line1"/>    
+                
+            </LinearLayout>
+            
+            <TextView 
+                android:id="@+id/dk_login_dialog_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_gravity="center"
+                android:textSize="16dp"
+                android:textColor="@color/dk_color_e38c04"/>
+            
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_gravity="center"
+                android:textSize="16dp"
+                android:textColor="@color/dk_color_333333"
+                android:text="@string/dk_user_login_dialog_msg_line2"/>
+            
+        </LinearLayout>
+        
+        <RelativeLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginRight="40dp"
+            >
+            
+            <Button 
+                android:id="@+id/dk_login_dialog_return"
+                android:layout_width="130dp"
+                android:layout_height="34dp"
+                android:background="@drawable/dk_user_login_blue_selector"
+                android:gravity="center"
+                android:textSize="16dp"
+                android:textColor="@color/dk_gamesdk_white"
+                android:text="@string/dk_user_login_dialog_msg_btn_blue"
+                >
+                
+            </Button>
+            
+            <Button
+                android:id="@+id/dk_login_dialog_regist"
+                android:layout_width="130dp"
+                android:layout_height="34dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/dk_user_login_orange_selector"
+                android:gravity="center"
+                android:textSize="16dp"
+                android:textColor="@color/dk_gamesdk_white"
+                android:text="@string/dk_user_login_dialog_msg_btn_orange">
+                
+            </Button>
+            
+        </RelativeLayout>
+        
+    </LinearLayout>
+    
+</LinearLayout>

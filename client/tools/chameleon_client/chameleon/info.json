@@ -1,0 +1,157 @@
+{
+    "channels": [
+        {
+            "name": "baidumg", 
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appSecret": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "app secret"
+                }, 
+                "appId": {
+                    "type": "string", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.0", 
+            "version": "3.2.6.4", 
+            "enableWrapPackage": 0, 
+            "desc": "\u767e\u5ea6\u79fb\u52a8\u6e38\u620f"
+        }, 
+        {
+            "name": "nd91", 
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "isForceUpdate": {
+                    "default": "false", 
+                    "type": "boolean", 
+                    "desc": "whether force client to update"
+                }, 
+                "appId": {
+                    "type": "int", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.0", 
+            "version": "3.2.6.4", 
+            "enableWrapPackage": 0, 
+            "desc": "91\u624b\u673a\u52a9\u624b"
+        }, 
+        {
+            "name": "qihu", 
+            "script": "qihu_script", 
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "YOUR_APP_KEY"
+                }, 
+                "uri": {
+                    "type": "url", 
+                    "desc": "the payment callback uri"
+                }, 
+                "appSecret": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "YOUR_APP_SECRET"
+                }, 
+                "isBGTransparent": {
+                    "default": "true", 
+                    "type": "boolean", 
+                    "desc": "whether the background is transparent"
+                }, 
+                "appId": {
+                    "type": "string", 
+                    "desc": "YOUR_APP_ID"
+                }, 
+                "channel": {
+                    "default": "default", 
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "\u7528\u4e8e\u6807\u8bc6\u5e94\u7528\u65b9\u7684\u5b50\u6e20\u9053"
+                }
+            }, 
+            "chamversion": "1.0", 
+            "version": "1.0.0", 
+            "desc": "\u5947\u864e"
+        }, 
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appId": {
+                    "type": "int", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.0", 
+            "version": "3.1.1", 
+            "name": "wandoujia", 
+            "desc": "\u8c4c\u8c46\u835a"
+        }, 
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appSecret": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "app secret"
+                }, 
+                "appId": {
+                    "type": "string", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.0", 
+            "version": "3.4.0", 
+            "name": "xiaomi", 
+            "desc": "\u5c0f\u7c73"
+        }
+    ], 
+    "channellist": {
+        "qihu": {
+            "pkgsuffix": ".qihu", 
+            "name": "\u5947\u864e", 
+            "sdk": "qihu"
+        }, 
+        "baidumg": {
+            "splashscreen": 1, 
+            "icon": 1, 
+            "pkgsuffix": "", 
+            "name": "\u767e\u5ea6\u79fb\u52a8\u6e38\u620f", 
+            "sdk": "baidumg"
+        }, 
+        "nd91": {
+            "pkgsuffix": "", 
+            "name": "91\u624b\u673a\u52a9\u624b", 
+            "sdk": "nd91"
+        }, 
+        "xiaomi": {
+            "pkgsuffix": ".mi", 
+            "name": "\u5c0f\u7c73", 
+            "sdk": "xiaomi"
+        }, 
+        "wandoujia": {
+            "pkgsuffix": ".wdj", 
+            "name": "\u8c4c\u8c46\u835a", 
+            "sdk": "wandoujia"
+        }, 
+        "test": {
+            "pkgsuffix": ".chameleon", 
+            "name": "chameleon\u6d4b\u8bd5", 
+            "sdk": "test"
+        }
+    }, 
+    "version": "1.0.0"
+}

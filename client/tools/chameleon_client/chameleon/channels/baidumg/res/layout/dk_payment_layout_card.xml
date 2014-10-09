@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relative_payment_card"
+        style="@style/payment_button_style" >
+
+        <ImageView
+            android:id="@+id/dk_iv_payment_icon"
+            android:layout_width="60dp"
+            android:layout_height="24dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/dk_img_kubi" />
+
+        <TextView
+            android:id="@+id/dk_tv_payment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="2dp"
+            android:textColor="#666666"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/text_size_12_sp"
+            android:text="@string/dk_ku_bi_exchange"
+            android:layout_below="@+id/dk_iv_payment_icon" />
+    </RelativeLayout>
+
+    <com.duoku.platform.view.common.DKRotateTextView
+        android:id="@+id/dk_tv_rotate_label"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:layout_alignParentTop="true"
+        android:text="@string/dk_btn_string_pay"
+        android:textColor="@color/dk_gamesdk_white"
+        android:textSize="@dimen/text_size_10_sp"
+        android:layout_alignLeft="@+id/relative_payment_card"
+        android:background="@drawable/dk_bg_pay_recommend" />
+
+</RelativeLayout>

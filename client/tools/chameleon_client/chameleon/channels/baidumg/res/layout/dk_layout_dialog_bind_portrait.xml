@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/dk_layout_payment_dialog" 
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" 
+    android:orientation="vertical">
+    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+        
+        <RelativeLayout 
+            android:id="@+id/dk_layout_dialog_title"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="8dp"
+	        android:layout_gravity="center"
+	        android:gravity="center_vertical">
+        
+	        <TextView
+	            android:id="@+id/dk_dialog_tv_tip_title"
+	            android:gravity="center" 
+	            android:textColor="#333333"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerVertical="true"
+	            android:textSize="@dimen/text_size_16_sp"
+	            android:text="@string/dk_tip_dialog_credit_bind_title"/>
+	        
+	        <ImageView 
+	            android:id="@+id/dk_dialog_iv_close"
+	            android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:layout_alignParentRight="true"
+            	android:src="@drawable/dk_payment_dialog_close_selector" />
+	    </RelativeLayout>
+    
+	    <LinearLayout 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="8dp">
+	        
+	        <ImageView 
+	            android:layout_width="fill_parent"
+	            android:layout_height="1px"
+	            android:layout_marginTop="4dp"
+	            android:layout_marginBottom="4dp"
+	            android:background="@drawable/dk_payment_dialog_dot_bg"/>
+	    </LinearLayout>
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
+	    
+        <ListView
+            android:id="@+id/dk_dialog_list_view_bind_credit"
+            android:layout_width="fill_parent"
+            android:layout_height="120dp"
+            android:fadingEdge="none"
+            android:scrollbars="vertical"
+            android:divider="@null"
+            android:cacheColorHint="#00000000"
+            android:scrollbarThumbVertical="@drawable/dk_scrollbar_gray"/>
+        
+        <TextView 
+            android:visibility="gone"
+            android:id="@+id/dk_dialog_tv_tip_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_horizontal"
+            android:textColor="#333333"
+            android:textSize="@dimen/text_size_16_sp"
+            android:text="@string/dk_tip_dialog_credit_card_bind_text" />
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp">
+        
+        <Button
+            android:id="@+id/dk_dialog_btn_cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:gravity="center"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:text="@string/dk_dialog_string_close"
+            android:textSize="@dimen/text_size_16_sp"
+            android:textColor="@color/dk_color_333333"
+            android:background="@drawable/dk_payment_dialog_cancel_selector" />
+    </LinearLayout>
+</LinearLayout>

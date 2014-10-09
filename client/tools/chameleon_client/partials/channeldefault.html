@@ -1,48 +1,28 @@
-<div class="container">
-    <div class="row-fluid">
-        <h4>{{channel.desc}}</h4>
+<div class="container-fluid">
+    <div class="modal-header">
+        <strong>已有SDK列表</strong>
     </div>
     <div class="row">
-            <label class="col-md-1">package</label>
-            <div class="col-md-5">
-                <span>{{channel.packageName}}</span>
+        <div class="col-md-12 dis-bottom-top ">
+            <div class="">
+                <label class="col-md-5">用户SDK</label>
+                <div class="col-md-7 text-right">
+                    <span>{{channel.sdk.desc}}</span>
+                </div>
+
             </div>
-    </div>
-    <div class="row">
-        <div>
-            <label class="col-md-1">SDK</label>
-            <div class="col-md-5">
-                <span>{{channel.sdk.desc}}</span>
-            </div>
-            <div class="col-md-1">
-                <button class="btn" ng-click="selectChannelSDK()">配置</button>
-            </div>
+
+
         </div>
-    </div>
-    <div class="row" ng-show="channel.data.hasSplashScreen">
-        <div>
-            <label class="col-md-1">闪屏配置</label>
-            <div class="col-md-5">
-                <img ng-src="{{channel.splashscreen}}" width="{{channel.scWidth}}" height="{{channel.scHeight}}"></img>
-            </div>
-            <div class="col-md-1">
-                <button class="btn" ng-click="selectSpashScreen()">配置</button>
-            </div>
+
+        <div class="col-md-12">
+            <button class="btn" ng-click="selectChannelSDK()">配置</button>
         </div>
+        <!--<div class="col-md-12">-->
+            <!--<div ng-repeat="i in allsdks">{{i._desc}}</div>-->
+        <!--</div>-->
     </div>
-    <div class="row" ng-show="channel.data.hasIcon">
-        <div>
-            <label class="col-md-1">图标配置</label>
-            <div class="col-md-5">
-                <img ng-src="{{channel.iconshown}}" width="48" height="48"></img>
-            </div>
-            <div class="col-md-1">
-                <button class="btn" ng-click="selectIcon()">配置</button>
-            </div>
-        </div>
-    </div>
-    <div clas="row">
-        <button class="btn btn-large" ng-disabled ="!channel.isdirty" ng-click="saveChannel()">保存</button>
-    </div>
+
+
 </div>
 
