@@ -10,6 +10,7 @@ import com.nd.commplatform.entry.NdAppInfo;
 import com.nd.commplatform.entry.NdBuyInfo;
 import com.nd.commplatform.gc.widget.NdToolBar;
 import com.nd.commplatform.gc.widget.NdToolBarPlace;
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IChannelPayAPI;
@@ -53,13 +54,15 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private long mCfgAppID;
     private boolean mIsForceUpdate;
     private String mCfgAppKey;
+    private boolean mIsDebug;
 
-    @Override
-    public void initCfg(Bundle cfg) {
-        mCfgLandScape = cfg.getBoolean("landscape");
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
+        mCfgLandScape = commCfg.mIsLandscape;
         mIsForceUpdate  = cfg.getBoolean("forceUpdate");
         mCfgAppID = cfg.getLong("appId");
         mCfgAppKey = cfg.getString("appKey");
+        mChannel = commCfg.mChannel;
+        mIsDebug = commCfg.mIsDebug;
     }
 
    /**
@@ -69,13 +72,12 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void init(android.app.Activity activity,
-                     boolean isDebug,
 		             final IDispatcherCb cb) {
         String pkgName =  activity.getPackageName();
         int rsid = activity.getResources().getIdentifier("nd3_frame", "layout", pkgName);
         Log.d(Constants.TAG, String.format("get pkg name %s and %d", pkgName, rsid));
         // set debug mode
-        if (isDebug) {
+        if (mIsDebug) {
             NdCommplatform.getInstance().ndSetDebugMode(0);
         }
         OnInitCompleteListener listener = new OnInitCompleteListener(){
@@ -256,7 +258,7 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             needPay = 0;
         }
 
-        NdCommplatform.getInstance().ndUniPayForCoin(orderId, needPay, "charge", activity);
+        NdCommplatform.getInstance().ndUniPayForCoin(orderId, needPay, getNote(), activity);
         mBackgroundListener.setNextCallback(new Runnable() {
             @Override
             public void run() {
@@ -298,7 +300,7 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         buyInfo.setProductOrginalPrice(((float)realPayMoney)/100);
         buyInfo.setProductPrice(((float)realPayMoney)/100);
         Log.d(Constants.TAG, String.format("buy pay money %f", ((float)realPayMoney)/100));
-        buyInfo.setPayDescription("buy");
+        buyInfo.setPayDescription(getNote());
         int error = NdCommplatform.getInstance().ndUniPay(buyInfo, activity,
                 new NdMiscCallbackListener.OnPayProcessListener() {
 
@@ -329,6 +331,11 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 }
             });
         }
+    }
+
+    @Override
+    public String getId() {
+        return "nd91";
     }
 
 
@@ -570,6 +577,10 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     public void enterPlatform(Activity activity, String message, IDispatcherCb cb) {
         NdCommplatform.getInstance().ndEnterPlatform(0, activity);
+    }
+
+    private String getNote() {
+        return mChannel;
     }
 
 }

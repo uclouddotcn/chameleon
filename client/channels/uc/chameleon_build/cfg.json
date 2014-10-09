@@ -1,0 +1,20 @@
+{
+    "desc": "UC九游",
+    "name": "uc",
+    "chamversion": "1.0",
+    "version": "3.4.6.1",
+    "enableWrapPackage": 0,
+    "cfgitem": {
+
+        "cpId" : {
+            "type": "int",
+            "desc": "cp id"
+        },
+
+        "gameId" : {
+            "type": "int",
+            "desc": "game id"
+        }
+    }
+}
+

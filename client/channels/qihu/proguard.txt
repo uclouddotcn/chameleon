@@ -1,0 +1,7 @@
+-keep class cn.pp.** {*;}
+-keep class com.yeepay.** {*;} 
+-keep class com.alipay.** {*;} 
+-keep class com.qihoo.** { *; } 
+-keep class com.qihoo360.** {*;}
+-keep class com.qihoopp.** { *; }
+-dontwarn org.apache.http.conn.ssl.SSLSocketFactory

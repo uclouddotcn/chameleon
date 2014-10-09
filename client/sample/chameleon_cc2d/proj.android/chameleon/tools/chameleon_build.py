@@ -50,8 +50,10 @@ def checkConflictedAssets(aapt, targetPackage, filelist):
 def mergeAsset(aapt, targetPackage, parentFolder, filelist):
     nowDir = os.path.abspath(os.getcwd())
     try:
+        filelist = [x.replace('\\', '/') for x in filelist]
+        p = os.path.relpath(targetPackage, repr(parentFolder))
         os.chdir(parentFolder)
-        runcmd([aapt, 'add', targetPackage] + filelist)
+        runcmd([aapt, 'add', p] + filelist)
         buildlog("merged %s" %(', '.join(filelist)))
     finally:
         os.chdir(nowDir)
@@ -84,7 +86,7 @@ def mergeAssetsToApk(args):
     targetChannel = args[0]
     aapt = args[1]
     ignorePat = "!.svn:!.git:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
-    targetpkg = os.path.abspath(args[2])
+    targetpkg = args[2]
     ig = getIgnorePatterns(ignorePat)
     channelFolder = getTargetChannelAssetFolder(targetChannel)
     dependLibs = getDependLibs(targetChannel)

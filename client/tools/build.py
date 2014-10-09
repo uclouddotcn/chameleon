@@ -169,9 +169,9 @@ def buildChameleonLib(targetFolder):
         ret = subprocess.check_call([gradleCmd, 'chameleon_unity:assembleRelease'])
         if ret != 0:
             raise RuntimeError('Fail to assemble the chameleon unity sdk')
-        shutil.copy2(os.path.join("chameleon", "build", "bundles", "release", "classes.jar"),
+        shutil.copy2(os.path.join("chameleon", "build", "intermediates", "bundles", "release", "classes.jar"),
             os.path.join(targetLibFoldr, 'chameleon.jar'))
-        shutil.copy2(os.path.join("chameleon_unity", "build", "bundles", "release", "classes.jar"),
+        shutil.copy2(os.path.join("chameleon_unity", "build", "intermediates", "bundles", "release", "classes.jar"),
             os.path.join(targetLibFoldr, 'chameleon_unity.jar'))
     finally:
         os.chdir(olddir)

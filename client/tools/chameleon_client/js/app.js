@@ -10,8 +10,8 @@ var chameleonApp = angular.module('chameleonApp', [
     'ui.router',
     'DWand.nw-fileDialog'
 ])
-    .run(['$rootScope', '$state', '$stateParams', '$log',
-        function ($rootScope, $state, $stateParams, $log) {
+    .run(['$rootScope', '$state', '$stateParams', '$log', '$modal',
+        function ($rootScope, $state, $stateParams, $log, $modal) {
 
             $rootScope.$state = $state;
             $rootScope.$stateParams = $stateParams;
@@ -20,6 +20,7 @@ var chameleonApp = angular.module('chameleonApp', [
                     ' ' + toParams + ' ' + fromState + ' ' + fromParams);
 
             });
+            createMenu($modal);
         }
     ])
     .factory('globalCache',[function(){
@@ -935,5 +936,66 @@ var chameleonApp = angular.module('chameleonApp', [
                 controller: 'SelectChannelController'
             })
     }])
+
+function createMenu ($modal) {
+    // Load native UI library
+    var gui = require('nw.gui');
+
+    var menu = new gui.Menu({
+        type: 'menubar'
+    });
+
+    var optionMenu = new gui.MenuItem({label: "选项"});
+    var optionSubMenu = new gui.Menu();
+    optionSubMenu.append(new gui.MenuItem({
+        label: '读取升级包' ,
+        click: function () {
+            var instance = $modal.open( {
+                templateUrl: 'partials/upgradetool.html',
+                backdrop: false,
+                keyboard: false,
+                controller: function ($scope, $modalInstance, fileDialog, ProjectMgr) {
+                    $scope.zipFile = "";
+                    $scope.status = {
+                        upgradeBtnEnable : false,
+                        msg: null
+                    };
+                    $scope.setFiles = function () {
+                        fileDialog.openFile(function (d) {
+                            $scope.zipFile = d;
+                            try {
+                                var manifest = ProjectMgr.chtool.readUpgradeFileInfo($scope.zipFile);
+                                $scope.status.upgradeBtnEnable = true;
+                                $scope.status.msg = "升级包信息：" + manifest.from + ' => ' + manifest.to;
+                            } catch (e) {
+                                $scope.status.upgradeBtnEnable = false;
+                                $scope.status.msg = e.message;
+                            }
+                            $scope.$apply();
+                        })
+                    };
+                    $scope.upgrade = function () {
+                        ProjectMgr.chtool.upgradeFromFile($scope.zipFile);
+                        $modalInstance.close();
+                    }
+                    $scope.cancel = function () {
+                        $modalInstance.dismiss();
+                    };
+                }
+            });
+            instance.result.then(
+                function () {
+                    gui.App.restart();
+                }
+            );
+        }
+    }));
+    optionMenu.submenu = optionSubMenu;
+
+    // Add some items
+    menu.append(optionMenu);
+    gui.Window.get().menu = menu;
+}
+
 
 

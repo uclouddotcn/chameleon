@@ -2,19 +2,18 @@ package prj.chameleon.channelapi;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by wushauk on 8/20/14.
- */
-
 public class SingleSDKChannelAPI {
     public static abstract class SingleSDK implements IChannelPayAPI, IChannelUserAPI {
         protected String mChannel;
+
+        @Override
+        public void init(Activity activity, IDispatcherCb cb) {
+        }
 
         public void setChannel(String channelName) {
             mChannel = channelName;
@@ -131,43 +130,24 @@ public class SingleSDKChannelAPI {
 
 
         @Override
-        public String getPayToken() {
-            return getToken();
+        public JSONObject getPayInfo() {
+            return null;
         }
 
         @Override
         public void onApplicationEvent(int event, Object... arguments) {
 
         }
+
+        @Override
+        public void submitPlayerInfo(Activity activity,
+                                     String roleId,
+                                     String roleName,
+                                     String roleLevel,
+                                     int zoneId,
+                                     String zoneName) {
+
+        }
+
     }
-
-    public static abstract class SingleSDKInstantializer<T extends SingleSDK> extends ChannelAPI{
-        protected T mChannelImp;
-
-        public SingleSDKInstantializer(T imp) {
-            mChannelImp = imp;
-            mUserAPI = mChannelImp;
-            mPayAPI = mChannelImp;
-            mChannelImp.initCfg(getConfigBundle());
-            imp.setChannel(getChannelName());
-        }
-
-        @Override
-        public void init(Activity activity, boolean isDebug, IDispatcherCb cb) {
-            mChannelImp.init(activity, isDebug, cb);
-        }
-
-        @Override
-        public void onApplicationEvent(int event, Object... arguments) {
-            mChannelImp.onApplicationEvent(event, arguments);
-        }
-
-        @Override
-        public void exit(Activity activity, IDispatcherCb cb) {
-            mChannelImp.exit(activity, cb);
-        }
-
-        protected abstract Bundle getConfigBundle();
-    }
-
 }

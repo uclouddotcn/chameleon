@@ -47,4 +47,13 @@ public class Constants {
         public final static int AFTER_ON_CREATE = 2;
         public final static int ON_BIND_CONTEXT = 3;
     }
+
+    public static class PluginType {
+        public final static int USER_API = 1;
+        public final static int PAY_API = 2;
+        public final static int PUSH_API = 4;
+        public final static int SHARE_API = 8;
+        public final static int DATA_ANALYSIS_API = 16;
+        public final static int AD_API = 32;
+    }
 }

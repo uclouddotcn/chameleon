@@ -41,7 +41,9 @@ public class MainActivity extends Activity implements IAccountActionListener {
             RequestParams req = new RequestParams();
 
             try {
-                req.put("others", (String) data.get("others"));
+                if (data.has("others")) {
+                    req.put("others", (String) data.get("others"));
+                }
                 req.put("token", (String) data.get("token"));
                 req.put("channel", (String) data.get("channel"));
                 PlatformAPIRestClient.get("/sdkapi/login",
@@ -49,6 +51,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
                         new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(final JSONObject ret) {
+                                Log.d("TEST", ret.toString());
                                 mActivity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -58,6 +61,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
                             }
                             @Override
                             public void onFailure(java.lang.Throwable e, org.json.JSONArray errorResponse) {
+                                Log.e("TEST", "on failure", e);
                                 if (errorResponse != null) {
                                     Log.e("TEST", errorResponse.toString(), e);
                                 }
@@ -65,11 +69,19 @@ public class MainActivity extends Activity implements IAccountActionListener {
                             }
                             @Override
                             public void onFailure(java.lang.Throwable e, org.json.JSONObject errorResponse) {
+                                Log.e("TEST", "on failure", e);
                                 if (errorResponse != null) {
                                     Log.e("TEST", errorResponse.toString(), e);
 
                                 }
                                                             }
+
+                            @Override
+                            protected java.lang.Object parseResponse(java.lang.String responseBody) throws org.json.JSONException
+                            {
+                                Object res = super.parseResponse(responseBody);
+                                return res;
+                            }
                         }
                 );
 
@@ -238,11 +250,20 @@ public class MainActivity extends Activity implements IAccountActionListener {
     @Override
     public void onPause() {
         super.onPause();
+        ChannelInterface.onPause(this);
+        Log.i(Constants.TAG, "on pause");
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        ChannelInterface.onResume(this, new IDispatcherCb() {
+            @Override
+            public void onFinished(int retCode, JSONObject data) {
+
+            }
+        });
+        Log.i(Constants.TAG, "on resume");
     }
 
     public void sendMessage(View view) {
@@ -412,8 +433,13 @@ public class MainActivity extends Activity implements IAccountActionListener {
 
 	@Override
     protected void onDestroy() {
+        MainActivity.super.onDestroy();
         // call destroy when this activity is being destroyed to release the resource used by sdk
-    	super.onDestroy();
+        ChannelInterface.exit(this, new IDispatcherCb() {
+            @Override
+            public void onFinished(int retCode, JSONObject data) {
+            }
+        });
     }
 
     public void printData(int code, final JSONObject s) {

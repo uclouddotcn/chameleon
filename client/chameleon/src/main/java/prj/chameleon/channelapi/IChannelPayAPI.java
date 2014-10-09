@@ -1,29 +1,12 @@
 package prj.chameleon.channelapi;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
 
-/**
- * Created by wushauk on 6/26/14.
- */
-public interface IChannelPayAPI {
+import org.json.JSONObject;
 
-    /**
-     * init the config of this channel
-     * @param cfg config of this channel
-     */
-    public abstract void initCfg(Bundle cfg);
+public interface IChannelPayAPI extends IAPIBase {
 
-    /**
-     * init the SDK
-     * @param activity the activity to give the real SDK
-     * @param isDebug whether set it in debug mode
-     * @param cb callback function when the request is finished, the JSON object is null
-     */
-    public abstract void init(android.app.Activity activity,
-                              boolean isDebug,
-                              IDispatcherCb cb);
+
     /**
      * user charge the currency in the game
      * @param activity
@@ -39,17 +22,17 @@ public interface IChannelPayAPI {
      * @param allowUserChange can user change the amnout he paid
      * @param cb JSON object will be null
      */
-    public abstract void charge(Activity activity,
-                                String orderId,
-                                String uidInGame,
-                                String userNameInGame,
-                                String serverId,
-                                String currencyName,
-                                String payInfo,
-                                int rate,
-                                int realPayMoney,
-                                boolean allowUserChange,
-                                IDispatcherCb cb);
+    public void charge(Activity activity,
+                       String orderId,
+                       String uidInGame,
+                       String userNameInGame,
+                       String serverId,
+                       String currencyName,
+                       String payInfo,
+                       int rate,
+                       int realPayMoney,
+                       boolean allowUserChange,
+                       IDispatcherCb cb);
 
     /**
      *  user buy a product
@@ -65,44 +48,28 @@ public interface IChannelPayAPI {
      * @param realPayMoney the real money to pay
      * @param cb JSON object will be null
      */
-    public abstract void buy(Activity activity,
-                             String orderId,
-                             String uidInGame,
-                             String userNameInGame,
-                             String serverId,
-                             String productName,
-                             String productID,
-                             String payInfo,
-                             int productCount,
-                             int realPayMoney,
-                             IDispatcherCb cb);
+    public void buy(Activity activity,
+                    String orderId,
+                    String uidInGame,
+                    String userNameInGame,
+                    String serverId,
+                    String productName,
+                    String productID,
+                    String payInfo,
+                    int productCount,
+                    int realPayMoney,
+                    IDispatcherCb cb);
 
     /**
-     * destroy the sdk instance
-     * @param activity
+     * pay info from SDK
+     * @return the pay info from sdk
      */
-    public abstract void exit(Activity activity, IDispatcherCb cb);
+    public JSONObject getPayInfo();
 
     /**
-     * on activity result, the parameter is the same as Activity.onActivityResult
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * get the id of this sdk
+      * @return the id of this sdk
      */
-    public void onActivityResult(int requestCode, int resultCode, Intent data);
-
-
-    /**
-     * get token for pay
-     * @return the token for payment
-     */
-    public abstract String getPayToken();
-
-    /**
-     *
-     * @param event refer to Constants.ApplicationEvent
-     * @param arguments the var-arguments for this event
-     */
-    public void onApplicationEvent(int event, Object... arguments);
+    public String getId();
 
 }

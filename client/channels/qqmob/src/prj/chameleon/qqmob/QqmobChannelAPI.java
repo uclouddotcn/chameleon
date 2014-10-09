@@ -14,6 +14,7 @@ import com.tencent.tauth.UiError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IChannelPayAPI;
@@ -22,9 +23,6 @@ import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
-/**
- * Created by wushauk on 7/21/14.
- */
 public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private Tencent mTencent;
     private String mPrivilege;
@@ -128,15 +126,16 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     }
 
-    @Override
-    public void initCfg(Bundle cfg) {
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mAppId = cfg.getString("appId");
         mPrivilege = cfg.getString("privilege");
+        mChannel = commCfg.mChannel;
     }
 
     @Override
-    public void init(Activity activity, boolean isDebug, final IDispatcherCb cb) {
+    public void init(Activity activity, final IDispatcherCb cb) {
 
+        boolean isDebug = true;
         // init kv store
         mTencent = Tencent.createInstance(mAppId, activity.getApplicationContext());
         String prefId = activity.getPackageName() + ".chameleon.qq.pref";
@@ -179,6 +178,11 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int realPayMoney,
                     IDispatcherCb cb) {
 
+    }
+
+    @Override
+    public String getId() {
+        return "qqmob";
     }
 
     @Override
@@ -235,7 +239,7 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     @Override
-    public String getPayToken() {
+    public JSONObject getPayInfo() {
         try {
             JSONObject obj = new JSONObject();
             obj.put("p", mPf);
@@ -245,10 +249,10 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             if (mIsDebug) {
                 obj.put("d", 1);
             }
-            return obj.toString();
+            return obj;
         } catch (JSONException e) {
             Log.e(Constants.TAG, "Fail to compose json", e);
-            return "";
+            return null;
         }
     }
 

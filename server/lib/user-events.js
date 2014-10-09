@@ -1,8 +1,6 @@
 var util = require('util');
 var events = require('events');
 var SdkError = require('./sdk-error').SdkError;
-var codeToSdkError = require('./sdk-error').codeToSdkError;
-var validator = require('validator');
 var uuid = require('uuid');
 var async = require('async');
 var errorCode = require('./cham-error-code');
@@ -38,10 +36,11 @@ function(productName, product, appCallbackSvr, pendingOrderStore, eventCenter, l
  * @param {Object} m - channel plugin instance
  * @param {string} token - user session token
  * @param {string} others - other channel information
+ * @param {string} channel - channel id
  * @param {function} callback - function(err, result)
  */
 UserAction.prototype.verifyUserLogin = 
-function(m, token, others, callback) {
+function(m, token, others, channel, callback) {
     var self = this;
     m.verifyLogin(token, others,
         function (err, result) {
@@ -52,19 +51,56 @@ function(m, token, others, callback) {
             }
             if (result.code === 0 && 
                 result.loginInfo  &&
-                (!result.loginInfo.channel ||
-                 !result.loginInfo.uid ||
+                (!result.loginInfo.uid ||
                  !result.loginInfo.token)) {
                 self.logger.error( {result: result},
                     "verify login result must have following fields: channel, uid, token");
                 return callback(
                     new SdkError({code:-1, message:'internal error'}));
             }
-            self._eventCenter.emit('login', self.productName, result.channel, 
-                result.uid, result.others);
+            self._eventCenter.emit('login', self.productName, channel,
+                result.loginInfo.uid, result.loginInfo.others);
+            result.loginInfo.channel = channel;
             return callback(null, result);
         });
     return self;
+};
+
+/**
+ * notify the payment encounter fatal error, and can't be resumed
+ * @param {string} channel  the channel of this payment from
+ * @param {string} orderId  the order id of this payment
+ * @param {number} reason   the reason of failure
+ */
+UserAction.prototype.payFail = function (channel, orderId, reason) {
+    var self = this;
+    async.waterfall([
+        self.pendingOrderStore.getPendingOrder.bind(
+            self.pendingOrderStore, orderId),
+        function (pendingOrder, callback) {
+            if (pendingOrder.channel != channel) {
+                callback(1, null);
+            } else {
+                var res = {
+                    channel: channel,
+                    product: self.productName,
+                    appUid: pendingOrder.appUid,
+                    orderId: orderId,
+                    productId: pendingOrder.pId,
+                    productCount: pendingOrder.count,
+                    realPayMoney: pendingOrder.rmb,
+                    status : reason
+                };
+                callback(null, res);
+            }
+        }
+    ], function (err, orderInfo) {
+        if (!err) {
+            return;
+        }
+        self.pendingOrderStore.deletePendingOrder(orderId, null);
+        self._eventCenter.emit('pay-fail', orderInfo, reason);
+    })
 };
 
 
@@ -78,13 +114,12 @@ function(m, token, others, callback) {
  *  @param {string} productId -
  *  @param {int} productCount - 
  *  @param {int} realPayMoney - how much user have paid( fen)
- *  @param {string} other - other info for this platfrom, which will be logged 
+ *  @param {object} other - other info for this platfrom, which will be logged
  *  @param {function} callback - function(err, result)
  */
 UserAction.prototype.pay =
 function(channel, uid, appUid, cpOrderId, payStatus,
          productId, productCount, realPayMoney, other, callback) {
-
     if (other instanceof Function) {
         callback = other;
         other = undefined;
@@ -137,7 +172,7 @@ function(channel, uid, appUid, cpOrderId, payStatus,
             callback(null, result);
             if (result.code === 0 || result.code === '0') {
                 self._eventCenter.emit('pay', orderInfo);
-                self.pendingOrderStore.deletePendingOrder(cpOrderId);
+                self.pendingOrderStore.deletePendingOrder(cpOrderId, null);
             } else {
                 self._eventCenter.emit('pay-fail', orderInfo, result.code);
             }
@@ -163,6 +198,7 @@ function(channel, uid, appUid, cpOrderId, payStatus,
  *      if it is null, then a exact match will be required 
  *      when validating the order from channel
  *  @param {string} ext - it will return back to app untouched..
+ *  @param {string} channel - the channel id
  *  @param {function} callback - function(err, orderId)
  */
 /**
@@ -179,14 +215,15 @@ function(channel, uid, appUid, cpOrderId, payStatus,
  *  @param {int} singlePrice - price of per products, if it is null, then a exact 
  *        match will be required when validating the order from channel
  *  @param {string} ext - it will return back to app untouched..
+ *  @param {string} channel - the channel name
  *  @param {function} callback - function(err, orderId)
  */
 UserAction.prototype.pendingPay =
 function(orderId, m, uid, appUid, serverId, productId, productCount, 
-         realPayMoney, singlePrice, ext, callback) {
+         realPayMoney, singlePrice, ext, channel, callback) {
     var self = this;
     var pendingOrderInfo = {
-        channel: m.name,
+        channel: channel,
         uid: uid,
         appUid: appUid,
         sId: serverId,
@@ -195,14 +232,15 @@ function(orderId, m, uid, appUid, serverId, productId, productCount,
         pId: productId,
         count: productCount,
         rmb: realPayMoney,
-        ext: ext
+        ext: ext,
+        sdk: m.name
     };
     addPendingOrder(self, orderId, pendingOrderInfo, callback);
 };
 
 UserAction.prototype.genOrderId = function () {
     return uuid.v4();
-}
+};
 
 
 function validatePayOrder(self, pendingOrderInfo, orderInfo) {
@@ -239,10 +277,9 @@ function validatePayOrder(self, pendingOrderInfo, orderInfo) {
         orderInfo.productId = pendingOrderInfo.pId;
     }
 
-    var purchasedProductCount = 
+    orderInfo.productCount =
         orderInfo.realPayMoney/pendingOrderInfo.perPrice;
 
-    orderInfo.productCount = purchasedProductCount;
     return null;
 }
 
@@ -269,7 +306,7 @@ function checkPayCallback(self, orderInfo, pendingOrderInfo, callback) {
 
 function addPendingOrder(self, orderId, orderInfo, callback) {
     self.pendingOrderStore.addPendingOrder(orderId, orderInfo, 
-        function (err, res) {
+        function (err) {
             if (err) {
                 return callback(new Error("fail to store pending order: " + err.toString()));
             }
@@ -282,9 +319,8 @@ function addPendingOrder(self, orderId, orderInfo, callback) {
 
 module.exports.createUserAction = 
 function(productName, product, appCallbackSvr, pendingOrderStore, eventCenter, logger) {
-    var userAction = new UserAction(
+    return new UserAction(
         productName, product, appCallbackSvr, pendingOrderStore, eventCenter, logger);
-    return userAction;
 };
 
 

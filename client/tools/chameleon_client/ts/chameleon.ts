@@ -1,11 +1,9 @@
-/**
- * Created by wushauk on 9/5/14.
- */
 /// <reference path="declare/node.d.ts"/>
 /// <reference path="declare/async.d.ts"/>
 /// <reference path="declare/ncp.d.ts"/>
 /// <reference path="declare/fs-extra.d.ts"/>
 /// <reference path="declare/xml2js.d.ts"/>
+/// <reference path="declare/adm-zip.d.ts"/>
 
 import fs = require('fs-extra');
 import childprocess = require("child_process");
@@ -14,6 +12,8 @@ import os = require('os');
 import async = require('async');
 import xml2js = require('xml2js');
 import util = require('util');
+import AdmZip = require('adm-zip');
+import urlLib = require('url');
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -72,7 +72,7 @@ export enum ErrorCode {
     SDK_PATH_ILLEGAL,
     OP_FAIL,
     CFG_ERROR
-};
+}
 
 
 class Utils {
@@ -119,7 +119,7 @@ export class AndroidEnv {
                     ', code:' + err['code']);
                 console.log('stdout is \n' + stdout.toString('utf8'));
                 console.log('stderr is \n' + stderr.toString('utf8'));
-                cb(ChameleonError.newFromErrpror(err));
+                cb(ChameleonError.newFromError(err));
                 return;
             }
             cb(null);
@@ -137,11 +137,11 @@ export class AndroidEnv {
 
     set sdkPath(p: string) {
         this._sdkPath = p;
-        this.androidBin = this.getAndroidBin(p);
+        this.androidBin = AndroidEnv.getAndroidBin(p);
         this.db.set('env', 'sdkpath', {value: p});
     }
 
-    private getAndroidBin(p: string) : string{
+    private static getAndroidBin(p: string) : string{
         var s = '';
         if (os.platform() === 'win32') {
             s = pathLib.join(p, 'tools', 'android.bat');
@@ -152,7 +152,7 @@ export class AndroidEnv {
     }
 
     verifySDKPath(p: string, cb: CallbackFunc<any>) {
-        var androidBin = this.getAndroidBin(p);
+        var androidBin = AndroidEnv.getAndroidBin(p);
         childprocess.execFile(androidBin, ['list', 'target'], {timeout: 30000}, function (err, stdout, stderr) {
             if (err) {
                 cb(new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, '非法的Android SDK路径，请确保路径在sdk路径下'));
@@ -363,6 +363,10 @@ export class SDKCfg {
         return a;
     }
 
+    serverCfg(): any {
+        return this.cfg;
+    }
+
     updateCfg(cfg: any) {
         var realcfg = this.metaInfo.rewritePendingCfg(cfg);
         this.cfg = realcfg;
@@ -406,6 +410,23 @@ export class Version {
         var t = ver.split('.');
         this.major = parseInt(t[0]);
         this.minor = parseInt(t[1]);
+    }
+
+    cmp (that: Version): number {
+        if (this.major > that.major) {
+            return 1;
+        } else if (this.major < that.major) {
+            return -1;
+        } else {
+            if (this.minor < that.minor) {
+                return -1;
+            } else if (this.minor > that.minor) {
+                return 1;
+            } else {
+                return 0;
+            }
+
+        }
     }
 
     toString(): string {
@@ -494,6 +515,7 @@ export class ChannelMetaInfo {
     pkgsuffix : string;
     hasIcon: boolean;
     hasSplashScreen: boolean;
+    availableIconPos: number;
     name: string;
     desc: string;
     sdk: string;
@@ -519,23 +541,55 @@ export class ChannelMetaInfo {
     private _loadIconInfo(resPath: string) {
         var drawablePath = pathLib.join(resPath, 'drawable');
         var icon = {}
+        var availableIconPos = [];
         for (var d in DESITY_MAP) {
             var leftup = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-leftup.png');
             var leftdown = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-leftdown.png');
             var rightup = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-rightup.png');
             var rightdown = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-rightdown.png');
-            if (fs.existsSync(leftup) &&
-                fs.existsSync(leftdown) &&
-                fs.existsSync(rightup) &&
-                fs.existsSync(rightdown) ) {
-                icon[d] = [leftup, rightup, leftdown, rightdown];
+            var flag = 0xF;
+            var iconOfDesity = [];
+            if (fs.existsSync(leftup)) {
+                iconOfDesity.push(leftup);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1);
             }
+            if (fs.existsSync(leftdown)) {
+                iconOfDesity.push(leftdown);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1<<1);
+            }
+            if (fs.existsSync(rightup)) {
+                iconOfDesity.push(rightup);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1<<2);
+            }
+            if (fs.existsSync(rightdown)) {
+                iconOfDesity.push(rightdown);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1<<3);
+            }
+            if (flag ==0) {
+                continue;
+            }
+            icon[d] = iconOfDesity;
+            availableIconPos.push(flag);
         }
+        this.availableIconPos = availableIconPos.reduce(function (x: number, y: number) {
+            return x&y;
+        }, 0xF);
         return icon;
     }
 
     private _loadSplashInfo(resPath: string) : any {
         var scPath = pathLib.join(resPath, 'drawable', 'splashscreen');
+        if (!fs.existsSync(scPath)) {
+            return null;
+        }
         var res = {portrait: [], landscape: []};
         var files = fs.readdirSync(scPath);
         var TYPE_MAP = {
@@ -827,6 +881,22 @@ export class ChannelCfg {
         this._icons = {position: icon};
     }
 
+    serverCfg(): any {
+        var res = {};
+        if (this.payLib == this.userLib) {
+            var dl = this.userLib.dumpJsonObj();
+            dl.type = 'user,pay';
+            res['sdks'] = [dl];
+        } else {
+            var dlUser = this.userLib.dumpJsonObj();
+            dlUser.type = 'user';
+            var dlPay = this.payLib.dumpJsonObj();
+            dlPay.type = 'pay';
+            res['sdks'] = [dlUser, dlPay];
+        }
+        return res;
+    }
+
     private loadShownIcon() {
         if (this.hasIcon && this.channelPath) {
             var density = ['drawable-mdpi', 'drawable-hdpi', 'drawable-xhdpi'];
@@ -841,34 +911,54 @@ export class ChannelCfg {
     }
 }
 
+function guessWorkDir() : string {
+    var p = pathLib.join(pathLib.dirname(process.execPath), 'env.json');
+    if (fs.existsSync(p)) {
+        return pathLib.dirname(process.execPath);
+    }
+    p = pathLib.join(process.cwd(), 'env.json');
+    if (fs.existsSync(p)) {
+        return process.cwd();
+    }
+    return null;
+}
+
 export class ChameleonTool {
     androidEnv: AndroidEnv;
     infoObj: InfoJson;
     chameleonPath: string;
     db: DB
+    homePath: string;
+    private upgradeMgr: UpgradeMgr;
 
     static initTool(db: DB, cb: CallbackFunc<ChameleonTool>) {
         var res = new ChameleonTool();
         res.db = db;
-        var content = fs.readFileSync(pathLib.join(__dirname, '..', 'env.json'), 'utf-8');
+        var workdir = guessWorkDir();
+        if (workdir == null) {
+            setImmediate(cb, new ChameleonError(ErrorCode.OP_FAIL, "无法找到合法的工具路径"));
+            return;
+        }
+        var content = fs.readFileSync(pathLib.join(workdir, 'env.json'), 'utf-8');
         var envObj = JSON.parse(content);
-        var chameleonPath = pathLib.join(__dirname, '..', envObj['pythonPath']);
-        res.chameleonPath = chameleonPath;
+        res.chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
 
         function loadInfoJsonObj(callback: CallbackFunc<any>) {
-            var infojsonPath = pathLib.join(chameleonPath, 'info.json');
+            var infojsonPath = pathLib.join(res.chameleonPath, 'info.json');
             fs.readFile(infojsonPath, 'utf-8', function (err, s) {
                 if (err) {
                     Logger.log('fail to parse json', err);
-                    return callback(new ChameleonError(ErrorCode.UNKNOWN, '无法读取info.json'));
+                    return callback(new ChameleonError(ErrorCode.UNKNOWN, '无法读取'+infojsonPath));
                 }
                 try {
                     var jsonobj = JSON.parse(s);
-                    res.infoObj = InfoJson.loadFromJson(jsonobj, chameleonPath);
+                    res.infoObj = InfoJson.loadFromJson(jsonobj, res.chameleonPath);
+
+                    res.upgradeMgr = new UpgradeMgr(workdir, res.infoObj.version);
                     return callback(null);
                 } catch (e) {
                     Logger.log('fail to parse json', e);
-                    return callback(new ChameleonError(ErrorCode.UNKNOWN, '无法读取info.json'));
+                    return callback(new ChameleonError(ErrorCode.UNKNOWN, '无法读取'+infojsonPath));
                 }
             });
         }
@@ -887,6 +977,29 @@ export class ChameleonTool {
         })
     }
 
+    static checkSingleLock(callback) {
+        var homePath = ChameleonTool.getChameleonHomePath();
+        fs.ensureDir(homePath, function (err) {
+            var name = pathLib.join(homePath, '.lock');
+            try {
+                var fd = fs.openSync(name, 'wx');
+                process.on('exit', function () {
+                    fs.unlinkSync(name);
+                });
+                try { fs.closeSync(fd) } catch (err) {}
+                callback(null);
+            } catch (err) {
+                Logger.log("Fail to lock", err);
+                callback(new ChameleonError(ErrorCode.OP_FAIL, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
+            }
+        });
+
+    }
+
+    static getChameleonHomePath() : string {
+        return pathLib.join(ChameleonTool.getUserPath(), '.prj_chameleon');
+    }
+
     getChannelList(): ChannelMetaInfo[] {
         return this.infoObj.getChannelMetaInfos();
     }
@@ -903,6 +1016,9 @@ export class ChameleonTool {
         return this.infoObj.getSDKMetaInfos();
     }
 
+    readUpgradeFileInfo(zipFile: string) : any {
+        return this.upgradeMgr.readManifest(zipFile);
+    }
 
     get(): ChannelMetaInfo[] {
         return this.infoObj.getChannelMetaInfos();
@@ -1094,6 +1210,15 @@ export class ChameleonTool {
             })
         });
     }
+
+    static getUserPath() : string {
+        return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+    }
+
+    upgradeFromFile(filePath) {
+        var newver = this.upgradeMgr.upgradeFromZip(filePath);
+        this.version = newver;
+    }
 }
 
 export class SignCfg {
@@ -1152,6 +1277,33 @@ export class Project {
         this.sdkCfg[name] = sdkcfg;
     }
 
+    genServerCfg(paySvrCbUrl: string): any {
+        var res = {};
+        var obj = urlLib.parse(paySvrCbUrl);
+        var host = obj.protocol+'//'+obj.host;
+        var pathname = obj.pathname;
+        res['_product.json'] = {
+            appcb: {
+                host: host,
+                payCbUrl: pathname
+            }
+        };
+        for (var channelName in this.channelCfg) {
+            var chcfg = this.channelCfg[channelName];
+            var cfgs = chcfg.serverCfg();
+            cfgs['sdks'].forEach((libcfg) => {
+                var replaceCfg = this.sdkCfg[libcfg.cfg];
+                if (!replaceCfg) {
+                    throw new ChameleonError(ErrorCode.OP_FAIL,
+                            "Fail to find sdk cfg for " + libcfg.cfg + ", channel = " + channelName);
+                }
+                libcfg.cfg = replaceCfg.serverCfg();
+            });
+            res[channelName+'.json'] = cfgs;
+        }
+        return res;
+    }
+
 
     cloneGlobalCfg() : any {
         return this.projectCfg.globalCfg.cloneCfg();
@@ -1208,7 +1360,7 @@ export class Project {
         }
         if (splashscreen && cfg['splashscreenToCp']) {
             var sc = cfg['splashscreenToCp'];
-            var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/')
+            var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/');
             updateCfg.cfg.splashscreen = newsc;
             updateCfg.copyfile.push({
                 from: sc.path,
@@ -1557,6 +1709,62 @@ class AndroidManifest {
 
     getPkgName(): string {
         return this.xmlobj['$']['package'];
+    }
+}
+
+class UpgradeMgr {
+    workdir: string;
+    curver: Version;
+
+    constructor(workdir: string, curver: Version) {
+        this.workdir = workdir;
+        this.curver = curver;
+    }
+
+    readManifest(fpath: string): any {
+        try {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            if (content == null || content.length == 0) {
+                throw new ChameleonError(ErrorCode.OP_FAIL, '不正确的升级包格式: 无法读取升级信息');
+            }
+            var obj = JSON.parse(content);
+            return {
+                from: obj.prevVer,
+                to: obj.toVer
+            };
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                Logger.log('Fail to read upgrade package', e);
+                throw new ChameleonError(ErrorCode.OP_FAIL, '不正确的升级包格式: ' + e.message);
+            }
+        }
+    }
+
+    upgradeFromZip(fpath: string) : Version{
+        try {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            var obj = JSON.parse(content);
+            var baseVer = new Version(obj.prevVer);
+            var tover = new Version(obj.toVer);
+            if (this.curver.cmp(baseVer) != 0) {
+                Logger.log("Fail to upgrade");
+                throw new ChameleonError(ErrorCode.OP_FAIL, "升级包并不是针对当前版本："+ fpath + '\n' +
+                    'base: ' + baseVer.toString() + ', current: ' + this.curver.toString());
+            }
+            zip.extractAllTo(this.workdir, true);
+            this.curver = tover;
+            return tover;
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                throw ChameleonError.newFromError(e, ErrorCode.OP_FAIL);
+            }
+        }
     }
 }
 

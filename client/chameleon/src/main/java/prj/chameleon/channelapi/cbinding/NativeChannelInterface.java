@@ -633,4 +633,21 @@ public class NativeChannelInterface {
     public static boolean onLoginRsp(byte[] rsp) throws UnsupportedEncodingException {
         return ChannelInterface.onLoginRsp(new String(rsp, "UTF-8"));
     }
+
+    public static void submitPlayerInfo(byte[] roleId,
+                                        byte[] roleName,
+                                        byte[] roleLevel,
+                                        int zoneId,
+                                        byte[] zoneName) {
+        try {
+            ChannelInterface.submitPlayerInfo(mActivity,
+                    new String(roleId, "UTF-8"),
+                    new String(roleName, "UTF-8"),
+                    new String(roleLevel, "UTF-8"),
+                    zoneId,
+                    new String(zoneName, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            Log.e(Constants.TAG, "Fail to convert utf-8 string", e);
+        }
+    }
 }

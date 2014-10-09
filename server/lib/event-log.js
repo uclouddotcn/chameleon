@@ -4,8 +4,8 @@
  *  using the provided storage engine
  * @name module.exports.listen
  * @function
- * @param {object} eventCenter, the one emits user actions
- * @param {object} storageEngine, storage engine 
+ * @param {object} eventCenter the one emits user actions
+ * @param {object} storageEngine storage engine
  */
 module.exports.listen = function (eventCenter, storageEngine) {
     eventCenter.on('login', function (channel, uid, newOthers) {
@@ -32,7 +32,7 @@ module.exports.listen = function (eventCenter, storageEngine) {
     eventCenter.on('pre-pay', function (orderInfo) {
         var obj = {
             action: 'pre-pay',
-            time: Date.now(),
+            time: Date.now()
         };
         for (var i in orderInfo) {
             obj[i] = orderInfo[i];
@@ -43,7 +43,7 @@ module.exports.listen = function (eventCenter, storageEngine) {
     eventCenter.on('pay', function (orderInfo) {
         var obj = {
             action: 'pay',
-            time: Date.now(),
+            time: Date.now()
         };
         for (var i in orderInfo) {
             obj[i] = orderInfo[i];
@@ -55,7 +55,7 @@ module.exports.listen = function (eventCenter, storageEngine) {
         var obj = {
             action: 'pay-fail',
             time: Date.now(),
-            code: code,
+            code: code
         };
         for (var i in orderInfo) {
             obj[i] = orderInfo[i];
@@ -66,14 +66,14 @@ module.exports.listen = function (eventCenter, storageEngine) {
     eventCenter.on('disgard-order', function (orderInfo) {
         var obj = {
             action: 'disgard-order',
-            time: Date.now(),
+            time: Date.now()
         };
         for (var i in orderInfo) {
             obj[i] = orderInfo[i];
         }
         storageEngine.record(obj);
     });
-}
+};
 
 
 

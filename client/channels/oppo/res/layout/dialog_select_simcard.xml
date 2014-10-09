@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/layout_shape"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/dialog_resigin_ll"
+        style="@style/DialogContainer"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout style="@style/DialogTitle" >
+
+            <TextView
+                style="@style/DialogTitleText"
+                android:text="请选择SIM卡"
+                android:textColor="@color/dialog_title_text_color"
+                android:textSize="20dp" />
+        </LinearLayout>
+
+        <ImageView style="@style/NearMePayActivityBasicBoldDivide" />
+
+        <LinearLayout
+            android:id="@+id/dialog_account_list_ll"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ListView
+                android:id="@+id/account_list_lv"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#00000000"
+                android:cacheColorHint="#00000000"
+                android:choiceMode="singleChoice"
+                android:divider="@drawable/activity_divide_line"
+                android:fadingEdge="none"
+                android:listSelector="#00000000"
+                android:scrollbars="none" >
+            </ListView>
+        </LinearLayout>
+
+        <ImageView style="@style/NearMePayActivityBasicBoldDivide" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="41dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/dialog_standard_bt_yes"
+                style="@style/DialogButtonNew"
+                android:ellipsize="end" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="fill_parent"
+                android:background="#ffaaaaaa" />
+
+            <Button
+                android:id="@+id/dialog_standard_bt_no"
+                style="@style/DialogButtonNew"
+                android:ellipsize="end"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

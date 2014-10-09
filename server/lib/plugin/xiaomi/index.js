@@ -1,9 +1,11 @@
-var restify = require('restify');
-var querystring = require('querystring');
-var async = require('async');
 var crypto = require('crypto');
-var sdkerror = require('../../sdk-error');
+var querystring = require('querystring');
+var util = require('util');
+
+var restify = require('restify');
+var async = require('async');
 var ErrorCode = require('../common/error-code').ErrorCode;
+var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
     appId: 'string',
@@ -13,35 +15,29 @@ var cfgDesc = {
 };
 
 
-var XiaomiChannel = function(name, cfgItem, userAction, logger) {
-    this.name = name;
-    this.userAction = userAction;
-    this.cfgItem = cfgItem;
-    this.logger = logger;
-    this.reloadCfg(cfgItem);
+var XiaomiChannel = function(userAction, logger, cfgChecker) {
+    SDKPluginBase.call(this, userAction, logger, cfgChecker);
+    this.requestUri = "http://mis.migc.xiaomi.com";
+    this.client = restify.createJsonClient({
+        url: this.requestUri,
+        retry: false,
+        log: this._logger,
+        connectTimeout: 20000
+    });
 };
+util.inherits(XiaomiChannel, SDKPluginBase);
 
-XiaomiChannel.prototype.getInfo = function () {
-    return {
-        appid : this.cfgItem.appId,
-        appKey: this.cfgItem.appKey,
-        appSecret: this.cfgItem.appSecret,
-        requestUri : this.requestUri
-    };
-};
-
-XiaomiChannel.prototype.verifyLogin = 
-function(token, others, callback) {
+XiaomiChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
     var params = {
-        appId: this.cfgItem.appId,
+        appId: wrapper.cfg.appId,
         session: token,
         uid: others
     };
-    params.signature = this.calcSecret(params);
+    params.signature = this.calcSecret(wrapper, params);
     var q = '/api/biz/service/verifySession.do?' + 
         querystring.stringify(params);
-    this.logger.debug({params: params}, 'sending ' + q);
+    this._logger.debug({params: params}, 'sending ' + q);
     this.client.get(q, function (err, req, res, obj) {
         req.log.debug({req: req, err: err, obj: obj, q: q}, 'on result ');
         if (err) {
@@ -54,7 +50,7 @@ function(token, others, callback) {
                 loginInfo: {
                     uid: others,
                     token: token,
-                    channel: self.name
+                    channel: wrapper.channelName
                 }
             });
         } else {
@@ -78,7 +74,7 @@ function compareQueryPair(a, b) {
 }
 
 
-XiaomiChannel.prototype.calcSecret = function (params) {
+XiaomiChannel.prototype.calcSecret = function (wrapper, params) {
     var paramArray = [];
     for (var key in params) {
         paramArray.push([key, params[key]]);
@@ -88,12 +84,12 @@ XiaomiChannel.prototype.calcSecret = function (params) {
     for (var i in paramArray) {
         content += paramArray[i][0]+'='+paramArray[i][1]+'&';
     }
-    var hmac = crypto.createHmac('sha1', this.cfgItem.appSecret)
+    var hmac = crypto.createHmac('sha1', wrapper.cfg.appSecret);
     hmac.write(content.substr(0, content.length-1), 'utf-8');
     return hmac.digest('hex');
-}
+};
 
-XiaomiChannel.prototype.getChannelSubDir = function ()  {
+XiaomiChannel.prototype.getPayUrlInfo = function ()  {
     var self = this;
     return [
         {
@@ -109,22 +105,30 @@ XiaomiChannel.prototype.getRspMsg = function(errorCode, message) {
         errcode: errorCode, 
         errMsg: message
     };
-}
+};
 
 XiaomiChannel.prototype.respondsToPay = function (req, res, next) {
     var self = this;
     var params = req.params;
-    self.logger.debug({req: req}, 'responds to pay');
+    self._logger.debug({req: req}, 'responds to pay');
     var signature = params.signature;
-    delete params.signature
-    var expectSign = this.calcSecret(params); 
-    if (expectSign != signature) {
-        self.logger.warn({req: req, expectSign: expectSign,  params: params}, "unmatched sign");
-        res.send(this.getRspMsg(1525));
-        return next();
-    }
+    delete params.signature;
     try {
-        if (params.appId != this.cfgItem.appId) {
+        var channelName = params.cpUserInfo;
+        var wrapper = this._channels[channelName];
+        if (!wrapper) {
+            this._userAction.payFail(channelName, params.cpOrderId, ErrorCode.ERR_PAY_ILL_CHANNEL);
+            res.send(this.getRspMsg(200));
+            return next();
+        }
+
+        var expectSign = this.calcSecret(wrapper, params);
+        if (expectSign != signature) {
+            self._logger.warn({req: req, expectSign: expectSign,  params: params}, "unmatched sign");
+            res.send(this.getRspMsg(1525));
+            return next();
+        }
+        if (params.appId != wrapper.cfg.appId) {
             res.send(this.getRspMsg(1515));
             return next();
         }
@@ -133,18 +137,18 @@ XiaomiChannel.prototype.respondsToPay = function (req, res, next) {
             orderId: params.orderId,
             partnerGiftConsume: params.partnerGiftConsume
         };
-        self.userAction.pay(self.name, params.uid, params.appuid, 
+        self._userAction.pay(wrapper.channelName, params.uid, params.appuid,
             params.cpOrderId, getPayStatus(params.orderStatus), 
             params.productCode, params.productCount, params.payFee, other,
             function (err, result) {
                 if (err) {
-                    self.logger.error({err: err}, "fail to pay");
+                    self._logger.error({err: err}, "fail to pay");
                     res.send(self.getRspMsg(3515));
                     return next();
                 }
-                self.logger.debug({result: result}, "recv result");
+                self._logger.debug({result: result}, "recv result");
                 var rsp = self.getRspMsg(200);
-                self.logger.debug({rsp: rsp}, "recv result");
+                self._logger.debug({rsp: rsp}, "recv result");
                 res.send(rsp);
                 return next();
             }
@@ -155,17 +159,6 @@ XiaomiChannel.prototype.respondsToPay = function (req, res, next) {
         return next();
     }
 
-}
-
-XiaomiChannel.prototype.reloadCfg = function (cfgItem) {
-    this.cfgItem = cfgItem;
-    this.requestUri = cfgItem.requestUri || "http://mis.migc.xiaomi.com";
-    var timeout = cfgItem.timeout || 10;
-    this.client = restify.createJsonClient({
-        url: this.requestUri,
-        retry: false,
-        log: this.logger
-    });
 };
 
 function getPayStatus(flag) {
@@ -187,14 +180,14 @@ XiaomiChannel.prototype.mapError = function (errorCode) {
     } else {
         return ErrorCode.ERR_FAIL;
     }
-}
+};
 
 module.exports =
 {
     name: 'xiaomi',
     cfgDesc: cfgDesc,
-    create: function (name, cfgItem, userAction, logger) {
-                return new XiaomiChannel(name, cfgItem, userAction, logger);
+    createSDK: function (userAction, logger, cfgChecker) {
+                return new XiaomiChannel(userAction, logger, cfgChecker);
             }
 };
 
