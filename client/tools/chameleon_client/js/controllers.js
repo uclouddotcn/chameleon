@@ -1380,7 +1380,7 @@ function SelectSplashController($scope, $modalInstance, orient, images) {
 
 function SelectIconController($scope, $modalInstance, ProjectMgr, project, images, config, availablePos) {
     $scope.url = null;
-    $scope.hasImg = [availablePos&0x1, availablePos&0x2, 0, availablePos&0x8];
+    $scope.hasImg = [availablePos&0x1, availablePos&0x2, availablePos&0x4, availablePos&0x8];
     $scope.selectedPosition = config.position;
     $scope.shownimages = {
         image: images,
