@@ -1,25 +1,19 @@
 package prj.chameleon.test;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import prj.chameleon.channelapi.ChannelInterface;
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
-import prj.chameleon.channelapi.IChannelPayAPI;
-import prj.chameleon.channelapi.IChannelUserAPI;
 import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
-/**
- * Created by wushauk on 7/17/14.
- */
 public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public static class UserInfo {
         public String mUid = new String();
@@ -48,12 +42,16 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void initCfg(Bundle cfg) {
+    public String getId() {
+        return "test";
+    }
+
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
 
     }
 
     @Override
-    public void init(Activity activity, boolean isDebug, final IDispatcherCb cb) {
+    public void init(Activity activity, final IDispatcherCb cb) {
 
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -119,11 +117,6 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         return mUserInfo.mIsLogined;
     }
 
-
-    @Override
-    public String getPayToken() {
-        return mUserInfo.mSession;
-    }
 
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {

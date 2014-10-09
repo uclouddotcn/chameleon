@@ -1,12 +1,13 @@
 apply plugin: 'android-library'
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.1'
+    buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 16
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [ orientation:"landscape"]
     }
 
     sourceSets {
@@ -24,15 +25,18 @@ android {
 
     }
 
-    release {
-        runProguard false
-        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
     }
+
 }
 
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:19.1.0'
     compile fileTree(dir: "libs", includes: ["*.jar"], exclude: 'android-support-v4.jar')
     compile project(':chameleon')
 }

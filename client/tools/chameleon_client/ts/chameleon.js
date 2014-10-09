@@ -1,3 +1,9 @@
+/// <reference path="declare/node.d.ts"/>
+/// <reference path="declare/async.d.ts"/>
+/// <reference path="declare/ncp.d.ts"/>
+/// <reference path="declare/fs-extra.d.ts"/>
+/// <reference path="declare/xml2js.d.ts"/>
+/// <reference path="declare/adm-zip.d.ts"/>
 var fs = require('fs-extra');
 var childprocess = require("child_process");
 var pathLib = require("path");
@@ -5,6 +11,8 @@ var os = require('os');
 var async = require('async');
 var xml2js = require('xml2js');
 var util = require('util');
+var AdmZip = require('adm-zip');
+var urlLib = require('url');
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -54,7 +62,6 @@ var Logger = (function () {
     ErrorCode[ErrorCode["CFG_ERROR"] = 4] = "CFG_ERROR";
 })(exports.ErrorCode || (exports.ErrorCode = {}));
 var ErrorCode = exports.ErrorCode;
-;
 
 var Utils = (function () {
     function Utils() {
@@ -97,7 +104,7 @@ var AndroidEnv = (function () {
                 console.log('exec update project error: \n' + err.message + '\n signal: ' + err['signal'] + ', code:' + err['code']);
                 console.log('stdout is \n' + stdout.toString('utf8'));
                 console.log('stderr is \n' + stderr.toString('utf8'));
-                cb(ChameleonError.newFromErrpror(err));
+                cb(ChameleonError.newFromError(err));
                 return;
             }
             cb(null);
@@ -114,7 +121,7 @@ var AndroidEnv = (function () {
         },
         set: function (p) {
             this._sdkPath = p;
-            this.androidBin = this.getAndroidBin(p);
+            this.androidBin = AndroidEnv.getAndroidBin(p);
             this.db.set('env', 'sdkpath', { value: p });
         },
         enumerable: true,
@@ -122,7 +129,7 @@ var AndroidEnv = (function () {
     });
 
 
-    AndroidEnv.prototype.getAndroidBin = function (p) {
+    AndroidEnv.getAndroidBin = function (p) {
         var s = '';
         if (os.platform() === 'win32') {
             s = pathLib.join(p, 'tools', 'android.bat');
@@ -133,7 +140,7 @@ var AndroidEnv = (function () {
     };
 
     AndroidEnv.prototype.verifySDKPath = function (p, cb) {
-        var androidBin = this.getAndroidBin(p);
+        var androidBin = AndroidEnv.getAndroidBin(p);
         childprocess.execFile(androidBin, ['list', 'target'], { timeout: 30000 }, function (err, stdout, stderr) {
             if (err) {
                 cb(new ChameleonError(2 /* SDK_PATH_ILLEGAL */, '非法的Android SDK路径，请确保路径在sdk路径下'));
@@ -341,6 +348,10 @@ var SDKCfg = (function () {
         return a;
     };
 
+    SDKCfg.prototype.serverCfg = function () {
+        return this.cfg;
+    };
+
     SDKCfg.prototype.updateCfg = function (cfg) {
         var realcfg = this.metaInfo.rewritePendingCfg(cfg);
         this.cfg = realcfg;
@@ -388,6 +399,22 @@ var Version = (function () {
         this.major = parseInt(t[0]);
         this.minor = parseInt(t[1]);
     }
+    Version.prototype.cmp = function (that) {
+        if (this.major > that.major) {
+            return 1;
+        } else if (this.major < that.major) {
+            return -1;
+        } else {
+            if (this.minor < that.minor) {
+                return -1;
+            } else if (this.minor > that.minor) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    };
+
     Version.prototype.toString = function () {
         return this.major + '.' + this.minor;
     };
@@ -487,20 +514,55 @@ var ChannelMetaInfo = (function () {
     ChannelMetaInfo.prototype._loadIconInfo = function (resPath) {
         var drawablePath = pathLib.join(resPath, 'drawable');
         var icon = {};
+        var availableIconPos = [];
         for (var d in DESITY_MAP) {
             var leftup = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-leftup.png');
             var leftdown = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-leftdown.png');
             var rightup = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-rightup.png');
             var rightdown = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-rightdown.png');
-            if (fs.existsSync(leftup) && fs.existsSync(leftdown) && fs.existsSync(rightup) && fs.existsSync(rightdown)) {
-                icon[d] = [leftup, rightup, leftdown, rightdown];
+            var flag = 0xF;
+            var iconOfDesity = [];
+            if (fs.existsSync(leftup)) {
+                iconOfDesity.push(leftup);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1);
             }
+            if (fs.existsSync(leftdown)) {
+                iconOfDesity.push(leftdown);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1 << 1);
+            }
+            if (fs.existsSync(rightup)) {
+                iconOfDesity.push(rightup);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1 << 2);
+            }
+            if (fs.existsSync(rightdown)) {
+                iconOfDesity.push(rightdown);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1 << 3);
+            }
+            if (flag == 0) {
+                continue;
+            }
+            icon[d] = iconOfDesity;
+            availableIconPos.push(flag);
         }
+        this.availableIconPos = availableIconPos.reduce(function (x, y) {
+            return x & y;
+        }, 0xF);
         return icon;
     };
 
     ChannelMetaInfo.prototype._loadSplashInfo = function (resPath) {
         var scPath = pathLib.join(resPath, 'drawable', 'splashscreen');
+        if (!fs.existsSync(scPath)) {
+            return null;
+        }
         var res = { portrait: [], landscape: [] };
         var files = fs.readdirSync(scPath);
         var TYPE_MAP = {
@@ -831,6 +893,22 @@ var ChannelCfg = (function () {
         this._icons = { position: icon };
     };
 
+    ChannelCfg.prototype.serverCfg = function () {
+        var res = {};
+        if (this.payLib == this.userLib) {
+            var dl = this.userLib.dumpJsonObj();
+            dl.type = 'user,pay';
+            res['sdks'] = [dl];
+        } else {
+            var dlUser = this.userLib.dumpJsonObj();
+            dlUser.type = 'user';
+            var dlPay = this.payLib.dumpJsonObj();
+            dlPay.type = 'pay';
+            res['sdks'] = [dlUser, dlPay];
+        }
+        return res;
+    };
+
     ChannelCfg.prototype.loadShownIcon = function () {
         if (this.hasIcon && this.channelPath) {
             var density = ['drawable-mdpi', 'drawable-hdpi', 'drawable-xhdpi'];
@@ -847,31 +925,49 @@ var ChannelCfg = (function () {
 })();
 exports.ChannelCfg = ChannelCfg;
 
+function guessWorkDir() {
+    var p = pathLib.join(pathLib.dirname(process.execPath), 'env.json');
+    if (fs.existsSync(p)) {
+        return pathLib.dirname(process.execPath);
+    }
+    p = pathLib.join(process.cwd(), 'env.json');
+    if (fs.existsSync(p)) {
+        return process.cwd();
+    }
+    return null;
+}
+
 var ChameleonTool = (function () {
     function ChameleonTool() {
     }
     ChameleonTool.initTool = function (db, cb) {
         var res = new ChameleonTool();
         res.db = db;
-        var content = fs.readFileSync(pathLib.join(__dirname, '..', 'env.json'), 'utf-8');
+        var workdir = guessWorkDir();
+        if (workdir == null) {
+            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, "无法找到合法的工具路径"));
+            return;
+        }
+        var content = fs.readFileSync(pathLib.join(workdir, 'env.json'), 'utf-8');
         var envObj = JSON.parse(content);
-        var chameleonPath = pathLib.join(__dirname, '..', envObj['pythonPath']);
-        res.chameleonPath = chameleonPath;
+        res.chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
 
         function loadInfoJsonObj(callback) {
-            var infojsonPath = pathLib.join(chameleonPath, 'info.json');
+            var infojsonPath = pathLib.join(res.chameleonPath, 'info.json');
             fs.readFile(infojsonPath, 'utf-8', function (err, s) {
                 if (err) {
                     Logger.log('fail to parse json', err);
-                    return callback(new ChameleonError(1 /* UNKNOWN */, '无法读取info.json'));
+                    return callback(new ChameleonError(1 /* UNKNOWN */, '无法读取' + infojsonPath));
                 }
                 try  {
                     var jsonobj = JSON.parse(s);
-                    res.infoObj = InfoJson.loadFromJson(jsonobj, chameleonPath);
+                    res.infoObj = InfoJson.loadFromJson(jsonobj, res.chameleonPath);
+
+                    res.upgradeMgr = new UpgradeMgr(workdir, res.infoObj.version);
                     return callback(null);
                 } catch (e) {
                     Logger.log('fail to parse json', e);
-                    return callback(new ChameleonError(1 /* UNKNOWN */, '无法读取info.json'));
+                    return callback(new ChameleonError(1 /* UNKNOWN */, '无法读取' + infojsonPath));
                 }
             });
         }
@@ -890,6 +986,31 @@ var ChameleonTool = (function () {
         });
     };
 
+    ChameleonTool.checkSingleLock = function (callback) {
+        var homePath = ChameleonTool.getChameleonHomePath();
+        fs.ensureDir(homePath, function (err) {
+            var name = pathLib.join(homePath, '.lock');
+            try  {
+                var fd = fs.openSync(name, 'wx');
+                process.on('exit', function () {
+                    fs.unlinkSync(name);
+                });
+                try  {
+                    fs.closeSync(fd);
+                } catch (err) {
+                }
+                callback(null);
+            } catch (err) {
+                Logger.log("Fail to lock", err);
+                callback(new ChameleonError(3 /* OP_FAIL */, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
+            }
+        });
+    };
+
+    ChameleonTool.getChameleonHomePath = function () {
+        return pathLib.join(ChameleonTool.getUserPath(), '.prj_chameleon');
+    };
+
     ChameleonTool.prototype.getChannelList = function () {
         return this.infoObj.getChannelMetaInfos();
     };
@@ -904,6 +1025,10 @@ var ChameleonTool = (function () {
 
     ChameleonTool.prototype.getAllSDKs = function () {
         return this.infoObj.getSDKMetaInfos();
+    };
+
+    ChameleonTool.prototype.readUpgradeFileInfo = function (zipFile) {
+        return this.upgradeMgr.readManifest(zipFile);
     };
 
     ChameleonTool.prototype.get = function () {
@@ -1103,6 +1228,15 @@ var ChameleonTool = (function () {
             });
         });
     };
+
+    ChameleonTool.getUserPath = function () {
+        return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+    };
+
+    ChameleonTool.prototype.upgradeFromFile = function (filePath) {
+        var newver = this.upgradeMgr.upgradeFromZip(filePath);
+        this.version = newver;
+    };
     return ChameleonTool;
 })();
 exports.ChameleonTool = ChameleonTool;
@@ -1156,6 +1290,33 @@ var Project = (function () {
 
     Project.prototype.addSDKCfg = function (name, sdkcfg) {
         this.sdkCfg[name] = sdkcfg;
+    };
+
+    Project.prototype.genServerCfg = function (paySvrCbUrl) {
+        var _this = this;
+        var res = {};
+        var obj = urlLib.parse(paySvrCbUrl);
+        var host = obj.protocol + '//' + obj.host;
+        var pathname = obj.pathname;
+        res['_product.json'] = {
+            appcb: {
+                host: host,
+                payCbUrl: pathname
+            }
+        };
+        for (var channelName in this.channelCfg) {
+            var chcfg = this.channelCfg[channelName];
+            var cfgs = chcfg.serverCfg();
+            cfgs['sdks'].forEach(function (libcfg) {
+                var replaceCfg = _this.sdkCfg[libcfg.cfg];
+                if (!replaceCfg) {
+                    throw new ChameleonError(3 /* OP_FAIL */, "Fail to find sdk cfg for " + libcfg.cfg + ", channel = " + channelName);
+                }
+                libcfg.cfg = replaceCfg.serverCfg();
+            });
+            res[channelName + '.json'] = cfgs;
+        }
+        return res;
     };
 
     Project.prototype.cloneGlobalCfg = function () {
@@ -1569,5 +1730,57 @@ var AndroidManifest = (function () {
         return this.xmlobj['$']['package'];
     };
     return AndroidManifest;
+})();
+
+var UpgradeMgr = (function () {
+    function UpgradeMgr(workdir, curver) {
+        this.workdir = workdir;
+        this.curver = curver;
+    }
+    UpgradeMgr.prototype.readManifest = function (fpath) {
+        try  {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            if (content == null || content.length == 0) {
+                throw new ChameleonError(3 /* OP_FAIL */, '不正确的升级包格式: 无法读取升级信息');
+            }
+            var obj = JSON.parse(content);
+            return {
+                from: obj.prevVer,
+                to: obj.toVer
+            };
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                Logger.log('Fail to read upgrade package', e);
+                throw new ChameleonError(3 /* OP_FAIL */, '不正确的升级包格式: ' + e.message);
+            }
+        }
+    };
+
+    UpgradeMgr.prototype.upgradeFromZip = function (fpath) {
+        try  {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            var obj = JSON.parse(content);
+            var baseVer = new Version(obj.prevVer);
+            var tover = new Version(obj.toVer);
+            if (this.curver.cmp(baseVer) != 0) {
+                Logger.log("Fail to upgrade");
+                throw new ChameleonError(3 /* OP_FAIL */, "升级包并不是针对当前版本：" + fpath + '\n' + 'base: ' + baseVer.toString() + ', current: ' + this.curver.toString());
+            }
+            zip.extractAllTo(this.workdir, true);
+            this.curver = tover;
+            return tover;
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                throw ChameleonError.newFromError(e, 3 /* OP_FAIL */);
+            }
+        }
+    };
+    return UpgradeMgr;
 })();
 //# sourceMappingURL=chameleon.js.map

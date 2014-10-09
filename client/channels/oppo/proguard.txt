@@ -1,0 +1,6 @@
+-keep class com.nearme.**{*;} 
+-keep class com.oppo.** {*;}
+-keep class org.apache.** {*;}
+-keep class com.nearme.wappay.** {*;}
+-keep class **.R$* {*;}
+-dontwarn com.ehoo.**

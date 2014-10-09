@@ -1,0 +1,219 @@
+-dontskipnonpubliclibraryclasses
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+-ignorewarnings
+-printseeds
+ 
+-dontoptimize
+-keepattributes Exceptions
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+ 
+-keepattributes *Annotation*
+-keepattributes InnerClasses
+-keepattributes Signature
+ 
+-assumenosideeffects class android.util.Log{
+    public static int v(...);
+    public static int i(...);
+    public static int w(...);
+    public static int d(...);
+    public static int e(...);
+    public static boolean isLoggable(java.lang.String, int);
+}
+ 
+-assumenosideeffects class * extends java.lang.Throwable {
+    public void printStackTrace();
+}
+ 
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgentHelper
+-keep public class * extends android.preference.Preference
+-keep public class * extends android.view.View
+-keep public class * extends android.os.IInterface
+-keep class android.media.* { *; }
+-keep public class com.android.internal.telephony.* { *; }
+-keep public class android.os.storage.* { *; }
+-keep public class android.content.pm.* { *; }
+-keep public class * extends android.support.v4.app.Fragment
+-keep public class * extends android.app.Fragment
+ 
+-keep class com.wandoujia.gson.** { *; }
+-keep public class com.wandoujia.comm.ftp.SessionThread
+-keep public class com.wandoujia.comm.ftp.FtpCmd
+ 
+-keep public class com.tencent.mm.sdk.openapi.WXMediaMessage { *; }
+-keep class * implements com.tencent.mm.sdk.openapi.WXMediaMessage$IMediaObject { *; }
+ 
+-keep public class com.wandoujia.p4.sync.photo.data.* { *; }
+ 
+-keep public class * extends com.wandoujia.pmp.impls.PMPServiceImpl {
+    public protected private *;
+}
+ 
+-keepclasseswithmembers class * {
+    native <methods>;
+}
+ 
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+ 
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+ 
+-keepclasseswithmembers class * {
+    public <init>(com.wandoujia.comm.ftp.SessionThread, java.lang.String);
+}
+ 
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+ 
+-keep class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
+ 
+-keep class * implements java.io.Serializable {
+    *;
+}
+ 
+-keep class *.R
+ 
+-keepclasseswithmembers class **.R$* {
+    public static <fields>;
+}
+ 
+-keep public class android.net.http.SslError{
+    *;
+}
+ 
+-keep public class android.webkit.WebViewClient{
+    *;
+}
+ 
+-keep public class android.webkit.WebChromeClient{
+    *;
+}
+ 
+-keep public interface android.webkit.WebChromeClient$CustomViewCallback {
+    *;
+}
+ 
+-keep public interface android.webkit.ValueCallback {
+    *;
+}
+ 
+-keep class * implements android.webkit.WebChromeClient {
+    *;
+}
+ 
+-keep class * implements com.wandoujia.p4.campaign.JsInterface{
+    *;
+}
+-keep class * extends com.squareup.wire.Message {
+    *;
+}
+-keep class * extends com.squareup.wire.Message$Builder {
+    *;
+}
+ 
+-keep class com.actionbarsherlock.** { *; }
+-keep interface com.actionbarsherlock.** { *; }
+-keep class com.nineoldandroids.** { *; }
+-keep interface com.nineoldandroids.** { *; }
+-keep class com.twmacinta.util.MD5State {*;}
+-dontwarn android.support.**
+-dontwarn android.net.http.SslError
+-dontwarn android.webkit.WebViewClient
+ 
+# for account sdk
+-keep interface com.wandoujia.account.IAccountListener
+-keep interface com.wandoujia.account.IAccountSMSProcessListener
+-keep interface com.wandoujia.account.IBindListener
+-keep interface com.wandoujia.account.ISmsSender
+-keep interface com.wandoujia.account.ISocialLoginListener
+-keep interface com.wandoujia.account.IAccountProcessListener
+-keep class com.wandoujia.account.dto.** { *; }
+ 
+# exclude payment sdk part.
+-keep class com.wandoujia.p4.payment.** { *; }
+-keep interface com.wandoujia.p4.payment.** { *; }
+# exclude alipay within payment sdk.
+-keep class com.unipay.** { *; }
+-keep class com.wandoujia.message.SmsSender {*;}
+-keep class com.alipay.android.app.** { *; }
+# exclude the whole v4 package to align with payment dex.
+-keep class android.support.v4.** { *; }
+ 
+-keep class com.wandoujia.paysdk.** { *; }
+-keep class com.wandoujia.oakenshield.** { *; }
+ 
+# keep 3rd jars begin
+ 
+-keep class com.weibo.sdk.** { *; }
+-keep interface com.weibo.sdk.** { *; }
+ 
+-keep class com.jakewharton.disklrucache.** { *; }
+-keep interface com.jakewharton.disklrucache.** { *; }
+ 
+-keep class gnu.trove.** { *; }
+-keep interface gnu.trove.** { *; }
+ 
+-keep class at.spardat.xma.xdelta.** { *; }
+-keep interface  at.spardat.xma.xdelta.** { *; }
+ 
+-keep class com.nothome.delta.** { *; }
+-keep interface  com.nothome.delta.** { *; }
+ 
+-keep class com.pingyin4android.** { *; }
+-keep interface  com.pingyin4android.** { *; }
+ 
+-keep class com.sim.core.** { *; }
+-keep interface  com.sim.core.** { *; }
+ 
+-keep class com.sina.sso.** { *; }
+-keep interface  com.sina.sso.** { *; }
+ 
+# keep 3rd jars end
+ 
+-keep class com.wandoujia.** { *; }
+-keep interface com.wandoujia.** { *; }
+-keep class com.wandoujia.mariosdk.plugin.apk.api.** { *; }
+-keep class com.wandoujia.mariosdk.plugin.apk.resources.** { *; }
+-keep class com.wandoujia.mariosdk.plugin.apk.receiver.** { *; }
+-keep class com.wandoujia.mariosdk.plugin.apk.service.** { *; }
+-keep interface com.wandoujia.mariosdk.plugin.apk.api.** { *; }
+-keep interface com.wandoujia.mariosdk.plugin.apk.resources.** { *; }
+ 
+-keep class com.wandoujia.mariosdk.plugin.api.model.** { *; }
+-keep interface com.wandoujia.mariosdk.plugin.api.model.** { *; }
+ 
+-keep class com.wandoujia.mariosdk.plugin.api.api.** { *; }
+-keep interface com.wandoujia.mariosdk.plugin.api.api.** { *; }
+ 
+-keep class com.wandoujia.mariosdk.plugin.api.CallbackAdapter { *; }
+ 
+-keep public class com.wandoujia.pluginframework.PluginFrameworkInitor {
+    public <methods>;
+}
+ 
+-keep public class com.wandoujia.pluginframework.PluginManager {
+    public <methods>;
+}
+ 
+-keep class com.wandoujia.pluginframework.Plugin { *; }
+ 
+-keep class com.wandoujia.pluginframework.config.PluginItem { *; }
+ 
+-keep interface com.wandoujia.pluginframework.config.ConfigLoader { *; }
+ 
+-keep enum com.wandoujia.pluginframework.config.PluginType { *; }

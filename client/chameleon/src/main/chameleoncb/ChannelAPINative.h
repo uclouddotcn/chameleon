@@ -129,6 +129,8 @@ JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_o
   (JNIEnv *, jclass);
 
 
+JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_submitPlayerInfo
+  (JNIEnv *, jclass, jbyteArray, jbyteArray, jbyteArray, jint, jbyteArray);
 #ifdef __cplusplus
 }
 #endif

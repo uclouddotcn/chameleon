@@ -411,6 +411,7 @@ chameleonControllers
             $scope.selectIcon = function () {
                 var icons = projectIcons;
                 var images = $scope.channel.data.metaInfo.getIconOverlay(icons);
+                var availablePos = $scope.channel.data.metaInfo.availableIconPos;
                 var instance = $modal.open({
                     templateUrl: 'partials/selectIcon.html',
                     controller: 'SelectIconController',
@@ -431,6 +432,9 @@ chameleonControllers
                         },
                         project: function () {
                             return $scope.project;
+                        },
+                        availablePos: function () {
+                            return availablePos;
                         }
                     }
                 });
@@ -877,7 +881,8 @@ chameleonControllers
             }
         }, function (err) {
             alert(err.message);
-            exit();
+            var gui = require('nw.gui');
+            gui.App.quit();
         })
     })
     .controller('InitDlgController',function ($scope, $modalInstance, fileDialog, ProjectMgr, inited, sdkroot) {
@@ -1168,7 +1173,7 @@ chameleonControllers
                     width: '70%',
                     resizable: false,
                     groupable: false,
-                    cellTemplate: '<div><div ng-repeat="d in row.entity[col.field]">{{d.desc}}({{d.from}} => {{d.to}}),</div></div>',
+                    cellTemplate: '<div><div ng-repeat="d in row.entity[col.field]">{{d.desc}}({{d.from}} => {{d.to}}),</div></div>'
                 }
             ],
             multiSelect: false,
@@ -1270,7 +1275,7 @@ chameleonControllers
                     width: '30%',
                     resizable: false,
                     groupable: false,
-                    cellTemplate: '<div ng-show="row.entity[col.field] === 0"></div><div ng-show="row.entity[col.field] == 1"><img src="partials/ajax-loader.gif">编译中</div><div ng-show="row.entity[col.field] === 2"><img src="partials/tick_circle.png">编译完成</div><div ng-show="row.entity[col.field] === 3"><img src="partials/fails.png">编译失败</div>',
+                    cellTemplate: '<div ng-show="row.entity[col.field] === 0"></div><div ng-show="row.entity[col.field] == 1"><img src="partials/ajax-loader.gif">编译中</div><div ng-show="row.entity[col.field] === 2"><img src="partials/tick_circle.png">编译完成</div><div ng-show="row.entity[col.field] === 3"><img src="partials/fails.png">编译失败</div>'
                 }
             ],
             multiSelect: true,
@@ -1407,26 +1412,9 @@ chameleonControllers
             var url = require('url');
             try {
                 var zip = new AdmZip();
-                var obj = url.parse($scope.svrinfo.paycbUrl);
-                var host = obj.protocol+'//'+obj.host;
-                var pathname = obj.pathname;
-                var productCfg = {
-                    appcb: {
-                        host: host,
-                        payCbUrl: pathname
-                    }
-                };
-                zip.addFile(nick+'/product.json',
-                    new Buffer(JSON.stringify(productCfg)), "");
-                var channels = project.getAllChannels();
-                for (var c in channels) {
-                    var ch = channels[c];
-                    var sdkName = ch.userSDK;
-                    var sdk = project.getSDKCfg(sdkName);
-                    if (sdk) {
-                        zip.addFile(nick+'/'+ch.name+'.json',
-                            new Buffer(JSON.stringify(sdk.cloneCfg())), "");
-                    }
+                var cfgs = project.genServerCfg($scope.svrinfo.paycbUrl);
+                for (var i in cfgs) {
+                    zip.addFile(nick + '/' + i, new Buffer(JSON.stringify(cfgs[i])), "");
                 }
                 fileDialog.saveAs(function (filename) {
                     zip.writeZip(filename+'.zip');
@@ -1527,8 +1515,9 @@ chameleonControllers
             $(window).resize();
         }, 100);
     })
-    .controller('SelectIconController',function ($scope, $modalInstance, ProjectMgr, project, images, config) {
+    .controller('SelectIconController',function ($scope, $modalInstance, ProjectMgr, project, images, config, availablePos) {
         $scope.url = null;
+        $scope.hasImg = [availablePos&0x1, availablePos&0x2, availablePos&0x4, availablePos&0x8];
         $scope.selectedPosition = config.position;
         $scope.shownimages = {
             image: images,

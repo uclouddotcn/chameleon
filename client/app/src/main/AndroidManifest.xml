@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
     package="com.example.testwrapper"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="18" />
     <!-- 添加 360SDK 必需要的权限。 -->
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -16,7 +15,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:name="prj.chameleon.channelapi.ChameleonApplication">
+        android:name="prj.chameleon.channelapi.ChameleonApplication"
+        tools:replace="android:label">
 
         <activity
             android:name="com.example.testwrapper.MainActivity"

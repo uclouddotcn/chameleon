@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
@@ -87,7 +88,7 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        final IDispatcherCb cb) {
         MiBuyInfo miBuyInfo= new MiBuyInfo();
         miBuyInfo.setCpOrderId(orderId);//订单号唯一（不为空）
-        miBuyInfo.setCpUserInfo(""); //此参数在用户支付成功后会透传给CP的服务器
+        miBuyInfo.setCpUserInfo(mChannel); //此参数在用户支付成功后会透传给CP的服务器
         miBuyInfo.setCount(realPayMoney/rate);
         miBuyInfo.setAmount(realPayMoney/100); //必须是大于1的整数，10代表10米币，即10元人民币（不为空）
 
@@ -142,6 +143,7 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         miBuyInfo.setCpOrderId(orderId);//订单号唯一（不为空）
         miBuyInfo.setProductCode(productID);//商品代码，开发者申请获得（不为空）
         miBuyInfo.setCount( productCount );//购买数量(商品数量最大9999，最小1)（不为空）
+        miBuyInfo.setCpUserInfo(mChannel); //此参数在用户支付成功后会透传给CP的服务器
 
         MiCommplatform.getInstance().miUniPay(activity, miBuyInfo,
                 new OnPayProcessListener() {
@@ -172,15 +174,20 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void initCfg(Bundle cfg) {
+    public String getId() {
+        return "xiaomi";
+    }
+
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mAppId = cfg.getString("appId");
         mAppKey = cfg.getString("appKey");
-        mScreenOrientation = cfg.getBoolean("landscape") ? ScreenOrientation.horizontal :
+        mScreenOrientation = commCfg.mIsLandscape ? ScreenOrientation.horizontal :
                 ScreenOrientation.vertical;
+        mChannel = commCfg.mChannel;
     }
 
     @Override
-    public void init(Activity activity, boolean isDebug, IDispatcherCb cb) {
+    public void init(Activity activity, IDispatcherCb cb) {
 
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }

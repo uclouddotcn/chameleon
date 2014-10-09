@@ -7,9 +7,12 @@
 
     // 5~15 login fail
     ErrorCode[ErrorCode["ERR_LOGIN_SESSION_INVALID"] = 5] = "ERR_LOGIN_SESSION_INVALID";
+    ErrorCode[ErrorCode["ERR_LOGIN_UID_INVALID"] = 6] = "ERR_LOGIN_UID_INVALID";
 
     // 16~25 pay fail
     ErrorCode[ErrorCode["ERR_PAY_FAIL"] = 16] = "ERR_PAY_FAIL";
+    ErrorCode[ErrorCode["ERR_PAY_CANCEL"] = 17] = "ERR_PAY_CANCEL";
+    ErrorCode[ErrorCode["ERR_PAY_ILL_CHANNEL"] = 18] = "ERR_PAY_ILL_CHANNEL";
 
     // 35 ~ 55 setting error
     ErrorCode[ErrorCode["ERR_INVALID_APPID"] = 35] = "ERR_SETTING_INVALID_APPID";

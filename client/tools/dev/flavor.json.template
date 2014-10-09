@@ -1,5 +1,0 @@
-{
-    "productFlavor" : "${platform}",
-    "cfg" : {
-    }
-}
