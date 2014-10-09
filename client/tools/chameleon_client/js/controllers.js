@@ -652,6 +652,7 @@ chameleonControllers
                     $scope.selectIcon = function () {
                         var icons = projectIcons;
                         var images = $scope.channel.data.metaInfo.getIconOverlay(icons);
+                        var availablePos = $scope.channel.data.metaInfo.availableIconPos;
                         var instance = $modal.open( {
                             templateUrl: 'partials/selectIcon.html',
                             controller: 'SelectIconController',
@@ -672,6 +673,9 @@ chameleonControllers
                                 },
                                 project: function () {
                                     return $scope.project;
+                                },
+                                availablePos: function () {
+                                    return availablePos;
                                 }
                             }
                         });
@@ -1374,16 +1378,17 @@ function SelectSplashController($scope, $modalInstance, orient, images) {
     }, 100);
 }
 
-function SelectIconController($scope, $modalInstance, ProjectMgr, project, images, config) {
+function SelectIconController($scope, $modalInstance, ProjectMgr, project, images, config, availablePos) {
     $scope.url = null;
+    $scope.hasImg = [availablePos&0x1, availablePos&0x2, 0, availablePos&0x8];
     $scope.selectedPosition = config.position;
     $scope.shownimages = {
         image: images,
         selected: {
             position: config.position
         }
-    }
-    $scope.dump = {}; 
+    };
+    $scope.dump = {};
     $scope.useImage = function () {
         var tempgenIcon = {};
         for (var i in images) {
