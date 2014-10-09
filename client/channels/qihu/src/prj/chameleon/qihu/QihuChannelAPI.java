@@ -129,6 +129,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfgBGTransparent = cfg.getBoolean("bgTransparent");
         mCfgUri = cfg.getString("uri");
         mCfgAppName = commCfg.mAppName;
+        mChannel = commCfg.mChannel;
     }
 
     @Override
@@ -229,6 +230,11 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         intent.putExtra(ProtocolKeys.FUNCTION_CODE, ProtocolConfigs.FUNC_CODE_PAY);
         // 界面相关参数,360SDK 登录界面背景是否透明。 intent.putExtra(ProtocolKeys.IS_LOGIN_BG_TRANSPARENT, isBgTransparent);
         Matrix.invokeActivity(activity, intent, new PayCallback(cb));
+    }
+
+    @Override
+    public String getId() {
+        return "qihu";
     }
 
     @Override
@@ -478,7 +484,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         // 若应用内绑定 360 账号和应用账号,充值不分区服,充到统一的用户账户,各区服角色均可使用,则可用 360 用户 ID 最大 32 字符。
         bundle.putString(ProtocolKeys.APP_USER_ID, appUid);
         // 可选参数,应用扩展信息 1,原样返回,最大 255 字符。
-        bundle.putString(ProtocolKeys.APP_EXT_1, "buy");
+        bundle.putString(ProtocolKeys.APP_EXT_1, mChannel);
         bundle.putString(ProtocolKeys.APP_EXT_2, String.valueOf(productCount));
         // 可选参数,应用订单号,应用内必须唯一,最大 32 字符。
         bundle.putString(ProtocolKeys.APP_ORDER_ID, orderId);
@@ -527,7 +533,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         // 若应用内绑定 360 账号和应用账号,充值不分区服,充到统一的用户账户,各区服角色均可使用,则可用 360 用户 ID 最大 32 字符。
         bundle.putString(ProtocolKeys.APP_USER_ID, appUid);
         // 可选参数,应用扩展信息 1,原样返回,最大 255 字符。
-        bundle.putString(ProtocolKeys.APP_EXT_1, "charge");
+        bundle.putString(ProtocolKeys.APP_EXT_1, mChannel);
         bundle.putString(ProtocolKeys.APP_EXT_2, String.valueOf(rate));
         // 可选参数,应用订单号,应用内必须唯一,最大 32 字符。
         bundle.putString(ProtocolKeys.APP_ORDER_ID, orderId);

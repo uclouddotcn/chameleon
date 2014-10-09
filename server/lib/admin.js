@@ -8,7 +8,9 @@ var pathLib = require('path');
  * @classdesc Admin server module
  * @constructor
  * @param {PluginMgr} pluginMgr - plugin manager
+ * @param {ProductMgr} productMgr - product manager
  * @param {Object} options - not used now...
+ * @param {object} logger - logger object
  */
 var Admin = function(pluginMgr, productMgr, options, logger) {
     var self = this;
@@ -30,7 +32,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
     });
 
     // path for adding a plugin 
-    self.server.post('/plugin/:name', function(req, res, next) {
+    self.server.post('/plugin/:name', function(req, res, next, obj) {
         self.pluginMgr.addPlugin(req.params.name, req.body, function(err, info) {
             if (err) {
                 req.log.info({err:err}, 'fail to add plugin');
@@ -44,10 +46,9 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
 
     // path for getting all product instance
     self.server.get('/products', function(req, res, next) {
-        var products = [];
-        for (var p in productMgr.products) {
-            products.push(p);
-        }
+        var products = Object.keys(productMgr.products).map(function (key) {
+            return productMgr.products[key];
+        });
         res.send(JSON.stringify(products));
         return next();
     });
@@ -70,7 +71,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
         if (product) {
             return next(new restify.InvalidArgumentError('duplicate products'));
         } else {
-            productMgr.addProduct(req.params.name, req.body, function (err, body) {
+            productMgr.addProduct(req.params.name, req.body, function (err) {
                 if (err) {
                     return next(err);
                 }
@@ -81,19 +82,14 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
     });
 
     // path for add a plugin instance
-    self.server.post('/product/:name/:channelName', function(req, res, next) {
+    self.server.post('/product/:name/:channelName', function(req, res, next, obj) {
         var product = productMgr.products[req.params.name];
         if (!product) {
             return next(new restify.ResourceNotFoundError(req.params.name));
         } else {
             try {
-                var cfgItem = {
-                    cfg: req.body,
-                    p: pathLib.join(constants.productDir, req.params.name, 
-                        channelName+'.json')
-                }
-                product.startPluginInst(self.pluginMgr, req.params.channelName);
-                product.savePluginInst(req.params.channelName);
+                product.startChannel(req.params.channelName, obj);
+                product.saveChannelCfg(req.params.channelName);
                 res.send(JSON.stringify({code: 0}));
             } catch (e) {
                 return next(new restify.InvalidArgumentError(e.message));
@@ -110,14 +106,9 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
             return next(new restify.ResourceNotFoundError(req.params.name));
         } else {
             try {
-                var cfgItem = {
-                    cfg: req.body,
-                    p: pathLib.join(constants.productDir, req.params.name, 
-                        channelName+'.json')
-                }
-                product.modifyPluginInst(
+                product.modifyChannel(
                     req.params.channelName, req.body);
-                product.savePluginInst(req.params.channelName);
+                product.saveChannelCfg(req.params.channelName);
                 res.send(JSON.stringify({code: 0}));
             } catch (e) {
                 return next(new restify.InvalidArgumentError(e.message));
@@ -128,12 +119,17 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
 
     // path for stop a plugin 
     self.server.del('/plugin_inst/:name', function(req, res, next) {
-        var err = pluginMgr.stopPluginInst(req.params.name);
-        if (err) {
-            return next(restify.InvalidArgumentError(err.toString()));
+        var product = productMgr.products[req.params.name];
+        if (!product) {
+            return next(new restify.ResourceNotFoundError(req.params.name));
+        } else {
+            var err = product.stopChannel(req.params.name);
+            if (err) {
+                return next(restify.InvalidArgumentError(err.toString()));
+            }
+            res.send(JSON.stringify({code: 0}));
+            return next();
         }
-        res.send(JSON.stringify({code: 0}));
-        return next();
     });
 
     self.server.on('uncaughtException', function (req, res, route, error) {
@@ -159,8 +155,8 @@ Admin.prototype.listen = function(port, host, next) {
     });
 };
 
-module.exports.createAdmin = function(pluginMgr, options, logger) {
-    return new Admin(pluginMgr, options, logger);
+module.exports.createAdmin = function(pluginMgr, productMgr, options, logger) {
+    return new Admin(pluginMgr, productMgr, options, logger);
 };
 
 // internal functions
@@ -172,7 +168,7 @@ function formatPluginInfo(pluginInfo) {
 function doFormatProductInfo(product) {
     return {
         name: product.productName,
-        channels: product.pluginInstMgr.getAllPluginInstInfo().map(
+        channels: product.channelMgr.getAllChannels().map(
             formatPluginInfo)
     };
 }

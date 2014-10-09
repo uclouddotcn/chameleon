@@ -1,6 +1,3 @@
-/**
-* Created by wushauk on 9/5/14.
-*/
 /// <reference path="declare/node.d.ts"/>
 /// <reference path="declare/async.d.ts"/>
 /// <reference path="declare/ncp.d.ts"/>
@@ -15,6 +12,7 @@ var async = require('async');
 var xml2js = require('xml2js');
 var util = require('util');
 var AdmZip = require('adm-zip');
+var urlLib = require('url');
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -64,7 +62,6 @@ var Logger = (function () {
     ErrorCode[ErrorCode["CFG_ERROR"] = 4] = "CFG_ERROR";
 })(exports.ErrorCode || (exports.ErrorCode = {}));
 var ErrorCode = exports.ErrorCode;
-;
 
 var Utils = (function () {
     function Utils() {
@@ -124,7 +121,7 @@ var AndroidEnv = (function () {
         },
         set: function (p) {
             this._sdkPath = p;
-            this.androidBin = this.getAndroidBin(p);
+            this.androidBin = AndroidEnv.getAndroidBin(p);
             this.db.set('env', 'sdkpath', { value: p });
         },
         enumerable: true,
@@ -132,7 +129,7 @@ var AndroidEnv = (function () {
     });
 
 
-    AndroidEnv.prototype.getAndroidBin = function (p) {
+    AndroidEnv.getAndroidBin = function (p) {
         var s = '';
         if (os.platform() === 'win32') {
             s = pathLib.join(p, 'tools', 'android.bat');
@@ -143,7 +140,7 @@ var AndroidEnv = (function () {
     };
 
     AndroidEnv.prototype.verifySDKPath = function (p, cb) {
-        var androidBin = this.getAndroidBin(p);
+        var androidBin = AndroidEnv.getAndroidBin(p);
         childprocess.execFile(androidBin, ['list', 'target'], { timeout: 30000 }, function (err, stdout, stderr) {
             if (err) {
                 cb(new ChameleonError(2 /* SDK_PATH_ILLEGAL */, '非法的Android SDK路径，请确保路径在sdk路径下'));
@@ -349,6 +346,10 @@ var SDKCfg = (function () {
             a[i] = this.cfg[i];
         }
         return a;
+    };
+
+    SDKCfg.prototype.serverCfg = function () {
+        return this.cfg;
     };
 
     SDKCfg.prototype.updateCfg = function (cfg) {
@@ -889,6 +890,22 @@ var ChannelCfg = (function () {
         this._icons = { position: icon };
     };
 
+    ChannelCfg.prototype.serverCfg = function () {
+        var res = {};
+        if (this.payLib == this.userLib) {
+            var dl = this.userLib.dumpJsonObj();
+            dl.type = 'user,pay';
+            res['sdks'] = [dl];
+        } else {
+            var dlUser = this.userLib.dumpJsonObj();
+            dlUser.type = 'user';
+            var dlPay = this.payLib.dumpJsonObj();
+            dlPay.type = 'pay';
+            res['sdks'] = [dlUser, dlPay];
+        }
+        return res;
+    };
+
     ChannelCfg.prototype.loadShownIcon = function () {
         if (this.hasIcon && this.channelPath) {
             var density = ['drawable-mdpi', 'drawable-hdpi', 'drawable-xhdpi'];
@@ -1271,6 +1288,33 @@ var Project = (function () {
 
     Project.prototype.addSDKCfg = function (name, sdkcfg) {
         this.sdkCfg[name] = sdkcfg;
+    };
+
+    Project.prototype.genServerCfg = function (paySvrCbUrl) {
+        var _this = this;
+        var res = {};
+        var obj = urlLib.parse(paySvrCbUrl);
+        var host = obj.protocol + '//' + obj.host;
+        var pathname = obj.pathname;
+        res['_product.json'] = {
+            appcb: {
+                host: host,
+                payCbUrl: pathname
+            }
+        };
+        for (var channelName in this.channelCfg) {
+            var chcfg = this.channelCfg[channelName];
+            var cfgs = chcfg.serverCfg();
+            cfgs['sdks'].forEach(function (libcfg) {
+                var replaceCfg = _this.sdkCfg[libcfg.cfg];
+                if (!replaceCfg) {
+                    throw new ChameleonError(3 /* OP_FAIL */, "Fail to find sdk cfg for " + libcfg.cfg + ", channel = " + channelName);
+                }
+                libcfg.cfg = replaceCfg.serverCfg();
+            });
+            res[channelName + '.json'] = cfgs;
+        }
+        return res;
     };
 
     Project.prototype.cloneGlobalCfg = function () {

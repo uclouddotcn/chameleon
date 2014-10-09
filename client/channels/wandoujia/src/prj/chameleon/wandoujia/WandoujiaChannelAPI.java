@@ -31,6 +31,7 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
     private WandouGamesApi mWandouGamesApi;
     private long mAppId;
     private String mAppKey;
+    private boolean mIsDebug;
     @Override
     public void charge(Activity activity,
                        String orderId,
@@ -85,16 +86,22 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
         });
     }
 
+    @Override
+    public String getId() {
+        return "wandoujia";
+    }
+
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mAppId = cfg.getLong("appId");
         mAppKey = cfg.getString("appKey");
+        mIsDebug = commCfg.mIsDebug;
+        mChannel = commCfg.mChannel;
     }
 
     @Override
     public void init(Activity activity, IDispatcherCb cb) {
-        boolean isDebug = true;
         mWandouGamesApi.init(activity);
-        mWandouGamesApi.setLogEnabled(isDebug);
+        mWandouGamesApi.setLogEnabled(mIsDebug);
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
@@ -107,7 +114,8 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
                     cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
                 } else {
                     JSONObject obj =
-                            JsonMaker.makeLoginResponse(unverifiedPlayer.getToken(), unverifiedPlayer.getId(), mChannel);
+                            JsonMaker.makeLoginResponse(unverifiedPlayer.getToken(),
+                                    unverifiedPlayer.getId(), mChannel);
                     JSONObject res =
                             JsonMaker.makeLoginGuestResponse(false, obj);
                     cb.onFinished(Constants.ErrorCode.ERR_OK, res);
@@ -130,7 +138,8 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
                     cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
                 } else {
                     JSONObject obj =
-                            JsonMaker.makeLoginResponse(unverifiedPlayer.getToken(), unverifiedPlayer.getId(), mChannel);
+                            JsonMaker.makeLoginResponse(unverifiedPlayer.getToken(),
+                                    unverifiedPlayer.getId(), mChannel);
                     cb.onFinished(Constants.ErrorCode.ERR_OK, obj);
                 }
             }

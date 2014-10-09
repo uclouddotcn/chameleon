@@ -129,6 +129,7 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mAppId = cfg.getString("appId");
         mPrivilege = cfg.getString("privilege");
+        mChannel = commCfg.mChannel;
     }
 
     @Override
@@ -177,6 +178,11 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int realPayMoney,
                     IDispatcherCb cb) {
 
+    }
+
+    @Override
+    public String getId() {
+        return "qqmob";
     }
 
     @Override
@@ -233,7 +239,7 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     @Override
-    public String getPayToken() {
+    public JSONObject getPayInfo() {
         try {
             JSONObject obj = new JSONObject();
             obj.put("p", mPf);
@@ -243,10 +249,10 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             if (mIsDebug) {
                 obj.put("d", 1);
             }
-            return obj.toString();
+            return obj;
         } catch (JSONException e) {
             Log.e(Constants.TAG, "Fail to compose json", e);
-            return "";
+            return null;
         }
     }
 

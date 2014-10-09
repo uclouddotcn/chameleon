@@ -90,6 +90,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
         mCpId = cfg.getLong("cpId");
         mGameID = cfg.getLong("gameId");
+        mChannel = commCfg.mChannel;
     }
 
     /**
@@ -214,6 +215,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
         info.setRoleId(uidInGame);
         info.setTransactionNumCP(orderId);
+        info.setCustomInfo(getCustomInfo());
         try {
             UCGameSDK.defaultSDK().pay(activity.getApplicationContext(), info, new UCCallbackListener<OrderInfo>() {
                 @Override
@@ -270,6 +272,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         info.setAmount((float) (realPayMoney) / 100);
         info.setRoleId(uidInGame);
         info.setTransactionNumCP(orderId);
+        info.setCustomInfo(getCustomInfo());
         try {
             UCGameSDK.defaultSDK().pay(activity.getApplicationContext(), info, new UCCallbackListener<OrderInfo>() {
                 @Override
@@ -293,6 +296,11 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             Log.e(Constants.TAG, "Fail to charge", e);
             cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
         }
+    }
+
+    @Override
+    public String getId() {
+        return "uc";
     }
 
 
@@ -489,5 +497,9 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public boolean isSupportProtocol(String protocol) {
         return false;
+    }
+
+    private String getCustomInfo() {
+        return mChannel;
     }
 }

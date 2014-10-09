@@ -5,7 +5,7 @@ var storageDriver =  require('./event-storage');
 var path = require('path');
 var eventLog = require('./event-log');
 var ChannelCbSvr = require('./channel-callbacksvr');
-var ProductMgr = require('./productmgr')
+var ProductMgr = require('./productmgr');
 var Logger = require('./svrlog');
 var createPendingOrderStore = 
     require('./pending-order').createPendingOrderStore;
@@ -13,7 +13,7 @@ var async = require('async');
 
 function start(cfg) {
     // create logger first
-    var logger = startLogger(cfg.debug, cfg.logger)
+    var logger = startLogger(cfg.debug, cfg.logger);
 
     // create pending order store 
     var pendingOrderStore = createPendingOrderStore(
@@ -53,8 +53,8 @@ function start(cfg) {
             adminSvr, cfg.admin.port, cfg.admin.host),
         // init the sdk svr 
         sdkSvr.listen.bind(
-            sdkSvr, cfg.sdkSvr.port, cfg.sdkSvr.host),
-    ], function (err, result) {
+            sdkSvr, cfg.sdkSvr.port, cfg.sdkSvr.host)
+    ], function (err) {
         if (err) {
             throw err;
         }
