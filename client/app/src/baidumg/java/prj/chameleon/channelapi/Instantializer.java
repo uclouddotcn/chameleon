@@ -11,7 +11,7 @@ public class Instantializer implements IInstantializer{
         ApiCommonCfg commCfg = new ApiCommonCfg();
         commCfg.mAppName = "123";
         commCfg.mChannel = "baidumg";
-        commCfg.mIsLandscape = true;
+        commCfg.mIsLandscape = false;
         commCfg.mIsDebug = true;
         ChannelInterface.setChannelName(commCfg.mChannel);
         initBaidumgChannelAPI(commCfg);
