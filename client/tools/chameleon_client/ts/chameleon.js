@@ -513,15 +513,47 @@ var ChannelMetaInfo = (function () {
     ChannelMetaInfo.prototype._loadIconInfo = function (resPath) {
         var drawablePath = pathLib.join(resPath, 'drawable');
         var icon = {};
+        var availableIconPos = [];
         for (var d in DESITY_MAP) {
             var leftup = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-leftup.png');
             var leftdown = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-leftdown.png');
             var rightup = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-rightup.png');
             var rightdown = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-rightdown.png');
-            if (fs.existsSync(leftup) && fs.existsSync(leftdown) && fs.existsSync(rightup) && fs.existsSync(rightdown)) {
-                icon[d] = [leftup, rightup, leftdown, rightdown];
+            var flag = 0xF;
+            var iconOfDesity = [];
+            if (fs.existsSync(leftup)) {
+                iconOfDesity.push(leftup);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1);
             }
+            if (fs.existsSync(leftdown)) {
+                iconOfDesity.push(leftdown);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1 << 1);
+            }
+            if (fs.existsSync(rightup)) {
+                iconOfDesity.push(rightup);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1 << 2);
+            }
+            if (fs.existsSync(rightdown)) {
+                iconOfDesity.push(rightdown);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1 << 3);
+            }
+            if (flag == 0) {
+                continue;
+            }
+            icon[d] = iconOfDesity;
+            availableIconPos.push(flag);
         }
+        this.availableIconPos = availableIconPos.reduce(function (x, y) {
+            return x & y;
+        }, 0xF);
         return icon;
     };
 
