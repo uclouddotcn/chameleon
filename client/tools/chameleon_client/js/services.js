@@ -439,6 +439,20 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         self.chtool.loadProject(prjPath, callback);
     };
 
+    ProjectMgr.prototype.checkProjectUpgrade = function (project, callback) {
+        var self = this;
+        this.chtool.checkProjectUpgrade(project, function (err, desc) {
+            if (err) {
+                return callback(err);
+            }
+            if (!desc) {
+                return callback(desc);
+            }
+            self.db.update({_id: project.__doc._id}, {$set: {version: desc.newVersion.toString()}});
+            callback(null, project);
+        });
+    }
+
     ProjectMgr.prototype.updateProjectDoc = function (projectDoc) {
         this.db.update({_id: projectDoc._id}, projectDoc, {});
     };

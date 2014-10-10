@@ -977,7 +977,6 @@ chameleonControllers
 
 
                 $state.go('playmanage', {projectId: project._id});
-
             }
         }
 

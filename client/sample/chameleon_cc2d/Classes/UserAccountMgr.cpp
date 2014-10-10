@@ -85,7 +85,7 @@ const char * GetJsonValueDefault<const char*>(rapidjson::Value & obj,
 
 UserAccountMgr g_userAccountMgr;
 //const string DEV_URL("http://118.192.73.182:7900/");
-const string DEV_URL("http://192.168.1.102:7900/");
+const string DEV_URL("http://192.168.13.8:7900/");
 
 UserAccountMgr::UserAccountMgr():
 mLoginStatus(LOGOUT), mIsToolbarCreated(false) {
@@ -522,6 +522,7 @@ void UserAccountMgr::onVerifyLogin(int code,
         if (!ChameleonChannelAPI::onLoginRsp(rsp)) {
             CCLog("Fail to rsp rsp");
         }
+        ChameleonChannelAPI::submitPlayerInfo("xxx", "yyy", "zzz", 10, "tttt");
         mEventEmitter.FireEvent(EVENT_LOGINED, NULL);
     } catch (JsonException & e) {
         CCLog("exception %s", e.mErrMsg.c_str());

@@ -75,6 +75,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     private IAccountActionListener mAccountActionListener;
     private boolean isLoginedAsGuest = false;
+    private boolean mIsDebug;
     private UCOrientation mOrientation;
     private long mCpId;
     private long mGameID;
@@ -91,6 +92,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCpId = cfg.getLong("cpId");
         mGameID = cfg.getLong("gameId");
         mChannel = commCfg.mChannel;
+        mIsDebug = commCfg.mIsDebug;
     }
 
     /**
@@ -107,8 +109,9 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         gpi.setCpId((int) mCpId);
         gpi.setGameId((int) mGameID);
         gpi.setFeatureSwitch(new FeatureSwitch(true, true));
+        gpi.setServerId(0);
         UCLogLevel logLevel;
-        boolean isDebug = true;
+        boolean isDebug = mIsDebug;
         if (isDebug) {
             logLevel = UCLogLevel.DEBUG;
         } else {
@@ -216,6 +219,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         info.setRoleId(uidInGame);
         info.setTransactionNumCP(orderId);
         info.setCustomInfo(getCustomInfo());
+        info.setServerId(0);
         try {
             UCGameSDK.defaultSDK().pay(activity.getApplicationContext(), info, new UCCallbackListener<OrderInfo>() {
                 @Override
@@ -273,6 +277,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         info.setRoleId(uidInGame);
         info.setTransactionNumCP(orderId);
         info.setCustomInfo(getCustomInfo());
+        info.setServerId(0);
         try {
             UCGameSDK.defaultSDK().pay(activity.getApplicationContext(), info, new UCCallbackListener<OrderInfo>() {
                 @Override
@@ -409,12 +414,12 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         try {
             obj = new JSONObject(loginRsp);
             int code = obj.getInt("code");
-            if (code != Constants.ErrorCode.ERR_OK) {
+            if (code == Constants.ErrorCode.ERR_OK) {
                 JSONObject loginInfo = obj.getJSONObject("loginInfo");
                 mUid = loginInfo.getString("uid");
-                return false;
-            } else {
                 return true;
+            } else {
+                return false;
             }
         } catch (JSONException e) {
             Log.e(Constants.TAG, "Fail to parse login rsp", e);
