@@ -58,6 +58,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
                                         mActivity.onGotAuthroizationCode(ret);
                                     }
                                 });
+                                ChannelInterface.submitPlayerInfo(mActivity, "test", "test", "123", 2, "testzone");
                             }
                             @Override
                             public void onFailure(java.lang.Throwable e, org.json.JSONArray errorResponse) {

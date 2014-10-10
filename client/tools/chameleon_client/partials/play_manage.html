@@ -12,7 +12,7 @@
                         <label>工程地址:</label>
                     </div>
                     <div class="col-md-8">
-                        <label>{{projects[0].path}}</label>
+                        <label>{{project.__doc.path}}</label>
                     </div>
 
                 </div>
@@ -21,7 +21,7 @@
                         <label>Chameleon版本:</label>
                     </div>
                     <div class="col-md-8">
-                        <label>{{projects[0].version}}</label>
+                        <label>{{projects.__doc.version}}</label>
                     </div>
                     <div class="col-md-2">
                         <a class="btn" ng-show="isOutdated" ng-class="{red: isOutdated}" ng-click="openUpgradePanel()">升级到{{toolversion}}!!!</a>

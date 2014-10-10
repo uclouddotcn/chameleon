@@ -89,7 +89,7 @@ static const char *FUNC_TYPE[][2] = {
     {"isLogined", "()Z"},
     {"getPayToken", "()[B"},
     {"onLoginRsp", "([B)Z"},
-    {"onLoginRsp", "([B[B[BI[B)V"}
+    {"submitPlayerInfo", "([B[B[BI[B)V"}
 };
 
 template<typename T>
