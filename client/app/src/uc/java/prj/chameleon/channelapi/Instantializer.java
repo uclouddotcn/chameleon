@@ -11,12 +11,12 @@ public class Instantializer implements IInstantializer {
         ApiCommonCfg commCfg = new ApiCommonCfg();
         commCfg.mAppName = "123";
         commCfg.mChannel = "uc";
-        commCfg.mIsLandscape = true;
+        commCfg.mIsLandscape = false;
         commCfg.mIsDebug = true;
 
         Bundle bundle = new Bundle();
-        bundle.putLong("cpId", 20087);
-        bundle.putLong("gameId", 119474);
+        bundle.putLong("cpId", 40901);
+        bundle.putLong("gameId", 549059);
         UcChannelAPI api = new UcChannelAPI();
         api.initCfg(commCfg, bundle);
 

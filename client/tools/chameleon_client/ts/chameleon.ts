@@ -992,7 +992,6 @@ export class ChameleonTool {
                 try {
                     var jsonobj = JSON.parse(s);
                     res.infoObj = InfoJson.loadFromJson(jsonobj, res.chameleonPath);
-
                     res.upgradeMgr = new UpgradeMgr(workdir, res.infoObj.version);
                     return callback(null);
                 } catch (e) {
@@ -1177,6 +1176,10 @@ export class ChameleonTool {
     }
 
     createProject(name: string, landscape: boolean, prjPath: string, unity: boolean, cb: CallbackFunc<Project>) {
+        this.doCreateProject(name, landscape, prjPath, unity, cb);
+    }
+
+    private doCreateProject(name: string, landscape: boolean, prjPath: string, unity: boolean, cb: CallbackFunc<Project>) {
         try {
             var chameleonPath = pathLib.join(prjPath, 'chameleon');
             var projectPPath = pathLib.join(prjPath, 'project.properties');

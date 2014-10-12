@@ -36,6 +36,13 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         public boolean mIsCreated = false;
     }
 
+    private static class PayStatus {
+        public boolean mIsSuccess;
+        public PayStatus() {
+            mIsSuccess = false;
+        }
+    }
+
     private class BindGuestListener implements IUCBindGuest {
         @Override
         public UCBindGuestResult bind(String sid) {
@@ -166,7 +173,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
                 @Override
                 public void callback(int i, String s) {
-                    if (i == UCGameSDKStatusCode.SUCCESS || i == UCGameSDKStatusCode.LOGIN_EXIT) {
+                    if (i == UCGameSDKStatusCode.SUCCESS) {
                         String sid = UCGameSDK.defaultSDK().getSid();
                         if (sid.length() == 0) {
                             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
@@ -174,6 +181,13 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                             JSONObject loginObj = getLoginInfo(sid);
                             cb.onFinished(Constants.ErrorCode.ERR_OK, loginObj);
                         }
+                    } else if (i == UCGameSDKStatusCode.LOGIN_EXIT) {
+                        String sid = UCGameSDK.defaultSDK().getSid();
+                        if (sid.length() == 0) {
+                            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                        } else {
+                        }
+
                     } else {
                         Log.e(Constants.TAG, String.format("Fail to invoke uc login %d", i));
                     }
@@ -220,19 +234,23 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         info.setTransactionNumCP(orderId);
         info.setCustomInfo(getCustomInfo());
         info.setServerId(0);
+        final PayStatus status = new PayStatus();
         try {
             UCGameSDK.defaultSDK().pay(activity.getApplicationContext(), info, new UCCallbackListener<OrderInfo>() {
                 @Override
                 public void callback(int i, OrderInfo orderInfo) {
                     if (i == UCGameSDKStatusCode.SUCCESS) {
+                        status.mIsSuccess = true;
                         if (orderInfo != null) {
                             cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                         } else {
                             Log.e(Constants.TAG, "unexpected null instance");
                             cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
                         }
-                    } else if (i == UCGameSDKStatusCode.PAY_USER_EXIT) {
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
+                    } else if (i == UCGameSDKStatusCode.PAY_USER_EXIT ) {
+                        if (!status.mIsSuccess) {
+                            cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
+                        }
                     } else {
                         Log.d(Constants.TAG, "fail to charge " + String.valueOf(i));
                         cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
@@ -278,11 +296,13 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         info.setTransactionNumCP(orderId);
         info.setCustomInfo(getCustomInfo());
         info.setServerId(0);
+        final PayStatus status = new PayStatus();
         try {
             UCGameSDK.defaultSDK().pay(activity.getApplicationContext(), info, new UCCallbackListener<OrderInfo>() {
                 @Override
                 public void callback(int i, OrderInfo orderInfo) {
                     if (i == UCGameSDKStatusCode.SUCCESS) {
+                        status.mIsSuccess = true;
                         if (orderInfo != null) {
                             cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                         } else {
@@ -290,7 +310,9 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                             cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
                         }
                     } else if (i == UCGameSDKStatusCode.PAY_USER_EXIT) {
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
+                        if (!status.mIsSuccess) {
+                            cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
+                        }
                     } else {
                         Log.d(Constants.TAG, "fail to charge " + String.valueOf(i));
                         cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
@@ -390,7 +412,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 y = 0;
                 break;
         }
-        ;
+
         try {
             UCGameSDK.defaultSDK().showFloatButton(activity, x, y, visible);
         } catch (UCCallbackListenerNullException e) {
@@ -410,7 +432,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean onLoginRsp(String loginRsp) {
-        JSONObject obj = null;
+        JSONObject obj;
         try {
             obj = new JSONObject(loginRsp);
             int code = obj.getInt("code");

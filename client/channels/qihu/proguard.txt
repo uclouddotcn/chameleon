@@ -5,3 +5,5 @@
 -keep class com.qihoo360.** {*;}
 -keep class com.qihoopp.** { *; }
 -dontwarn org.apache.http.conn.ssl.SSLSocketFactory
+-dontskipnonpubliclibraryclassmembers
+-dontwarn com.qihoo.**

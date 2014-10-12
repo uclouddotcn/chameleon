@@ -10,6 +10,7 @@ public class ChamListener : MonoBehaviour {
 		public override void onInit() 
 		{
 			Debug.Log ("on inited");
+			Debug.Log ("on inited " + ChameleonSDK.getChannelName ());
 		}
 		public override void onLogin(string loginInfo) {
 			Debug.Log ("on login " + loginInfo);
@@ -32,8 +33,8 @@ public class ChamListener : MonoBehaviour {
 		public override void onAntiAddiction(int flag) {
 			Debug.Log ("on anti addiction");
 		}
-		public override void onDestroyed() {
-			Debug.Log ("on destroyed");
+		public override void onDestroyed(int code) {
+			Debug.Log ("on destroyed " + code);
 		}
 		public override void onSwitchAccount(int code, string loginInfo) {
 			Debug.Log (string.Format ("on switch account %d", code));

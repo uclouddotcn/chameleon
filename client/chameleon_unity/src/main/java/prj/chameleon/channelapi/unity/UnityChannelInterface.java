@@ -319,6 +319,17 @@ public class UnityChannelInterface {
     }
 
     /**
+     * notify the platform we are destroyed
+     */
+    public static void onDestroy() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                prj.chameleon.channelapi.ChannelInterface.onDestroy(mActivity);
+            }
+        });
+    }
+    /**
      * request anti addiction info
      *
      * @throws UnsupportedEncodingException
@@ -354,9 +365,7 @@ public class UnityChannelInterface {
                 prj.chameleon.channelapi.ChannelInterface.exit(mActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(int retCode, JSONObject data) {
-                        if (retCode == Constants.ErrorCode.ERR_OK) {
-                            U3DHelper.SendMessage("onExit", "");
-                        }
+                        U3DHelper.SendMessage("onDestroyed", String.format("{\"code\": %d}", retCode));
                     }
                 });
             }

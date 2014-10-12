@@ -249,7 +249,6 @@ chameleonControllers
 
                 $scope.channels.push(channels[i]);
             }
-            console.log(projectIcons)
             $scope.channel = null;
             var selectedChannel = [];
             var initShownChannel = function (nowChannel) {
@@ -832,17 +831,11 @@ chameleonControllers
 
 
                 globalCache.allsdks = allsdks;
-                console.log(allsdks)
-
                 $scope.allsdks = allsdks;
-                console.warn($scope.allsdks)
-
-
 
                 /**
                  * 渠道列表这里就已经获取到了sdk列表的数据 end
                  * */
-
 
                 $state.go('loadmethod.channel',{projectId:globalCache.projectId});
             },
@@ -998,7 +991,7 @@ chameleonControllers
         }
 
     }])
-    .controller('BindProjectCtrl', ['$scope', '$state', 'ProjectMgr', 'fileDialog',function ($scope, $state, ProjectMgr, fileDialog) {
+    .controller('BindProjectCtrl', ['$scope', '$state', 'ProjectMgr', 'fileDialog', 'globalCache', function ($scope, $state, ProjectMgr, fileDialog, globalCache) {
         $scope.newProjectPromise = null;
         $scope.project = {
         };
@@ -1021,8 +1014,9 @@ chameleonControllers
                     $scope.gamePath);
                 $scope.newProjectPromise.then(
                     function (projectId) {
-                        console.log('switch to projects' %projectId);
-                        $state.go('project.globalsdk', {projectId: projectId});
+                        console.log('switch to projects');
+                        globalCache.projectId = projectId;
+                        $state.go('playmanage', {projectId: projectId});
                     },
                     function (err) {
                         // error handling

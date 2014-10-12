@@ -22,7 +22,7 @@ public class ChannelAPINative {
     static native void onPause();
     static native void onAntiAddiction(int id, int retCode, int flag);
     static native void onProtocolDone(int id, int code, byte[] protocol, byte[] message);
-    static native void onExit();
+    static native void onExit(int code);
 
 
 }

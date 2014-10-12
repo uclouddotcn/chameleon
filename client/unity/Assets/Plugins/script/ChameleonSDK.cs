@@ -54,7 +54,7 @@ public class ChameleonSDK : MonoBehaviour  {
 			/**
 			 * callback while the channel sdk is destroyed
 			 */
-			public virtual void onDestroyed() {}
+			public virtual void onDestroyed(int code) {}
 			/**
 			 * the User have switched account
 			 * @param code, the switch account result
