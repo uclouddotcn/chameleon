@@ -58,8 +58,12 @@ function(m, token, others, channel, callback) {
                 return callback(
                     new SdkError({code:-1, message:'internal error'}));
             }
-            self._eventCenter.emit('login', self.productName, channel,
-                result.loginInfo.uid, result.loginInfo.others);
+            if (result.code === 0) {
+                self._eventCenter.emit('login', self.productName, channel,
+                    result.loginInfo.uid, result.loginInfo.others);
+            } else {
+                self._eventCenter.emit('login-fail', self.productName, channel, null, result.code);
+            }
             result.loginInfo.channel = channel;
             return callback(null, result);
         });

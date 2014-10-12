@@ -19,10 +19,31 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
         version: '0.0.1',
         log: logger
     });
+    self.logger = logger;
 
     self.pluginMgr = pluginMgr;
     self.productMgr = productMgr;
     self.server.use(restify.bodyParser({mapParams:false}));
+    self.server.use(restify.queryParser());
+
+   self.server.get('cmd', function (req, res, next) {
+       var params = req.params;
+       if (!params) {
+           res.send({code: -1, msg: 'empty request arguments'});
+           next();
+           return;
+       }
+       if (params.cmd === 'exit') {
+           self.exit();
+           setTimeout(function () {
+               res.send({code: 0});
+               next();
+           }, 1000);
+       } else {
+           res.send({code: -1, msg: 'unknown cmd'});
+           next();
+       }
+   })
 
     // path for get all plugins
     self.server.get('/plugins', function (req, res, next) {
@@ -154,6 +175,21 @@ Admin.prototype.listen = function(port, host, next) {
         next(err);
     });
 };
+
+Admin.prototype.exit = function () {
+    if (this.exitFunc) {
+        this.exitFunc();
+    }
+}
+
+Admin.prototype.close = function (callback) {
+    this.logger.info('admin server exit');
+    return this.server.close(callback);
+};
+
+Admin.prototype.registerExitFunc = function (func) {
+    this.exitFunc = func;
+}
 
 module.exports.createAdmin = function(pluginMgr, productMgr, options, logger) {
     return new Admin(pluginMgr, productMgr, options, logger);

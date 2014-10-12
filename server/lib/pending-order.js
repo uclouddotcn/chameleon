@@ -4,8 +4,7 @@ var WError = require('verror').WError;
 var path = require('path');
 
 // API
-module.exports.createPendingOrderStore = 
-function (options, logger) {
+module.exports.createPendingOrderStore = function (options, logger) {
     return new PendingOrderStore(options, logger);
 };
 
@@ -15,7 +14,7 @@ var PendingOrderStore = function (options, logger) {
     }
     var self = this;
     self.loadKvPlugin(options);
-    self.ttl = options.ttl || 900;
+    self.ttl = options.ttl || 3600;
     EventEmitter.call(this);
     self.logger = logger;
 };
@@ -29,6 +28,10 @@ util.inherits(PendingOrderStore, EventEmitter);
  * @param {Object} res - null or the object fetched from storage
  */
 
+
+PendingOrderStore.prototype.close = function (callback) {
+    this.client.close(callback);
+}
 
 /**
  * store pending order

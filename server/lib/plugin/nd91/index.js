@@ -19,6 +19,7 @@ var Nd91Channel = (function () {
             url: requestUri,
             retry: false,
             log: logger,
+            requestTimeout: 10000,
             connectTimeout: 20000
         });
     }

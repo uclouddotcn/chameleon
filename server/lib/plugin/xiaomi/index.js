@@ -22,6 +22,7 @@ var XiaomiChannel = function(userAction, logger, cfgChecker) {
         url: this.requestUri,
         retry: false,
         log: this._logger,
+        requestTimeout: 10000,
         connectTimeout: 20000
     });
 };

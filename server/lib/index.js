@@ -15,7 +15,8 @@ function start(cfg) {
     // create logger first
     var logger = startLogger(cfg.debug, cfg.logger);
 
-    // create pending order store 
+    // create pending order store
+
     var pendingOrderStore = createPendingOrderStore(
         cfg.pendingOrderStoreCfg, logger.svrLogger);
 
@@ -31,13 +32,13 @@ function start(cfg) {
         productMgr, cfg.sdkSvr, logger.svrLogger);
 
     // start bill log module
-    startBillModule(cfg.billCfg, productMgr, logger.svrLogger);
+    var eventStorageEng = startBillModule(cfg.billCfg, productMgr, logger.svrLogger);
      
     // start other event listen module
     startUserEventListener(cfg.eventListenCfg);
 
     // start channel callback svr
-    createChannelCbSvr(cfg.channelCbSvr, productMgr, logger.svrLogger);
+    var channelCbSvr = createChannelCbSvr(cfg.channelCbSvr, productMgr, logger.svrLogger);
 
     // loading all product configs
     productMgr.loadProductsSync();
@@ -45,6 +46,26 @@ function start(cfg) {
     // create admin server
     var adminSvr = createAdmin(pluginMgr, productMgr, 
         cfg.admin, logger.adminLogger);
+
+    var exitFuncs = function () {
+        async.series([sdkSvr.close.bind(sdkSvr),
+            channelCbSvr.close.bind(channelCbSvr),
+            adminSvr.close.bind(adminSvr),
+            pendingOrderStore.close.bind(pendingOrderStore),
+            eventStorageEng.close.bind(eventStorageEng)],
+            function (err) {
+                if (err) {
+                    logger.error({err: err}, 'Fail to termniate');
+                    return;
+                }
+                process.exit(0);
+            }
+        );
+    };
+
+    process.on('SIGTERM', function () {
+        exitFuncs();
+    });
 
     // init the internal modules sequentially
     async.series([
@@ -58,6 +79,14 @@ function start(cfg) {
         if (err) {
             throw err;
         }
+        adminSvr.registerExitFunc(function () {
+            try {
+                exitFuncs();
+            } catch (e) {
+                console.log(e);
+                console.log(e.stack)
+            }
+        });
         console.log('init finished');
     });
 }
@@ -84,10 +113,11 @@ function startBillModule(billCfg, userAction, logger) {
     }
     var storageEng = storageDriver.createStorageDriver(billCfg, logger);
     eventLog.listen(userAction, storageEng);
+    return storageEng;
 }
 
 function createChannelCbSvr(cfg, productMgr, logger) {
-    new ChannelCbSvr(productMgr, cfg.port, cfg.host, cfg, logger);
+    return new ChannelCbSvr(productMgr, cfg.port, cfg.host, cfg, logger);
 }
 
 module.exports.start = start;
