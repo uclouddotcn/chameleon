@@ -998,7 +998,6 @@ var ChameleonTool = (function () {
                 try  {
                     var jsonobj = JSON.parse(s);
                     res.infoObj = InfoJson.loadFromJson(jsonobj, res.chameleonPath);
-
                     res.upgradeMgr = new UpgradeMgr(workdir, res.infoObj.version);
                     return callback(null);
                 } catch (e) {
@@ -1183,6 +1182,10 @@ var ChameleonTool = (function () {
     };
 
     ChameleonTool.prototype.createProject = function (name, landscape, prjPath, unity, cb) {
+        this.doCreateProject(name, landscape, prjPath, unity, cb);
+    };
+
+    ChameleonTool.prototype.doCreateProject = function (name, landscape, prjPath, unity, cb) {
         try  {
             var chameleonPath = pathLib.join(prjPath, 'chameleon');
             var projectPPath = pathLib.join(prjPath, 'project.properties');

@@ -125,7 +125,9 @@ namespace chameleon
 
 		public void onDestroyed(string message) {
 			if (mEvtListener != null) {
-				mEvtListener.onDestroyed();
+				var obj = JSON.Parse(message);
+				int code = obj["code"].AsInt;
+				mEvtListener.onDestroyed(code);
 			}
 		}
 

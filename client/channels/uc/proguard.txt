@@ -1,9 +1,3 @@
--keep class android.**{ 
-    <methods>
-    <fields> 
-}
+-keep class android.** {*;}
 
--keep class cn.uc.**{ 
-    <methods>
-    <fields> 
-}
+-keep class cn.uc.**{*;}
