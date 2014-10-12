@@ -11,11 +11,9 @@ var _errorcode = require('../common/error-code').ErrorCode;
 var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
-    requestUri: '?string',
     cpId: 'integer',
     gameId: 'integer',
     apiKey: 'string',
-    timeout: '?integer'
 };
 
 var UCChannel = function(userAction, logger, cfgChecker) {
@@ -25,6 +23,7 @@ var UCChannel = function(userAction, logger, cfgChecker) {
         url: this.defaultUri,
         retry: false,
         log: logger,
+        requestTimeout: 10000,
         connectTimeout: 20000
     });
 };
@@ -37,9 +36,9 @@ UCChannel.prototype.calcSign = function (s) {
     return md5sum.digest('hex').toLocaleLowerCase();
 };
 
-UCChannel.prototype.verifyLogin = function(cfgItem, token, others, callback) {
+UCChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
-    var sign = this.calcSign(cfgItem.cpId+'sid='+token+cfgItem.apiKey);
+    var sign = this.calcSign(wrapper.cfg.cpId+'sid='+token+wrapper.cfg.apiKey);
     var params = {
         id: (new Date()).getTime()/1000,
         service: "ucid.user.sidInfo",
@@ -47,8 +46,8 @@ UCChannel.prototype.verifyLogin = function(cfgItem, token, others, callback) {
             sid: token
         },
         game: {
-            cpId: cfgItem.cpId,
-            gameId: cfgItem.gameId,
+            cpId: wrapper.cfg.cpId,
+            gameId: wrapper.cfg.gameId,
             channelId: '2',
             serverId: 0
         },
@@ -67,7 +66,7 @@ UCChannel.prototype.verifyLogin = function(cfgItem, token, others, callback) {
                 result = {
                     code: _errorcode.ERR_OK,
                     loginInfo: {
-                        uid: obj.data.ucid,
+                        uid: obj.data.ucid.toString(),
                         token: token,
                         name: obj.data.nickName
                     }
@@ -96,6 +95,7 @@ UCChannel.prototype.respondsToPay = function (req, res, next) {
     var params = req.params;
     this._logger.debug({params: params}, 'recv pay callback from uc');
     var result = true;
+    var self = this;
     try {
         var data = params.data;
         var customInfos = data.callbackInfo.split('|');
@@ -133,7 +133,7 @@ UCChannel.prototype.respondsToPay = function (req, res, next) {
             payWay: data.payWay
         };
         self._userAction.pay(wrapper.channelName, data.ucid, null,
-            data.orderId, getPayStatus(data.orderStatus),
+            data.cpOrderId, getPayStatus(data.orderStatus),
             null, 0, amount, others,
             function (err, result) {
                 if (err) {

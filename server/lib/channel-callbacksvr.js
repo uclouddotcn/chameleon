@@ -94,6 +94,11 @@ ChannelCallbackSvr.prototype._onRemoveChannel = function (pluginInstInfo) {
         'uninstall product')
 };
 
+ChannelCallbackSvr.prototype.close = function (callback) {
+    this.logger.info('channel cb svr exit');
+    this.server.close(callback);
+};
+
 // internal
 //
 

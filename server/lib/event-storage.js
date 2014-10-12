@@ -2,6 +2,7 @@ var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var path = require('path');
 var loadModule = require('./libloader').loadModule;
+var async = require('async');
 
 // API
 module.exports.createStorageDriver = 
@@ -44,5 +45,16 @@ EventStorage.prototype.record = function (obj) {
     this.storages.forEach(function (store) {
         store.record(obj);
     });
+};
+
+EventStorage.prototype.close = function (callback) {
+    var exitFunc = this.storages.map(function (x) {
+        return x.close.bind(x);
+    });
+    async.parallel(
+        exitFunc, function () {
+            callback();
+        }
+    );
 };
 
