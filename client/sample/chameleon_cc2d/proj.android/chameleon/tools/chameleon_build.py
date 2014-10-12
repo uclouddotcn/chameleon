@@ -89,7 +89,7 @@ def mergeAssetsToApk(args):
     targetpkg = args[2]
     ig = getIgnorePatterns(ignorePat)
     channelFolder = getTargetChannelAssetFolder(targetChannel)
-    dependLibs = getDependLibs(targetChannel)
+    dependLibs = getDependLibs(targetChannel, getCommCfg())
     assets = mergeDependLibAssets(dependLibs, channelFolder, ig)
     totalFileList = [x[0] for x in assets]
     assets = groupAssets(assets)

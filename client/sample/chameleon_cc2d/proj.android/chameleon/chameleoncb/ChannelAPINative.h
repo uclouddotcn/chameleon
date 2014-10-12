@@ -123,12 +123,14 @@ JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_o
 /*
  * Class:     prj_chameleon_channelapi_cbinding_ChannelAPINative
  * Method:    onExit
- * Signature: ()V
+ * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_onExit
-  (JNIEnv *, jclass);
+  (JNIEnv *, jclass, jint);
 
 
+JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_submitPlayerInfo
+  (JNIEnv *, jclass, jbyteArray, jbyteArray, jbyteArray, jint, jbyteArray);
 #ifdef __cplusplus
 }
 #endif

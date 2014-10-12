@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
     package="prj.chameleon.nd91">
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -37,7 +36,7 @@
         <activity
             android:name="com.duoku.platform.ui.DKContainerActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/StyledIndicators"
             chameleon:replace="android:screenOrientation=${orientation}">
@@ -46,7 +45,7 @@
         <activity
             android:name="com.duoku.platform.ui.DKPaycenterActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:theme="@style/DK.Theme.NoBackGround"
             chameleon:replace="android:screenOrientation=${orientation}">
         </activity>
@@ -54,7 +53,7 @@
         <activity
             android:name="com.mokredit.payment.MktPayment"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             chameleon:replace="android:screenOrientation=${orientation}">
         </activity>
@@ -64,7 +63,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="true"
             android:label="@string/app_name"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             chameleon:replace="android:screenOrientation=${orientation}">
             <intent-filter>
                 <action android:name="android.intent.action.Run" />
@@ -78,7 +77,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="true"
             android:label="@string/app_name"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             chameleon:replace="android:screenOrientation=${orientation}">
             <intent-filter>
