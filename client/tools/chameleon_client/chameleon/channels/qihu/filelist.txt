@@ -1,9 +1,0 @@
-AndroidManifest.xml
-build.gradle
-build.xml
-project.properties
-assets/alipay_plugin.apk
-assets/pro.jar
-libs/360SDK.jar
-src/prj/chameleon/qihu/QihuChannelAPI.java
-AndroidManifest.xml.template
