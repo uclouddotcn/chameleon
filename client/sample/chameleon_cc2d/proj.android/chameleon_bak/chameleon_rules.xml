@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="chameleon" default="help">
+    <condition property="chameleon.library.path" value="chameleon/channels/${chameleon.library}" else="chameleon/chameleon">
+        <isset property="chameleon.library" />
+    </condition>
+    <condition property="out.dir.base" value="bin/${chameleon.library}" else="bin/default">
+        <isset property="chameleon.library" />
+    </condition>
+    <condition property="chameleon.propertyfile" value=".chameleon-project-${chameleon.library}.properties" else="chameleon/empty.properties">
+        <isset property="chameleon.library" />
+    </condition>
+    <property name="out.dir" value="${out.dir.base}/build" />
+    <property name="out.absolute.dir" value="${out.dir}"/>
+    <property name="out.classes.absolute.dir" location="${out.dir}/classes" />
+    <property name="out.res.absolute.dir" location="${out.dir}/res" />
+    <property name="out.rs.obj.absolute.dir" location="${out.dir}/rsObj" />
+    <property name="out.rs.libs.absolute.dir" location="${out.dir}/rsLibs" />
+    <property name="out.aidl.absolute.dir" location="${out.dir}/aidl" />
+    <property name="out.dexed.absolute.dir" location="${out.dir}/dexedLibs" />
+    <property name="out.manifest.abs.file" location="${out.dir}/AndroidManifest.xml" />
+    <property name="gen.absolute.dir" location="${out.dir.base}/gen" />
+    <loadproperties srcFile="${chameleon.propertyfile}" />
+
+    <!-- rewrite code-gen for supporting generating code -->
+    <target name="-code-gen">
+        <!-- always merge manifest -->
+        <mergemanifest
+                appManifest="${manifest.abs.file}"
+                outManifest="${out.manifest.abs.file}"
+                enabled="${manifestmerger.enabled}">
+            <library refid="project.library.manifest.file.path" />
+        </mergemanifest>
+
+        <do-only-if-manifest-hasCode
+                elseText="hasCode = false. Skipping aidl/renderscript/R.java">
+            <echo level="info">Handling aidl files...</echo>
+            <aidl executable="${aidl}"
+                    framework="${project.target.framework.aidl}"
+                    libraryBinAidlFolderPathRefid="project.library.bin.aidl.folder.path"
+                    genFolder="${gen.absolute.dir}"
+                    aidlOutFolder="${out.aidl.absolute.dir}">
+                <source path="${source.absolute.dir}"/>
+            </aidl>
+
+            <!-- renderscript generates resources so it must be called before aapt -->
+            <echo level="info">----------</echo>
+            <echo level="info">Handling RenderScript files...</echo>
+            <!-- set the rs target prop in case it hasn't been set. -->
+            <property name="renderscript.target" value="${project.minSdkVersion}" />
+            <renderscript
+                    buildToolsRoot="${android.build.tools.dir}"
+                    genFolder="${gen.absolute.dir}"
+                    resFolder="${out.res.absolute.dir}"
+                    rsObjFolder="${out.rs.obj.absolute.dir}"
+                    libsFolder="${out.rs.libs.absolute.dir}"
+                    targetApi="${renderscript.target}"
+                    optLevel="${renderscript.opt.level}"
+                    supportMode="${renderscript.support.mode}"
+                    binFolder="${out.absolute.dir}"
+                    buildType="${build.is.packaging.debug}"
+                    previousBuildType="${build.last.is.packaging.debug}">
+                <source path="${source.absolute.dir}"/>
+            </renderscript>
+
+            <echo level="info">----------</echo>
+            <echo level="info">Handling Resources...</echo>
+            <aapt executable="${aapt}"
+                    command="package"
+                    verbose="${verbose}"
+                    manifest="${out.manifest.abs.file}"
+                    originalManifestPackage="${project.app.package}"
+                    androidjar="${project.target.android.jar}"
+                    rfolder="${gen.absolute.dir}"
+                    nonConstantId="${android.library}"
+                    libraryResFolderPathRefid="project.library.res.folder.path"
+                    libraryPackagesRefid="project.library.packages"
+                    libraryRFileRefid="project.library.bin.r.file.path"
+                    ignoreAssets="${aapt.ignore.assets}"
+                    binFolder="${out.absolute.dir}"
+                    proguardFile="${out.absolute.dir}/proguard.txt">
+                <res path="${out.res.absolute.dir}" />
+                <res path="${resource.absolute.dir}" />
+            </aapt>
+
+            <if>
+                <condition>
+                    <isset property="chameleon.library"/>
+                </condition>
+                <then>
+                    <exec executable="python" failonerror="true">
+                        <arg value="chameleon/tools/chameleon_gen.py"/>
+                        <arg value="${chameleon.library}"/>
+                        <arg value="${out.manifest.abs.file}"/>
+                        <arg value="${gen.absolute.dir}"/>
+                        <arg value="${project.app.package}"/>
+                    </exec>
+
+                </then>
+            </if>
+            <echo level="info">----------</echo>
+            <echo level="info">Handling BuildConfig class...</echo>
+            <buildconfig
+                    genFolder="${gen.absolute.dir}"
+                    package="${project.app.package}"
+                    buildType="${build.is.packaging.debug}"
+                    previousBuildType="${build.last.is.packaging.debug}"/>
+
+        </do-only-if-manifest-hasCode>
+    </target>
+
+
+
+    <target name="-chameleon-post-package">
+        <if>
+            <condition>
+                <isset property="chameleon.library"/>
+            </condition>
+            <then>
+                <exec executable="python" failonerror="true">
+                    <arg value="chameleon/tools/chameleon_build.py"/>
+                    <arg value="${chameleon.library}"/>
+                    <arg value="${aapt}"/>
+                    <arg value="${out.absolute.dir}/${resource.package.file.name}"/>
+                </exec>
+            </then>
+        </if>
+    </target>
+
+    <!-- rewrite the package resource target, will rename the package 
+    	 if use a channel
+         -->
+    <target name="-package-resources" depends="-crunch">
+        <if>
+            <condition>
+                <isset property="chameleon.library"/>
+            </condition>
+            <then>
+                <xpath input="${chameleon.library.path}/info.xml" 
+                    expression="/channel/@pkgsuffix" 
+                    output="chameleon.wrap_package" default=""/>
+            </then>
+            <else>
+                <property name="chameleon.wrap_package" value=""></property>
+            </else>
+        </if>
+        <echo level="info">${chameleon.wrap_package}</echo>
+        <property name="project.app.package.new" 
+            value="${project.app.package}${chameleon.wrap_package}" />
+
+        <!-- only package resources if *not* a library project -->
+        <do-only-if-not-library elseText="Library project: do not package resources..." >
+            <aapt executable="${aapt}"
+                    command="package"
+                    versioncode="${version.code}"
+                    versionname="${version.name}"
+                    debug="${build.is.packaging.debug}"
+                    manifest="${out.manifest.abs.file}"
+                    manifestpackage="${project.app.package.new}"
+                    assets="${asset.absolute.dir}"
+                    androidjar="${project.target.android.jar}"
+                    apkfolder="${out.absolute.dir}"
+                    nocrunch="${build.packaging.nocrunch}"
+                    resourcefilename="${resource.package.file.name}"
+                    resourcefilter="${aapt.resource.filter}"
+                    libraryResFolderPathRefid="project.library.res.folder.path"
+                    libraryPackagesRefid="project.library.packages"
+                    libraryRFileRefid="project.library.bin.r.file.path"
+                    previousBuildType="${build.last.target}"
+                    buildType="${build.target}"
+                    ignoreAssets="${aapt.ignore.assets}">
+                <res path="${out.res.absolute.dir}" />
+                <res path="${resource.absolute.dir}" />
+                <!-- <nocompress /> forces no compression on any files in assets or res/raw -->
+                <!-- <nocompress extension="xml" /> forces no compression on specific file extensions in assets and res/raw -->
+            </aapt>
+        </do-only-if-not-library>
+    </target>
+
+    <!-- rewrite -release-nosign, no use now-->
+    <target name="-release-nosign" >
+    </target>
+
+    <!-- Packages the application. -->
+    <target name="-package" depends="-dex, -package-resources, -chameleon-post-package">
+        <!-- only package apk if *not* a library project -->
+        <do-only-if-not-library elseText="Library project: do not package apk..." >
+            <if condition="${build.is.instrumented}">
+                <then>
+                    <package-helper>
+                        <extra-jars>
+                            <!-- Injected from external file -->
+                            <jarfile path="${emma.dir}/emma_device.jar" />
+                        </extra-jars>
+                    </package-helper>
+                </then>
+                <else>
+                    <package-helper />
+                </else>
+            </if>
+        </do-only-if-not-library>
+    </target>
+
+    <!-- rewrite the -release-sign target for using different settings for different 
+    	 channels-->
+    <target name="-release-sign">
+        <!-- only create apk if *not* a library project -->
+        <do-only-if-not-library elseText="Library project: do not create apk..." >
+            <sequential>
+                <property name="out.unaligned.file" location="${out.absolute.dir}/${ant.project.name}-release-unaligned.apk" />
+                <echo level="info">Signing final apk...</echo>
+                <if>
+                    <condition>
+                        <isset property="chameleon.library"/>
+                    </condition>
+                    <then>
+                        <exec executable="python"  failonerror="true">
+                            <arg value="chameleon/tools/sign_pkg.py"/>
+                            <arg value="-c"/>
+                            <arg value="${chameleon.library}"/>
+                            <arg value="${out.packaged.file}"/>
+                            <arg value="${out.unaligned.file}"/>
+                        </exec>
+                    </then>
+                    <else>
+                        <exec executable="python"  failonerror="true">
+                            <arg value="chameleon/tools/sign_pkg.py"/>
+                            <arg value="${out.packaged.file}"/>
+                            <arg value="${out.unaligned.file}"/>
+                        </exec>
+                    </else>
+                </if>
+
+                <!-- Zip aligns the APK -->
+                <zipalign-helper
+                        in.package="${out.unaligned.file}"
+                        out.package="${out.final.file}" />
+                <echo level="info">Release Package: ${out.final.file}</echo>
+            </sequential>
+        </do-only-if-not-library>
+        <record-build-info />
+    </target>
+</project>
+

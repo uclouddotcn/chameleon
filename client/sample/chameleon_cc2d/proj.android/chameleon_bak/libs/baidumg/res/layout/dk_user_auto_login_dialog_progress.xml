@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/dk_bg_dialog">
+	
+    <LinearLayout 
+        android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:layout_marginTop="10dp"
+        android:orientation="vertical">
+    
+		<LinearLayout 
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginLeft="10dp">
+		    
+		    <ImageView 
+		        android:layout_width="22dp"
+		        android:layout_height="22dp"
+		        android:src="@drawable/dk_user_auto_login_dk_icon"/>
+		    
+		</LinearLayout>
+	    
+	    <LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_marginTop="4dp" >
+	
+	        <TextView
+	            android:id="@+id/dk_user_auto_login_id_type"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:textColor="@color/dk_color_333333"
+	            android:textSize="20dp" />
+	
+	        <TextView
+	            android:id="@+id/dk_user_auto_login_name"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:textColor="@color/dk_color_e38c04"
+	            android:textSize="20dp" />
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_marginTop="20dp" >
+	
+	        <ProgressBar
+	            android:id="@+id/dk_user_auto_login_circle_progress"
+	            android:layout_width="24dp"
+	            android:layout_height="24dp"
+	            android:layout_gravity="center_vertical"
+	            android:indeterminate="false"
+	            android:indeterminateDrawable="@drawable/dk_loading_progress_auto_login" />
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="8dp"
+	           
+	            android:layout_gravity="center_vertical"
+	            android:text="@string/dk_user_auto_login_dialog_msg_progress"
+	            android:textColor="@color/dk_color_838383"
+	            android:textSize="16dp" />
+	    </LinearLayout>
+		
+   	    <LinearLayout 
+	        android:id="@+id/dk_user_auto_login_btn"
+	        android:layout_width="218dp"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dp"
+	        android:layout_gravity="center_horizontal"
+	        android:gravity="center"
+	        android:background="@drawable/dk_user_auto_login_change_user_selector"
+	        android:layout_marginBottom="20dp"
+	        android:layout_marginLeft="30dp"
+	        android:layout_marginRight="30dp">
+	        
+	        <ImageView 
+	            android:layout_width="10dp"
+	            android:layout_height="10dp"
+	            android:layout_gravity="center_vertical"
+	            android:src="@drawable/dk_user_auto_login_change_user_image"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	android:layout_gravity="center_vertical"
+	        	android:layout_marginLeft="6dp"
+		        android:text="@string/dk_user_auto_login_dialog_msg_btn"
+		        android:textColor="@color/dk_color_999999"
+		        android:textSize="12dp" />
+	        
+	    </LinearLayout>
+	    
+    </LinearLayout>
+
+</LinearLayout>
