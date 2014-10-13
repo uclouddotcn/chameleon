@@ -54,7 +54,7 @@ public class ChameleonSDK : MonoBehaviour  {
 			/**
 			 * callback while the channel sdk is destroyed
 			 */
-			public virtual void onDestroyed(int code) {}
+			public virtual void onDestroyed() {}
 			/**
 			 * the User have switched account
 			 * @param code, the switch account result
@@ -103,7 +103,7 @@ public class ChameleonSDK : MonoBehaviour  {
 		/**
 		 * buy the currency in game
 		 * @param orderId the order id from server
-     	 * @param uidInGame player id in the game
+     	 * @param uidInGame player id in the game 
      	 * @param userNameInGame  player name in the game
      	 * @param serverId  current server id
      	 * @param currencyName the currency name
@@ -282,7 +282,7 @@ public class ChameleonSDK : MonoBehaviour  {
 		                                    string roleLevel,
 		                                    int zoneId,
 		                                    string zoneName) {
-			mBridge.callFunc (roleId, roleName, roleLevel, zoneId, zoneName);
+			mBridge.callFunc ("submitPlayerInfo", roleId, roleName, roleLevel, zoneId, zoneName);
 		}
 		/**
 		 * register the listener of the channel event
