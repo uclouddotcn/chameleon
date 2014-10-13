@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/userloginroot"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingLeft="70dp"
+    android:paddingRight="70dp" >
+
+    <!-- titlebar区域 -->
+
+    <include
+        android:id="@+id/dk_head"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/dk_user_login_lan_header" />
+
+    <!-- 可滑动区域 -->
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:layout_below="@id/dk_head"
+        android:background="@drawable/dk_bg_bottom" >
+
+        <ScrollView
+            android:id="@+id/dk_scroll"
+            android:layout_width="fill_parent"
+            android:layout_height="188dp"
+            android:fadeScrollbars="false"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbarThumbVertical="@drawable/dk_scrollbar_gray" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="12dp" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dk_userregister_licence_title_one"
+                    android:textColor="@color/dk_color_333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/dk_userregister_licence_content_one"
+                    android:textColor="@color/dk_color_666666"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dk_userregister_licence_title_two"
+                    android:textColor="@color/dk_color_333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/dk_userregister_licence_content_two"
+                    android:textColor="@color/dk_color_666666"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dk_userregister_licence_title_three"
+                    android:textColor="@color/dk_color_333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/dk_userregister_licence_content_three"
+                    android:textColor="@color/dk_color_666666"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dk_userregister_licence_title_four"
+                    android:textColor="@color/dk_color_333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/dk_userregister_licence_content_four"
+                    android:textColor="@color/dk_color_666666"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dk_userregister_licence_title_five"
+                    android:textColor="@color/dk_color_333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/dk_userregister_licence_content_five"
+                    android:textColor="@color/dk_color_666666"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dk_userregister_licence_title_six"
+                    android:textColor="@color/dk_color_333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/dk_userregister_licence_content_six"
+                    android:textColor="@color/dk_color_666666"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dk_userregister_licence_title_seven"
+                    android:textColor="@color/dk_color_333333"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/dk_userregister_licence_content_seven"
+                    android:textColor="@color/dk_color_666666"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/dk_notify_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dk_identify_notice"
+                        android:textColor="@color/dk_color_0066cc"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dp"
+                        android:background="#488cc0" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <include
+            android:id="@+id/dk_custom_bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="8dp"
+            layout="@layout/dk_user_bottom_logo_2" />
+    </RelativeLayout>
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/dk_head"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="28dp"
+        layout="@layout/dk_user_login_shadow" />
+
+</RelativeLayout>

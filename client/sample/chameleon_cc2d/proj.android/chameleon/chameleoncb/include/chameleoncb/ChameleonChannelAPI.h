@@ -180,6 +180,19 @@ namespace ChameleonChannelAPI{
     bool onLoginRsp(const std::string & loginRsp);
 
     /**
+     * 提交用户信息
+     * @param roleId 用户在游戏中的ID
+     * @param roleName 用户在游戏中的名
+     * @param roleLevel 用户等级
+     * @param zoneId zone id
+     * @param zoneName zone的名称
+     */
+    bool submitPlayerInfo(const std::string & roleId, 
+                          const std::string & roleName, 
+                          const std::string & roleLevel, 
+                          int zoneId,
+                          const std::string & zoneName);
+    /**
      * 是否登录
      */
     bool isLogined();

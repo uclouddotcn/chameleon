@@ -58,6 +58,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
                                         mActivity.onGotAuthroizationCode(ret);
                                     }
                                 });
+                                ChannelInterface.submitPlayerInfo(mActivity, "test", "test", "123", 2, "testzone");
                             }
                             @Override
                             public void onFailure(java.lang.Throwable e, org.json.JSONArray errorResponse) {
@@ -435,11 +436,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
     protected void onDestroy() {
         MainActivity.super.onDestroy();
         // call destroy when this activity is being destroyed to release the resource used by sdk
-        ChannelInterface.exit(this, new IDispatcherCb() {
-            @Override
-            public void onFinished(int retCode, JSONObject data) {
-            }
-        });
+        ChannelInterface.onDestroy(this);
     }
 
     public void printData(int code, final JSONObject s) {

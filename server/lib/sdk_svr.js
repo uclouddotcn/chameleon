@@ -80,11 +80,19 @@ SdkSvr.prototype.listen = function(port, host, next) {
     });
 };
 
+SdkSvr.prototype.close = function (callback) {
+    this.logger.info('sdk svr exit');
+    this.server.close(callback);
+};
+
 SdkSvr.prototype._onProductInstalled = function (productInfo) {
     var self = this;
     var productName = productInfo.name;
     var product = productInfo.product;
-    self.server.post(util.format('/%s/verify_login',productName), 
+    self.server.get(util.format('/%s/verify_login',productName),
+        makeCommonHandler(self._pendingLoginValidator,
+            product.verifyLogin.bind(product)));
+    self.server.post(util.format('/%s/verify_login',productName),
         makeCommonHandler(self._pendingLoginValidator, 
             product.verifyLogin.bind(product)));
     self.server.post(util.format('/%s/pending_pay',productName), 

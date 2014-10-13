@@ -89,7 +89,7 @@ static const char *FUNC_TYPE[][2] = {
     {"isLogined", "()Z"},
     {"getPayToken", "()[B"},
     {"onLoginRsp", "([B)Z"},
-    {"onLoginRsp", "([B[B[BI[B)V"}
+    {"submitPlayerInfo", "([B[B[BI[B)V"}
 };
 
 template<typename T>
@@ -250,12 +250,12 @@ JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_o
     g_apiLib.mCb->onResume();
 }
 
-void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_onExit(JNIEnv *, jclass) {
+void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_onExit(JNIEnv *, jclass, jint code) {
     if (!g_apiLib.mCb) {
         LOGW("There is not callback registered");
         return;
     }
-    g_apiLib.mCb->onExit();
+    g_apiLib.mCb->onExit((int)code);
 }
 
 
@@ -465,7 +465,7 @@ int antiAddiction(int id) {
     return callJniMethod(env, FUNC_ID_ANTI_ADDICTION, result, (jint)id);
 }
 
-int destroy(int id) {
+int exit(int id) {
     void * result = NULL;
     JNIEnv * env = g_apiLib.GetEnv();
     if (env == NULL) {

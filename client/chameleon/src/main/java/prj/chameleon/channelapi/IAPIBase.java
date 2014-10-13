@@ -49,7 +49,13 @@ public interface IAPIBase {
     public void onApplicationEvent(int event, Object... arguments);
 
     /**
-     * destroy the sdk instance
+     * on the activity destroyed
+     * @param activity the activity
+     */
+    public void onDestroy(Activity activity);
+
+    /**
+     * exit the sdk instance
      * @param activity
      */
     public void exit(Activity activity, IDispatcherCb cb);

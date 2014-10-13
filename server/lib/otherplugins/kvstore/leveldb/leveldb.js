@@ -52,6 +52,12 @@ LevelDBClient.prototype.del = function (key, callback) {
     self.db.del(key, callback);
 };
 
+LevelDBClient.prototype.close = function (callback) {
+    console.log("level db exit");
+    this.db.close(callback);
+};
+
+
 var DEFAULT_LV_DB_PATH = 
     path.join(__dirname, '../../../../log/pending-order.db');
 

@@ -205,7 +205,7 @@ var ConfigDesc = (function () {
         this.items.push({ name: name, item: item, defaultValue: defaultValue, ignore: ignore });
     };
 
-    ConfigDesc.prototype.wrapName = function (cfgItem, ignore, name) {
+    ConfigDesc.wrapName = function (cfgItem, ignore, name) {
         if (ignore) {
             return 'h' + name;
         } else {
@@ -219,7 +219,7 @@ var ConfigDesc = (function () {
             var item = this.items[i];
             var cfgitem = this.items[i].item;
             var name = this.items[i].name;
-            res[this.wrapName(cfgitem, item.ignore, name)] = obj[name];
+            res[ConfigDesc.wrapName(cfgitem, item.ignore, name)] = obj[name];
         }
         return res;
     };
@@ -244,7 +244,7 @@ var ConfigDesc = (function () {
             var item = this.items[i];
             var name = this.items[i].name;
             var cfgitem = this.items[i].item;
-            var wrapname = this.wrapName(cfgitem, item.ignore, name);
+            var wrapname = ConfigDesc.wrapName(cfgitem, item.ignore, name);
             target[name] = jsonobj[wrapname];
         }
     };
@@ -352,9 +352,12 @@ var SDKCfg = (function () {
         return this.cfg;
     };
 
+    SDKCfg.prototype.isUsingSDK = function (sdkid) {
+        return this.sdkid === sdkid;
+    };
+
     SDKCfg.prototype.updateCfg = function (cfg) {
-        var realcfg = this.metaInfo.rewritePendingCfg(cfg);
-        this.cfg = realcfg;
+        this.cfg = this.metaInfo.rewritePendingCfg(cfg);
     };
 
     SDKCfg.prototype.dumpJson = function (filename, cb) {
@@ -393,11 +396,31 @@ var SDKCfg = (function () {
 })();
 exports.SDKCfg = SDKCfg;
 
+var SDKLibInfo = (function () {
+    function SDKLibInfo(name, version) {
+        this.name = name;
+        if (!version) {
+            this.version = new Version('1.0.0');
+            this.realVer = "0.0.0";
+        } else {
+            this.version = new Version(version.chamver);
+            this.realVer = version.version;
+        }
+    }
+    return SDKLibInfo;
+})();
+exports.SDKLibInfo = SDKLibInfo;
+
 var Version = (function () {
     function Version(ver) {
         var t = ver.split('.');
         this.major = parseInt(t[0]);
-        this.minor = parseInt(t[1]);
+        this.medium = parseInt(t[1]);
+        if (t.length == 3) {
+            this.minor = parseInt(t[2]);
+        } else {
+            this.minor = 0;
+        }
     }
     Version.prototype.cmp = function (that) {
         if (this.major > that.major) {
@@ -405,18 +428,28 @@ var Version = (function () {
         } else if (this.major < that.major) {
             return -1;
         } else {
-            if (this.minor < that.minor) {
+            if (this.medium < that.medium) {
                 return -1;
-            } else if (this.minor > that.minor) {
+            } else if (this.medium > that.medium) {
                 return 1;
             } else {
-                return 0;
+                if (this.minor < that.minor) {
+                    return -1;
+                } else if (this.minor > that.minor) {
+                    return 1;
+                } else {
+                    return 0;
+                }
             }
         }
     };
 
+    Version.prototype.isMajorUpgrade = function (that) {
+        return (this.major > that.major) || (this.major === that.major && this.medium > that.medium);
+    };
+
     Version.prototype.toString = function () {
-        return this.major + '.' + this.minor;
+        return this.major + '.' + this.medium + '.' + this.minor;
     };
     return Version;
 })();
@@ -477,8 +510,7 @@ var SDKMetaInfo = (function () {
     };
 
     SDKMetaInfo.prototype.rewritePendingCfg = function (cfg) {
-        var res = cfg;
-        return this.cfgdesc.rewriteCfg(res);
+        return this.cfgdesc.rewriteCfg(cfg);
     };
 
     SDKMetaInfo.prototype.scriptRewriteCfg = function (cfg) {
@@ -893,6 +925,10 @@ var ChannelCfg = (function () {
         this._icons = { position: icon };
     };
 
+    ChannelCfg.prototype.isUsingCfg = function (cfgName) {
+        return this.userLib.cfg === cfgName || this.payLib.cfg === cfgName;
+    };
+
     ChannelCfg.prototype.serverCfg = function () {
         var res = {};
         if (this.payLib == this.userLib) {
@@ -962,7 +998,6 @@ var ChameleonTool = (function () {
                 try  {
                     var jsonobj = JSON.parse(s);
                     res.infoObj = InfoJson.loadFromJson(jsonobj, res.chameleonPath);
-
                     res.upgradeMgr = new UpgradeMgr(workdir, res.infoObj.version);
                     return callback(null);
                 } catch (e) {
@@ -987,24 +1022,24 @@ var ChameleonTool = (function () {
     };
 
     ChameleonTool.checkSingleLock = function (callback) {
+        setImmediate(callback, null);
+        /*
         var homePath = ChameleonTool.getChameleonHomePath();
         fs.ensureDir(homePath, function (err) {
-            var name = pathLib.join(homePath, '.lock');
-            try  {
-                var fd = fs.openSync(name, 'wx');
-                process.on('exit', function () {
-                    fs.unlinkSync(name);
-                });
-                try  {
-                    fs.closeSync(fd);
-                } catch (err) {
-                }
-                callback(null);
-            } catch (err) {
-                Logger.log("Fail to lock", err);
-                callback(new ChameleonError(3 /* OP_FAIL */, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
-            }
+        var name = pathLib.join(homePath, '.lock');
+        try {
+        var fd = fs.openSync(name, 'wx');
+        process.on('exit', function () {
+        fs.unlinkSync(name);
         });
+        try { fs.closeSync(fd) } catch (err) {}
+        callback(null);
+        } catch (err) {
+        Logger.log("Fail to lock", err);
+        callback(new ChameleonError(ErrorCode.OP_FAIL, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
+        }
+        });
+        */
     };
 
     ChameleonTool.getChameleonHomePath = function () {
@@ -1048,10 +1083,109 @@ var ChameleonTool = (function () {
     };
 
     ChameleonTool.prototype.loadProject = function (prjPath, cb) {
-        Project.loadProject(this.infoObj, prjPath, cb);
+        Project.loadProject(this.infoObj, prjPath, function (err, project) {
+            if (err) {
+                cb(err, null);
+                return;
+            }
+            cb(null, project);
+        });
+    };
+
+    ChameleonTool.prototype.checkProjectUpgrade = function (prj, cb) {
+        if (this.version.cmp(prj.version) > 0) {
+            this.upgradeProject(prj, cb);
+        } else {
+            setImmediate(cb, null, null);
+        }
+    };
+
+    ChameleonTool.prototype.upgradePrjLibs = function (prj, cb) {
+        var _this = this;
+        var installedLibs = prj.collectInstalledLib();
+        var needUpgradeLibs = this.getNeedUpgradeLibs(installedLibs);
+        var upgradeFunc = function (lib, cb) {
+            var prjLibPath = pathLib.join(prj.prjPath, 'chameleon', 'libs', lib);
+            var libPath = pathLib.join(_this.chameleonPath, 'channels', lib);
+            fs.remove(prjLibPath, function () {
+                fs.copy(libPath, prjLibPath, null, cb);
+            });
+        };
+        var funcs = needUpgradeLibs.map(function (lib) {
+            return upgradeFunc.bind(null, lib.name);
+        });
+        async.parallel(funcs, function (err) {
+            if (err) {
+                Logger.log('Fail to upgrade lib', err);
+                cb(new ChameleonError(3 /* OP_FAIL */, '升级SDK失败'));
+                return;
+            }
+            cb(null, needUpgradeLibs.map(function (lib) {
+                return {
+                    name: lib.name,
+                    from: lib.realVer,
+                    to: _this.getSDK(lib.name).ver
+                };
+            }));
+        });
+    };
+
+    ChameleonTool.prototype.getNeedUpgradeLibs = function (libInfo) {
+        var res = [];
+        for (var i in libInfo) {
+            var lib = libInfo[i];
+            var meta = this.getSDK(lib.name);
+            if (meta.chamver.cmp(lib.version) > 0) {
+                lib.desc = meta.desc;
+                res.push(lib);
+            }
+        }
+        return res;
+    };
+
+    ChameleonTool.prototype.upgradePrjChameleon = function (prj, cb) {
+        var chameleonPath = pathLib.join(prj.prjPath, 'chameleon');
+        var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
+        async.series([
+            function (callback) {
+                fs.copy(chameleonRes, chameleonPath, null, function (err) {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+                    callback(null);
+                });
+            }, function (callback) {
+                var prjLibPath = pathLib.join(prj.prjPath, 'libs');
+                var chamLibPath = pathLib.join(prj.prjPath, 'chameleon', 'libs');
+                var otherCopy = [
+                    fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null),
+                    fs.copy.bind(fs, pathLib.join(chameleonPath, 'chameleon_build.py'), pathLib.join(prj.prjPath, 'chameleon_build.py'), null)
+                ];
+                if (fs.existsSync(pathLib.join(prjLibPath, 'chameleon_unity.jar'))) {
+                    otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon_unity.jar'), pathLib.join(prjLibPath, 'chameleon_unity.jar'), null));
+                }
+                async.parallel(otherCopy, function (err) {
+                    callback(err);
+                });
+            }], function (err) {
+            if (err) {
+                if (err instanceof ChameleonError) {
+                    cb(err);
+                } else {
+                    Logger.log('Fail to create project', err);
+                    cb(new ChameleonError(3 /* OP_FAIL */, err));
+                }
+            }
+            cb(null);
+        });
     };
 
     ChameleonTool.prototype.createProject = function (name, landscape, prjPath, unity, cb) {
+        this.doCreateProject(name, landscape, prjPath, unity, cb);
+    };
+
+    ChameleonTool.prototype.doCreateProject = function (name, landscape, prjPath, unity, cb) {
         try  {
             var chameleonPath = pathLib.join(prjPath, 'chameleon');
             var projectPPath = pathLib.join(prjPath, 'project.properties');
@@ -1105,6 +1239,31 @@ var ChameleonTool = (function () {
                 cb(new ChameleonError(3 /* OP_FAIL */, '未知错误'));
             }
         }
+    };
+
+    ChameleonTool.prototype.upgradeProject = function (prj, cb) {
+        var _this = this;
+        var updgradeProcess = [];
+        if (this.version.isMajorUpgrade(prj.version)) {
+            updgradeProcess.push(this.upgradePrjChameleon.bind(this, prj));
+        }
+        updgradeProcess.push(this.upgradePrjLibs.bind(this, prj));
+        updgradeProcess.push(function (upgradeLibs, cb) {
+            var res = prj.afterLibUpgraded(upgradeLibs, _this.version);
+            cb(null, res);
+        });
+        async.waterfall(updgradeProcess, function (err, desc) {
+            if (err) {
+                if (err instanceof ChameleonError) {
+                    cb(err);
+                } else {
+                    cb(ChameleonError.newFromError(err, 3 /* OP_FAIL */));
+                }
+                return;
+            }
+            desc.newVersion = _this.version;
+            cb(null, desc);
+        });
     };
 
     ChameleonTool.prototype.createSDKCfg = function (prj, sdkName, desc, cb) {
@@ -1334,6 +1493,59 @@ var Project = (function () {
         sdkcfg.dumpJson(filename, callback);
     };
 
+    Project.prototype.afterLibUpgraded = function (upgradeLibs, newVersion) {
+        var _this = this;
+        var affectedSDKCfgs = Object.keys(this.sdkCfg).filter(function (name) {
+            for (var i in upgradeLibs) {
+                if (_this.sdkCfg[name].isUsingSDK(upgradeLibs[i].name)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        var affectedChannels = Object.keys(this.channelCfg).filter(function (name) {
+            for (var i in affectedSDKCfgs) {
+                if (_this.channelCfg[name].isUsingCfg(affectedSDKCfgs[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }).map(function (name) {
+            return _this.channelCfg[name].desc;
+        });
+
+        this.projectCfg.version = newVersion;
+        this.dumpProjectJson(null);
+        return {
+            upgradeLibs: upgradeLibs,
+            upgradeChannels: affectedChannels
+        };
+    };
+
+    Project.prototype.collectInstalledLib = function () {
+        var libPath = pathLib.join(this.prjPath, 'chameleon', 'libs');
+        var res = [];
+        fs.readdirSync(libPath).forEach(function (name) {
+            var p = pathLib.join(libPath, name);
+            if (fs.statSync(p).isDirectory()) {
+                var filep = pathLib.join(p, 'version.json');
+                if (fs.existsSync(filep)) {
+                    try  {
+                        var obj = JSON.parse(fs.readFileSync(filep, 'utf-8'));
+                        res.push(new SDKLibInfo(name, obj));
+                    } catch (e) {
+                        Logger.log("Fail to parse json", e);
+                        res.push(new SDKLibInfo(name, null));
+                    }
+                } else {
+                    res.push(new SDKLibInfo(name, null));
+                }
+            }
+        });
+        return res;
+    };
+
     Project.prototype.saveChannelCfg = function (name, cfg, cb) {
         var _this = this;
         var chcfg = this.channelCfg[name];
@@ -1469,6 +1681,14 @@ var Project = (function () {
         });
     };
 
+    Object.defineProperty(Project.prototype, "version", {
+        get: function () {
+            return this.projectCfg.version;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
     Object.defineProperty(Project.prototype, "appname", {
         get: function () {
             return this.projectCfg.globalCfg.appname;
@@ -1573,7 +1793,7 @@ var Project = (function () {
                     }
                     var obj = JSON.parse(buf.toString('utf-8'));
                     prj.projectCfg.globalCfg.loadFromJson(obj['globalcfg']);
-                    prj.projectCfg.version = obj.version;
+                    prj.projectCfg.version = new Version(obj.version);
                     callback(null);
                 });
             },
@@ -1699,7 +1919,7 @@ var Project = (function () {
             var re = /target\s*=\s*(.+)/m;
             var result = re.exec(p);
             if (result === null) {
-                throw new Error();
+                throw new Error("cant get project property");
             }
             return {
                 target: result[1]

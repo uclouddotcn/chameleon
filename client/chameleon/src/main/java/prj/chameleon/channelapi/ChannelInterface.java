@@ -251,6 +251,14 @@ public class ChannelInterface {
     }
 
     /**
+     *  when the app is stopped
+     * @param activity the activity to give the real SDK
+     */
+    public static void onDestroy(Activity activity) {
+        _plugins.onDestroy(activity);
+    }
+
+    /**
      *  check if the user is adult, if the channel doesn't provide this interface, user will be
      *  treated as adult
      * @param activity the activity to give the real SDK
@@ -390,6 +398,12 @@ public class ChannelInterface {
             }
         }
 
+        public void onDestroy(Activity activity) {
+            for (APIGroup group : mApiGroups) {
+                group.onDestroy(activity);
+            }
+        }
+
         public void init(final Activity activity, final IDispatcherCb cb) {
             final Iterator<APIGroup> iterator = mApiGroups.iterator();
             final Runnable initProc = new Runnable() {
@@ -434,31 +448,32 @@ public class ChannelInterface {
                 public void onFinished(int retCode, JSONObject data) {
                     if (retCode != Constants.ErrorCode.ERR_OK) {
                         cb.onFinished(retCode, null);
+                        return;
                     }
+                    final Iterator<APIGroup> iterator = mApiGroups.iterator();
+                    final Runnable initProc = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!iterator.hasNext()) {
+                                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                                return;
+                            }
+                            APIGroup group = iterator.next();
+                            if (group.getApi() == mUserApi) {
+                                run();
+                                return;
+                            }
+                            group.exit(activity, new IDispatcherCb() {
+                                @Override
+                                public void onFinished(int retCode, JSONObject data) {
+                                    run();
+                                }
+                            });
+                        }
+                    };
+                    initProc.run();
                 }
             });
-            final Iterator<APIGroup> iterator = mApiGroups.iterator();
-            final Runnable initProc = new Runnable() {
-                @Override
-                public void run() {
-                    if (!iterator.hasNext()) {
-                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                        return;
-                    }
-                    APIGroup group = iterator.next();
-                    if (group == mUserApi) {
-                        run();
-                        return;
-                    }
-                    group.exit(activity, new IDispatcherCb() {
-                        @Override
-                        public void onFinished(int retCode, JSONObject data) {
-                            run();
-                        }
-                    });
-                }
-            };
-            initProc.run();
         }
 
         private void addApiGroup(APIGroup group) {

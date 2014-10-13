@@ -20,6 +20,11 @@ BunyanLogger.prototype.record = function(r) {
     this.logger.info(r);
 };
 
+BunyanLogger.prototype.close = function (callback) {
+    this.logger.info("bunyan logger exit");
+    setImmediate(callback);
+}
+
 module.exports = BunyanLogger;
 
 

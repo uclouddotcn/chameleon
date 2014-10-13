@@ -25,6 +25,7 @@ var QQMobChannel = function(userAction, logger, cfgChecker) {
         url: QQ_MOB_URL,
         retry: false,
         log: logger,
+        requestTimeout: 10000,
         connectTimeout: 20000
     });
 };

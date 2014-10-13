@@ -26,6 +26,7 @@ var QihuChannel = function(userAction, logger, cfgChecker) {
         url: this.defaultUri,
         retry: false,
         log: logger,
+        requestTimeout: 10000,
         connectTimeout: 20000
     });
 };
@@ -34,9 +35,9 @@ util.inherits(QihuChannel, SDKPluginBase);
 QihuChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
     async.waterfall([
-        requestAccessToken.bind(
-            undefined, self.client, wrapper.cfg, token, others),
-        requestUserInfo.bind(undefined, self.client)
+        //requestAccessToken.bind(
+        //    undefined, self.client, wrapper.cfg, token, others),
+        requestUserInfo.bind(undefined, self.client, token)
     ], function (err, result){
         if (err) {
             return callback(err);
@@ -86,9 +87,8 @@ function requestAccessToken(client, cfgItem, token, others, next) {
         });
 }
 
-function requestUserInfo(client, accessTokenObj, callback) {
-    var accessToken = accessTokenObj.access_token;
-    var q = '/user/me.json?' + 
+function requestUserInfo(client, accessToken, callback) {
+    var q = '/user/me.json?' +
         querystring.stringify({
             access_token: accessToken,
             fields: 'id,name,avatar,sex,area'
@@ -105,10 +105,7 @@ function requestUserInfo(client, accessTokenObj, callback) {
                     token: accessToken,
                     name: obj.name,
                     avatar: obj.avatar, 
-                    expire_in: accessTokenObj.expires_in,
                     others: JSON.stringify({
-                        refresh_token: accessTokenObj.refresh_token,
-                        scope: accessTokenObj.scope,
                         sex: obj.sex,
                         area: obj.area,
                         nick: obj.nick

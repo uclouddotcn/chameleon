@@ -47,6 +47,12 @@ public class chameleon_cc2d extends Cocos2dxActivity{
         NativeChannelInterface.onPause();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        NativeChannelInterface.onDestroy();
+    }
+
     public Cocos2dxGLSurfaceView onCreateView() {
     	Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);
     	// chameleon_cc2d should create stencil buffer

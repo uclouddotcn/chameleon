@@ -100,9 +100,9 @@ public:
 
     /**
      * 调用销毁SDK实例的结果回调
-     * @param {int} id, 对应请求的ID
+     * @param {int} code, 是否退出
      */
-    virtual void onExit() {}
+    virtual void onExit(int code) {}
 
     virtual void onRunProtocol(int id, int code, const std::string & protocol, 
       const std::string & message) {}

@@ -88,7 +88,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         try {
             var p = JSON.parse(this.fs.readFileSync(j, 'utf-8'));
             return {
-                appname: p.globalcfg.appname,
+                appname: p.globalcfg.sappname,
                 version: p.version
             };
         } catch (e) {
@@ -245,10 +245,9 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         var chamPrjPath = self.pathLib.join(chameleonPath, 'champroject.json');
         try {
             var projectDetail = JSON.parse(self.fs.readFileSync(chamPrjPath, 'utf-8'));
-            var appName = projectDetail.globalcfg.appname;
+            var appName = projectDetail.globalcfg.sappname;
             var version = projectDetail.version;
-            self.db.put({
-                _id: Math.round(new Date().getTime()/1000).toString(),
+            self.db.insert({
                 path: path,
                 name: appName,
                 version: version
@@ -257,11 +256,12 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                     $log.log('Fail to put in pouchDB ' + err);
                     return defered.reject(new Error('绑定工程失败: 未知错误'));
                 }
-                return defered.resolve(result.id);
+                return defered.resolve(result._id);
             });
             return defered.promise;
         } catch (e) {
             $log.log('Fail to read or parse project path');
+            $log.log(e);
             throw new Error('解析Chameleon工程文件出错');
         }
     };
@@ -438,6 +438,20 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         var self = this;
         self.chtool.loadProject(prjPath, callback);
     };
+
+    ProjectMgr.prototype.checkProjectUpgrade = function (project, callback) {
+        var self = this;
+        this.chtool.checkProjectUpgrade(project, function (err, desc) {
+            if (err) {
+                return callback(err);
+            }
+            if (!desc) {
+                return callback(desc);
+            }
+            self.db.update({_id: project.__doc._id}, {$set: {version: desc.newVersion.toString()}});
+            callback(null, project);
+        });
+    }
 
     ProjectMgr.prototype.updateProjectDoc = function (projectDoc) {
         this.db.update({_id: projectDoc._id}, projectDoc, {});

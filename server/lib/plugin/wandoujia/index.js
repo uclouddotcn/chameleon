@@ -27,6 +27,7 @@ var WandoujiaChannel = function(userAction, logger, cfgChecker) {
         url: this.requestUri,
         retry: false,
         log: logger,
+        requestTimeout: 10000,
         connectTimeout: 20000
     });
 };

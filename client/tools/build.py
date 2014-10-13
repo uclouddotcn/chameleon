@@ -65,10 +65,10 @@ def packChannels(channelParentFolder, targetParentFolder):
     channelInfos = collectChannelInfo(channelParentFolder)
     #compileAllChannels([x.name for x in channelInfos])
     for ci in channelInfos:
-        copyChannel(ci.name, ci.path, os.path.join(targetParentFolder, ci.name))
+        copyChannel(ci.name, ci.path, os.path.join(targetParentFolder, ci.name), {"version": ci.cfg["chamversion"], "realVer": ci.cfg["version"]})
     return channelInfos
 
-def copyChannel(channel, channelPath, targetPath):
+def copyChannel(channel, channelPath, targetPath, versionInfo):
     ignore = shutil.ignore_patterns('.*',  #ignore the hidden files and directories
         '*.template', #ignore the template files
         'chameleon_build', # ignore the tool directory
@@ -91,6 +91,8 @@ def copyChannel(channel, channelPath, targetPath):
         'AndroidManifest.xml'), os.path.join(targetPath, 'AndroidManifest.xml'))
     with codecs.open(os.path.join(targetPath, 'filelist.txt'), 'w', 'utf8') as f:
         f.write('\n'.join(relfilelist))
+    with codecs.open(os.path.join(targetPath, 'version.json'), 'w', 'utf8') as f:
+        json.dump(versionInfo, f, indent=4)
 
 def initTargetScriptFolder(targetScriptFolder):
     if not os.path.exists(targetScriptFolder):
@@ -182,7 +184,7 @@ def cleanOldBuild(targetFolder):
         shutil.rmtree(targetFolder)
 
 def getversion():
-    versionFolder = os.path.join(BASEDIR, 'version')
+    versionFolder = os.path.join(BASEDIR, '..', 'version')
     versionFile = os.path.join(versionFolder, 'version.txt')
     with open(versionFile, 'r') as f:
         l = f.readline()

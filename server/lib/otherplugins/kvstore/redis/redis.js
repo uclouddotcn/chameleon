@@ -18,6 +18,7 @@ function RedisClient (store, options) {
         store.emit('error', 
             new WError(err, 'PendingOrderStore internal error'));
     });
+
 }
 
 RedisClient.prototype.set = function (key, value, timeout, callback) {
@@ -33,6 +34,11 @@ RedisClient.prototype.get = function (key, callback) {
 RedisClient.prototype.del = function (key, callback) {
     var self = this;
     self.client.del(key, callback);
+};
+
+RedisClient.prototype.close = function (callback) {
+    this.client.quit();
+    setImmediate(callback);
 };
 
 module.exports = {

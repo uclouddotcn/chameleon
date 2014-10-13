@@ -66,12 +66,21 @@ var chameleonApp = angular.module('chameleonApp', [
                 url: '/playmanage/:projectId',
                 templateUrl: 'partials/play_manage.html',
                 resolve: {
-                    project: ['$stateParams', 'ProjectMgr', 'WaitingDlg','globalCache',
-                        function ($stateParams, ProjectMgr, WaitingDlg,globalCache) {
+                    project: ['$stateParams', 'ProjectMgr', 'WaitingDlg','globalCache', '$q',
+                        function ($stateParams, ProjectMgr, WaitingDlg,globalCache, $q) {
 
-                            var promise = ProjectMgr.loadProject(globalCache.projectId);
-//                            return WaitingDlg.wait(promise, "加载工程中");
-                            return promise;
+                            var defered = $q.defer();
+                            // 全部数据
+                            var promise = ProjectMgr.loadProject($stateParams.projectId);
+                            promise.then(function (project) {
+                                ProjectMgr.checkProjectUpgrade(project, function (err, desc) {
+                                    // show desc
+                                    defered.resolve(project);
+                                });
+                            }, function (err) {
+                                defered.reject(err);
+                            })
+                            return defered.promise;
                         }]
                 },
                 controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg','globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg,globalCache) {
@@ -126,7 +135,6 @@ var chameleonApp = angular.module('chameleonApp', [
                                             var keystroke = '';
                                         } else {
                                             console.log($scope.projectDoc);
-                                            debugger;
                                             var keystroke = pathLib.join($scope.projectDoc.path, $scope.selectedsdk.signcfg.keystroke);
                                         }
                                         signcfg = {
@@ -312,7 +320,6 @@ var chameleonApp = angular.module('chameleonApp', [
 
                             var promise = ProjectMgr.loadProject($stateParams.projectId);
                             return WaitingDlg.wait(promise, "加载渠道配置中");
-//                            return promise;
                         }]
                 },
                 controller: 'loadMethod'
@@ -322,12 +329,21 @@ var chameleonApp = angular.module('chameleonApp', [
                 url: '/project/:projectId',
                 templateUrl: 'partials/project.html',
                 resolve: {
-                    project: ['$stateParams', 'ProjectMgr', 'WaitingDlg',
-                        function ($stateParams, ProjectMgr, WaitingDlg) {
+                    project: ['$stateParams', 'ProjectMgr', 'WaitingDlg', '$q',
+                        function ($stateParams, ProjectMgr, WaitingDlg, $q) {
+                            var defered = $q.defer();
                             // 全部数据
                             var promise = ProjectMgr.loadProject($stateParams.projectId);
-                            return WaitingDlg.wait(promise, "加载工程中");
-//                            return promise;
+                            promise = WaitingDlg.wait(promise, "加载工程中");
+                            promise.then(function (project) {
+                                ProjectMgr.checkProjectUpgrade(project, function (err, desc) {
+                                    // show desc
+                                    defered.resolve(project);
+                                });
+                            }, function (err) {
+                                defered.reject(err);
+                            })
+                            return defered.promise;
                         }]
                 },
                 controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg) {

@@ -498,6 +498,18 @@ public class NativeChannelInterface {
     }
 
     /**
+     *
+     */
+    public static void onDestroy() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ChannelInterface.onDestroy(mActivity);
+            }
+        });
+    }
+
+    /**
      * notify the platform we are coming back from a pause
      */
     public static void onPause() {
@@ -550,15 +562,13 @@ public class NativeChannelInterface {
             public void run() {
                 ChannelInterface.exit(mActivity, new IDispatcherCb() {
                     @Override
-                    public void onFinished(int retCode, JSONObject data) {
-                        if (retCode == Constants.ErrorCode.ERR_OK) {
-                            mRunEnv.run(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ChannelAPINative.onExit();
-                                }
-                            });
-                        }
+                    public void onFinished(final int retCode, JSONObject data) {
+                        mRunEnv.run(new Runnable() {
+                            @Override
+                            public void run() {
+                                ChannelAPINative.onExit(retCode);
+                            }
+                        });
                     }
                 });
             }
@@ -627,7 +637,7 @@ public class NativeChannelInterface {
     }
 
     public static byte[] getPayToken() throws UnsupportedEncodingException {
-        return ChannelInterface.getChannelName().getBytes("UTF-8");
+        return ChannelInterface.getPayToken().getBytes("UTF-8");
     }
 
     public static boolean onLoginRsp(byte[] rsp) throws UnsupportedEncodingException {

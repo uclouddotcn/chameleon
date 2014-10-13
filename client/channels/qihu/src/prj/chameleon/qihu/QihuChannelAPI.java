@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.qihoo.gamecenter.sdk.activity.ContainerActivity;
 import com.qihoo.gamecenter.sdk.common.IDispatcherCallback;
-import com.qihoo.gamecenter.sdk.protocols.pay.ProtocolConfigs;
-import com.qihoo.gamecenter.sdk.protocols.pay.ProtocolKeys;
-import com.qihoopay.insdk.activity.ContainerActivity;
-import com.qihoopay.insdk.matrix.Matrix;
+import com.qihoo.gamecenter.sdk.matrix.Matrix;
+import com.qihoo.gamecenter.sdk.protocols.ProtocolConfigs;
+import com.qihoo.gamecenter.sdk.protocols.ProtocolKeys;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +46,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
         }
     }
-    private static final String RESPONSE_TYPE_CODE = "code";
+    private static final String RESPONSE_TYPE_CODE = "access_token";
 
     // callback for login request
     class LoginDispatcherCallback implements IDispatcherCallback {
@@ -68,10 +68,10 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 JSONObject loginInfo;
                 int retCode = 0;
                 JSONObject result = new JSONObject(data);
-                int errCode = result.optInt("errno", -1);
+                int errCode = result.optInt("error_code", -1);
                 Log.e(Constants.TAG, data);
                 if (errCode == 0) {
-                    JSONObject content = result.optJSONObject("data");
+                    JSONObject content = new JSONObject(result.getString("data"));
                     String authorizationCode = content.optString(RESPONSE_TYPE_CODE);
                     loginInfo = JsonMaker.makeLoginResponse(authorizationCode, "", mChannelName);
                     if (mIsFromGuestMethod) {
@@ -135,26 +135,13 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void init(final Activity context, final IDispatcherCb cb) {
 
-        Matrix.init(context, false, new IDispatcherCallback() {
-
+        Matrix.init(context);
+        context.runOnUiThread(new Runnable() {
             @Override
-            public void onFinished(final String data) {
-                Log.d(Constants.TAG, String.format("qihu init receive %s", data));
+            public void run() {
                 cb.onFinished(0, null);
-
-                Bundle bundle = new Bundle();
-                bundle.putInt(ProtocolKeys.FUNCTION_CODE, ProtocolConfigs.FUNC_CODE_SELF_CHECK);
-                Intent intent = new Intent(context, ContainerActivity.class); intent.putExtras(bundle);
-                Matrix.execute(context, intent, new IDispatcherCallback() {
-                    @Override
-                    public void onFinished(String s) {
-                        Log.d(Constants.TAG, String.format("qihu execute receive %s", data));
-                    }
-                });
             }
-
         });
-
     }
 
     @Override
@@ -293,7 +280,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     @Override
-    public void antiAddiction(Activity activity, final IDispatcherCb cb) {
+    public void antiAddiction(final Activity activity, final IDispatcherCb cb) {
         Intent intent = getAntiAddiction(activity, mUserInfo.mUid, mUserInfo.mSession);
         Matrix.execute(activity, intent, new IDispatcherCallback() {
 
@@ -316,9 +303,30 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                         } else if (status == 2) {
                             flag = Constants.ANTI_ADDICTION_ADULT;
                         }
-                        JSONObject ret = new JSONObject();
-                        ret.put("flag", flag);
-                        cb.onFinished(0, ret);
+                        if (flag != Constants.ANTI_ADDICTION_ADULT) {
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean(ProtocolKeys.IS_SCREEN_ORIENTATION_LANDSCAPE, mCfgLandscape);
+                            bundle.putString(ProtocolKeys.QIHOO_USER_ID, mUserInfo.mUid);
+                            bundle.putInt(ProtocolKeys.FUNCTION_CODE, ProtocolConfigs.FUNC_CODE_REAL_NAME_REGISTER);
+                            Intent intent = new Intent(activity, ContainerActivity.class);
+                            intent.putExtras(bundle);
+                            Matrix.invokeActivity(activity, intent, new IDispatcherCallback() {
+                                @Override
+                                public void onFinished(String data) {
+                                    JSONObject ret = new JSONObject();
+                                    try {
+                                        ret.put("flag", Constants.ANTI_ADDICTION_ADULT);
+                                        cb.onFinished(0, ret);
+                                    } catch (JSONException e) {
+                                        cb.onFinished(Constants.ErrorCode.ERR_INTERNAL, null);
+                                    }
+                                }
+                            });
+                        } else {
+                            JSONObject ret = new JSONObject();
+                            ret.put("flag", Constants.ANTI_ADDICTION_ADULT);
+                            cb.onFinished(0, ret);
+                        }
                     } else {
                         cb.onFinished(errCode, null);
                     }
@@ -359,8 +367,12 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     @Override
-    public void exit(Activity activity, final IDispatcherCb cb) {
+    public void onDestroy(Activity activity) {
         Matrix.destroy(activity);
+    }
+
+    @Override
+    public void exit(Activity activity, final IDispatcherCb cb) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {

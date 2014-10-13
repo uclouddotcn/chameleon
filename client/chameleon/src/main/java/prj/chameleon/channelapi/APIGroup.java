@@ -21,6 +21,10 @@ public class APIGroup {
         mApi.onResume(activity, cb);
     }
 
+    public void onDestroy(Activity activity) {
+        mApi.onDestroy(activity);
+    }
+
     public void onPause(Activity activity) {
         mApi.onPause(activity);
     }

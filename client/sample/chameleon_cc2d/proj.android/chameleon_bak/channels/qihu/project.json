@@ -1,0 +1,10 @@
+{
+  "splashscreen": null,
+  "dependLibs": [
+    {
+      "name": "qihu",
+      "cfg": "qihu-1410494211554",
+      "type": "user,pay"
+    }
+  ]
+}

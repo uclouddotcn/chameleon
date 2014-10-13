@@ -64,6 +64,7 @@ enum {
     FUNC_ID_IS_LOGINED,
     FUNC_ID_GET_PAYTOKEN,
     FUNC_ID_ONLOGINRSP,
+    FUNC_ID_SUBMIT_PLAYER_INFO,
     FUNC_ID_COUNT
 };
 
@@ -87,7 +88,8 @@ static const char *FUNC_TYPE[][2] = {
     {"getToken", "()[B"},
     {"isLogined", "()Z"},
     {"getPayToken", "()[B"},
-    {"onLoginRsp", "([B)Z"}
+    {"onLoginRsp", "([B)Z"},
+    {"submitPlayerInfo", "([B[B[BI[B)V"}
 };
 
 template<typename T>
@@ -248,12 +250,12 @@ JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_o
     g_apiLib.mCb->onResume();
 }
 
-void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_onExit(JNIEnv *, jclass) {
+void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_onExit(JNIEnv *, jclass, jint code) {
     if (!g_apiLib.mCb) {
         LOGW("There is not callback registered");
         return;
     }
-    g_apiLib.mCb->onExit();
+    g_apiLib.mCb->onExit((int)code);
 }
 
 
@@ -463,7 +465,7 @@ int antiAddiction(int id) {
     return callJniMethod(env, FUNC_ID_ANTI_ADDICTION, result, (jint)id);
 }
 
-int destroy(int id) {
+int exit() {
     void * result = NULL;
     JNIEnv * env = g_apiLib.GetEnv();
     if (env == NULL) {
@@ -551,6 +553,33 @@ bool onLoginRsp (const std::string & rsp) {
     int ret = callJniMethod(env, FUNC_ID_ONLOGINRSP, &result, jRsp.Ref());
     if (ret == 0) {
         return result;
+    } else {
+        return false;
+    }
+}
+
+bool submitPlayerInfo(const std::string & roleId, 
+                      const std::string & roleName, 
+                      const std::string & roleLevel, 
+                      int zoneId,
+                      const std::string & zoneName){
+    JNIEnv * env = g_apiLib.GetEnv();
+    if (env == NULL) {
+        return "";
+    }
+    void * result = NULL;
+    JniHelper::LocalByteArray jRoleId = 
+        JniHelper::ConvertToByteArray(env, roleId.c_str(), roleId.size());
+    JniHelper::LocalByteArray jRoleName = 
+        JniHelper::ConvertToByteArray(env, roleName.c_str(), roleName.size());
+    JniHelper::LocalByteArray jRoleLevel = 
+        JniHelper::ConvertToByteArray(env, roleLevel.c_str(), roleLevel.size());
+    JniHelper::LocalByteArray jZoneName = 
+        JniHelper::ConvertToByteArray(env, zoneName.c_str(), zoneName.size());
+    int ret = callJniMethod(env, FUNC_ID_SUBMIT_PLAYER_INFO, result, 
+        jRoleId.Ref(), jRoleName.Ref(), jRoleLevel.Ref(), (jint)zoneId, jZoneName.Ref());
+    if (ret == 0) {
+        return true;
     } else {
         return false;
     }

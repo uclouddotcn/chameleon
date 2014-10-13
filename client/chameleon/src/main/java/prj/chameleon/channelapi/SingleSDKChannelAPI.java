@@ -149,5 +149,9 @@ public class SingleSDKChannelAPI {
 
         }
 
+        @Override
+        public void onDestroy(Activity activity) {
+
+        }
     }
 }
