@@ -1,0 +1,70 @@
+<div class="container-fluid">
+    <form name="globalsetting" class="form-horizontal" ng-submit="updateCurrentCfg()">
+    <section id="brief">
+        <div class="row">
+            <div class="page-header row"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 vm-area-r0">
+                <div class="vm-list">
+                    <div class="vm-list-head">游戏版本</div>
+                    <div class="vm-list-content">
+                        <div>刀塔传奇v1.0.5</div>
+                        <div>刀塔传奇v1.0.6</div>
+                        <div class="active">刀塔传奇v1.0.7</div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-9 ">
+                <form novalidate name="vform">
+                    <div class="vm-area">
+                        <div class="row">
+                            <div class="col-md-6 vm-area-r0">
+                                <div class="vm-edite-header">内容介绍
+                                    <button ng-disabled="!vform.vcontent.$dirty" type="button" class="btn btn-primary btn-xs vm-head-btn">保存</button>
+                                </div>
+                                <textarea name="vcontent" id="ba" class="vm-edite-text" >{{versionsDate[0].content}}</textarea>
+                            </div>
+                            <div class="col-md-6 vm-area-l0">
+                                <div class="vm-edite-header">更新内容
+                                    <button ng-disabled="!vform.vupdate.$dirty" type="button" class="btn btn-primary btn-xs vm-head-btn">保存</button>
+
+                                </div>
+                                <textarea  name="vupdate" id="a" class="vm-edite-text" >{{versionsDate[0].update}}</textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="vm-image">
+                                <div class="col-md-12">
+                                    <div class="vm-image-header vm-edite-header">
+                                        <span>游戏截图</span>
+                                        <button type="button" class="btn btn-primary btn-xs vm-head-btn">添加图片</button>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="vm-image-content">
+                                        <input style="display: none" type="file" onchange="angular.element(this).scope().setFiles(this)"  />
+                                        <sliderbox a-images="aImages"></sliderbox>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </form>
+
+
+            </div>
+
+        </div>
+
+    </section>
+    </form>
+</div>

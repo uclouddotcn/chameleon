@@ -5,6 +5,7 @@ var chameleonApp = angular.module('chameleonApp', [
     'ngGrid',
     'ngRoute',
     'chameleonControllers',
+    'chameleonDirectives',
     'chameleonTool',
     'ui.bootstrap',
     'ui.router',
@@ -923,8 +924,6 @@ var chameleonApp = angular.module('chameleonApp', [
 
                 },
                 controller : 'loadMethod'
-
-
             })
             .state('loadmethod.channel.sdkconfig', {
                 url: '/sdkconfig',
@@ -934,6 +933,33 @@ var chameleonApp = angular.module('chameleonApp', [
                     }
                 },
                 controller: 'SelectChannelController'
+            })
+            .state('versionManage',{
+                url : '/versionManage/:projectId',
+                templateUrl : 'partials/version_manage.html',
+                resolve: {
+                    project: ['$stateParams', 'ProjectMgr', 'WaitingDlg',
+                        function ($stateParams, ProjectMgr, WaitingDlg) {
+                            // 全部数据
+                            var promise = ProjectMgr.loadProject($stateParams.projectId);
+                            return WaitingDlg.wait(promise, "加载工程中");
+//                            return promise;
+                        }],
+                    versionManages : ['$http',function($http){
+                        return $http({
+                            method : 'GET',
+                            url : 'js/versionManage.json'
+                        })
+//                        $http({
+//                            method : 'GET',
+//                            url : 'js/versionManage.json'
+//                        }).then(function(data){
+//                            return data;
+//                        })
+                    }]
+                },
+                controller : 'versionCtrl'
+
             })
     }])
 

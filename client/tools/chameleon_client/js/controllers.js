@@ -1040,6 +1040,7 @@ chameleonControllers
         $scope.newProjectPromise = null;
         $scope.setFiles = function(element) {
             $scope.$apply(function(scope) {
+                    console.log(element.files)
                     $scope.gamePath = element.files[0].path;
                 }
             );
@@ -1588,97 +1589,40 @@ chameleonControllers
             $state.go('loadmethod',{projectId:globalCache.projectId});
 
         };
+        $scope.versionManage = function (str) {
+            $scope.show.index = false;
+            $scope.show.header = str;
+            $state.go('versionManage',{projectId:globalCache.projectId});
+
+        };
 
     }])
-    .directive('projectListView', ['$state', function($state) {
-        return {
-            restrict: 'EA',
-            transclude: false,
-            templateUrl: 'partials/projecttable.html',
-            controller: function ($scope) {
-                $scope.showProject = function (project) {
-                    $state.go('project.globalsdk', {projectId: project._id});
-                };
-            }
+    .controller('versionCtrl',['$scope','versionManages',function($scope,versionManages){
+        $scope.versionsDate = versionManages.data;
+        $scope.aImages = versionManages.data[0].images;
+        console.log($scope.aImages);
+        $scope.setFiles = function(element) {
+            $scope.$apply(function() {
+                    var fse = require('fs-extra');
+                    var uploadPath = element.files[0].path;
+                    var newPath = '/tmp/mynewfile/'+ uploadPath.split('\\')[uploadPath.split('\\').length-1];
+                    $scope.versionsDate[0].images.push(newPath);
+                    $scope.aImages = $scope.versionsDate[0].images;
+                    fse.copy(uploadPath, newPath, function(err){
+                        if (err) return console.error(err);
+
+
+                        console.log($scope.aImages);
+                    });
+
+
+
+                    $scope.uploadPath = uploadPath;
+                }
+            );
         };
     }])
-    .directive("champic", function () {
-        return {
-            restrict: "E",
-            require: "",
-            scope: {
-                baseIcon: '@',
-                dump: '='
-            },
-            templateUrl: 'partials/cham_icon.html',
-            link: function (scope, element, attrs) {
-                console.log(element)
-                console.log(scope)
-                var state = {
-                    index: -1,
-                    images: null
-                };
-                var canvasList = element.find('canvas');
-                var canvasMap = {};
-                var columnOffset = ['medium', 'high', 'xhigh', 'xxhigh', 'xxxhigh'];
-                for (var i in canvasList) {
-                    canvasMap[columnOffset[i]] = canvasList[i];
-                }
-                var dumpfunc = function (densityTarget) {
-                    var fs = require('fs');
-                    for (var t in densityTarget) {
-                        var canvas = canvasMap[t];
-                        var dataURL = canvas.toDataURL();
-                        var data = dataURL.replace(/^data:image\/\w+;base64,/, "");
-                        var buf = new Buffer(data, 'base64');
-                        fs.writeFileSync(densityTarget[t], buf);
-                    }
-                };
-                var renderImage = function (canvas, base, overlay) {
-                    var context = canvas.getContext('2d');
-                    context.clearRect(0, 0, canvas.width, canvas.height);
-                    var imageObj = new Image();
-                    var overlayImage = new Image()
-                    var readyFlag = 0;
-                    var drawFunc = function () {
-                        context.drawImage(imageObj, 0, 0);
-                        context.drawImage(overlayImage, 0, 0);
-                        scope.dump.func = dumpfunc;
-                    }
-                    imageObj.onload = function () {
-                        readyFlag += 1;
-                        if (readyFlag < 2) {
-                            return;
-                        }
-                        drawFunc();
-                    }
-                    overlayImage.onload = function () {
-                        readyFlag += 1;
-                        if (readyFlag < 2) {
-                            return;
-                        }
-                        drawFunc();
-                    }
-                    imageObj.src = 'file://' + base;
-                    overlayImage.src = 'file://' + overlay;
-                };
-                var renderAll = function (value) {
-                    if (!value) {
-                        return;
-                    }
-                    var v = JSON.parse(value);
-                    var pos = v.selected.position;
-                    console.log(pos)
-                    for (var t in v.image) {
-                        console.log(v.image[t])
-                        renderImage(canvasMap[t], v.image[t].base,
-                            v.image[t].overlay[pos]);
-                    }
-                }
-                scope.$watch('baseIcon', renderAll);
-            }
-        };
-    });
+
 
 
 
