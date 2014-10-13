@@ -13,10 +13,19 @@ def modifyManifest(channel, libs, manifestFilePath):
         obj = json.load(f)
     sc = obj.get("splashscreen")
     icons = obj.get("icons")
+    pkgname = obj.get("package")
     cppath = manifestFilePath+'.orig'
     if os.path.exists(cppath) and not isNewerThan(manifestFilePath, cppath):
         return
     manifestInst = loadManifest(manifestFilePath)
+    oldPkgName = manifestInst.getPkgName()
+    if pkgname is None:
+        pkgname = oldPkgName+'.'+channel
+    elif pkgname.startswith('.'):
+        pkgname = oldPkgName+pkgname
+    if pkgname != oldPkgName:
+        manifestInst.fullQualifyName(oldPkgName)
+        manifestInst.setPkgName(pkgname)
     mergeLibManifests(libs, manifestInst)
     if sc is not None:
         manifestInst.replaceEntryActivity()

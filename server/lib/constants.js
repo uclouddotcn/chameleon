@@ -5,7 +5,10 @@
 var fs = require('fs');
 module.exports.baseDir = __dirname + '/../';
 module.exports.pluginDir = __dirname + '/plugin';
-module.exports.productDir = __dirname + '/../products';
+module.exports.productDir = __dirname + '/../../products';
+module.exports.logDir = __dirname + '/../../log';
+module.exports.billDir = __dirname + '/../../bill';
+module.exports.debug = false;
 
 
 /**

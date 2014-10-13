@@ -112,7 +112,7 @@ BaidumgChannel.prototype.respondsToPay = function (req, res, next) {
             return next();
         }
         var other = {
-            orderId: params.order_id
+            chOrderId: params.order_id
         };
         var amount = Math.round(parseFloat(params.amount) * 100);
         var infoObj = querystring.parse(params.aid);

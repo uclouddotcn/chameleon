@@ -213,6 +213,7 @@ public class ChannelInterface {
      * @param position refer to Constant.Toolbar*
      */
     public static void createToolBar(Activity activity, int position) {
+        isToobarCreated = true;
         _plugins.mUserApi.createToolBar(activity, position);
     }
 
@@ -230,6 +231,7 @@ public class ChannelInterface {
      * @param activity the activity to give the real SDK
      */
     public static void destroyToolBar(Activity activity) {
+        isToobarCreated = false;
         _plugins.mUserApi.destroyToolBar(activity);
     }
 
@@ -251,10 +253,37 @@ public class ChannelInterface {
     }
 
     /**
+     *  when the app is onStarted
+     * @param activity the activity to give the real SDK
+     */
+    public static void onStart(Activity activity) {
+        _plugins.onStart(activity);
+    }
+
+    /**
+     *  when the app is onStop
+     * @param activity the activity to give the real SDK
+     */
+    public static void onStop(Activity activity) {
+        _plugins.onStop(activity);
+    }
+
+    /**
+     *  when the app is onNewIntent
+     * @param activity the activity to give the real SDK
+     */
+    public static void onNewIntent(Activity activity, Intent intent) {
+        _plugins.onNewIntent(activity, intent);
+    }
+
+    /**
      *  when the app is stopped
      * @param activity the activity to give the real SDK
      */
     public static void onDestroy(Activity activity) {
+        if (isToobarCreated) {
+            destroyToolBar(activity);
+        }
         _plugins.onDestroy(activity);
     }
 
@@ -354,8 +383,8 @@ public class ChannelInterface {
      * @param resultCode
      * @param data
      */
-    public static void onActivityResult(int requestCode, int resultCode, Intent data) {
-        _plugins.onActivityResult(requestCode, resultCode, data);
+    public static void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        _plugins.onActivityResult(activity, requestCode, resultCode, data);
     }
 
     /**
@@ -429,9 +458,9 @@ public class ChannelInterface {
             initProc.run();
         }
 
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
             for (APIGroup group : mApiGroups) {
-                group.onActivityResult(requestCode, resultCode, data);
+                group.onActivityResult(activity, requestCode, resultCode, data);
             }
         }
 
@@ -502,8 +531,27 @@ public class ChannelInterface {
         public void setChannelName(String channelName) {
             mChannelName = channelName;
         }
+
+        public void onStart(Activity activity) {
+            for (APIGroup group : mApiGroups) {
+                group.onStart(activity);
+            }
+        }
+
+        public void onStop(Activity activity) {
+            for (APIGroup group : mApiGroups) {
+                group.onStop(activity);
+            }
+        }
+
+        public void onNewIntent(Activity activity, Intent intent) {
+            for (APIGroup group : mApiGroups) {
+                group.onNewIntent(activity, intent);
+            }
+        }
     }
     private static Plugins _plugins = new Plugins();
+    private static boolean isToobarCreated = false;
 
     public static void addApiGroup(APIGroup apiGroup) {
         _plugins.addApiGroup(apiGroup);

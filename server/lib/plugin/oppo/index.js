@@ -10,10 +10,8 @@ var _errorcode = require('../common/error-code').ErrorCode;
 var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
-    requestUri: '?string',
     appKey: 'string',
-    appSecret: 'string',
-    timeout: '?integer'
+    appSecret: 'string'
 };
 
 var OppoChannel = function(userAction, logger, cfgChecker) {
@@ -61,7 +59,7 @@ OppoChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
         }
     };
     this.client.post(opts, function (err, req, res, data) {
-        self._logger.debug({rsp: data}, 'recv from uc');
+        self._logger.debug({rsp: data}, 'recv from oppo');
         if (err) {
             req.log.warn({err: err}, 'fail to get rsp from remote');
             callback(createSDKError(_errorcode.ERR_FAIL, req, 'Fail to verify login'));
@@ -107,35 +105,36 @@ OppoChannel.prototype.verifyPaySign = function (params, sign) {
     t += 'productName=' + params.productName + '&';
     t += 'productDesc=' + params.productDesc + '&';
     t += 'price=' + params.price + '&';
-    t += 'count=' + params.price + '&';
+    t += 'count=' + params.count + '&';
     t += 'attach=' + params.attach;
     var verify = crypto.createVerify('RSA-SHA1');
     verify.write(t, 'utf-8');
     return verify.verify(PERMS, sign, 'base64');
 };
 
-OppoChannel.prototype.respondsToPay = function (wrapper, req, res, next) {
+OppoChannel.prototype.respondsToPay = function (req, res, next) {
     var params = req.params;
-    this._logger.debug({params: params}, 'recv pay callback from uc');
+    var self = this;
+    this._logger.debug({req: req, params: params}, 'recv pay callback from oppo');
     var result = true;
     try {
         if (!this.verifyPaySign(params, params.sign)) {
             send(res, false, 'sign not match');
             return next();
         }
-        var attachInfo = params.attach.split('|');
-        var wrapper = this._channels[attachInfo[0]];
+        var attachInfo = JSON.parse(params.attach);
+        var wrapper = this._channels[attachInfo.ch];
         if (!wrapper) {
-            this._userAction.payFail(attachInfo[0], params.partnerOrder, _errorcode.ERR_PAY_ILL_CHANNEL);
+            this._userAction.payFail(attachInfo.ch, params.partnerOrder, _errorcode.ERR_PAY_ILL_CHANNEL);
             send(res, true);
             return next();
         }
-        var uid = attachInfo[1];
-        var productId = attachInfo[2];
+        var uid = attachInfo.u;
+        var productId = attachInfo.p;
         var others = {
-            notifyId: params.notifyId
+            chOrderId: params.notifyId
         };
-        self._userAction.pay(wrapper.channelName, uid, null,
+        this._userAction.pay(wrapper.channelName, uid, null,
             params.partnerOrder, 0,
             productId, params.count, params.price, others,
             function (err, result) {
@@ -176,7 +175,7 @@ function send(res, success, msg) {
     if (msg) {
         result += '&' + 'resultMsg=' + msg;
     }
-    result = querystring.escape(result);
+    //result = querystring.escape(result);
     res.writeHead(200, {
         'Content-Length': Buffer.byteLength(result),
         'Content-Type': 'text/plain'

@@ -2,11 +2,17 @@ var fs = require('fs');
 var restify = require('restify');
 var async = require('async');
 var chameleon = require('./lib');
+var program = require('commander');
 
-function loadConfig(cfgFile) {
-    var svfCfgPath = __dirname + '/config/' + cfgFile;
+function loadConfig(cfgFile, debug) {
+    var svrCfgPath = null;
+    if (debug) {
+        svrCfgPath = __dirname + '/config/' + cfgFile;
+    } else {
+        svrCfgPath = __dirname + '/../config/' + cfgFile;
+    }
     try {
-        var content = fs.readFileSync(svfCfgPath);
+        var content = fs.readFileSync(svrCfgPath);
         var cfgObj = JSON.parse(content);
         checkSDKSvrCfg(cfgObj);
         checkAdminCfg(cfgObj);
@@ -44,10 +50,13 @@ function checkAdminCfg(cfgObj) {
  * @function
  */
 function main() {
-    var cfg = loadConfig('svr.json');
+    program
+        .option('-d, --debug', 'use debug mode')
+        .parse(process.argv);
+    var cfg = loadConfig('svr.json', program.debug);
     checkSDKSvrCfg(cfg);
     checkAdminCfg(cfg);
-    chameleon.start(cfg);
+    chameleon.start(cfg, program.debug);
 }
 
 var d = require('domain').create();

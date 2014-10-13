@@ -33,8 +33,8 @@ public class APIGroup {
         mApi.init(activity, cb);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mApi.onActivityResult(requestCode, resultCode, data);
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        mApi.onActivityResult(activity, requestCode, resultCode, data);
     }
 
     public void onApplicationEvent(int event, Object... arguments) {
@@ -47,5 +47,17 @@ public class APIGroup {
 
     IAPIBase getApi() {
         return mApi;
+    }
+
+    public void onStart(Activity activity) {
+        mApi.onStart(activity);
+    }
+
+    public void onStop(Activity activity) {
+        mApi.onStop(activity);
+    }
+
+    public void onNewIntent(Activity activity, Intent intent) {
+        mApi.onNewIntent(activity, intent);
     }
 }

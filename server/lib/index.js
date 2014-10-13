@@ -2,6 +2,7 @@ var createPluginMgr = require('./plugin_mgr').createPluginMgr;
 var createAdmin = require('./admin').createAdmin;
 var createSDKSvr = require('./sdk_svr').createSDKSvr;
 var storageDriver =  require('./event-storage');
+var fs = require('fs');
 var path = require('path');
 var eventLog = require('./event-log');
 var ChannelCbSvr = require('./channel-callbacksvr');
@@ -10,8 +11,23 @@ var Logger = require('./svrlog');
 var createPendingOrderStore = 
     require('./pending-order').createPendingOrderStore;
 var async = require('async');
+var Constants = require('./constants');
 
-function start(cfg) {
+function start(cfg, debug) {
+    Constants.debug = debug;
+
+    if (!fs.existsSync(Constants.productDir)) {
+        fs.mkdirSync(Constants.productDir);
+    }
+
+    if (!fs.existsSync(Constants.logDir)) {
+        fs.mkdirSync(Constants.logDir);
+    }
+/*
+    if (!fs.existsSync(cfg.logger.cfg.path)) {
+        fs.mkdirSync(cfg.logger.cfg.path);
+    }
+*/
     // create logger first
     var logger = startLogger(cfg.debug, cfg.logger);
 
@@ -35,7 +51,7 @@ function start(cfg) {
     var eventStorageEng = startBillModule(cfg.billCfg, productMgr, logger.svrLogger);
      
     // start other event listen module
-    startUserEventListener(cfg.eventListenCfg);
+    startUserEventListener(productMgr, cfg.eventListenCfg);
 
     // start channel callback svr
     var channelCbSvr = createChannelCbSvr(cfg.channelCbSvr, productMgr, logger.svrLogger);
@@ -64,6 +80,7 @@ function start(cfg) {
     };
 
     process.on('SIGTERM', function () {
+        logger.svrLogger.info("on SIGTERM");
         exitFuncs();
     });
 
@@ -97,20 +114,11 @@ function startLogger(debug, cfg) {
 }
 
 
-var BILL_BUNYAN_LOGGER = {
-    name: 'bunyan',
-    cfg: {
-        path: path.join(__dirname, '../log/bill.log')
-    }
-};
+function startUserEventListener(eventCenter, eventListenCfg) {
 
-function startUserEventListener(eventListenCfg) {
 }
 
 function startBillModule(billCfg, userAction, logger) {
-    if (!billCfg) {
-        billCfg = BILL_BUNYAN_LOGGER;
-    }
     var storageEng = storageDriver.createStorageDriver(billCfg, logger);
     eventLog.listen(userAction, storageEng);
     return storageEng;

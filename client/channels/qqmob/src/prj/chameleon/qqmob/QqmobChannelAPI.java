@@ -137,10 +137,10 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
         boolean isDebug = true;
         // init kv store
-        mTencent = Tencent.createInstance(mAppId, activity.getApplicationContext());
+        mTencent = Tencent.createInstance(mAppId, activity);
         String prefId = activity.getPackageName() + ".chameleon.qq.pref";
         mPreference = activity.getSharedPreferences(prefId, Context.MODE_PRIVATE);
-        mIsInit = maybeInitFromLastLogin();
+        //mIsInit = maybeInitFromLastLogin();
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -187,33 +187,38 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void login(Activity activity, final IDispatcherCb loginCallback, IAccountActionListener accountActionListener) {
-        IUiListener listener = new IUiListener() {
+        if (!mTencent.isSessionValid()) {
+            IUiListener listener = new IUiListener() {
 
-            @Override
-            public void onComplete(Object o) {
-                JSONObject obj = (JSONObject)o;
-                Log.e(Constants.TAG, "get message " + o.toString());
-                int ret = handleLoginRet(obj);
-                if (ret == Constants.ErrorCode.ERR_OK) {
-                    JSONObject retObj =  makeLoginObj();
-                    loginCallback.onFinished(ret, retObj);
-                } else {
-                    loginCallback.onFinished(ret, null);
+                @Override
+                public void onComplete(Object o) {
+                    JSONObject obj = (JSONObject)o;
+                    Log.e(Constants.TAG, "get message " + o.toString());
+                    int ret = handleLoginRet(obj);
+                    if (ret == Constants.ErrorCode.ERR_OK) {
+                        JSONObject retObj =  makeLoginObj();
+                        loginCallback.onFinished(ret, retObj);
+                    } else {
+                        loginCallback.onFinished(ret, null);
+                    }
                 }
-            }
 
-            @Override
-            public void onError(UiError uiError) {
-                Log.e(Constants.TAG, String.format("login got %d", uiError.errorCode));
-                loginCallback.onFinished(mapError(uiError.errorCode), null);
-            }
+                @Override
+                public void onError(UiError uiError) {
+                    Log.e(Constants.TAG, String.format("login got %d", uiError.errorCode));
+                    loginCallback.onFinished(mapError(uiError.errorCode), null);
+                }
 
-            @Override
-            public void onCancel() {
-                loginCallback.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
-            }
-        };
-        mTencent.login(activity, mPrivilege, listener);
+                @Override
+                public void onCancel() {
+                    loginCallback.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                }
+            };
+            mTencent.login(activity, mPrivilege, listener);
+        } else {
+            JSONObject retObj =  makeLoginObj();
+            loginCallback.onFinished(Constants.ErrorCode.ERR_OK, retObj);
+        }
     }
 
     @Override
@@ -265,5 +270,10 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 cb.onFinished(Constants.ErrorCode.ERR_OK, null);
             }
         });
+    }
+
+    @Override
+    public void onStart(Activity activity) {
+        
     }
 }

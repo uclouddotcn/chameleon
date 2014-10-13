@@ -125,3 +125,22 @@ div.moredirective {
     width: 205px;
     overflow: hidden;
 }
+.changInput {
+    border: 0;
+    background: #ffffff;
+}
+.changInput-width {
+    width: 250px;
+}
+.vhidden {
+    visibility: hidden;
+}
+dl.dl-config {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #cccccc;
+}
+.vlist-warp {
+    max-height: 300px;
+    overflow: auto;
+}

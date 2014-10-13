@@ -329,6 +329,13 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         return mUserInfo != null;
     }
 
+    @Override
+    public void onDestroy(Activity activity) {
+        if (mDownJoy != null) {
+            mDownJoy.destroy();
+            mDownJoy = null;
+        }
+    }
     /**
      * destroy the sdk instance
      *
@@ -336,12 +343,13 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
-        if (mDownJoy != null) {
-            mDownJoy.destroy();
-            mDownJoy = null;
-        }
-        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
         mUserInfo = null;
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+            }
+        });
     }
 
     @Override

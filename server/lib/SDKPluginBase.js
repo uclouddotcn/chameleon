@@ -50,6 +50,12 @@ function Wrapper (channelName, cfg, plugin) {
     this.cfg = cfg;
     this.plugin = plugin;
     this.channelName = channelName;
+    if (this.plugin.pendingPay) {
+        var self = this;
+        this.pendingPay = function () {
+            self.plugin.pendingPay.apply(self.plugin, arguments);
+        }
+    }
 }
 
 Wrapper.prototype.verifyLogin = function(token, others, callback) {
@@ -61,7 +67,18 @@ Wrapper.prototype.reloadCfg = function (cfg) {
 };
 
 Wrapper.prototype.getPayUrlInfo = function () {
-    return this.plugin.getPayUrlInfo();
+    var subUrls = this.plugin.getPayUrlInfo();
+    var self = this;
+    return subUrls.map(function (obj) {
+        var callback = obj.callback;
+        return {
+            method: obj.method,
+            path: obj.path,
+            callback: function (req, res, next) {
+                return callback(req, res, next, self);
+            }
+        }
+    });
 }
 
 module.exports = SDKPluginBase;

@@ -68,11 +68,27 @@ Channel.prototype.pendingPay = function (params, infoFromSDK, callback) {
             });
     };
     if (payApi.pendingPay) {
-        payApi.pendingPay(params, infoFromSDK, function (err, orderId, params, payInfo) {
+        payApi.pendingPay(this.name, params, infoFromSDK, function (err, orderId, params, options, payInfo) {
             if (err) {
                 return callback(err);
             }
-            return userPendingFunc(orderId, params, payInfo);
+            if (options && options.ignorePending) {
+                self._userAction.emitPrePay(
+                    orderId,
+                    payApi,
+                    params.uid,
+                    params.appUid,
+                    params.serverId,
+                    params.productId,
+                    params.productCount,
+                    params.realPayMoney,
+                    params.singlePrice,
+                    params.ext,
+                    self.name);
+                setImmediate(callback, null, orderId, payInfo);
+            } else {
+                return userPendingFunc(orderId, params, payInfo);
+            }
         });
     } else {
         var orderId = this._userAction.genOrderId();
@@ -90,6 +106,7 @@ Channel.prototype.getPayUrl = function () {
     }
     return this.apis.pay.getPayUrlInfo();
 };
+
 
 Channel.prototype.uninstall = function () {
     this.sdkMgr.uninstallChannel(this.name);

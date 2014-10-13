@@ -135,7 +135,7 @@ XiaomiChannel.prototype.respondsToPay = function (req, res, next) {
         }
         var other = {
             timeStamp: params.payTime,
-            orderId: params.orderId,
+            chOrderId: params.orderId,
             partnerGiftConsume: params.partnerGiftConsume
         };
         self._userAction.pay(wrapper.channelName, params.uid, params.appuid,

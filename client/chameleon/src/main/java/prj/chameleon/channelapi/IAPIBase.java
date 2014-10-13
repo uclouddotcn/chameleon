@@ -38,7 +38,7 @@ public interface IAPIBase {
      * @param resultCode
      * @param data
      */
-    public void onActivityResult(int requestCode, int resultCode, Intent data);
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data);
 
 
     /**
@@ -53,6 +53,25 @@ public interface IAPIBase {
      * @param activity the activity
      */
     public void onDestroy(Activity activity);
+
+    /**
+     * when the activity onStart
+     * @param activity the activity
+     */
+    public void onStart(Activity activity);
+
+    /**
+     * when the activity onStop
+     * @param activity the activity
+     */
+    public void onStop(Activity activity);
+
+    /**
+     * when the activity receive new intent
+     * @param activity
+     * @param intent the intent
+     */
+    public void onNewIntent(Activity activity, Intent intent);
 
     /**
      * exit the sdk instance

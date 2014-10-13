@@ -11,4 +11,6 @@ include ':channels:qqmob'
 include ':channels:uc'
 include ':channels:wandoujia'
 include ':channels:xiaomi'
+include ':channels:qqmsdk'
+include ':channels:anzhi'
 

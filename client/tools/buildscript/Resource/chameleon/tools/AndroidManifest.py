@@ -84,6 +84,10 @@ class AndroidManifestInst(object):
         for (name, value) in valueAttrs:
             childNode.setAttribute(name, value)
 
+    def setPkgName(self, pkgName):
+        root = self.doc.documentElement
+        root.setAttribute('package', pkgName)
+    
     def createElement(self, parentPath, tag, attrs = None):
         parentNode = self.doc.documentElement
         for p in parentPath:
@@ -168,6 +172,29 @@ class AndroidManifestInst(object):
     def safeDump(self, path):
         with TempFile(path) as f:
             return f.write(self.doc.toxml('utf-8'))
+
+    def fullQualifyName(self, pkgName):
+        appNode = self._applicationNode
+        for node in appNode.childNodes:
+            if node.nodeType == node.ELEMENT_NODE:
+                if node.tagName in ["activity", "service", "provider", 'receiver']:
+                    self._fullQualifyName(node, 'android:name', pkgName)
+                elif node.tagName == 'activity-alias':
+                    self._fullQualifyName(node, 'android:name', pkgName)
+                    self._fullQualifyName(node, 'android:targetActivity', pkgName)
+
+    def _fullQualifyName(self, node, attrId, pkgName):
+        val = node.getAttribute(attrId)
+        if val is None:
+            return
+        if val.startswith(pkgName):
+            pass
+        elif val.startswith('.'):
+            node.setAttribute(attrId, pkgName+val)
+        elif val.find('.') == -1:
+            node.setAttribute(attrId, pkgName+'.'+val)
+        else:
+            pass
 
     @property
     def _rootNode(self):

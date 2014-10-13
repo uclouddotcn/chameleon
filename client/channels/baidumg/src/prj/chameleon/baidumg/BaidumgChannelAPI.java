@@ -260,8 +260,12 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void exit(Activity activity, final IDispatcherCb cb) {
+    public void onDestroy(Activity activity) {
         DkPlatform.destroy(activity);
+    }
+
+    @Override
+    public void exit(Activity activity, final IDispatcherCb cb) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {

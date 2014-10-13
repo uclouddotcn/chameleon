@@ -248,7 +248,7 @@ def mergeToNodewebkit(targetFolder):
 
 
 def build():
-    targetFolder = os.path.join(BASEDIR, 'build')
+    targetFolder = os.path.join(BASEDIR, 'chameleon_build')
     cleanOldBuild(targetFolder)
     version = getversion()
     chameleonTarget = os.path.join(targetFolder, 'chameleon')

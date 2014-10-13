@@ -1,6 +1,6 @@
 import sys
-#sys.path.append('../buildscript/Resource/chameleon/tools')
-sys.path.append('../buildscript/ChameleonTool/')
+sys.path.append('../buildscript/Resource/chameleon/tools')
+#sys.path.append('../buildscript/ChameleonTool/')
 
 import xml.dom.minidom as xml
 import unittest
@@ -10,6 +10,7 @@ class TestAndroidManifest(unittest.TestCase):
     def setUp(self):
         self.manifestInst = AndroidManifestInst('./AndroidManifest.xml')
         self.libManifestInst = AndroidManifestInst('./LibAndroidManifest.xml')
+        self.fullQualifyManifest = AndroidManifestInst('./FullQualifyName.xml')
 
     def tearDown(self):
         pass
@@ -21,6 +22,29 @@ class TestAndroidManifest(unittest.TestCase):
                 'android.permission.WRITE_EXTERNAL_STORAGE')
         permission = self.libManifestInst.getPermissions()
         self.assertEqual(len(permission), 3)
+
+    def testFullQualifyName(self):
+        pkgName = self.fullQualifyManifest.getPkgName()
+        self.fullQualifyManifest.fullQualifyName(pkgName)
+        self.assertEqual(
+                self.fullQualifyManifest._applicationNode.childNodes[1].getAttribute('android:name'),
+                'prj.chameleon.qihu.ContainerActivity')
+        self.assertEqual(
+                self.fullQualifyManifest._applicationNode.childNodes[3].getAttribute('android:name'),
+                'prj.chameleon.qihu.ContainerActivity')
+        self.assertEqual(
+                self.fullQualifyManifest._applicationNode.childNodes[5].getAttribute('android:name'),
+                'com.nd.commplatform.service.NdDownloadService')
+
+
+    def testGetPermissions(self):
+        permission = self.manifestInst.getPermissions()
+        self.assertEqual(len(permission), 1)
+        self.assertEqual(permission[0].getAttribute('android:name'), 
+                'android.permission.WRITE_EXTERNAL_STORAGE')
+        permission = self.libManifestInst.getPermissions()
+        self.assertEqual(len(permission), 3)
+
 
     def testMergePermission(self):
         self.manifestInst.merge(self.libManifestInst)
