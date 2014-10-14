@@ -608,10 +608,12 @@ chameleonControllers
             };
 
             $scope.updateCurrentCfg = function () {
+
                 var sdk = $scope.selectedsdk;
                 var promise = sdk.updateFunc();
                 promise = WaitingDlg.wait(promise, '更新配置中');
                 promise.then(function () {
+                    alert(1111)
                 }, function (e) {
                     alert(e.message);
                 });
@@ -1240,7 +1242,8 @@ chameleonControllers
         }, 100);
     })
     .controller('ChannelCfgController', ['$scope', '$stateParams',
-        'ProjectMgr', function($scope, $stateParams, ProjectMgr) {
+        'ProjectMgr','$timeout', function($scope, $stateParams, ProjectMgr,$timeout) {
+
         }])
     .controller('BuildProjectController',function ($scope, $modalInstance, $modal, project, ProjectMgr) {
         $scope.channels = [];
@@ -1549,7 +1552,8 @@ chameleonControllers
         $scope.show = {};
         $scope.show.index = true;
         $scope.globalCache = globalCache;
-        $scope.headerTpl = 'partials/nav.html'
+        $scope.headerTpl = 'partials/nav.html';
+        console.log($scope)
         $scope.navClass = function (page) {
             var currentRoute = $location.path().substring(1) || 'projects';
             return page === currentRoute ? 'active' : '';
@@ -1590,30 +1594,119 @@ chameleonControllers
         };
 
     }])
-    .controller('versionCtrl',['$scope','versionManages',function($scope,versionManages){
+    .controller('setVersionCfg',['$scope',function ($scope) {
+
+    }])
+    .controller('versionCtrl',['$scope','versionManages','$q','$timeout','sliderbox','$modal',function($scope,versionManages,$q,$timeout,sliderbox,$modal){
         $scope.versionsDate = versionManages.data;
-        $scope.aImages = versionManages.data[0].images;
-        console.log($scope.aImages);
+        console.log($scope.versionsDate)
+        //default select the last version!!!
+        $scope.tabVersion = 0;
+        $scope.aImages = versionManages.data[$scope.tabVersion].images;
+        $scope.vmodels = {
+            vcontent : $scope.versionsDate[$scope.tabVersion].content,
+            vupdate  : $scope.versionsDate[$scope.tabVersion].update
+        }
+
+        $scope.tabData = function(index){
+            $scope.tabVersion = index;
+            $scope.aImages = versionManages.data[$scope.tabVersion].images;
+            $scope.vmodels = {
+                vcontent : $scope.versionsDate[$scope.tabVersion].content,
+                vupdate  : $scope.versionsDate[$scope.tabVersion].update
+            }
+
+        }
+        $scope.saveVscontent = function(){
+            $scope.globalsetting.vcontent.$dirty = false;
+        }
+        $scope.saveVsupdate = function(){
+            $scope.globalsetting.vupdate.$dirty = false;
+        }
+        $scope.changContent = function(){
+            $scope.globalsetting.vcontent.$dirty = true;
+        }
+        $scope.changUpdate = function(){
+            $scope.globalsetting.vupdate.$dirty = true;
+        }
+
+
+        $scope.setVersionCfg = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'partials/upgrade.html',
+                controller: 'setVersionCfg',
+                backdrop: false,
+                keyboard: false
+
+            })
+            modalInstance.result.then(function(result){
+                console.log(result)
+            }, function (reason) {
+                console.log(reason)
+            })
+
+        };
+
+
+
+
+
+
+
         $scope.setFiles = function(element) {
             $scope.$apply(function() {
                     var fse = require('fs-extra');
                     var uploadPath = element.files[0].path;
-                    var newPath = '/tmp/mynewfile/'+ uploadPath.split('\\')[uploadPath.split('\\').length-1];
-                    $scope.versionsDate[0].images.push(newPath);
-                    $scope.aImages = $scope.versionsDate[0].images;
+                    var newPath = '/tmp/mynewfile/'+ new Date().getTime() +uploadPath.split('\\')[uploadPath.split('\\').length-1];
+                    var defer = $q.defer();
+                    var promise = defer.promise;
                     fse.copy(uploadPath, newPath, function(err){
                         if (err) return console.error(err);
-
-
-                        console.log($scope.aImages);
                     });
+                    $timeout(function(){
+                        $scope.versionsDate[$scope.tabVersion].images.push(newPath);
+                        $scope.aImages = $scope.versionsDate[$scope.tabVersion].images;
+                    },200)
 
-
+                    sliderbox.slideFn()
 
                     $scope.uploadPath = uploadPath;
                 }
             );
         };
+
+
+
+    }])
+    .controller('canctrl',['$scope', '$log', '$stateParams', '$state', '$modal',  'WaitingDlg', '$timeout',function ($scope, $log, $stateParams, $state, $modal, WaitingDlg,$timeout) {
+       $('input[type=text]').change(function(){
+           $timeout(function(){
+               $scope.channelCfgForm.appid.$dirty = true;
+               $scope.channelCfgForm.appkey.$dirty = true;
+               $scope.channelCfgForm.appsecret.$dirty = true;
+           })
+       })
+        $scope.updateCurrentCfg = function () {
+
+            var sdk = $scope.selectedsdk;
+            var promise = sdk.updateFunc();
+            promise = WaitingDlg.wait(promise, '更新配置中');
+
+
+            promise.then(function () {
+                $timeout(function(){
+                    $scope.channelCfgForm.appid.$dirty = false;
+                    $scope.channelCfgForm.appkey.$dirty = false;
+                    $scope.channelCfgForm.appsecret.$dirty = false;
+                })
+
+
+            }, function (e) {
+                alert(e.message);
+            });
+        };
+
+
     }])
 
 

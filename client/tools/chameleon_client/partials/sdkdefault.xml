@@ -5,7 +5,7 @@
     <form name="channelCfgForm" class="form-horizontal" ng-submit="updateCurrentCfg()">
 	<div class="control-group">
 	    <div class="controls">
-	        <button type="submit" class="btn" ng-disabled="channelCfgForm.$invalid">添加/更新</button>
+	        <button type="submit" class="btn" ng-disabled="channelCfgForm.$invalid">保存</button>
 	    </div>
 	</div>
     </form>

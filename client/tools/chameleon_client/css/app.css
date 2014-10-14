@@ -194,14 +194,81 @@ div.moredirective {
     right: 5px;
     top: -5px;
 }
+.vm-head-btn-file {
+    display: block;
+    width: 60px;
+    overflow: hidden;
+    opacity: 0;
+    top: 2px;
+    cursor: pointer;
 
-.sliderbox{background:url(../images/index-bottom.jpg) no-repeat 0 -1px;width:100%;height:200px;overflow:hidden;}
-.arrow-btn{margin:35px 0 0 0;display:inline;background:url(../images/arrow-btn.png) no-repeat;width:26px;height:124px;overflow:hidden;cursor:pointer;}
-#btn-left{float:left;margin-left:12px;background-position:0 0;}
-#btn-left.dasabled{background-position:0 -124px;}
-#btn-right{float:right;margin-right:6px;cursor:pointer;background-position:-26px 0;}
-#btn-right.dasabled{background-position:-26px -124px;}
-.slider{width:580px;overflow:hidden;position:relative;height:166px;float:left;}
-.slider ul{position:absolute;left:0px;top:32px;width:1800px;height:105px;list-style:none; padding: 10px;}
-.slider li{float:left;width:140px;height:105px; margin-right: 10px;}
-.slider img{ width:140px; height: 105px; display:inline-block!important;}
+}
+
+.sliderbox {
+    background: url(../images/index-bottom.jpg) no-repeat 0 -1px;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.arrow-btn {
+    margin: 35px 0 0 0;
+    display: inline;
+    background: url(../images/arrow-btn.png) no-repeat;
+    width: 26px;
+    height: 124px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+#btn-left {
+    float: left;
+    margin-left: 12px;
+    background-position: 0 0;
+}
+
+#btn-left.dasabled {
+    background-position: 0 -124px;
+}
+
+#btn-right {
+    float: right;
+    margin-right: 6px;
+    cursor: pointer;
+    background-position: -26px 0;
+}
+
+#btn-right.dasabled {
+    background-position: -26px -124px;
+}
+
+.slider {
+    width: 580px;
+    overflow: hidden;
+    position: relative;
+    height: 166px;
+    float: left;
+}
+
+.slider ul {
+    position: absolute;
+    left: 0px;
+    top: 32px;
+    width: 1800px;
+    height: 105px;
+    list-style: none;
+    padding: 10px;
+}
+
+.slider li {
+    float: left;
+    width: 140px;
+    height: 105px;
+    margin-right: 10px;
+}
+
+.slider img {
+    width: 140px;
+    height: 105px;
+    display: inline-block !important;
+}

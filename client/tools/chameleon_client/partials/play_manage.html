@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <form name="globalsetting" class="form-horizontal" ng-submit="updateCurrentCfg()">
+    <form novalidate name="globalsetting" class="form-horizontal" ng-submit="updateCurrentCfg()">
     <section id="brief">
         <div class="row">
             <div class="page-header row">
@@ -73,22 +73,22 @@
                         <div class="viewarea">
                             <dl class="dl-horizontal">
                                 <dt>keystroke文件:</dt>
-                                <dd>{{selectedsdk.signcfg.keystroke}}</dd>
+                                <dd>{{ selectedsdk.signcfg.keystroke ? selectedsdk.signcfg.keystroke : '&nbsp;'}}</dd>
                             </dl>
 
                             <dl class="dl-horizontal">
                                 <dt>key password:</dt>
-                                <dd>{{selectedsdk.signcfg.keypass}}</dd>
+                                <dd>{{selectedsdk.signcfg.keypass ? selectedsdk.signcfg.keypass : '&nbsp;'}}</dd>
                             </dl>
 
                             <dl class="dl-horizontal">
                                 <dt>store password:</dt>
-                                <dd>{{selectedsdk.signcfg.storepass}}</dd>
+                                <dd>{{selectedsdk.signcfg.storepass ? selectedsdk.signcfg.storepass : '&nbsp;'}}</dd>
                             </dl>
 
                             <dl class="dl-horizontal">
                                 <dt>alias:</dt>
-                                <dd>{{selectedsdk.signcfg.alias}}</dd>
+                                <dd>{{selectedsdk.signcfg.alias ? selectedsdk.signcfg.alias : '&nbsp;'}}</dd>
                             </dl>
 
                         </div>
@@ -110,7 +110,7 @@
                     <button class="btn btn-primary pos-reload" type="button" ng-click="setSignCfg()">签名配置</button>
                 </div>
                 <div class="col-md-4 col-md-offset-4 text-right">
-                    <button type="submit" class="btn" ng-disabled="globalsetting.$invalid">保存</button>
+                    <button type="submit" class="btn" ng-disabled="!globalsetting.appname.$dirty && !hasChangedLandscape ">保存</button>
                 </div>
 
             </div>

@@ -89,7 +89,9 @@ var chameleonApp = angular.module('chameleonApp', [
                     $scope.project = project;
 
                     $scope.projectDoc = project.__doc;
-                    $scope.toolversion = ProjectMgr.version
+                    $scope.toolversion = ProjectMgr.version;
+                    $scope.hasChanged = false;
+                    $scope.hasChangedLandscape = false;
                     var promise = ProjectMgr.getProjectList();
                     globalCache.project = project;
                     promise.then(
@@ -100,6 +102,12 @@ var chameleonApp = angular.module('chameleonApp', [
                     var signcfg = project.getSignCfg();
                     var cfg = project.cloneGlobalCfg();
                     var sdkset = project.getAllSDKs();
+
+
+                    $scope.$watch('selectedsdk.cfg.landscape',function(nw,ow){
+                        $scope.hasChangedLandscape = nw == ow ? false : true;
+
+                    })
                     $scope.selectedsdk = {
                         cfg: cfg,
                         signcfg: signcfg,
@@ -175,16 +183,16 @@ var chameleonApp = angular.module('chameleonApp', [
                             console.log('dialog dismissed');
                         });
                     };
-                    $scope.updateCurrentCfg = function () {
-
-                        var sdk = $scope.selectedsdk;
-                        var promise = sdk.updateFunc();
-                        promise = WaitingDlg.wait(promise, '更新配置中');
-                        promise.then(function () {
-                        }, function (e) {
-                            alert(e.message);
-                        });
-                    };
+//                    $scope.updateCurrentCfg = function () {
+//                        alert(1)
+//                        var sdk = $scope.selectedsdk;
+//                        var promise = sdk.updateFunc();
+//                        promise = WaitingDlg.wait(promise, '更新配置中');
+//                        promise.then(function () {
+//                        }, function (e) {
+//                            alert(e.message);
+//                        });
+//                    };
 
                 }]
             })
@@ -443,6 +451,7 @@ var chameleonApp = angular.module('chameleonApp', [
                         ];
                     })();
                     console.log(project);
+                    $scope.formAble = true;
 
                     // sign manipulation
                     $scope.getSignDesc = function () {
@@ -786,13 +795,16 @@ var chameleonApp = angular.module('chameleonApp', [
                         $scope.selectedsdk = null;
                         //这里是列表数据
                         var sdkset = project.getAllSDKs();
-                        console.log(project.getAllSDKs())
+                        $scope.needShow = Boolean(sdkset.length);
+
+
+
                         $scope.sdks = [];
                         for (var i in sdkset) {
                             $scope.sdks.push(sdkset[i]);
                         }
                         var selected = [];
-                        console.log($scope.sdks);
+
                         $scope.installedSDKTable = {
                             data: 'sdks',
                             columnDefs: [
@@ -813,15 +825,15 @@ var chameleonApp = angular.module('chameleonApp', [
                                 if (selected.length <= 0) {
                                     return;
                                 }
-                                console.log(selected)
+
                                 var sdk = selected[0];
                                 if (sdk.sdkid) {
-                                    console.log(sdk)
+
                                     var params = {
                                         sdkname: sdk.sdkid
                                     };
                                     var cfg = sdk.cloneCfg();
-                                    console.log(cfg)
+
                                     $scope.selectedsdk = {
                                         cfg: cfg,
                                         data: sdk,
@@ -901,15 +913,8 @@ var chameleonApp = angular.module('chameleonApp', [
                             });
                         };
 
-                        $scope.updateCurrentCfg = function () {
-                            var sdk = $scope.selectedsdk;
-                            var promise = sdk.updateFunc();
-                            promise = WaitingDlg.wait(promise, '更新配置中');
-                            promise.then(function () {
-                            }, function (e) {
-                                alert(e.message);
-                            });
-                        };
+                        console.log($scope)
+
                     })();
 
                 }]
@@ -928,7 +933,12 @@ var chameleonApp = angular.module('chameleonApp', [
                     } else {
                         return 'partials/sdkdefault.xml';
                     }
-                }
+                },
+                controller : ['$scope',function($scope){
+                    console.log($scope)
+
+                }]
+
             })
             .state('project.channel', {
                 url: '/channel/:channelname',
@@ -936,9 +946,6 @@ var chameleonApp = angular.module('chameleonApp', [
             })
             .state('loadmethod.channel', {
                 url: '/channel/:channelname',
-                views : {
-
-                },
                 controller : 'loadMethod'
             })
             .state('loadmethod.channel.sdkconfig', {
@@ -966,12 +973,6 @@ var chameleonApp = angular.module('chameleonApp', [
                             method : 'GET',
                             url : 'js/versionManage.json'
                         })
-//                        $http({
-//                            method : 'GET',
-//                            url : 'js/versionManage.json'
-//                        }).then(function(data){
-//                            return data;
-//                        })
                     }]
                 },
                 controller : 'versionCtrl'

@@ -94,7 +94,7 @@ var chameleonDirectives = angular.module('chameleonDirectives', [
             }
         };
     })
-    .directive('sliderbox',['$timeout',function($timeout){
+    .directive('sliderbox',['$timeout','sliderbox',function($timeout,sliderbox){
         return {
             restrict : 'E',
             replace: true ,
@@ -103,92 +103,9 @@ var chameleonDirectives = angular.module('chameleonDirectives', [
             },
             templateUrl : 'partials/sliderbox.html',
             link : function(scope,element,attrs){
-                var _scrolling = "";
-                var a = 1;
-                var $slider = $('.slider ul');
-                var $slider_child_l = $('.slider ul li').length;
-                var $slider_width = 150;
-                var slider_count = 0;
-
-                $timeout(function(){
-                    $slider_child_l = $('.slider ul li').length;
-//                    $slider.width($slider_child_l * $slider_width);
-                    if ($slider_child_l <= 4) {
-                        $('#btn-right').css({cursor: 'auto'});
-                        $('#btn-right').removeClass("dasabled");
-                    }
-                })
-
-
-
-
-                function moveToRight() {
-                    if (slider_count >= $slider_child_l - 4) {
-                        a = 0;
-                        moveToLeft();
-                    } else {
-                        slider_count++;
-                        $slider.animate({left: '-=' + $slider_width + 'px'}, 300);
-                        moveAction();
-
-                    }
-                }
-                function moveToLeft() {
-                    if (slider_count <= 0) {
-                        a = 1;
-                        moveToRight();
-                    } else {
-                        slider_count--;
-                        $slider.animate({left: '+=' + $slider_width + 'px'}, 300);
-                        moveAction();
-
-                    }
-                }
-                function moveEndRight() {
-                    if (slider_count >= $slider_child_l - 4) {
-                        return false;
-                    } else {
-                        slider_count++;
-                        $slider.animate({left: '-=' + $slider_width + 'px'}, 300);
-                        moveAction();
-                    }
-                }
-                function moveEndLeft() {
-                    if (slider_count <= 0) {
-                        return false;
-                    } else {
-                        slider_count--;
-                        $slider.animate({left: '+=' + $slider_width + 'px'}, 300);
-                        moveAction();
-                    }
-                }
-                function moveAction() {
-                    if (slider_count >= $slider_child_l - 4) {
-                        $('#btn-right').css({cursor: 'auto'});
-                        $('#btn-right').addClass("dasabled");
-                    }
-                    else if (slider_count > 0 && slider_count <= $slider_child_l - 4) {
-                        $('#btn-left').css({cursor: 'pointer'});
-                        $('#btn-left').removeClass("dasabled");
-                        $('#btn-right').css({cursor: 'pointer'});
-                        $('#btn-right').removeClass("dasabled");
-                    }
-                    else if (slider_count <= 0) {
-                        $('#btn-left').css({cursor: 'auto'});
-                        $('#btn-left').addClass("dasabled");
-                    }
-                }
-                $('#btn-left').click(function(){
-                    moveEndLeft();
-                })
-                $('#btn-right').click(function(){
-                    moveEndRight();
-                })
+                sliderbox.slideFn()
             }
-
-
         }
-
     }])
 
 

@@ -216,6 +216,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             if (err) {
                 defered.reject(defered);
             } else {
+
                 defered.resolve();
             }
         });
@@ -232,6 +233,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 defered.resolve();
             }
         });
+
         return defered.promise;
     }
 
@@ -496,6 +498,9 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         this.controller = function ($scope, $modalInstance, data) {
             $scope.tips = data.tips;
             data.p.then(function (x) {
+
+
+
                 $modalInstance.close(x);
                 return x;
             }, function (x) {
@@ -525,7 +530,98 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     };
 
     return new WaitingDlg();
-}]);
+}])
+.factory('sliderbox',['$timeout',function($timeout){
+    var sliders = {};
+
+    function _slideFn(){
+        var _scrolling = "";
+        var a = 1;
+        var $slider = $('.slider ul');
+        var $slider_child_l = $('.slider ul li').length;
+        var $slider_width = 150;
+        var slider_count = 0;
+
+
+        $timeout(function(){
+            $slider_child_l = $('.slider ul li').length;
+//                    $slider.width($slider_child_l * $slider_width);
+            if ($slider_child_l <= 4) {
+                $('#btn-right').css({cursor: 'auto'});
+                $('#btn-right').removeClass("dasabled");
+            }
+        },300)
+        function moveToRight() {
+            if (slider_count >= $slider_child_l - 4) {
+                a = 0;
+                moveToLeft();
+            } else {
+                slider_count++;
+                $slider.animate({left: '-=' + $slider_width + 'px'}, 300);
+                moveAction();
+
+            }
+        }
+        function moveToLeft() {
+            if (slider_count <= 0) {
+                a = 1;
+                moveToRight();
+            } else {
+                slider_count--;
+                $slider.animate({left: '+=' + $slider_width + 'px'}, 300);
+                moveAction();
+
+            }
+        }
+        function moveEndRight() {
+            if (slider_count >= $slider_child_l - 4) {
+                return false;
+            } else {
+                slider_count++;
+                $slider.animate({left: '-=' + $slider_width + 'px'}, 300);
+                moveAction();
+            }
+        }
+        function moveEndLeft() {
+            if (slider_count <= 0) {
+                return false;
+            } else {
+                slider_count--;
+                $slider.animate({left: '+=' + $slider_width + 'px'}, 300);
+                moveAction();
+            }
+        }
+        function moveAction() {
+            if (slider_count >= $slider_child_l - 4) {
+                $('#btn-right').css({cursor: 'auto'});
+                $('#btn-right').addClass("dasabled");
+            }
+            else if (slider_count > 0 && slider_count <= $slider_child_l - 4) {
+                $('#btn-left').css({cursor: 'pointer'});
+                $('#btn-left').removeClass("dasabled");
+                $('#btn-right').css({cursor: 'pointer'});
+                $('#btn-right').removeClass("dasabled");
+            }
+            else if (slider_count <= 0) {
+                $('#btn-left').css({cursor: 'auto'});
+                $('#btn-left').addClass("dasabled");
+            }
+        }
+        $('#btn-left').unbind('click').click(function(){
+            moveEndLeft();
+        })
+        $('#btn-right').unbind('click').click(function(){
+            moveEndRight();
+        })
+    }
+
+        return sliders = {
+            slideFn : _slideFn
+        }
+
+
+
+}])
 
 
 
