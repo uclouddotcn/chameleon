@@ -1,0 +1,37 @@
+<div class="container-fluid">
+    <div class="modal-header">
+        <h3>新增游戏版本</h3>
+    </div>
+    <form novalidate name="vcfgForm">
+        <div class="modal-body">
+
+            <div class="control-group">
+                <label class="control-label" for="vcfgversion">游戏版本号</label>
+
+                <div class="controls">
+                    <input name="vcfgversion" id="vcfgversion" type="text" class="form-control" ng-model="vCfg.version" ng-required="true"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="vcfgcontent">内容介绍</label>
+
+                <div class="controls">
+                    <textarea name="vcfgcontent" id="vcfgcontent" ng-model="vcfg.content" ng-required="true" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="vcfgupdate">更新内容</label>
+
+                <div class="controls">
+                    <textarea name="vcfgupdate" id="vcfgupdate" ng-model="vcfg.update" ng-required="true" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" ng-disabled="vcfgForm.$invalid" ng-click="vcommit()">添加</button>
+            <button class="btn btn-default" ng-click="vcancel()">取消</button>
+        </div>
+    </form>
+
+</div>
