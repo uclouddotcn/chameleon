@@ -1594,7 +1594,14 @@ chameleonControllers
         };
 
     }])
-    .controller('setVersionCfg',['$scope',function ($scope) {
+    .controller('setVersionCfg',['$scope','$modalInstance',function ($scope,$modalInstance) {
+        $scope.vcommit = function () {
+            $modalInstance.close();
+        };
+
+        $scope.vcancel = function () {
+            $modalInstance.dismiss();
+        };
 
     }])
     .controller('versionCtrl',['$scope','versionManages','$q','$timeout','sliderbox','$modal',function($scope,versionManages,$q,$timeout,sliderbox,$modal){
@@ -1633,10 +1640,13 @@ chameleonControllers
 
         $scope.setVersionCfg = function () {
             var modalInstance = $modal.open({
-                templateUrl: 'partials/upgrade.html',
+                templateUrl: 'partials/setVersion.html',
                 controller: 'setVersionCfg',
                 backdrop: false,
-                keyboard: false
+                keyboard: false,
+                resolve:{
+
+                }
 
             })
             modalInstance.result.then(function(result){
@@ -1679,13 +1689,13 @@ chameleonControllers
 
     }])
     .controller('canctrl',['$scope', '$log', '$stateParams', '$state', '$modal',  'WaitingDlg', '$timeout',function ($scope, $log, $stateParams, $state, $modal, WaitingDlg,$timeout) {
-       $('input[type=text]').change(function(){
-           $timeout(function(){
-               $scope.channelCfgForm.appid.$dirty = true;
-               $scope.channelCfgForm.appkey.$dirty = true;
-               $scope.channelCfgForm.appsecret.$dirty = true;
-           })
-       })
+        $('input[type=text]').change(function(){
+            $timeout(function(){
+                $scope.channelCfgForm.appid.$dirty = true;
+                $scope.channelCfgForm.appkey.$dirty = true;
+                $scope.channelCfgForm.appsecret.$dirty = true;
+            })
+        })
         $scope.updateCurrentCfg = function () {
 
             var sdk = $scope.selectedsdk;
