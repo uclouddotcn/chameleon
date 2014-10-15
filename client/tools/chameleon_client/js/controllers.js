@@ -1689,13 +1689,13 @@ chameleonControllers
 
     }])
     .controller('canctrl',['$scope', '$log', '$stateParams', '$state', '$modal',  'WaitingDlg', '$timeout',function ($scope, $log, $stateParams, $state, $modal, WaitingDlg,$timeout) {
-       $('input[type=text]').change(function(){
-           $timeout(function(){
-               $scope.channelCfgForm.appid.$dirty = true;
-               $scope.channelCfgForm.appkey.$dirty = true;
-               $scope.channelCfgForm.appsecret.$dirty = true;
-           })
-       })
+        $('input[type=text]').change(function(){
+            $timeout(function(){
+                $scope.channelCfgForm.appid.$dirty = true;
+                $scope.channelCfgForm.appkey.$dirty = true;
+                $scope.channelCfgForm.appsecret.$dirty = true;
+            })
+        })
         $scope.updateCurrentCfg = function () {
 
             var sdk = $scope.selectedsdk;
