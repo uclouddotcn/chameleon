@@ -14,6 +14,7 @@ import com.tencent.tauth.UiError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IChannelPayAPI;
@@ -22,9 +23,6 @@ import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
-/**
- * Created by wushauk on 7/21/14.
- */
 public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private Tencent mTencent;
     private String mPrivilege;
@@ -128,20 +126,21 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     }
 
-    @Override
-    public void initCfg(Bundle cfg) {
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mAppId = cfg.getString("appId");
         mPrivilege = cfg.getString("privilege");
+        mChannel = commCfg.mChannel;
     }
 
     @Override
-    public void init(Activity activity, boolean isDebug, final IDispatcherCb cb) {
+    public void init(Activity activity, final IDispatcherCb cb) {
 
+        boolean isDebug = true;
         // init kv store
-        mTencent = Tencent.createInstance(mAppId, activity.getApplicationContext());
+        mTencent = Tencent.createInstance(mAppId, activity);
         String prefId = activity.getPackageName() + ".chameleon.qq.pref";
         mPreference = activity.getSharedPreferences(prefId, Context.MODE_PRIVATE);
-        mIsInit = maybeInitFromLastLogin();
+        //mIsInit = maybeInitFromLastLogin();
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -182,34 +181,44 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
+    public String getId() {
+        return "qqmob";
+    }
+
+    @Override
     public void login(Activity activity, final IDispatcherCb loginCallback, IAccountActionListener accountActionListener) {
-        IUiListener listener = new IUiListener() {
+        if (!mTencent.isSessionValid()) {
+            IUiListener listener = new IUiListener() {
 
-            @Override
-            public void onComplete(Object o) {
-                JSONObject obj = (JSONObject)o;
-                Log.e(Constants.TAG, "get message " + o.toString());
-                int ret = handleLoginRet(obj);
-                if (ret == Constants.ErrorCode.ERR_OK) {
-                    JSONObject retObj =  makeLoginObj();
-                    loginCallback.onFinished(ret, retObj);
-                } else {
-                    loginCallback.onFinished(ret, null);
+                @Override
+                public void onComplete(Object o) {
+                    JSONObject obj = (JSONObject)o;
+                    Log.e(Constants.TAG, "get message " + o.toString());
+                    int ret = handleLoginRet(obj);
+                    if (ret == Constants.ErrorCode.ERR_OK) {
+                        JSONObject retObj =  makeLoginObj();
+                        loginCallback.onFinished(ret, retObj);
+                    } else {
+                        loginCallback.onFinished(ret, null);
+                    }
                 }
-            }
 
-            @Override
-            public void onError(UiError uiError) {
-                Log.e(Constants.TAG, String.format("login got %d", uiError.errorCode));
-                loginCallback.onFinished(mapError(uiError.errorCode), null);
-            }
+                @Override
+                public void onError(UiError uiError) {
+                    Log.e(Constants.TAG, String.format("login got %d", uiError.errorCode));
+                    loginCallback.onFinished(mapError(uiError.errorCode), null);
+                }
 
-            @Override
-            public void onCancel() {
-                loginCallback.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
-            }
-        };
-        mTencent.login(activity, mPrivilege, listener);
+                @Override
+                public void onCancel() {
+                    loginCallback.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                }
+            };
+            mTencent.login(activity, mPrivilege, listener);
+        } else {
+            JSONObject retObj =  makeLoginObj();
+            loginCallback.onFinished(Constants.ErrorCode.ERR_OK, retObj);
+        }
     }
 
     @Override
@@ -235,7 +244,7 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     @Override
-    public String getPayToken() {
+    public JSONObject getPayInfo() {
         try {
             JSONObject obj = new JSONObject();
             obj.put("p", mPf);
@@ -245,10 +254,10 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             if (mIsDebug) {
                 obj.put("d", 1);
             }
-            return obj.toString();
+            return obj;
         } catch (JSONException e) {
             Log.e(Constants.TAG, "Fail to compose json", e);
-            return "";
+            return null;
         }
     }
 
@@ -261,5 +270,10 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 cb.onFinished(Constants.ErrorCode.ERR_OK, null);
             }
         });
+    }
+
+    @Override
+    public void onStart(Activity activity) {
+        
     }
 }

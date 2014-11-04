@@ -1,30 +1,55 @@
 {
     "qihu": {
         "name": "奇虎",
-        "pkgsuffix": ".qihu",
         "sdk": "qihu"
     },
     "nd91": {
         "name": "91手机助手",
-        "pkgsuffix": "",
         "sdk": "nd91"
     },
     "xiaomi": {
         "name": "小米",
-        "pkgsuffix": ".mi",
+        "pkgsuffix": ".mi$",
         "sdk": "xiaomi"
     },
     "wandoujia": {
         "name": "豌豆荚",
-        "pkgsuffix": ".wdj",
+        "pkgsuffix": ".wdj$",
         "sdk": "wandoujia"
     },
     "baidumg": {
         "name": "百度移动游戏",
-        "pkgsuffix": "",
         "sdk": "baidumg",
         "splashscreen": 1,
         "icon": 1
+    }, 
+    "uc": {
+        "name": "UC九游",
+        "pkgsuffix": ".uc$",
+        "sdk": "uc",
+        "icon": 1
+    },
+    "oppo": {
+        "name": "Oppo",
+        "pkgsuffix": ".nearme.gamecenter$",
+        "sdk": "oppo"
+    },
+    "qqmsdk": {
+        "name": "QQ互娱",
+        "pkgsuffix": "^com.tencent.tmgp.",
+        "sdk": "qqmsdk"
+    },
+    "dangle": {
+        "name": "当乐",
+        "sdk": "dangle",
+        "splashscreen": 2,
+        "icon": "1"
+    },
+    "anzhi": {
+        "name": "安智",
+        "sdk": "anzhi",
+        "splashscreen": 1,
+        "icon": "1"
     }
 }
 

@@ -1,7 +1,7 @@
 apply plugin: 'android-library'
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.1'
+    buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 16
@@ -23,15 +23,18 @@ android {
 
     }
 
-    release {
-        runProguard false
-        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
     }
 }
 
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
-    compile fileTree(dir: "libs", includes: ["*.jar"])
+    compile 'com.android.support:appcompat-v7:19.1.0'
+    compile fileTree(dir: 'libs', includes: ['*.jar'])
     compile project(':chameleon')
+    compile files('libs/open_sdk_r4066.jar')
 }

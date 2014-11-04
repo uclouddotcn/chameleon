@@ -24,9 +24,9 @@
     </div>
     <div class="control-group">
         <label class="control-label" for="storepass">alias</label>
-	<div class="controls">
-            <input name="keypass" type="text" ng-model="signcfgModel.alias" webkitfile required />
-	</div>
+        <div class="controls">
+                <input name="keypass" type="text" ng-model="signcfgModel.alias" webkitfile required />
+        </div>
     </div>
 <script>
 $(document).ready(function(){
@@ -38,6 +38,7 @@ console.log('done')
 </div>
 <div class="modal-footer">
     <button class="btn btn-default" ng-click="commit()">添加</button>
+    <button class="btn btn-default" ng-click="dismissSign()" ng-show="signcfgModel.channel">使用全局配置</button>
     <button class="btn btn-default" ng-click="cancel()">取消</button>
 </div>
 </div>

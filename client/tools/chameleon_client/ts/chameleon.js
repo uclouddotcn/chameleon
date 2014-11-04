@@ -5,6 +5,8 @@ var os = require('os');
 var async = require('async');
 var xml2js = require('xml2js');
 var util = require('util');
+var AdmZip = require('adm-zip');
+var urlLib = require('url');
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -54,7 +56,6 @@ var Logger = (function () {
     ErrorCode[ErrorCode["CFG_ERROR"] = 4] = "CFG_ERROR";
 })(exports.ErrorCode || (exports.ErrorCode = {}));
 var ErrorCode = exports.ErrorCode;
-;
 
 var Utils = (function () {
     function Utils() {
@@ -114,7 +115,7 @@ var AndroidEnv = (function () {
         },
         set: function (p) {
             this._sdkPath = p;
-            this.androidBin = this.getAndroidBin(p);
+            this.androidBin = AndroidEnv.getAndroidBin(p);
             this.db.set('env', 'sdkpath', { value: p });
         },
         enumerable: true,
@@ -122,7 +123,7 @@ var AndroidEnv = (function () {
     });
 
 
-    AndroidEnv.prototype.getAndroidBin = function (p) {
+    AndroidEnv.getAndroidBin = function (p) {
         var s = '';
         if (os.platform() === 'win32') {
             s = pathLib.join(p, 'tools', 'android.bat');
@@ -133,7 +134,7 @@ var AndroidEnv = (function () {
     };
 
     AndroidEnv.prototype.verifySDKPath = function (p, cb) {
-        var androidBin = this.getAndroidBin(p);
+        var androidBin = AndroidEnv.getAndroidBin(p);
         childprocess.execFile(androidBin, ['list', 'target'], { timeout: 30000 }, function (err, stdout, stderr) {
             if (err) {
                 cb(new ChameleonError(2 /* SDK_PATH_ILLEGAL */, '非法的Android SDK路径，请确保路径在sdk路径下'));
@@ -198,7 +199,7 @@ var ConfigDesc = (function () {
         this.items.push({ name: name, item: item, defaultValue: defaultValue, ignore: ignore });
     };
 
-    ConfigDesc.prototype.wrapName = function (cfgItem, ignore, name) {
+    ConfigDesc.wrapName = function (cfgItem, ignore, name) {
         if (ignore) {
             return 'h' + name;
         } else {
@@ -212,7 +213,7 @@ var ConfigDesc = (function () {
             var item = this.items[i];
             var cfgitem = this.items[i].item;
             var name = this.items[i].name;
-            res[this.wrapName(cfgitem, item.ignore, name)] = obj[name];
+            res[ConfigDesc.wrapName(cfgitem, item.ignore, name)] = obj[name];
         }
         return res;
     };
@@ -237,7 +238,7 @@ var ConfigDesc = (function () {
             var item = this.items[i];
             var name = this.items[i].name;
             var cfgitem = this.items[i].item;
-            var wrapname = this.wrapName(cfgitem, item.ignore, name);
+            var wrapname = ConfigDesc.wrapName(cfgitem, item.ignore, name);
             target[name] = jsonobj[wrapname];
         }
     };
@@ -341,9 +342,16 @@ var SDKCfg = (function () {
         return a;
     };
 
+    SDKCfg.prototype.serverCfg = function () {
+        return this.cfg;
+    };
+
+    SDKCfg.prototype.isUsingSDK = function (sdkid) {
+        return this.sdkid === sdkid;
+    };
+
     SDKCfg.prototype.updateCfg = function (cfg) {
-        var realcfg = this.metaInfo.rewritePendingCfg(cfg);
-        this.cfg = realcfg;
+        this.cfg = this.metaInfo.rewritePendingCfg(cfg);
     };
 
     SDKCfg.prototype.dumpJson = function (filename, cb) {
@@ -356,6 +364,7 @@ var SDKCfg = (function () {
             ver: this.ver,
             chamver: this.chamver.toString()
         }, { encoding: 'utf-8' }, cb);
+        this.metaInfo.afterCfgSet(cfg);
     };
 
     Object.defineProperty(SDKCfg.prototype, "desc", {
@@ -382,14 +391,60 @@ var SDKCfg = (function () {
 })();
 exports.SDKCfg = SDKCfg;
 
+var SDKLibInfo = (function () {
+    function SDKLibInfo(name, version) {
+        this.name = name;
+        if (!version) {
+            this.version = new Version('1.0.0');
+            this.realVer = "0.0.0";
+        } else {
+            this.version = new Version(version.version);
+            this.realVer = version.realVer;
+        }
+    }
+    return SDKLibInfo;
+})();
+exports.SDKLibInfo = SDKLibInfo;
+
 var Version = (function () {
     function Version(ver) {
         var t = ver.split('.');
         this.major = parseInt(t[0]);
-        this.minor = parseInt(t[1]);
+        this.medium = parseInt(t[1]);
+        if (t.length == 3) {
+            this.minor = parseInt(t[2]);
+        } else {
+            this.minor = 0;
+        }
     }
+    Version.prototype.cmp = function (that) {
+        if (this.major > that.major) {
+            return 1;
+        } else if (this.major < that.major) {
+            return -1;
+        } else {
+            if (this.medium < that.medium) {
+                return -1;
+            } else if (this.medium > that.medium) {
+                return 1;
+            } else {
+                if (this.minor < that.minor) {
+                    return -1;
+                } else if (this.minor > that.minor) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        }
+    };
+
+    Version.prototype.isMajorUpgrade = function (that) {
+        return (this.major > that.major) || (this.major === that.major && this.medium > that.medium);
+    };
+
     Version.prototype.toString = function () {
-        return this.major + '.' + this.minor;
+        return this.major + '.' + this.medium + '.' + this.minor;
     };
     return Version;
 })();
@@ -405,6 +460,12 @@ var SDKMetaScript = (function () {
             return this.mod['rewriteCfg'](cfg);
         } else {
             return cfg;
+        }
+    };
+
+    SDKMetaScript.prototype.afterCfgSet = function (cfg) {
+        if (this.mod['afterCfgSet']) {
+            this.mod['afterCfgSet'](cfg);
         }
     };
     return SDKMetaScript;
@@ -450,8 +511,7 @@ var SDKMetaInfo = (function () {
     };
 
     SDKMetaInfo.prototype.rewritePendingCfg = function (cfg) {
-        var res = cfg;
-        return this.cfgdesc.rewriteCfg(res);
+        return this.cfgdesc.rewriteCfg(cfg);
     };
 
     SDKMetaInfo.prototype.scriptRewriteCfg = function (cfg) {
@@ -459,6 +519,12 @@ var SDKMetaInfo = (function () {
             return this.script.rewriteCfg(cfg);
         } else {
             return cfg;
+        }
+    };
+
+    SDKMetaInfo.prototype.afterCfgSet = function (cfg) {
+        if (this.script) {
+            return this.script.afterCfgSet(cfg);
         }
     };
     return SDKMetaInfo;
@@ -474,7 +540,8 @@ var ChannelMetaInfo = (function () {
         res.desc = jsonobj['name'];
         res.sdk = jsonobj['sdk'];
         res.hasIcon = jsonobj['icon'];
-        res.hasSplashScreen = jsonobj['splashscreen'];
+        res.hasSplashScreen = jsonobj['splashscreen'] === 1;
+        res.useDefaultSplash = jsonobj['splashscreen'] === 2;
         res.name = name;
         return res;
     };
@@ -487,20 +554,55 @@ var ChannelMetaInfo = (function () {
     ChannelMetaInfo.prototype._loadIconInfo = function (resPath) {
         var drawablePath = pathLib.join(resPath, 'drawable');
         var icon = {};
+        var availableIconPos = [];
         for (var d in DESITY_MAP) {
             var leftup = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-leftup.png');
             var leftdown = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-leftdown.png');
             var rightup = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-rightup.png');
             var rightdown = pathLib.join(drawablePath, DESITY_MAP[d], 'icon-decor-rightdown.png');
-            if (fs.existsSync(leftup) && fs.existsSync(leftdown) && fs.existsSync(rightup) && fs.existsSync(rightdown)) {
-                icon[d] = [leftup, rightup, leftdown, rightdown];
+            var flag = 0xF;
+            var iconOfDesity = [];
+            if (fs.existsSync(leftup)) {
+                iconOfDesity.push(leftup);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1);
             }
+            if (fs.existsSync(leftdown)) {
+                iconOfDesity.push(leftdown);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1 << 1);
+            }
+            if (fs.existsSync(rightup)) {
+                iconOfDesity.push(rightup);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1 << 2);
+            }
+            if (fs.existsSync(rightdown)) {
+                iconOfDesity.push(rightdown);
+            } else {
+                iconOfDesity.push(null);
+                flag &= ~(0x1 << 3);
+            }
+            if (flag == 0) {
+                continue;
+            }
+            icon[d] = iconOfDesity;
+            availableIconPos.push(flag);
         }
+        this.availableIconPos = availableIconPos.reduce(function (x, y) {
+            return x & y;
+        }, 0xF);
         return icon;
     };
 
     ChannelMetaInfo.prototype._loadSplashInfo = function (resPath) {
         var scPath = pathLib.join(resPath, 'drawable', 'splashscreen');
+        if (!fs.existsSync(scPath)) {
+            return null;
+        }
         var res = { portrait: [], landscape: [] };
         var files = fs.readdirSync(scPath);
         var TYPE_MAP = {
@@ -508,7 +610,7 @@ var ChannelMetaInfo = (function () {
             h: 'high',
             xh: 'xhigh'
         };
-        var re = /(\w+)_(\w+)_(\d+)_(\d+)_(.+).png/;
+        var re = /(\w+)_(\w+)_(\d+)_(\d+)(_(.+))?\.(png|jpg)/;
         for (var f in files) {
             var aa = re.exec(files[f]);
             if (!aa) {
@@ -519,7 +621,7 @@ var ChannelMetaInfo = (function () {
                 density: TYPE_MAP[aa[2]],
                 width: parseInt(aa[3]),
                 height: parseInt(aa[4]),
-                desc: aa[3] + '*' + aa[4] + ' ' + aa[5],
+                desc: aa[3] + '*' + aa[4] + ' ' + aa[6],
                 path: pathLib.join(scPath, files[f])
             };
             res[o.orient].push(o);
@@ -543,6 +645,19 @@ var ChannelMetaInfo = (function () {
 
     ChannelMetaInfo.prototype.getSplashScreen = function (orient) {
         return this.sc[orient];
+    };
+
+    ChannelMetaInfo.prototype.validatePkgName = function (pkgName) {
+        if (this.pkgsuffix) {
+            var r = new RegExp(this.pkgsuffix.replace(/\./g, '\\.'));
+            if (!r.test(pkgName)) {
+                if (this.pkgsuffix[0] === '^') {
+                    throw new Error('包名配置错误，该渠道要求包名必须为 "' + this.pkgsuffix.slice(1) + '" 开头');
+                } else {
+                    throw new Error('包名配置错误，该渠道要求包名必须为 "' + this.pkgsuffix.slice(0, this.pkgsuffix.length - 1) + '" 结尾');
+                }
+            }
+        }
     };
     return ChannelMetaInfo;
 })();
@@ -654,17 +769,22 @@ var DependLib = (function () {
 var IconCornerPos = exports.IconCornerPos;
 
 var ChannelCfg = (function () {
-    function ChannelCfg(metaInfo, channelPath) {
+    function ChannelCfg(prj, metaInfo, channelPath) {
         this.metaInfo = metaInfo;
         this.channelPath = channelPath;
+        this._prj = prj;
+        this._packageName = '.' + metaInfo.name;
     }
-    ChannelCfg.loadFromJson = function (jsonobj, channelMeta, channelPath) {
-        var res = new ChannelCfg(channelMeta, channelPath);
+    ChannelCfg.loadFromJson = function (prj, jsonobj, channelMeta, channelPath) {
+        var res = new ChannelCfg(prj, channelMeta, channelPath);
         if (jsonobj.splashscreen) {
             res._splashscreen = jsonobj.splashscreen;
         }
         if (jsonobj.icons) {
             res._icons = jsonobj.icons;
+        }
+        if (jsonobj.signcfg) {
+            res.signCfg = jsonobj.signcfg;
         }
         for (var i in jsonobj.dependLibs) {
             var d = jsonobj.dependLibs[i];
@@ -679,6 +799,7 @@ var ChannelCfg = (function () {
                 }
             });
         }
+        res._packageName = jsonobj.package;
         return res;
     };
 
@@ -740,6 +861,15 @@ var ChannelCfg = (function () {
 
     Object.defineProperty(ChannelCfg.prototype, "packageName", {
         get: function () {
+            if (this._packageName) {
+                if (this._packageName[0] === '.') {
+                    return this._prj.packageName + this._packageName;
+                } else {
+                    return this._packageName;
+                }
+            } else {
+                return this._prj.packageName;
+            }
             return this.metaInfo.pkgsuffix;
         },
         enumerable: true,
@@ -797,10 +927,16 @@ var ChannelCfg = (function () {
         configurable: true
     });
 
+    ChannelCfg.prototype.setSignCfg = function (cfg) {
+        this.signCfg = cfg;
+    };
+
     ChannelCfg.prototype.dumpJsonObj = function () {
         var res = {};
-        res['splashscreen'] = this._splashscreen;
+        res['package'] = this._packageName;
+        res['splashscreen'] = this._splashscreen || (this.metaInfo.useDefaultSplash ? "default" : null);
         res['icons'] = this._icons;
+        res['signcfg'] = this.signCfg;
         if (this.userLib.cfg == this.payLib.cfg) {
             var dl = this.userLib.dumpJsonObj();
             dl.type = 'user,pay';
@@ -821,6 +957,19 @@ var ChannelCfg = (function () {
         this.userLib.sdkid = sdk.metaInfo.name;
     };
 
+    ChannelCfg.prototype.validatePkgName = function (pkgName) {
+        this.metaInfo.validatePkgName(pkgName);
+    };
+
+    ChannelCfg.prototype.setPackageName = function (pkg) {
+        var prefix = pkg.substr(0, this._prj.packageName.length + 1);
+        if (prefix === this._prj.packageName + '.') {
+            this._packageName = pkg.substr(this._prj.packageName.length);
+        } else {
+            this._packageName = pkg;
+        }
+    };
+
     ChannelCfg.prototype.setPayLib = function (sdk) {
         this.payLib = new DependLib();
         this.payLib.cfg = sdk.name;
@@ -829,6 +978,26 @@ var ChannelCfg = (function () {
 
     ChannelCfg.prototype.setIconPos = function (icon) {
         this._icons = { position: icon };
+    };
+
+    ChannelCfg.prototype.isUsingCfg = function (cfgName) {
+        return this.userLib.cfg === cfgName || this.payLib.cfg === cfgName;
+    };
+
+    ChannelCfg.prototype.serverCfg = function () {
+        var res = {};
+        if (this.payLib == this.userLib) {
+            var dl = this.userLib.dumpJsonObj();
+            dl.type = 'user,pay';
+            res['sdks'] = [dl];
+        } else {
+            var dlUser = this.userLib.dumpJsonObj();
+            dlUser.type = 'user';
+            var dlPay = this.payLib.dumpJsonObj();
+            dlPay.type = 'pay';
+            res['sdks'] = [dlUser, dlPay];
+        }
+        return res;
     };
 
     ChannelCfg.prototype.loadShownIcon = function () {
@@ -847,31 +1016,48 @@ var ChannelCfg = (function () {
 })();
 exports.ChannelCfg = ChannelCfg;
 
+function guessWorkDir() {
+    var p = pathLib.join(pathLib.dirname(process.execPath), 'env.json');
+    if (fs.existsSync(p)) {
+        return pathLib.dirname(process.execPath);
+    }
+    p = pathLib.join(process.cwd(), 'env.json');
+    if (fs.existsSync(p)) {
+        return process.cwd();
+    }
+    return null;
+}
+
 var ChameleonTool = (function () {
     function ChameleonTool() {
     }
     ChameleonTool.initTool = function (db, cb) {
         var res = new ChameleonTool();
         res.db = db;
-        var content = fs.readFileSync(pathLib.join(__dirname, '..', 'env.json'), 'utf-8');
+        var workdir = guessWorkDir();
+        if (workdir == null) {
+            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, "无法找到合法的工具路径"));
+            return;
+        }
+        var content = fs.readFileSync(pathLib.join(workdir, 'env.json'), 'utf-8');
         var envObj = JSON.parse(content);
-        var chameleonPath = pathLib.join(__dirname, '..', envObj['pythonPath']);
-        res.chameleonPath = chameleonPath;
+        res.chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
 
         function loadInfoJsonObj(callback) {
-            var infojsonPath = pathLib.join(chameleonPath, 'info.json');
+            var infojsonPath = pathLib.join(res.chameleonPath, 'info.json');
             fs.readFile(infojsonPath, 'utf-8', function (err, s) {
                 if (err) {
                     Logger.log('fail to parse json', err);
-                    return callback(new ChameleonError(1 /* UNKNOWN */, '无法读取info.json'));
+                    return callback(new ChameleonError(1 /* UNKNOWN */, '无法读取' + infojsonPath));
                 }
                 try  {
                     var jsonobj = JSON.parse(s);
-                    res.infoObj = InfoJson.loadFromJson(jsonobj, chameleonPath);
+                    res.infoObj = InfoJson.loadFromJson(jsonobj, res.chameleonPath);
+                    res.upgradeMgr = new UpgradeMgr(workdir, res.infoObj.version);
                     return callback(null);
                 } catch (e) {
                     Logger.log('fail to parse json', e);
-                    return callback(new ChameleonError(1 /* UNKNOWN */, '无法读取info.json'));
+                    return callback(new ChameleonError(1 /* UNKNOWN */, '无法读取' + infojsonPath));
                 }
             });
         }
@@ -890,6 +1076,14 @@ var ChameleonTool = (function () {
         });
     };
 
+    ChameleonTool.checkSingleLock = function (callback) {
+        setImmediate(callback, null);
+    };
+
+    ChameleonTool.getChameleonHomePath = function () {
+        return pathLib.join(ChameleonTool.getUserPath(), '.prj_chameleon');
+    };
+
     ChameleonTool.prototype.getChannelList = function () {
         return this.infoObj.getChannelMetaInfos();
     };
@@ -904,6 +1098,10 @@ var ChameleonTool = (function () {
 
     ChameleonTool.prototype.getAllSDKs = function () {
         return this.infoObj.getSDKMetaInfos();
+    };
+
+    ChameleonTool.prototype.readUpgradeFileInfo = function (zipFile) {
+        return this.upgradeMgr.readManifest(zipFile);
     };
 
     ChameleonTool.prototype.get = function () {
@@ -923,10 +1121,109 @@ var ChameleonTool = (function () {
     };
 
     ChameleonTool.prototype.loadProject = function (prjPath, cb) {
-        Project.loadProject(this.infoObj, prjPath, cb);
+        Project.loadProject(this.infoObj, prjPath, function (err, project) {
+            if (err) {
+                cb(err, null);
+                return;
+            }
+            cb(null, project);
+        });
+    };
+
+    ChameleonTool.prototype.checkProjectUpgrade = function (prj, cb) {
+        if (this.version.cmp(prj.version) > 0) {
+            this.upgradeProject(prj, cb);
+        } else {
+            setImmediate(cb, null, null);
+        }
+    };
+
+    ChameleonTool.prototype.upgradePrjLibs = function (prj, cb) {
+        var _this = this;
+        var installedLibs = prj.collectInstalledLib();
+        var needUpgradeLibs = this.getNeedUpgradeLibs(installedLibs);
+        var upgradeFunc = function (lib, cb) {
+            var prjLibPath = pathLib.join(prj.prjPath, 'chameleon', 'libs', lib);
+            var libPath = pathLib.join(_this.chameleonPath, 'channels', lib);
+            fs.remove(prjLibPath, function () {
+                fs.copy(libPath, prjLibPath, null, cb);
+            });
+        };
+        var funcs = needUpgradeLibs.map(function (lib) {
+            return upgradeFunc.bind(null, lib.name);
+        });
+        async.parallel(funcs, function (err) {
+            if (err) {
+                Logger.log('Fail to upgrade lib', err);
+                cb(new ChameleonError(3 /* OP_FAIL */, '升级SDK失败'));
+                return;
+            }
+            cb(null, needUpgradeLibs.map(function (lib) {
+                return {
+                    name: lib.name,
+                    from: lib.realVer,
+                    to: _this.getSDK(lib.name).ver
+                };
+            }));
+        });
+    };
+
+    ChameleonTool.prototype.getNeedUpgradeLibs = function (libInfo) {
+        var res = [];
+        for (var i in libInfo) {
+            var lib = libInfo[i];
+            var meta = this.getSDK(lib.name);
+            if (meta.chamver.cmp(lib.version) > 0) {
+                lib.desc = meta.desc;
+                res.push(lib);
+            }
+        }
+        return res;
+    };
+
+    ChameleonTool.prototype.upgradePrjChameleon = function (prj, cb) {
+        var chameleonPath = pathLib.join(prj.prjPath, 'chameleon');
+        var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
+        async.series([
+            function (callback) {
+                fs.copy(chameleonRes, chameleonPath, null, function (err) {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+                    callback(null);
+                });
+            }, function (callback) {
+                var prjLibPath = pathLib.join(prj.prjPath, 'libs');
+                var chamLibPath = pathLib.join(prj.prjPath, 'chameleon', 'libs');
+                var otherCopy = [
+                    fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null),
+                    fs.copy.bind(fs, pathLib.join(chameleonPath, 'chameleon_build.py'), pathLib.join(prj.prjPath, 'chameleon_build.py'), null)
+                ];
+                if (fs.existsSync(pathLib.join(prjLibPath, 'chameleon_unity.jar'))) {
+                    otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon_unity.jar'), pathLib.join(prjLibPath, 'chameleon_unity.jar'), null));
+                }
+                async.parallel(otherCopy, function (err) {
+                    callback(err);
+                });
+            }], function (err) {
+            if (err) {
+                if (err instanceof ChameleonError) {
+                    cb(err);
+                } else {
+                    Logger.log('Fail to create project', err);
+                    cb(new ChameleonError(3 /* OP_FAIL */, err));
+                }
+            }
+            cb(null);
+        });
     };
 
     ChameleonTool.prototype.createProject = function (name, landscape, prjPath, unity, cb) {
+        this.doCreateProject(name, landscape, prjPath, unity, cb);
+    };
+
+    ChameleonTool.prototype.doCreateProject = function (name, landscape, prjPath, unity, cb) {
         try  {
             var chameleonPath = pathLib.join(prjPath, 'chameleon');
             var projectPPath = pathLib.join(prjPath, 'project.properties');
@@ -935,6 +1232,8 @@ var ChameleonTool = (function () {
             var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
             async.series([
                 function (callback) {
+                    newPrj.loadAndroidProjectInfo(callback);
+                }, function (callback) {
                     fs.copy(chameleonRes, chameleonPath, null, function (err) {
                         if (err) {
                             callback(err);
@@ -959,8 +1258,6 @@ var ChameleonTool = (function () {
                     async.parallel(otherCopy, function (err) {
                         callback(err);
                     });
-                }, function (callback) {
-                    newPrj.loadAndroidProjectInfo(callback);
                 }], function (err) {
                 if (err) {
                     if (err instanceof ChameleonError) {
@@ -980,6 +1277,31 @@ var ChameleonTool = (function () {
                 cb(new ChameleonError(3 /* OP_FAIL */, '未知错误'));
             }
         }
+    };
+
+    ChameleonTool.prototype.upgradeProject = function (prj, cb) {
+        var _this = this;
+        var updgradeProcess = [];
+        if (this.version.isMajorUpgrade(prj.version)) {
+            updgradeProcess.push(this.upgradePrjChameleon.bind(this, prj));
+        }
+        updgradeProcess.push(this.upgradePrjLibs.bind(this, prj));
+        updgradeProcess.push(function (upgradeLibs, cb) {
+            var res = prj.afterLibUpgraded(upgradeLibs, _this.version);
+            cb(null, res);
+        });
+        async.waterfall(updgradeProcess, function (err, desc) {
+            if (err) {
+                if (err instanceof ChameleonError) {
+                    cb(err);
+                } else {
+                    cb(ChameleonError.newFromError(err, 3 /* OP_FAIL */));
+                }
+                return;
+            }
+            desc.newVersion = _this.version;
+            cb(null, desc);
+        });
     };
 
     ChameleonTool.prototype.createSDKCfg = function (prj, sdkName, desc, cb) {
@@ -1015,7 +1337,7 @@ var ChameleonTool = (function () {
         if (prj.getChannelCfg(channelName)) {
             throw new ChameleonError(3 /* OP_FAIL */, '该渠道已经安装了：' + channelMeta.desc);
         }
-        return new ChannelCfg(channelMeta, null);
+        return new ChannelCfg(prj, channelMeta, null);
     };
 
     ChameleonTool.prototype.createChannel = function (prj, chcfg, cfg, cb) {
@@ -1103,6 +1425,15 @@ var ChameleonTool = (function () {
             });
         });
     };
+
+    ChameleonTool.getUserPath = function () {
+        return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+    };
+
+    ChameleonTool.prototype.upgradeFromFile = function (filePath) {
+        var newver = this.upgradeMgr.upgradeFromZip(filePath);
+        this.version = newver;
+    };
     return ChameleonTool;
 })();
 exports.ChameleonTool = ChameleonTool;
@@ -1134,6 +1465,7 @@ var Project = (function () {
         this.projectCfg = new ProjectCfg();
         this.channelCfg = {};
         this.sdkCfg = {};
+        this._upgradeHistory = [];
     }
     Project.prototype.addChannelCfg = function (name, chcfg) {
         this.channelCfg[name] = chcfg;
@@ -1154,8 +1486,43 @@ var Project = (function () {
         }
     };
 
+    Object.defineProperty(Project.prototype, "upgradeHistory", {
+        get: function () {
+            return this._upgradeHistory;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
     Project.prototype.addSDKCfg = function (name, sdkcfg) {
         this.sdkCfg[name] = sdkcfg;
+    };
+
+    Project.prototype.genServerCfg = function (paySvrCbUrl) {
+        var _this = this;
+        var res = {};
+        var obj = urlLib.parse(paySvrCbUrl);
+        var host = obj.protocol + '//' + obj.host;
+        var pathname = obj.pathname;
+        res['_product.json'] = {
+            appcb: {
+                host: host,
+                payCbUrl: pathname
+            }
+        };
+        for (var channelName in this.channelCfg) {
+            var chcfg = this.channelCfg[channelName];
+            var cfgs = chcfg.serverCfg();
+            cfgs['sdks'].forEach(function (libcfg) {
+                var replaceCfg = _this.sdkCfg[libcfg.cfg];
+                if (!replaceCfg) {
+                    throw new ChameleonError(3 /* OP_FAIL */, "Fail to find sdk cfg for " + libcfg.cfg + ", channel = " + channelName);
+                }
+                libcfg.cfg = replaceCfg.serverCfg();
+            });
+            res[channelName + '.json'] = cfgs;
+        }
+        return res;
     };
 
     Project.prototype.cloneGlobalCfg = function () {
@@ -1173,6 +1540,67 @@ var Project = (function () {
         sdkcfg.dumpJson(filename, callback);
     };
 
+    Project.prototype.afterLibUpgraded = function (upgradeLibs, newVersion) {
+        var _this = this;
+        var affectedSDKCfgs = Object.keys(this.sdkCfg).filter(function (name) {
+            for (var i in upgradeLibs) {
+                if (_this.sdkCfg[name].isUsingSDK(upgradeLibs[i].name)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        var affectedChannels = Object.keys(this.channelCfg).filter(function (name) {
+            for (var i in affectedSDKCfgs) {
+                if (_this.channelCfg[name].isUsingCfg(affectedSDKCfgs[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }).map(function (name) {
+            return {
+                desc: _this.channelCfg[name].desc,
+                name: name
+            };
+        });
+
+        this.projectCfg.version = newVersion;
+        this.dumpProjectJson(null);
+        var res = {
+            version: newVersion.toString(),
+            upgradeLibs: upgradeLibs,
+            upgradeChannels: affectedChannels
+        };
+        var p = pathLib.join(this.prjPath, 'chameleon', 'upgradeinfo.json');
+        this._upgradeHistory.push(res);
+        fs.writeJson(p, this._upgradeHistory);
+        return res;
+    };
+
+    Project.prototype.collectInstalledLib = function () {
+        var libPath = pathLib.join(this.prjPath, 'chameleon', 'libs');
+        var res = [];
+        fs.readdirSync(libPath).forEach(function (name) {
+            var p = pathLib.join(libPath, name);
+            if (fs.statSync(p).isDirectory()) {
+                var filep = pathLib.join(p, 'version.json');
+                if (fs.existsSync(filep)) {
+                    try  {
+                        var obj = JSON.parse(fs.readFileSync(filep, 'utf-8'));
+                        res.push(new SDKLibInfo(name, obj));
+                    } catch (e) {
+                        Logger.log("Fail to parse json", e);
+                        res.push(new SDKLibInfo(name, null));
+                    }
+                } else {
+                    res.push(new SDKLibInfo(name, null));
+                }
+            }
+        });
+        return res;
+    };
+
     Project.prototype.saveChannelCfg = function (name, cfg, cb) {
         var _this = this;
         var chcfg = this.channelCfg[name];
@@ -1186,6 +1614,8 @@ var Project = (function () {
         var icons = cfg['icons'];
         var paySDK = cfg['payLib'];
         var userSDK = cfg['userLib'];
+        var pkg = cfg['packageName'];
+        var signcfg = cfg['signcfg'];
         var updateCfg = {
             cfg: {
                 splashscreen: null,
@@ -1212,6 +1642,14 @@ var Project = (function () {
             setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '这个渠道需要定制化闪屏，请设置'));
             return;
         }
+
+        try  {
+            chcfg.validatePkgName(pkg);
+        } catch (e) {
+            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, e.message));
+            return;
+        }
+
         if (splashscreen && cfg['splashscreenToCp']) {
             var sc = cfg['splashscreenToCp'];
             var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/');
@@ -1235,6 +1673,7 @@ var Project = (function () {
                 }
             }
         }
+        chcfg.setSignCfg(signcfg);
 
         async.series([
             function (callback) {
@@ -1242,6 +1681,7 @@ var Project = (function () {
             }, function (callback) {
                 chcfg.setPayLib(paySDK);
                 chcfg.setUserLib(userSDK);
+                chcfg.setPackageName(pkg);
                 chcfg.splashscreen = updateCfg.cfg.splashscreen;
                 if (updateCfg.cfg.icons) {
                     chcfg.setIconPos(updateCfg.cfg.icons.position);
@@ -1307,6 +1747,14 @@ var Project = (function () {
             cb(null);
         });
     };
+
+    Object.defineProperty(Project.prototype, "version", {
+        get: function () {
+            return this.projectCfg.version;
+        },
+        enumerable: true,
+        configurable: true
+    });
 
     Object.defineProperty(Project.prototype, "appname", {
         get: function () {
@@ -1398,11 +1846,22 @@ var Project = (function () {
         });
     };
 
+    Object.defineProperty(Project.prototype, "packageName", {
+        get: function () {
+            return this.am.getPkgName();
+        },
+        enumerable: true,
+        configurable: true
+    });
+
     Project.loadProject = function (infoJson, path, cb) {
         var chameleonPath = pathLib.join(path, 'chameleon');
         var prj = new Project();
         prj.prjPath = path;
         async.parallel([
+            function (callback) {
+                prj.loadAndroidProjectInfo(callback);
+            },
             function (callback) {
                 var prjpath = pathLib.join(chameleonPath, 'champroject.json');
                 fs.readFile(prjpath, function (err, buf) {
@@ -1412,8 +1871,24 @@ var Project = (function () {
                     }
                     var obj = JSON.parse(buf.toString('utf-8'));
                     prj.projectCfg.globalCfg.loadFromJson(obj['globalcfg']);
-                    prj.projectCfg.version = obj.version;
+                    prj.projectCfg.version = new Version(obj.version);
                     callback(null);
+                });
+            },
+            function (callback) {
+                var prjpath = pathLib.join(chameleonPath, 'upgradeinfo.json');
+                fs.readFile(prjpath, function (err, buf) {
+                    if (err) {
+                        callback(null);
+                        return;
+                    }
+                    try  {
+                        var obj = JSON.parse(buf.toString('utf-8'));
+                        prj._upgradeHistory = obj;
+                        callback(null);
+                    } catch (e) {
+                        callback(null);
+                    }
                 });
             },
             function (callback) {
@@ -1436,7 +1911,7 @@ var Project = (function () {
                                 Logger.log('unknown channel ' + subfolders[i]);
                                 continue;
                             }
-                            var chcfg = ChannelCfg.loadFromJson(JSON.parse(content), meta, pathLib.join(prj.prjPath, 'chameleon', 'channels', subfolders[i]));
+                            var chcfg = ChannelCfg.loadFromJson(prj, JSON.parse(content), meta, pathLib.join(prj.prjPath, 'chameleon', 'channels', subfolders[i]));
                             prj.addChannelCfg(subfolders[i], chcfg);
                         }
                     } catch (e) {
@@ -1487,9 +1962,6 @@ var Project = (function () {
                     }
                     callback(null);
                 });
-            },
-            function (callback) {
-                prj.loadAndroidProjectInfo(callback);
             }
         ], function (err) {
             if (err) {
@@ -1538,7 +2010,7 @@ var Project = (function () {
             var re = /target\s*=\s*(.+)/m;
             var result = re.exec(p);
             if (result === null) {
-                throw new Error();
+                throw new Error("cant get project property");
             }
             return {
                 target: result[1]
@@ -1569,5 +2041,57 @@ var AndroidManifest = (function () {
         return this.xmlobj['$']['package'];
     };
     return AndroidManifest;
+})();
+
+var UpgradeMgr = (function () {
+    function UpgradeMgr(workdir, curver) {
+        this.workdir = workdir;
+        this.curver = curver;
+    }
+    UpgradeMgr.prototype.readManifest = function (fpath) {
+        try  {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            if (content == null || content.length == 0) {
+                throw new ChameleonError(3 /* OP_FAIL */, '不正确的升级包格式: 无法读取升级信息');
+            }
+            var obj = JSON.parse(content);
+            return {
+                from: obj.prevVer,
+                to: obj.toVer
+            };
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                Logger.log('Fail to read upgrade package', e);
+                throw new ChameleonError(3 /* OP_FAIL */, '不正确的升级包格式: ' + e.message);
+            }
+        }
+    };
+
+    UpgradeMgr.prototype.upgradeFromZip = function (fpath) {
+        try  {
+            var zip = new AdmZip(fpath);
+            var content = zip.readAsText("UpgradeManifest.json");
+            var obj = JSON.parse(content);
+            var baseVer = new Version(obj.prevVer);
+            var tover = new Version(obj.toVer);
+            if (this.curver.cmp(baseVer) != 0) {
+                Logger.log("Fail to upgrade");
+                throw new ChameleonError(3 /* OP_FAIL */, "升级包并不是针对当前版本：" + fpath + '\n' + 'base: ' + baseVer.toString() + ', current: ' + this.curver.toString());
+            }
+            zip.extractAllTo(this.workdir, true);
+            this.curver = tover;
+            return tover;
+        } catch (e) {
+            if (e instanceof ChameleonError) {
+                throw e;
+            } else {
+                throw ChameleonError.newFromError(e, 3 /* OP_FAIL */);
+            }
+        }
+    };
+    return UpgradeMgr;
 })();
 //# sourceMappingURL=chameleon.js.map

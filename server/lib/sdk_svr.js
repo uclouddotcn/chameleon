@@ -18,8 +18,10 @@ module.exports.createSDKSvr = function(productMgr, options, logger) {
  * @param {Array<Product>} productMgr - 
  * @param {?object} options
  * @param {?string} options.version - which version of current sdk server
+ * @param {object} logger - logger object
  */
 var SdkSvr = function (productMgr, options, logger) {
+
     var self = this;
     if (!options) {
         options = {};
@@ -43,14 +45,13 @@ var SdkSvr = function (productMgr, options, logger) {
         [
             {field: 'channel', type: 'string'},
             {field: 'token', type: 'string'},
-            {field: 'others', type: 'string', optional: 1},
+            {field: 'others', type: 'string', optional: 1}
         ]
     );
 
     // pending pay handler
     this._pendingPayValidator = new ReqValidator(
         [
-            {field: 'channel', type: 'string'},
             {field: 'uid', type: 'string'},
             {field: 'token', type: 'string'},
             {field: 'appUid', type: 'string'},
@@ -79,11 +80,19 @@ SdkSvr.prototype.listen = function(port, host, next) {
     });
 };
 
+SdkSvr.prototype.close = function (callback) {
+    this.logger.info('sdk svr exit');
+    this.server.close(callback);
+};
+
 SdkSvr.prototype._onProductInstalled = function (productInfo) {
     var self = this;
     var productName = productInfo.name;
     var product = productInfo.product;
-    self.server.post(util.format('/%s/verify_login',productName), 
+    self.server.get(util.format('/%s/verify_login',productName),
+        makeCommonHandler(self._pendingLoginValidator,
+            product.verifyLogin.bind(product)));
+    self.server.post(util.format('/%s/verify_login',productName),
         makeCommonHandler(self._pendingLoginValidator, 
             product.verifyLogin.bind(product)));
     self.server.post(util.format('/%s/pending_pay',productName), 
@@ -91,7 +100,7 @@ SdkSvr.prototype._onProductInstalled = function (productInfo) {
             product.pendingPay.bind(product)));
     self.logger.info({product: productName}, 
         'install product')
-}
+};
 
 var ReqValidator = function (paramRuleDefine) {
     this.checkFuncs = [];
@@ -109,8 +118,7 @@ var ReqValidator = function (paramRuleDefine) {
     }
 };
 
-ReqValidator.prototype.check =
-function(obj) {
+ReqValidator.prototype.check = function(obj) {
     for (var i in this.checkFuncs) {
         this.checkFuncs[i](obj);
     }

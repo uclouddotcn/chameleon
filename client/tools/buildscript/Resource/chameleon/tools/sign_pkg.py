@@ -20,18 +20,16 @@ def loadGlobalKeyCfg():
         cfg = json.load(f)
         return cfg
 
-#def loadChannelKeyCfg(channel):
-#   if channel is None:
-#       return None
-#   cfgpath = os.path.join(_PROJECT_DIR, 'channel', channel, 'sign.json')
-#   if not os.path.exists(cfgpath):
-#       return None
-#   f = codecs.open(cfgpath, 'r', 'utf-8')
-#   signCfg = json.load(cfgpath)
-#   return signCfg
-
 def loadChannelKeyCfg(channel):
-    return None
+   if channel is None:
+       return None
+   cfgpath = os.path.join(_PROJECT_DIR, 'channels', channel, 'project.json')
+   if not os.path.exists(cfgpath):
+       return None
+   f = codecs.open(cfgpath, 'r', 'utf-8')
+   cfg = json.load(f)
+   return cfg.get('signcfg')
+
 
 def mergeKeyCfg(globalKeyCfg, channelKeyCfg):
     if channelKeyCfg is None:
@@ -60,6 +58,7 @@ def main():
     output = args[1]
     keycfg =  mergeKeyCfg(globalCfg, channelCfg) 
     if keycfg:
+        print >> sys.stderr, 'use signing file ' + keycfg['keystroke']
         runKeyCfg(keycfg, os.path.relpath(input, os.getcwd()), 
 			os.path.relpath(output, os.getcwd()))
     else:

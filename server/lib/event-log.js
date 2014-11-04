@@ -4,13 +4,14 @@
  *  using the provided storage engine
  * @name module.exports.listen
  * @function
- * @param {object} eventCenter, the one emits user actions
- * @param {object} storageEngine, storage engine 
+ * @param {object} eventCenter the one emits user actions
+ * @param {object} storageEngine storage engine
  */
 module.exports.listen = function (eventCenter, storageEngine) {
-    eventCenter.on('login', function (channel, uid, newOthers) {
+    eventCenter.on('login', function (product, channel, uid, newOthers) {
         var obj = {
             action: 'login',
+            product: product,
             time: Date.now(),
             channel: channel,
             uid: uid,
@@ -19,9 +20,10 @@ module.exports.listen = function (eventCenter, storageEngine) {
         storageEngine.record(obj);
     });
 
-    eventCenter.on('login-fail', function (channel, err) {
+    eventCenter.on('login-fail', function (product, channel, err) {
         var obj = {
             action: 'login-fail',
+            product: product,
             time: Date.now(),
             channel: channel,
             err: err
@@ -32,7 +34,7 @@ module.exports.listen = function (eventCenter, storageEngine) {
     eventCenter.on('pre-pay', function (orderInfo) {
         var obj = {
             action: 'pre-pay',
-            time: Date.now(),
+            time: Date.now()
         };
         for (var i in orderInfo) {
             obj[i] = orderInfo[i];
@@ -43,7 +45,7 @@ module.exports.listen = function (eventCenter, storageEngine) {
     eventCenter.on('pay', function (orderInfo) {
         var obj = {
             action: 'pay',
-            time: Date.now(),
+            time: Date.now()
         };
         for (var i in orderInfo) {
             obj[i] = orderInfo[i];
@@ -55,7 +57,7 @@ module.exports.listen = function (eventCenter, storageEngine) {
         var obj = {
             action: 'pay-fail',
             time: Date.now(),
-            code: code,
+            code: code
         };
         for (var i in orderInfo) {
             obj[i] = orderInfo[i];
@@ -63,17 +65,44 @@ module.exports.listen = function (eventCenter, storageEngine) {
         storageEngine.record(obj);
     });
 
+    eventCenter.on('pay-cancel', function (product, channel, orderId, billno, amount) {
+        var obj = {
+            action: 'pay-fail',
+            time: Date.now(),
+            product: product,
+            channel: channel,
+            orderId: orderId,
+            billno: billno,
+            rmb: amount
+        };
+        storageEngine.record(obj);
+    });
+
+    eventCenter.on('pay-cancel-fail', function (product, channel, orderId, billno, amount, code) {
+        var obj = {
+            action: 'pay-fail',
+            time: Date.now(),
+            product: product,
+            channel: channel,
+            orderId: orderId,
+            billno: billno,
+            rmb: amount,
+            code: code
+        };
+        storageEngine.record(obj);
+    });
+
     eventCenter.on('disgard-order', function (orderInfo) {
         var obj = {
             action: 'disgard-order',
-            time: Date.now(),
+            time: Date.now()
         };
         for (var i in orderInfo) {
             obj[i] = orderInfo[i];
         }
         storageEngine.record(obj);
     });
-}
+};
 
 
 

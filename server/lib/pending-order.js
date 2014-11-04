@@ -2,10 +2,10 @@ var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var WError = require('verror').WError;
 var path = require('path');
+var FuncUnits = require('./functionunits');
 
 // API
-module.exports.createPendingOrderStore = 
-function (options, logger) {
+module.exports.createPendingOrderStore = function (options, logger) {
     return new PendingOrderStore(options, logger);
 };
 
@@ -14,10 +14,24 @@ var PendingOrderStore = function (options, logger) {
         throw new Error("pending order config must have 'type' field");
     }
     var self = this;
-    self.loadKvPlugin(options);
-    self.ttl = options.ttl || 900;
-    EventEmitter.call(this);
     self.logger = logger;
+    self.loadKvPlugin(options, logger);
+    self.ttl = options.ttl || 3600;
+    self.status = {
+        status: 'initing'
+    };
+    EventEmitter.call(this);
+    self.on('store-fail', function (msg) {
+        self.status.status = 'fail';
+        self.status.msg = msg;
+    });
+    self.on('store-ready', function (msg) {
+        self.status.status = 'ok';
+        if (self.status.msg) {
+            delete self.status.msg;
+        }
+    });
+    FuncUnits.register('PendingOrderStore', this);
 };
 
 util.inherits(PendingOrderStore, EventEmitter);
@@ -29,6 +43,10 @@ util.inherits(PendingOrderStore, EventEmitter);
  * @param {Object} res - null or the object fetched from storage
  */
 
+
+PendingOrderStore.prototype.close = function (callback) {
+    this.client.close(callback);
+}
 
 /**
  * store pending order
@@ -48,7 +66,7 @@ function (orderId, orderInfo, callback) {
         {orderId: orderId, order: orderInfo}, 'add order');
     var realCallback = null;
     if (callback) {
-        realCallback = function (err, res)  {
+        realCallback = function (err)  {
             if (err) {
                 return callback(new WError(err, "store pending order failed"));
             }
@@ -80,7 +98,11 @@ function(orderId, callback) {
                 self.logger.debug({err: err}, "get pending order failed");
                 return callback(new WError(err, "get pending order failed"));
             }
-            callback(null, JSON.parse(res));
+            if (!res) {
+                callback({code: 0});
+            } else {
+                callback(null, JSON.parse(res));
+            }
         });
 };
 
@@ -99,7 +121,7 @@ function(orderId, callback) {
     }
     var realCallback = null;
     if (callback) {
-        realCallback = function (err, res)  {
+        realCallback = function (err)  {
             if (err) {
                 return callback(new WError(err, "delete pending order failed"));
             }
@@ -108,19 +130,24 @@ function(orderId, callback) {
     }
     self.logger.trace(
             {orderId: orderId}, 'delete order');
-    self.client.del(orderId, realCallback);
+    try {
+        self.client.del(orderId, realCallback);
+    } catch (e) {
+        self.logger.error({err: err}, 'Fail to delete order ' + orderId);
+    }
 };
 
 
-PendingOrderStore.prototype.loadKvPlugin = function(option) {
+PendingOrderStore.prototype.loadKvPlugin = function(option, logger) {
     var name = option.type;
     var pluginPath = path.join(__dirname, 'otherplugins', 'kvstore', name);
     try {
         var m = require(pluginPath);
     } catch (e) {
+        this.logger.error({err: e}, "Fail to load plugin");
         throw new Error('Fail to load plugin at ' + pluginPath);
     }
-    this.client = m.createClient(this, option);
-}
+    this.client = m.createClient(this, option, logger);
+};
 
 

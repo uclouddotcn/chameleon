@@ -134,7 +134,9 @@ public:
     virtual void onToolbar(int flag);
     virtual void onResume();
     virtual void onAntiAddiction(int id, int code, int flag);
-    virtual void onDestroy(int id);
+    virtual void onExit(int code);
+    void exit();
+
 private:
     void onCharge(int status,
                   const std::string & orderId, 

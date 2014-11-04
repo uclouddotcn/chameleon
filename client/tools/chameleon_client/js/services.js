@@ -46,22 +46,11 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     var ProjectMgr = function() {
         $log.log('init the env');
         this.exec = require('child_process').execFile;
+        this.spawn = require('child_process').spawn;
         this.tmpLib = require('tmp');
         this.fs = require('fs');
         this.pathLib = require('path');
-        /*
-        var content = 
-            fs.readFileSync(pathLib.join(globalenv.APP_FOLDER, 'env.json'), {
-            encoding:'utf-8'
-            });
-        this.env = JSON.parse(content);
-        this.setPythonMgrPath(
-            pathLib.join(globalenv.APP_FOLDER, this.env.pythonPath));
-            */
         globalenv.createTempFolder();
-        var Database = require('nedb');
-        this.sdkdb = new Database({filename: this.pathLib.join(globalenv.APP_FOLDER, 'sdkdb.nedb'), autoload: true});
-        this.db = new Database({filename: this.pathLib.join(globalenv.APP_FOLDER, 'productdb.nedb'), autoload: true});
     };
 
     ProjectMgr.prototype.getTempFile = function(project, name) {
@@ -71,13 +60,22 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     ProjectMgr.prototype.init = function () {
         var defered = $q.defer();
         var self = this;
-        chameleon.ChameleonTool.initTool(new PouchDBWrapper(self.sdkdb), function (err, chtool) {
+        ChameleonTool.checkSingleLock(function (err) {
             if (err) {
                 defered.reject(err);
-                return;
             }
-            self.chtool = chtool;
-            defered.resolve(chtool);
+            var Database = require('nedb');
+            self.homeDir = ChameleonTool.getChameleonHomePath();
+            self.sdkdb = new Database({filename: pathLib.join(self.homeDir, 'sdkdb.nedb'), autoload: true});
+            self.db = new Database({filename: pathLib.join(self.homeDir, 'productdb.nedb'), autoload: true});
+            chameleon.ChameleonTool.initTool(new PouchDBWrapper(self.sdkdb), function (err, chtool) {
+                if (err) {
+                    defered.reject(err);
+                    return;
+                }
+                self.chtool = chtool;
+                defered.resolve(chtool);
+            });
         });
         return defered.promise;
     }
@@ -91,7 +89,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         try {
             var p = JSON.parse(this.fs.readFileSync(j, 'utf-8'));
             return {
-                appname: p.globalcfg.appname,
+                appname: p.globalcfg.sappname,
                 version: p.version
             };
         } catch (e) {
@@ -100,30 +98,54 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         }
     };
 
-    ProjectMgr.prototype.doRunCmd = function (cmd, params, timeout, callback) {
+    ProjectMgr.prototype.doRunCmd = function (cmd, params, logfile, timeout, callback) {
         if (typeof timeof === 'function') {
             callback = timeout;
             timeout = 60; //default one minute
         }
-        var c = spawn(cmd, params);
-    }
+        var proc = this.spawn(cmd, params);
+        if (logfile) {
+            var logstream = fs.createWriteStream(logfile);
+            proc.stdout.pipe(logstream);
+            proc.stderr.pipe(logstream);
+        }
+        var timerHandle = setTimeout(function () {
+            timerHandle = null;
+            proc.kill('SIGKILL');
+        }, timeout*1000);
+        proc.on('exit', function (code, signal) {
+            if (code !== 0) {
+                var e = new Error();
+                e.code = code;
+                e.signal = signal;
+                callback(e);
+            } else {
+                callback(null);
+            }
+            callback(code, signal);
+            if (timerHandle) {
+                clearTimeout(timerHandle);
+            }
+            if (logstream) {
+                proc.stdout.unpipe(logstream);
+                proc.stderr.unpipe(logstream);
+                logstream.end();
+            }
+        })
+    };
 
     ProjectMgr.prototype.compileProject = function(project, target) {
         var defered = $q.defer();
         var buildscript = this.pathLib.join(project.__doc.path, 'chameleon_build.py');
         var inputParams = [buildscript, 'build', 'release', target];
-        this.exec('python', inputParams, {
-                timeout: 120000,
-                maxBuffer: 1024*1024
-            }, function (error, stdout, stderr) {
-                $log.log("std out " + stdout);
-                $log.log("std err " + stderr);
+        var logfile = this.getTempFile(project, "compile_"+target);
+        this.doRunCmd('python', inputParams, logfile, 20*60, function (error) {
                 var compileResult = null;
                 if (error) {
                     compileResult = {
-                        code: error.code,
+                        code: error.code || -1,
                         target: target,
-                        s: stderr + '\n\n 详细log是：\n' + stdout
+                        logfile: logfile
                     };
                     return defered.resolve(compileResult);
                 }
@@ -176,14 +198,17 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     ProjectMgr.prototype.updateSignCfg = function (project, channelId, cfg) {
         var defered = $q.defer();
         var self = this;
-        project.setSignCfg(cfg);
-        project.saveSignCfg(function (err) {
-            if (err) {
-                defered.reject(err);
-            } else {
-                defered.resolve();
-            }
-        });
+        if (channelId) {
+        } else {
+            project.setSignCfg(cfg);
+            project.saveSignCfg(function (err) {
+                if (err) {
+                    defered.reject(err);
+                } else {
+                    defered.resolve();
+                }
+            });
+        }
         return defered.promise;
     };
 
@@ -206,7 +231,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 } else {
                     defered.resolve();
                 }
-            })
+            });
         }
         return defered.promise;
     }
@@ -219,6 +244,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             if (err) {
                 defered.reject(defered);
             } else {
+
                 defered.resolve();
             }
         });
@@ -235,6 +261,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 defered.resolve();
             }
         });
+
         return defered.promise;
     }
 
@@ -248,10 +275,9 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         var chamPrjPath = self.pathLib.join(chameleonPath, 'champroject.json');
         try {
             var projectDetail = JSON.parse(self.fs.readFileSync(chamPrjPath, 'utf-8'));
-            var appName = projectDetail.globalcfg.appname;
+            var appName = projectDetail.globalcfg.sappname;
             var version = projectDetail.version;
-            self.db.put({
-                _id: Math.round(new Date().getTime()/1000).toString(),
+            self.db.insert({
                 path: path,
                 name: appName,
                 version: version
@@ -260,11 +286,12 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                     $log.log('Fail to put in pouchDB ' + err);
                     return defered.reject(new Error('绑定工程失败: 未知错误'));
                 }
-                return defered.resolve(result.id);
+                return defered.resolve(result._id);
             });
             return defered.promise;
         } catch (e) {
             $log.log('Fail to read or parse project path');
+            $log.log(e);
             throw new Error('解析Chameleon工程文件出错');
         }
     };
@@ -442,6 +469,20 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         self.chtool.loadProject(prjPath, callback);
     };
 
+    ProjectMgr.prototype.checkProjectUpgrade = function (project, callback) {
+        var self = this;
+        this.chtool.checkProjectUpgrade(project, function (err, desc) {
+            if (err) {
+                return callback(err);
+            }
+            if (!desc) {
+                return callback(desc);
+            }
+            self.db.update({_id: project.__doc._id}, {$set: {version: desc.newVersion.toString()}});
+            callback(null, project);
+        });
+    }
+
     ProjectMgr.prototype.updateProjectDoc = function (projectDoc) {
         this.db.update({_id: projectDoc._id}, projectDoc, {});
     };
@@ -485,6 +526,9 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         this.controller = function ($scope, $modalInstance, data) {
             $scope.tips = data.tips;
             data.p.then(function (x) {
+
+
+
                 $modalInstance.close(x);
                 return x;
             }, function (x) {
@@ -514,7 +558,98 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     };
 
     return new WaitingDlg();
-}]);
+}])
+.factory('sliderbox',['$timeout',function($timeout){
+    var sliders = {};
+
+    function _slideFn(){
+        var _scrolling = "";
+        var a = 1;
+        var $slider = $('.slider ul');
+        var $slider_child_l = $('.slider ul li').length;
+        var $slider_width = 150;
+        var slider_count = 0;
+
+
+        $timeout(function(){
+            $slider_child_l = $('.slider ul li').length;
+//                    $slider.width($slider_child_l * $slider_width);
+            if ($slider_child_l <= 4) {
+                $('#btn-right').css({cursor: 'auto'});
+                $('#btn-right').removeClass("dasabled");
+            }
+        },300)
+        function moveToRight() {
+            if (slider_count >= $slider_child_l - 4) {
+                a = 0;
+                moveToLeft();
+            } else {
+                slider_count++;
+                $slider.animate({left: '-=' + $slider_width + 'px'}, 300);
+                moveAction();
+
+            }
+        }
+        function moveToLeft() {
+            if (slider_count <= 0) {
+                a = 1;
+                moveToRight();
+            } else {
+                slider_count--;
+                $slider.animate({left: '+=' + $slider_width + 'px'}, 300);
+                moveAction();
+
+            }
+        }
+        function moveEndRight() {
+            if (slider_count >= $slider_child_l - 4) {
+                return false;
+            } else {
+                slider_count++;
+                $slider.animate({left: '-=' + $slider_width + 'px'}, 300);
+                moveAction();
+            }
+        }
+        function moveEndLeft() {
+            if (slider_count <= 0) {
+                return false;
+            } else {
+                slider_count--;
+                $slider.animate({left: '+=' + $slider_width + 'px'}, 300);
+                moveAction();
+            }
+        }
+        function moveAction() {
+            if (slider_count >= $slider_child_l - 4) {
+                $('#btn-right').css({cursor: 'auto'});
+                $('#btn-right').addClass("dasabled");
+            }
+            else if (slider_count > 0 && slider_count <= $slider_child_l - 4) {
+                $('#btn-left').css({cursor: 'pointer'});
+                $('#btn-left').removeClass("dasabled");
+                $('#btn-right').css({cursor: 'pointer'});
+                $('#btn-right').removeClass("dasabled");
+            }
+            else if (slider_count <= 0) {
+                $('#btn-left').css({cursor: 'auto'});
+                $('#btn-left').addClass("dasabled");
+            }
+        }
+        $('#btn-left').unbind('click').click(function(){
+            moveEndLeft();
+        })
+        $('#btn-right').unbind('click').click(function(){
+            moveEndRight();
+        })
+    }
+
+        return sliders = {
+            slideFn : _slideFn
+        }
+
+
+
+}])
 
 
 

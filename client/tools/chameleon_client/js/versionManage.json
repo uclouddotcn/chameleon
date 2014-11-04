@@ -1,0 +1,33 @@
+[
+    {
+        "version" : "刀塔传奇1.0.1",
+        "content" : "刀塔传奇1.0.1 有我开发。啊实打实大飒飒的飒飒",
+        "update"  : "刀塔传奇1.0.1 有我开发。啊实打实大飒飒的飒飒你懂的阿萨斯到家",
+        "images"  : [
+            "images/5.jpg"
+
+        ]
+
+    },
+    {
+        "version" : "刀塔传奇1.0.2",
+        "content" : "刀塔传奇1.0.1 有我开发。啊实打实大飒飒的飒飒1asdasdasdq",
+        "update"  : "刀塔传奇1.0.1 有我开发。啊实打实大飒飒的飒飒ssasasasa",
+        "images"  : [
+            "images/3.jpg",
+            "images/5.jpg"
+        ]
+
+    },
+    {
+        "version" : "刀塔传奇1.0.3",
+        "content" : "刀塔传奇1.0.1 有我开发。wqdqwd111",
+        "update"  : "刀塔传奇1.0.1 有我开发。qwdqwdqwdqwd",
+        "images"  : [
+            "images/3.jpg",
+            "images/4.jpg",
+            "images/5.jpg"
+        ]
+
+    }
+]

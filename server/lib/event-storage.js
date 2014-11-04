@@ -1,8 +1,10 @@
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
-var WError = require('verror').WError;
 var path = require('path');
+var fs = require('fs');
 var loadModule = require('./libloader').loadModule;
+var async = require('async');
+var constants = require('./constants');
 
 // API
 module.exports.createStorageDriver = 
@@ -12,13 +14,18 @@ function (options, logger) {
 
 var EventStorage = function (options, logger) {
     var self = this;
-    self.storages = []
+    self.storages = [];
     self.logger = logger;
     if (!options) {
+        var FileBillLogger = require('./file-billlogger');
+        if (!fs.existsSync(constants.billDir)) {
+            fs.mkdirSync(constants.billDir);
+        }
+        this.storages.push(new FileBillLogger(constants.billDir));
         return;
     }
     if (util.isArray(options)) {
-        options.foreach(function (option) {
+        options.forEach(function (option) {
             self.loadSingleModule(option)
         })
     } else {
@@ -32,21 +39,29 @@ EventStorage.prototype.loadSingleModule = function (option) {
     }
     try {
         var m = loadModule(['otherplugins', 'event-storage', option.name]);
-        var obj = new m(option.cfg)
+        var obj = new m(option.cfg);
         this.storages.push(obj);
         this.logger.info('load event storage ' + option.name);
     } catch (e) {
         this.logger.error(util.format('Fail to load plugin %s: %s', option.name, 
             e));
     }
-}
+};
 
 EventStorage.prototype.record = function (obj) {
-    for (var i in this.storages) {
-        try {
-            this.storages[i].record(obj);
-        } catch (e) {
+    this.storages.forEach(function (store) {
+        store.record(obj);
+    });
+};
+
+EventStorage.prototype.close = function (callback) {
+    var exitFunc = this.storages.map(function (x) {
+        return x.close.bind(x);
+    });
+    async.parallel(
+        exitFunc, function () {
+            callback();
         }
-    }
-}
+    );
+};
 

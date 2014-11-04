@@ -1,0 +1,76 @@
+<div class="container-fluid">
+    <form name="globalsetting" novalidate class="form-horizontal" ng-submit="updateCurrentCfg()">
+    <section id="brief">
+        <div class="row">
+            <div class="page-header row"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 vm-area-r0">
+                <div class="vm-list">
+                    <div class="vm-list-head">游戏版本
+                        <button  type="button" class="btn btn-primary btn-xs vm-head-btn" ng-click="setVersionCfg()">添加</button>
+                    </div>
+                    <div class="vm-list-content" >
+
+
+                        <div ng-class="{active:$index == tabVersion}"
+                             ng-repeat="i in versionsDate" index="{{$index}}" ng-click="tabData($index)">{{i.version}}</div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-9 ">
+                
+                    <div class="vm-area">
+                        <div class="row">
+                            <div class="col-md-6 vm-area-r0">
+
+                                <div class="vm-edite-header">内容介绍
+                                    <button ng-disabled="!globalsetting.vcontent.$dirty" type="button" class="btn btn-primary btn-xs vm-head-btn" ng-click="saveVscontent()">保存</button>
+                                </div>
+
+                                <textarea ng-change="changContent()" name="vcontent" id="vcontent"   class="vm-edite-text" ng-model="vmodels.vcontent"  ng-required="true"  ></textarea>
+
+                            </div>
+                            <div class="col-md-6 vm-area-l0">
+                                <div class="vm-edite-header">更新内容
+                                    <button ng-disabled="!globalsetting.vupdate.$dirty" type="button" class="btn btn-primary btn-xs vm-head-btn" ng-click="saveVsupdate()">保存</button>
+
+                                </div>
+                                <textarea ng-change="changUpdate()" name="vupdate" ng-model="vmodels.vupdate" class="vm-edite-text" ng-required="true" ></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="vm-image">
+                                <div class="col-md-12">
+                                    <div class="vm-image-header vm-edite-header">
+                                        <span>游戏截图</span>
+                                        <button type="button" class="btn btn-primary btn-xs vm-head-btn">添加图片</button>
+                                        <input type="file" class="btn btn-primary btn-xs vm-head-btn vm-head-btn-file" onchange="angular.element(this).scope().setFiles(this)"  />
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="vm-image-content">
+                                        <sliderbox a-images="aImages"></sliderbox>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                 
+
+
+            </div>
+
+        </div>
+
+    </section>
+    </form>
+</div>

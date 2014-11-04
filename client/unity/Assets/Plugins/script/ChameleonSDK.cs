@@ -103,7 +103,7 @@ public class ChameleonSDK : MonoBehaviour  {
 		/**
 		 * buy the currency in game
 		 * @param orderId the order id from server
-     	 * @param uidInGame player id in the game
+     	 * @param uidInGame player id in the game 
      	 * @param userNameInGame  player name in the game
      	 * @param serverId  current server id
      	 * @param currencyName the currency name
@@ -128,8 +128,6 @@ public class ChameleonSDK : MonoBehaviour  {
 		/**
      	 *  user buy a product
      	 * @param orderId the order id from server
-     	 * @param uid the user id of the channel
-     	 * @param accessToken the session token of the channel
      	 * @param uidInGame player id in the game
      	 * @param userNameInGame player name in the game
      	 * @param serverId  current server id
@@ -140,8 +138,6 @@ public class ChameleonSDK : MonoBehaviour  {
      	 * @param realPayMoney the real money to pay
      	*/
 		public static void buy(string orderId, 
-		                       string uid, 
-		                       string accessToken,
 		                       string uidInGame,
 		                       string userNameInGame,
 		                       string serverId,
@@ -273,6 +269,21 @@ public class ChameleonSDK : MonoBehaviour  {
 			return mBridge.callFunc<bool>("onLoginRsp", rsp);
 		}
 
+		/**
+		 * submit player info
+		 * @param roleId role id in game
+		 * @param roleName role name in game
+		 * @param roleLevel role level in game
+		 * @param zoneId zone id
+		 * @param zoneName zone name
+		 */
+		public static void submitPlayerInfo(string roleId,
+		                                    string roleName,
+		                                    string roleLevel,
+		                                    int zoneId,
+		                                    string zoneName) {
+			mBridge.callFunc ("submitPlayerInfo", roleId, roleName, roleLevel, zoneId, zoneName);
+		}
 		/**
 		 * register the listener of the channel event
 		 */

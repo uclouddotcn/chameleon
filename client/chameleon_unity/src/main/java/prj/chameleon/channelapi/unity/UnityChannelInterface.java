@@ -1,6 +1,7 @@
 package prj.chameleon.channelapi.unity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -19,7 +20,8 @@ public class UnityChannelInterface {
     private static AccountActionListener mAccountActionListener = new AccountActionListener();
 
     /**
-     *  init the cbinding platform interface
+     * init the cbinding platform interface
+     *
      * @param activity the main activity
      */
     public static void init(final Activity activity) {
@@ -79,6 +81,7 @@ public class UnityChannelInterface {
 
     /**
      * request guest user to register or associate a platform account,
+     *
      * @param tips tips shown in the platform sdk, not all platform support this
      * @return false if the request is not valid, e.g. the user didn't login as a guest
      * @throws UnsupportedEncodingException
@@ -121,7 +124,8 @@ public class UnityChannelInterface {
 
     /**
      * start a charge, refer the meaning of the parameter to the
-     *  prj.chameleon.platformapi.UnityChannelInterface
+     * prj.chameleon.platformapi.UnityChannelInterface
+     *
      * @param orderId
      * @param uidInGame
      * @param userNameInGame
@@ -160,7 +164,7 @@ public class UnityChannelInterface {
 
     /**
      * start a buy request, refer the meaning of the parameters to prj.chameleon.platformapi.UnityChannelInterface
-     * @param id
+     *
      * @param orderId
      * @param uidInGame
      * @param userNameInGame
@@ -171,8 +175,7 @@ public class UnityChannelInterface {
      * @param realPayMoney
      * @throws UnsupportedEncodingException
      */
-    public static void buy(final int id,
-                           final String orderId,
+    public static void buy(final String orderId,
                            final String uidInGame,
                            final String userNameInGame,
                            final String serverId,
@@ -214,6 +217,7 @@ public class UnityChannelInterface {
 
     /**
      * whether the platform supports switching account
+     *
      * @return
      */
     public static boolean isSupportSwitchAccount() {
@@ -222,6 +226,7 @@ public class UnityChannelInterface {
 
     /**
      * switch account
+     *
      * @return
      */
     public static void switchAccount() {
@@ -258,6 +263,7 @@ public class UnityChannelInterface {
 
     /**
      * show platform toolbar
+     *
      * @param visible
      */
     public static void showFloatBar(final boolean visible) {
@@ -312,7 +318,38 @@ public class UnityChannelInterface {
     }
 
     /**
+     * notify the platform we are destroyed
+     */
+    public static void onDestroy() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                prj.chameleon.channelapi.ChannelInterface.onDestroy(mActivity);
+            }
+        });
+    }
+
+    public static void onActivityResult(final Activity activity, final int requestCode, final int resultCode, final Intent data) {
+        prj.chameleon.channelapi.ChannelInterface.onActivityResult(activity, requestCode, resultCode, data);
+    }
+
+
+    public static void onStart(Activity activity) {
+        prj.chameleon.channelapi.ChannelInterface.onStart(activity);
+    }
+
+    public static void onStop(Activity activity) {
+        prj.chameleon.channelapi.ChannelInterface.onStop(activity);
+    }
+
+    public static void onNewIntent(Activity activity, Intent intent) {
+        prj.chameleon.channelapi.ChannelInterface.onStop(activity);
+    }
+
+
+    /**
      * request anti addiction info
+     *
      * @throws UnsupportedEncodingException
      */
     public static void antiAddiction() throws UnsupportedEncodingException {
@@ -346,9 +383,7 @@ public class UnityChannelInterface {
                 prj.chameleon.channelapi.ChannelInterface.exit(mActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(int retCode, JSONObject data) {
-                        if (retCode == Constants.ErrorCode.ERR_OK) {
-                            U3DHelper.SendMessage("onExit", "");
-                        }
+                        U3DHelper.SendMessage("onDestroyed", String.format("{\"code\": %d}", retCode));
                     }
                 });
             }
@@ -357,6 +392,7 @@ public class UnityChannelInterface {
 
     /**
      * get current platform name
+     *
      * @return
      */
     public static String getChannelName() {
@@ -364,9 +400,9 @@ public class UnityChannelInterface {
     }
 
 
-
     /**
      * get channel user id
+     *
      * @return channel user id
      */
     public static String getUid() {
@@ -375,6 +411,7 @@ public class UnityChannelInterface {
 
     /**
      * user have loggined or not
+     *
      * @return true if the user have already logged in
      */
     public static boolean isLogined() {
@@ -383,6 +420,7 @@ public class UnityChannelInterface {
 
     /**
      * get the token of this session
+     *
      * @return the token of the channel
      */
     public static String getToken() {
@@ -391,6 +429,7 @@ public class UnityChannelInterface {
 
     /**
      * get the pay token of this session
+     *
      * @return the pay token of this channel
      */
     public static String getPayToken() {
@@ -399,6 +438,7 @@ public class UnityChannelInterface {
 
     /**
      * feed the login rsp from the chameleon server to SDK
+     *
      * @param rsp the login rsp from chameleon server
      * @return
      */
@@ -406,4 +446,17 @@ public class UnityChannelInterface {
         return ChannelInterface.onLoginRsp(rsp);
     }
 
+    public static void submitPlayerInfo(String roleId,
+                                        String roleName,
+                                        String roleLevel,
+                                        int zoneId,
+                                        String zoneName) {
+        ChannelInterface.submitPlayerInfo(mActivity,
+                roleId,
+                roleName,
+                roleLevel,
+                zoneId,
+                zoneName);
+    }
 }
+

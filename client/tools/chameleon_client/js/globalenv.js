@@ -5,7 +5,6 @@ var tempFolder = pathLib.join(appFolder, 'temp');
 module.exports.APP_FOLDER = appFolder;
 
 module.exports.createTempFolder = function () {
-    console.log(appFolder + tempFolder)
     if (!fs.existsSync(tempFolder)) {
         fs.mkdirSync(tempFolder);
     } 

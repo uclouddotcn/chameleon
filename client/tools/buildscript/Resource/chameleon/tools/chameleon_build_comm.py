@@ -1,9 +1,9 @@
 import codecs, os, json
 from collections import namedtuple
 
-LibInfo = namedtuple('LibInfo', ['name', 'path', 'cfg', 'cfgpath'])
+LibInfo = namedtuple('LibInfo', ['name', 'path', 'cfg', 'cfgpath', 'type'])
 
-def _getCommCfg():
+def getCommCfg():
     with codecs.open(os.path.join('chameleon', 'champroject.json'), 'r', 'utf8') as f:
         jsoncfg = json.load(f)
         return jsoncfg['globalcfg']
@@ -21,21 +21,20 @@ def _mergeCfg(to, f):
         to['horientation'] = 'portrait'
     return to
 
-def _loadDependLibInfo(info, globalcfg, libPath):
+def _loadDependLibInfo(globalcfg, info, libPath):
     p = os.path.join('chameleon', 'sdkcfg', info['cfg'])
     cfg = _loadCfg(p)
     return LibInfo(info['name'], os.path.join(libPath, info['name']), 
-            _mergeCfg(cfg, globalcfg), p)
+            _mergeCfg(cfg, globalcfg),  p, info['type'])
 
-def getDependLibs(channel):
-    globalCfg = _getCommCfg()
+def getDependLibs(channel, globalcfg):
     channelPath = os.path.join('chameleon', 'channels', channel)
     prjJsonPath = os.path.join(channelPath, 'project.json')
     libPath = os.path.join('chameleon', 'libs')
     with codecs.open(prjJsonPath, 'r', 'utf8') as f:
         prjJson = json.load(f)
         dependLibs = prjJson['dependLibs']
-        return [_loadDependLibInfo(item, globalCfg, libPath) for item in dependLibs]
+        return [_loadDependLibInfo(globalcfg, item, libPath) for item in dependLibs]
 
 
 

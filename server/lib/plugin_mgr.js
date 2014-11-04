@@ -1,14 +1,14 @@
 var restify = require('restify');
 var paramChecker = require('./param-checker');
+var url = require('url');
 var util = require('util');
 var constants = require('./constants');
 var fs = require('fs');
-
-var configDir = __dirname + '/../plugin_config';
+var childProcess = require('child_process');
+var pathLib = require('path');
 
 module.exports.createPluginMgr = function (logger) {
-    var mgr = new PluginMgr(logger);
-    return mgr;
+    return new PluginMgr(logger);
 };
 
 
@@ -30,10 +30,10 @@ function PluginMgr(logger) {
  * Get all plugin module infos
  * @name PluginMgr.prototype.getAllPluginInfos
  * @function
- * @return {array} a list of plugin info
+ * @return {Array} a list of plugin info
  */
 PluginMgr.prototype.getAllPluginInfos = function() {
-    ret = [];
+    var ret = [];
     for (var i in this.pluginModules) {
         ret.push(makePluginInfo(this.pluginModules[i]));
     }
@@ -45,25 +45,46 @@ PluginMgr.prototype.getAllPluginInfos = function() {
  * Add a plugin, plugin module must be placed under $ROOT/lib/plugin
  * @name PluginMgr.prototype.addPlugin
  * @function
- * @param {string} name, name of the plugin
- * @param {object} param, the request param item
- * @param {?object} param.cfg, the config item
+ * @param {string} name name of the plugin
+ * @param {object} fileurl the url of the plugin file
  * @param {function} callback
  */
-PluginMgr.prototype.addPlugin = function(name, param, callback) {
+PluginMgr.prototype.addPlugin = function(name, fileurl, callback) {
     var self = this;
     var pluginModule = self.pluginModules[name];
-    if (pluginInfo) {
-         return callback(Error("plugin " + name + " is already loaded"));
+    if (pluginModule) {
+        return setImmediate(callback(Error("plugin " + name + " is already loaded")));
     }
-
-    pluginModule = loadPluginModule(self, name); 
-    if (pluginModule instanceof Error) {
-        callback(pluginModule);
-    } else {
-        callback(null, makePluginInfo(pluginModule));
-    }
+    self.loadPlugin(name, fileurl, function (err) {
+        if (err) {
+            return callback(err);
+        }
+        pluginModule = loadPluginModule(self, name);
+        if (pluginModule instanceof Error) {
+            callback(pluginModule);
+        } else {
+            callback(null, makePluginInfo(pluginModule));
+        }
+    })
 };
+
+PluginMgr.prototype.loadPlugin = function(name, fileurl, callback) {
+    var self = this;
+    var cp = childProcess.execFile('node', [pathLib.join(__dirname, '..', 'upgrade.js'), name, fileurl],
+        {timeout: 10000}, function (err, stdin, stdout) {
+            if (!err) {
+                callback(null);
+            } else {
+                var code = err.code;
+                self.logger.error({err: err}, 'Fail to load plugin');
+                if (code === 1) {
+                    callback(new Error('exists plugin module'));
+                } else {
+                    callback(new Error('unknown error'));
+                }
+            }
+        });
+}
 
 function makePluginInfo(pluginModule) {
     if (pluginModule) {
@@ -80,7 +101,7 @@ function doLoadPluginModule(self, path) {
         throw new Error('plugin ' + path + 
             ' miss required field name');
     }
-    if (!pluginModule.create ) {
+    if (!pluginModule.createSDK ) {
         throw new Error('plugin ' + path + 
             ' miss required function create');
     }
@@ -105,10 +126,10 @@ function loadPluginModule(self, fileName) {
     if (fileName == 'common') {
         return;
     }
-    if (!fs.statSync(path).isDirectory()) {
-        return;
-    }
     try {
+        if (!fs.statSync(path).isDirectory()) {
+            return;
+        }
         return doLoadPluginModule(self, path);
     } catch (err) {
         self.logger.error(

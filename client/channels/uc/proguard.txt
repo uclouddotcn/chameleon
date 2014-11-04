@@ -1,0 +1,3 @@
+-keep class android.** {*;}
+
+-keep class cn.uc.**{*;}

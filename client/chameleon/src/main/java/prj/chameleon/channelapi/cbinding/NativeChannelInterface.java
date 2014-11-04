@@ -1,6 +1,7 @@
 package prj.chameleon.channelapi.cbinding;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -14,16 +15,13 @@ import prj.chameleon.channelapi.ChannelInterface;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IDispatcherCb;
 
-/**
- * Created by wushauk on 4/21/14.
- */
 public class NativeChannelInterface {
     public static interface IRunEnv {
         public void run(Runnable runnable);
     }
 
     private static Activity mActivity;
-    private static AccountActionListener mAccountActionListener = new AccountActionListener();
+    private static AccountActionListener mAccountActionListener;
     private static class GlSurfaceViewRunEnv implements IRunEnv{
         public WeakReference<GLSurfaceView> mGlView;
         GlSurfaceViewRunEnv(GLSurfaceView view) {
@@ -101,6 +99,7 @@ public class NativeChannelInterface {
         });
         mActivity = activity;
         mRunEnv = new GlSurfaceViewRunEnv(view);
+        mAccountActionListener = new AccountActionListener(mRunEnv);
     }
 
     /**
@@ -498,6 +497,18 @@ public class NativeChannelInterface {
     }
 
     /**
+     *
+     */
+    public static void onDestroy() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ChannelInterface.onDestroy(mActivity);
+            }
+        });
+    }
+
+    /**
      * notify the platform we are coming back from a pause
      */
     public static void onPause() {
@@ -508,6 +519,31 @@ public class NativeChannelInterface {
             }
         });
     }
+
+    /**
+     *  when the app is onStarted
+     * @param activity the activity to give the real SDK
+     */
+    public static void onStart(Activity activity) {
+        ChannelInterface.onStart(activity);
+    }
+
+    /**
+     *  when the app is onStop
+     * @param activity the activity to give the real SDK
+     */
+    public static void onStop(Activity activity) {
+        ChannelInterface.onStop(activity);
+    }
+
+    /**
+     *  when the app is onNewIntent
+     * @param activity the activity to give the real SDK
+     */
+    public static void onNewIntent(Activity activity, Intent intent) {
+        ChannelInterface.onNewIntent(activity, intent);
+    }
+
 
     /**
      * request anti addiction info
@@ -542,6 +578,16 @@ public class NativeChannelInterface {
     }
 
     /**
+     * on activity result, the parameter is the same as Activity.onActivityResult
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    public static void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        ChannelInterface.onActivityResult(activity, requestCode, resultCode, data);
+    }
+
+    /**
      * exit the underlying channel sdk
      */
     public static void exit() {
@@ -550,15 +596,13 @@ public class NativeChannelInterface {
             public void run() {
                 ChannelInterface.exit(mActivity, new IDispatcherCb() {
                     @Override
-                    public void onFinished(int retCode, JSONObject data) {
-                        if (retCode == Constants.ErrorCode.ERR_OK) {
-                            mRunEnv.run(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ChannelAPINative.onExit();
-                                }
-                            });
-                        }
+                    public void onFinished(final int retCode, JSONObject data) {
+                        mRunEnv.run(new Runnable() {
+                            @Override
+                            public void run() {
+                                ChannelAPINative.onExit(retCode);
+                            }
+                        });
                     }
                 });
             }
@@ -627,10 +671,27 @@ public class NativeChannelInterface {
     }
 
     public static byte[] getPayToken() throws UnsupportedEncodingException {
-        return ChannelInterface.getChannelName().getBytes("UTF-8");
+        return ChannelInterface.getPayToken().getBytes("UTF-8");
     }
 
     public static boolean onLoginRsp(byte[] rsp) throws UnsupportedEncodingException {
         return ChannelInterface.onLoginRsp(new String(rsp, "UTF-8"));
+    }
+
+    public static void submitPlayerInfo(byte[] roleId,
+                                        byte[] roleName,
+                                        byte[] roleLevel,
+                                        int zoneId,
+                                        byte[] zoneName) {
+        try {
+            ChannelInterface.submitPlayerInfo(mActivity,
+                    new String(roleId, "UTF-8"),
+                    new String(roleName, "UTF-8"),
+                    new String(roleLevel, "UTF-8"),
+                    zoneId,
+                    new String(zoneName, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            Log.e(Constants.TAG, "Fail to convert utf-8 string", e);
+        }
     }
 }

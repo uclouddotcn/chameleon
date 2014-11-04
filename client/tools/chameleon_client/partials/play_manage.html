@@ -1,0 +1,123 @@
+<div class="container-fluid">
+    <form novalidate name="globalsetting" class="form-horizontal" ng-submit="updateCurrentCfg()">
+    <section id="brief">
+        <div class="row">
+            <div class="page-header row">
+                <div class="col-md-12">
+                    <h3 pull-left>{{project.obj.globalcfg.globalcfg.appname}}</h3>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>工程地址:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <label>{{project.__doc.path}}</label>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Chameleon版本:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <label>{{projects.__doc.version}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn" ng-show="isOutdated" ng-class="{red: isOutdated}" ng-click="openUpgradePanel()">升级到{{toolversion}}!!!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <pre>
+             projects1:{{selectedsdk|json}}
+             projects2:{{projects[0]|json}}
+         </pre>-->
+        <div class="row">
+            <div class="col-md-12" style>
+                <div class = "pre-scrollable-channelinfo"  >
+                    <div  >
+
+                        <div class="row-fluid">
+                            <h4>{{selectedsdk.name}}</h4>
+                        </div>
+
+                        <div class="row-fluid">
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label for="appname" class="col-sm-2 control-label">游戏名</label>
+                                            <div class="col-sm-10">
+                                                <input id="appname" name="appname" type="text" ng-model="selectedsdk.cfg.appname" required class="form-control" />
+                                                <p ng-show="globalsetting.appname.$invalid && !globalsetting.appname.$pristine" class="help-block ">游戏名称不能为空</p>                    </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+
+
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2" for="orientation">方向</label>
+                                            <div class="btn-group col-sm-10">
+                                                <label class="btn btn-primary" ng-model="selectedsdk.cfg.landscape" btn-radio="true">LANDSCAPE</label>
+                                                <label class="btn btn-primary" ng-model="selectedsdk.cfg.landscape" btn-radio="false">PORTRAIT</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                        </div>
+                        <div class="viewarea">
+                            <dl class="dl-horizontal">
+                                <dt>keystroke文件:</dt>
+                                <dd>{{ selectedsdk.signcfg.keystroke ? selectedsdk.signcfg.keystroke : '&nbsp;'}}</dd>
+                            </dl>
+
+                            <dl class="dl-horizontal">
+                                <dt>key password:</dt>
+                                <dd>{{selectedsdk.signcfg.keypass ? selectedsdk.signcfg.keypass : '&nbsp;'}}</dd>
+                            </dl>
+
+                            <dl class="dl-horizontal">
+                                <dt>store password:</dt>
+                                <dd>{{selectedsdk.signcfg.storepass ? selectedsdk.signcfg.storepass : '&nbsp;'}}</dd>
+                            </dl>
+
+                            <dl class="dl-horizontal">
+                                <dt>alias:</dt>
+                                <dd>{{selectedsdk.signcfg.alias ? selectedsdk.signcfg.alias : '&nbsp;'}}</dd>
+                            </dl>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--以下是静态显示文件-->
+
+
+
+
+
+        <div class="control-group " style="margin-top: 30px;" >
+            <div class="row">
+                <div class="col-md-4">
+                    <button class="btn btn-primary pos-reload" type="button" ng-click="setSignCfg()">签名配置</button>
+                </div>
+                <div class="col-md-4 col-md-offset-4 text-right">
+                    <button type="submit" class="btn" ng-disabled="!globalsetting.appname.$dirty && !hasChangedLandscape ">保存</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+    </form>
+</div>
+

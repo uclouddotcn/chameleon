@@ -1,4 +1,6 @@
 var restify = require('restify');
+var codeToSdkError = require('./sdk-error').codeToSdkError;
+var errorCode = require('./cham-error-code');
 
 var AppCallbackSvr = function (cfg) {
     if (!cfg.host || !cfg.payCbUrl ) {
@@ -40,7 +42,13 @@ AppCallbackSvr.prototype.pay = function (channel,
         if (err) {
             return cb(err);
         }
-        return cb(undefined, obj);
+        if (obj.code === 0) {
+            return cb(undefined, obj);
+        } else {
+            var code = obj.code || errorCode.ERR_CHAMELEON_REMOTE_UNKNOWN;
+            var err = codeToSdkError(code, null, 'Fail from remote');
+            return cb(err);
+        }
     });
 };
 

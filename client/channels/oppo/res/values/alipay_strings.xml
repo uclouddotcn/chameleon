@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="alipay_confirm_title">提示</string>
+    <string name="alipay_ensure">确定</string>
+    <string name="alipay_cancel">取消</string>
+    <string name="alipay_processing">加载中</string>
+    <string name="alipay_downloading">正在下载中</string>
+    <string name="alipay_redo">重试</string>
+    <string name="alipay_reinstall">重新安装</string>
+    <string name="alipay_download_error_tips">下载安装包失败，是否重试？</string>
+    <string name="alipay_cancel_install_tips">是否取消安装？</string>
+    <string name="alipay_net_error">不能连接到服务器，是否重试？</string>
+    <string name="alipay_data_error">系统繁忙，请稍后再试</string>
+</resources>

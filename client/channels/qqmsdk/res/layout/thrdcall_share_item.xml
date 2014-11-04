@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/thrdcall_popup_bkg" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thrdcall_folder_chooser_title_height"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/thrdcall_folder_chooser_title_image_margin_left"
+        android:layout_marginRight="@dimen/thrdcall_folder_chooser_title_image_margin_right"
+        android:drawableLeft="@drawable/thrdcall_popup_title_icon_bkg"
+        android:drawablePadding="@dimen/thrdcall_folder_chooser_title_image_margin_left"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/thrdcall_folder_chooser_title_image_margin_right"
+        android:shadowColor="@color/thrdcall_more_text_shadow_color"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:text="@string/thrdcall_share_to"
+        android:textColor="@color/thrdcall_white"
+        android:textSize="@dimen/thrdcall_textsize_18" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom_divider"
+        android:layout_below="@+id/title"
+        android:descendantFocusability="blocksDescendants"
+        android:divider="@drawable/thrdcall_more_divideline_bkg"
+        android:fadingEdge="none"
+        android:scrollingCache="false" />
+
+    <ImageView
+        android:id="@+id/bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cancel"
+        android:layout_marginBottom="@dimen/thrdcall_dialog_content_margin"
+        android:background="@drawable/thrdcall_more_divideline_bkg" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
+        android:background="@drawable/thrdcall_popup_cancel_btn_bkg"
+        android:shadowColor="@color/thrdcall_more_text_shadow_color"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:text="@string/thrdcall_cancel"
+        android:textColor="@color/thrdcall_white"
+        android:textSize="@dimen/thrdcall_textsize_17" />
+
+</RelativeLayout>

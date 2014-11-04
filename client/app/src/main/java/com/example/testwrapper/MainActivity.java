@@ -41,7 +41,9 @@ public class MainActivity extends Activity implements IAccountActionListener {
             RequestParams req = new RequestParams();
 
             try {
-                req.put("others", (String) data.get("others"));
+                if (data.has("others")) {
+                    req.put("others", (String) data.get("others"));
+                }
                 req.put("token", (String) data.get("token"));
                 req.put("channel", (String) data.get("channel"));
                 PlatformAPIRestClient.get("/sdkapi/login",
@@ -49,15 +51,18 @@ public class MainActivity extends Activity implements IAccountActionListener {
                         new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(final JSONObject ret) {
+                                Log.d("TEST", ret.toString());
                                 mActivity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         mActivity.onGotAuthroizationCode(ret);
                                     }
                                 });
+                                ChannelInterface.submitPlayerInfo(mActivity, "test", "test", "123", 2, "testzone");
                             }
                             @Override
                             public void onFailure(java.lang.Throwable e, org.json.JSONArray errorResponse) {
+                                Log.e("TEST", "on failure", e);
                                 if (errorResponse != null) {
                                     Log.e("TEST", errorResponse.toString(), e);
                                 }
@@ -65,11 +70,19 @@ public class MainActivity extends Activity implements IAccountActionListener {
                             }
                             @Override
                             public void onFailure(java.lang.Throwable e, org.json.JSONObject errorResponse) {
+                                Log.e("TEST", "on failure", e);
                                 if (errorResponse != null) {
                                     Log.e("TEST", errorResponse.toString(), e);
 
                                 }
                                                             }
+
+                            @Override
+                            protected java.lang.Object parseResponse(java.lang.String responseBody) throws org.json.JSONException
+                            {
+                                Object res = super.parseResponse(responseBody);
+                                return res;
+                            }
                         }
                 );
 
@@ -84,7 +97,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ChannelInterface.onActivityResult(requestCode, resultCode, data);
+        ChannelInterface.onActivityResult(this, requestCode, resultCode, data);
     }
 
     /**
@@ -182,6 +195,24 @@ public class MainActivity extends Activity implements IAccountActionListener {
     }
     ////////////////////////////////////////////////////////////////////
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        ChannelInterface.onStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ChannelInterface.onStop(this);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ChannelInterface.onNewIntent(this, intent);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,11 +269,20 @@ public class MainActivity extends Activity implements IAccountActionListener {
     @Override
     public void onPause() {
         super.onPause();
+        ChannelInterface.onPause(this);
+        Log.i(Constants.TAG, "on pause");
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        ChannelInterface.onResume(this, new IDispatcherCb() {
+            @Override
+            public void onFinished(int retCode, JSONObject data) {
+
+            }
+        });
+        Log.i(Constants.TAG, "on resume");
     }
 
     public void sendMessage(View view) {
@@ -295,7 +335,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
         params.put("token", ChannelInterface.getPayToken());
         params.put("productId", "xxxx");
         params.put("uid", ChannelInterface.getUin());
-        params.put("count", "1");
+        params.put("count", "10000");
         params.put("productName", "testproduct");
         params.put("productDesc", "the test product ");
         final Activity activity = this;
@@ -412,8 +452,9 @@ public class MainActivity extends Activity implements IAccountActionListener {
 
 	@Override
     protected void onDestroy() {
+        MainActivity.super.onDestroy();
         // call destroy when this activity is being destroyed to release the resource used by sdk
-    	super.onDestroy();
+        ChannelInterface.onDestroy(this);
     }
 
     public void printData(int code, final JSONObject s) {

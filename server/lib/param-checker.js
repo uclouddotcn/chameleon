@@ -32,7 +32,7 @@ Checker.prototype.init = function (name, paramDesc) {
                 throw new Error('the type of field ' + 
                     this.name + ' not correct');
             }
-        }
+        };
         this.optional = optional;
     }
 };
@@ -61,7 +61,7 @@ function checkValueIfError(value, checker) {
     checker.check(value[checker.name]);
 }
 
-function doNothing(value) {
+function doNothing() {
     return true;
 }
 
@@ -84,6 +84,6 @@ module.exports.createChecker = function (paramDesc) {
     var checker = new Checker();
     checker.init(null, paramDesc);
     return checker;
-}
+};
 
 

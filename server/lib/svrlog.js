@@ -11,7 +11,7 @@ function defaultAdminLoggerCfg(level) {
         streams: [
             {
                 type: 'rotating-file',
-                path: path.join(__dirname, '../log/adminsvr.log'),
+                path: path.join(__dirname, '../../log/adminsvr.log'),
                 level: infoLv,
                 period: '1d',
                 count: 4
@@ -31,14 +31,14 @@ function defaultServerLoggerCfg(level) {
         streams: [
             {
                 type: 'rotating-file',
-                path: path.join(__dirname, '../log/server.log'),
+                path: path.join(__dirname, '../../log/server.log'),
                 level: infoLv,
                 period: '1d',
                 count: 4
             },
             {
                 type: 'rotating-file',
-                path: path.join(__dirname, '../log/server.err'),
+                path: path.join(__dirname, '../../log/server.err'),
                 level: 'error',
                 period: '1d',
                 count: 4

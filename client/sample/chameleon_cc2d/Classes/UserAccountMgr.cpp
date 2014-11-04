@@ -5,6 +5,7 @@
 #include "cocos2d.h"
 #include <stdlib.h>
 #include <string>
+#include "cocos-ext.h"
 
 USING_NS_CC;
 using namespace std;
@@ -85,7 +86,7 @@ const char * GetJsonValueDefault<const char*>(rapidjson::Value & obj,
 
 UserAccountMgr g_userAccountMgr;
 const string DEV_URL("http://118.192.73.182:7900/");
-//const string DEV_URL("http://172.16.9.43:7900/");
+//const string DEV_URL("http://192.168.42.16:7900/");
 
 UserAccountMgr::UserAccountMgr():
 mLoginStatus(LOGOUT), mIsToolbarCreated(false) {
@@ -229,11 +230,6 @@ void UserAccountMgr::onResume() {
 
 void UserAccountMgr::onAntiAddiction(int id, int code, int flag) {
     mEventEmitter.FireEvent(EVENT_ANTI_ADDICTION_INFO, &flag);
-}
-
-void UserAccountMgr::onDestroy(int id) {
-    // save user data if needed
-    setLogout();
 }
 
 int UserAccountMgr::Login() {
@@ -492,6 +488,26 @@ void UserAccountMgr::RespondsToEvents(const std::string& event,
     it->second(body);
 }
 
+void UserAccountMgr::onExit(int code) {
+    if (code == 0) {
+    setLogout();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+	CCMessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
+#else
+    CCDirector::sharedDirector()->end();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    exit(0);
+#endif
+#endif
+    } else {
+        CCLog("user abort exit");
+    }
+}
+
+void UserAccountMgr::exit() {
+    ChameleonChannelAPI::exit();
+}
+
 void UserAccountMgr::onVerifyLogin(int code, 
                                    rapidjson::Value * valueRoot, 
                                    JsonHttpClient * client, 
@@ -522,6 +538,7 @@ void UserAccountMgr::onVerifyLogin(int code,
         if (!ChameleonChannelAPI::onLoginRsp(rsp)) {
             CCLog("Fail to rsp rsp");
         }
+        ChameleonChannelAPI::submitPlayerInfo("xxx", "yyy", "zzz", 10, "tttt");
         mEventEmitter.FireEvent(EVENT_LOGINED, NULL);
     } catch (JsonException & e) {
         CCLog("exception %s", e.mErrMsg.c_str());

@@ -16,20 +16,18 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="bower_components/angular-busy/angular-busy.js"></script>
+    <script src="bower_components/bootstrap/js/tab.js"></script>
     <script src="js/ng-grid.js"></script>
     <script src="js/nw-fileDialog.js"></script>
     <script src="js/bootstrap.file-input.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
+    <script src="js/directives.js"></script>
     <script src="js/pouchdb.min.js"></script>
 </head>
 <body ng-controller="NavCtrl">
-<nav class="navbar navbar-default" role="navigation">
-    <ul class="nav navbar-nav">
-        <li ng-class="navClass('projects')"><a href='' ng-click="loadHome()">工程列表</a></li>
-    </ul>
-</nav>
-<div ui-view class="container"></div>
+    <div ng-include="headerTpl"></div>
+    <div ui-view class="container"></div>
 </body>
 </html>

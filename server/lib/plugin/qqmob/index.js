@@ -1,9 +1,14 @@
-var restify = require('restify');
-var querystring = require('querystring');
-var async = require('async');
+"use strict";
+
 var crypto = require('crypto');
-var sdkerror = require('../../sdk-error');
-var _errorcode = require('../common/error-code');
+var querystring = require('querystring');
+var util = require('util');
+
+var async = require('async');
+var restify = require('restify');
+
+var _errorcode = require('../common/error-code').ErrorCode;
+var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
     appId: 'string',
@@ -14,34 +19,25 @@ var cfgDesc = {
 var QQ_MOB_URL = "http://openapi.tencentyun.com";
 var QQ_MOB_DEBUG_URL = "http://119.147.19.43";
 
-var QQMobChannel = function(name, cfgItem, userAction, logger) {
-    this.name = name;
-    this.cfgItem = cfgItem;
-    this.userAction = userAction;
-    var timeout = cfgItem.timeout || 3;
+var QQMobChannel = function(userAction, logger, cfgChecker) {
+    SDKPluginBase.call(this, userAction, logger, cfgChecker);
     this.productionClient = restify.createJsonClient({
         url: QQ_MOB_URL,
         retry: false,
-        log: logger
+        log: logger,
+        requestTimeout: 10000,
+        connectTimeout: 20000
     });
-    this.logger = logger;
 };
+util.inherits(QQMobChannel, SDKPluginBase);
 
-
-QQMobChannel.prototype.getInfo = function () {
-    return {
-        appid : this.cfgItem.appId,
-        appKey: this.cfgItem.appKey,
-        timeout: this.timeout,
-    };
-};
 
 QQMobChannel.prototype.getClient = function (debug) {
     if (debug) {
         return restify.createJsonClient({
             url: QQ_MOB_DEBUG_URL,
             retry: false,
-            log: this.logger
+            log: this._logger
         });
     } else {
         return this.productionClient;
@@ -68,7 +64,7 @@ function calcSign(method, url, param, appKey) {
     }
     paramArrayStr = paramArrayStr.slice(0, -1);
     paramArrayStr = encodeURIComponent(paramArrayStr);
-    paramArrayStr = paramArrayStr.replace(/\*/g, '%2A')
+    paramArrayStr = paramArrayStr.replace(/\*/g, '%2A');
     var urlStr = encodeURIComponent(url);
     var sourceStr = method+'&'+urlStr+'&'+paramArrayStr;
     var secretKey = appKey+'&';
@@ -77,8 +73,7 @@ function calcSign(method, url, param, appKey) {
     return encoder.digest('base64');
 }
 
-QQMobChannel.prototype.verifyLogin = 
-function(token, others, callback) {
+QQMobChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
     try {
         var otherObj = JSON.parse(others);
@@ -89,15 +84,15 @@ function(token, others, callback) {
         var signObj = {
             openid: openid,
             openkey: token,
-            appid: this.cfgItem.appId,
+            appid: wrapper.cfg.appId,
             pf: pf
         };
         var u = '/v3/user/get_info';
-        var sig = calcSign('GET', u, signObj, this.cfgItem.appKey);
+        var sig = calcSign('GET', u, signObj, wrapper.cfg.appKey);
         var queryObj = {
             openid: openid,
             openkey: token,
-            appid: this.cfgItem.appId,
+            appid: wrapper.cfg.appId,
             pf: pf,
             sig: sig
         };
@@ -105,10 +100,10 @@ function(token, others, callback) {
         var result = null;
         this.getClient().get(q, function (err, req, res, obj) {
             if (err) {
-                self.logger.debug({err: err}, 'return from channel');
+                self._logger.debug({err: err}, 'return from channel');
                 return callback(err);
             }
-            self.logger.debug({obj: obj}, 'return from channel');
+            self._logger.debug({obj: obj}, 'return from channel');
             if (obj.ret !== 0) {
                 var e = mapError(obj.ret, 'verify_login');
                 result = {
@@ -124,7 +119,7 @@ function(token, others, callback) {
                         token: token,
                         name: obj.nickname,
                         expire_in: expireIn,
-                        channel: self.name,
+                        channel: wrapper.channelName,
                         others: JSON.stringify({
                             gender: obj.gender,
                             figureurl: obj.figureurl
@@ -135,22 +130,17 @@ function(token, others, callback) {
             }
         });
     } catch (e) {
-        this.logger.error({err: e}, 'Fail to parse input');
+        this._logger.error({err: e}, 'Fail to parse input');
         callback(new restify.InvalidArgumentError());
     }
 };
 
 
-QQMobChannel.prototype.getChannelSubDir = function ()  {
-    var self = this;
+QQMobChannel.prototype.getPayUrlInfo = function ()  {
     return [
     ];
 };
 
-
-QQMobChannel.prototype.reloadCfg = function (cfgItem) {
-    this.cfgItem = cfg;
-};
 
 function mapError(code, method) {
     switch (code) {
@@ -165,7 +155,7 @@ function mapError(code, method) {
                 code: _errorcode.ERR_LOGIN_SESSION_INVALID,
                 message: {
                     channel: 'qqmob',
-                    ret: code,
+                    ret: code
                 }
             };
         case -5:
@@ -173,7 +163,7 @@ function mapError(code, method) {
                 code: _errorcode.ERR_SIERR_SIGN_NOT_MATCH,
                 message: {
                     channel: 'qqmob',
-                    ret: code,
+                    ret: code
                 }
             };
         default: 
@@ -181,46 +171,45 @@ function mapError(code, method) {
                 code: _errorcode.ERR_FAIL,
                 msg: {
                     channel: 'qqmob',
-                    ret: code,
+                    ret: code
                 }
             };
     }
 }
 
-QQMobChannel.prototype.pendingPay = function (params, callback) {
+QQMobChannel.prototype.pendingPay = function (params, infoFromSDK, callback) {
     var self = this;
     try {
-        var tokenObj = JSON.parse(params.token);
-        var pf = tokenObj.p;
-        var pfKey = tokenObj.pk;
-        var accessToken = tokenObj.t;
-        var payToken = tokenObj.pt;
-        var debug = tokenObj.debug;
+        var pf = infoFromSDK.p;
+        var pfKey = infoFromSDK.pk;
+        var accessToken = infoFromSDK.t;
+        var payToken = infoFromSDK.pt;
+        var debug = infoFromSDK.debug;
         var productUrl = params.productUrl;
+        var wrapper = null;
         var signObj = {
             openid: params.uid,
             openkey: accessToken,
             pay_token: payToken,
-            appid: this.cfgItem.appId,
+            appid: wrapper.cfg.appId,
             ts: Math.ceil(new Date().getTime()/1000),
             payitem: params.productId+'*'+params.singlePrice/10+'*'+params.productCount,
             goodsmeta: params.productName+'*'+params.productDesc,
             goodsurl: params.productUrl || "",
             pf: pf,
             zoneid: params.serverId,
-            pfkey: pfKey,
+            pfkey: pfKey
         };
 
         var u = '/mpay/buy_goods_m';
-        var sig = calcSign('GET', u, signObj, this.cfgItem.appKey);
-        signObj.sig = sig; 
+        signObj.sig = calcSign('GET', u, signObj, wrapper.cfg.appKey);
         var q =  u + '?' + querystring.stringify(signObj);
         this.getClient().get(q, function (err, req, res, obj) {
             if (err) {
-                self.logger.debug({err: err}, 'return from channel');
+                self._logger.debug({err: err}, 'return from channel');
                 return callback(err);
             }
-            self.logger.debug({obj: obj}, 'return from channel');
+            self._logger.debug({obj: obj}, 'return from channel');
             if (obj.ret !== 0) {
                 var e = mapError(obj.ret, 'pendingPay');
                 callback(e);
@@ -229,7 +218,7 @@ QQMobChannel.prototype.pendingPay = function (params, callback) {
             }
         });
     } catch (e) {
-        this.logger.error({err: e}, 'Fail to parse input');
+        this._logger.error({err: e}, 'Fail to parse input');
         callback(new restify.InvalidArgumentError());
     }
 };
@@ -238,8 +227,8 @@ module.exports =
 {
     name: 'qqmob',
     cfgDesc: cfgDesc,
-    create: function (name, cfgItem, userAction, logger) {
-                return new QQMobChannel(name, cfgItem, userAction, logger);
+    createSDK: function (userAction, logger, cfgChecker) {
+                return new QQMobChannel(userAction, logger, cfgChecker);
             }
 };
 

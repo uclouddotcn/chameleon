@@ -4,7 +4,7 @@
 </div>
 <div class="modal-body">
     <div class="logdiv">
-        <pre ng-repeat="l in logs">{{l}}</pre>
+        <pre ng-repeat="l in logs">{{l.msg}}<button ng-show="l.logfile" ng-click="openLog(l.logfile)">查看日志</button></pre>
     </div>
 </div>
 </div>
