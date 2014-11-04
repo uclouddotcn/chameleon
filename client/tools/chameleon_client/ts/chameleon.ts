@@ -1260,7 +1260,7 @@ export class ChameleonTool {
                         return;
                     }
                     fs.ensureDir(pathLib.join(chameleonPath, 'sdkcfg'));
-                    fs.ensfureDir(pathLib.join(chameleonPath, 'channels'));
+                    fs.ensureDir(pathLib.join(chameleonPath, 'channels'));
                     callback(null);
                 });
             }, function (callback) {

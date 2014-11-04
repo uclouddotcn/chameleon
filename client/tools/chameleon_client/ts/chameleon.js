@@ -1,3 +1,9 @@
+/// <reference path="declare/node.d.ts"/>
+/// <reference path="declare/async.d.ts"/>
+/// <reference path="declare/ncp.d.ts"/>
+/// <reference path="declare/fs-extra.d.ts"/>
+/// <reference path="declare/xml2js.d.ts"/>
+/// <reference path="declare/adm-zip.d.ts"/>
 var fs = require('fs-extra');
 var childprocess = require("child_process");
 var pathLib = require("path");
@@ -1078,6 +1084,23 @@ var ChameleonTool = (function () {
 
     ChameleonTool.checkSingleLock = function (callback) {
         setImmediate(callback, null);
+        /*
+        var homePath = ChameleonTool.getChameleonHomePath();
+        fs.ensureDir(homePath, function (err) {
+        var name = pathLib.join(homePath, '.lock');
+        try {
+        var fd = fs.openSync(name, 'wx');
+        process.on('exit', function () {
+        fs.unlinkSync(name);
+        });
+        try { fs.closeSync(fd) } catch (err) {}
+        callback(null);
+        } catch (err) {
+        Logger.log("Fail to lock", err);
+        callback(new ChameleonError(ErrorCode.OP_FAIL, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
+        }
+        });
+        */
     };
 
     ChameleonTool.getChameleonHomePath = function () {
