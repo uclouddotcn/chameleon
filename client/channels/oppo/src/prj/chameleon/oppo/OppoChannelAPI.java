@@ -88,7 +88,7 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 }
             };
             GameCenterSettings.isDebugModel = mIsDebug;// 测试log开关
-            GameCenterSettings.isOritationPort = mIsLandscape;// 控制SDK activity的横竖屏 true为竖屏
+            GameCenterSettings.isOritationPort = !mIsLandscape;// 控制SDK activity的横竖屏 true为竖屏
             GameCenterSettings.proInnerSwitcher = mAllowSwitchAccount;//是否支持游戏内切换账号
             GameCenterSDK.init(gameCenterSettings, app.getApplicationContext());
         }
@@ -175,13 +175,11 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                             int productCount,
                             int realPayMoney,
                             final IDispatcherCb cb) throws JSONException {
-        StringBuilder attachInfo = new StringBuilder();
-        attachInfo.append(mChannel);
-        attachInfo.append('|');
-        attachInfo.append(mUid);
-        attachInfo.append('|');
+        JSONObject attachInfo = new JSONObject();
+        attachInfo.put("ch", mChannel);
+        attachInfo.put("u", mUid);
         if (productId != null) {
-            attachInfo.append(productId);
+            attachInfo.put("p", productId);
         }
         FixedPayInfo info = new FixedPayInfo(orderId, attachInfo.toString(), realPayMoney);
         info.setProductName(productName);
@@ -209,11 +207,9 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                            int defaultProductCount,
                            int rate,
                            final IDispatcherCb cb) throws JSONException {
-
-        StringBuilder attachInfo = new StringBuilder();
-        attachInfo.append(mChannel);
-        attachInfo.append('|');
-        attachInfo.append(mUid);
+        JSONObject attachInfo = new JSONObject();
+        attachInfo.put("ch", mChannel);
+        attachInfo.put("u", mUid);
         RatePayInfo info = new RatePayInfo(orderId, attachInfo.toString());
         info.setProductName(productName);
         info.setRate(rate);
@@ -379,10 +375,10 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             obj = new JSONObject(loginRsp);
             int code = obj.getInt("code");
             if (code != Constants.ErrorCode.ERR_OK) {
-                JSONObject loginInfo = obj.getJSONObject("loginInfo");
-                mUid = loginInfo.getString("uid");
                 return false;
             } else {
+                JSONObject loginInfo = obj.getJSONObject("loginInfo");
+                mUid = loginInfo.getString("uid");
                 return true;
             }
         } catch (JSONException e) {

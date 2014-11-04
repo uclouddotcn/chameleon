@@ -85,8 +85,8 @@ const char * GetJsonValueDefault<const char*>(rapidjson::Value & obj,
 
 
 UserAccountMgr g_userAccountMgr;
-//const string DEV_URL("http://118.192.73.182:7900/");
-const string DEV_URL("http://192.168.42.16:7900/");
+const string DEV_URL("http://118.192.73.182:7900/");
+//const string DEV_URL("http://192.168.42.16:7900/");
 
 UserAccountMgr::UserAccountMgr():
 mLoginStatus(LOGOUT), mIsToolbarCreated(false) {

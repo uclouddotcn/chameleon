@@ -29,6 +29,7 @@
             android:noHistory="true"
             android:stateNotNeeded="true"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <meta-data android:name="prj.chameleon.intent.main"
                 android:value="com.example.testwrapper.MainActivity"></meta-data>

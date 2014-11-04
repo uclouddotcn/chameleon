@@ -8,7 +8,7 @@ function loadEnv() {
     var env = {};
     env.resourceFolder = pathLib.join(__dirname, 'resource');
     env.baseFolder = pathLib.join(__dirname, '..', '..');
-    var versionTxt =  pathLib.join(__dirname, '..', '..', 'version', 'version.txt');
+    var versionTxt =  pathLib.join(__dirname, '..', '..', '..', 'version', 'version.txt');
     var content = fs.readFileSync(versionTxt, 'utf-8').replace(/\r*\n$/, '');
     env.chamver = content;
     return env;

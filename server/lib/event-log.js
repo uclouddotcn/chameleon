@@ -8,9 +8,10 @@
  * @param {object} storageEngine storage engine
  */
 module.exports.listen = function (eventCenter, storageEngine) {
-    eventCenter.on('login', function (channel, uid, newOthers) {
+    eventCenter.on('login', function (product, channel, uid, newOthers) {
         var obj = {
             action: 'login',
+            product: product,
             time: Date.now(),
             channel: channel,
             uid: uid,
@@ -19,9 +20,10 @@ module.exports.listen = function (eventCenter, storageEngine) {
         storageEngine.record(obj);
     });
 
-    eventCenter.on('login-fail', function (channel, err) {
+    eventCenter.on('login-fail', function (product, channel, err) {
         var obj = {
             action: 'login-fail',
+            product: product,
             time: Date.now(),
             channel: channel,
             err: err
@@ -60,6 +62,33 @@ module.exports.listen = function (eventCenter, storageEngine) {
         for (var i in orderInfo) {
             obj[i] = orderInfo[i];
         }
+        storageEngine.record(obj);
+    });
+
+    eventCenter.on('pay-cancel', function (product, channel, orderId, billno, amount) {
+        var obj = {
+            action: 'pay-fail',
+            time: Date.now(),
+            product: product,
+            channel: channel,
+            orderId: orderId,
+            billno: billno,
+            rmb: amount
+        };
+        storageEngine.record(obj);
+    });
+
+    eventCenter.on('pay-cancel-fail', function (product, channel, orderId, billno, amount, code) {
+        var obj = {
+            action: 'pay-fail',
+            time: Date.now(),
+            product: product,
+            channel: channel,
+            orderId: orderId,
+            billno: billno,
+            rmb: amount,
+            code: code
+        };
         storageEngine.record(obj);
     });
 

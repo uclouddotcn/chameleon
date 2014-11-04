@@ -16,9 +16,13 @@ var cfgDesc = {
     apiKey: 'string',
 };
 
-var UCChannel = function(userAction, logger, cfgChecker) {
+var UCChannel = function(userAction, logger, cfgChecker, debug) {
     SDKPluginBase.call(this, userAction, logger, cfgChecker);
-    this.defaultUri = "http://sdk.g.uc.cn";
+    if (debug) {
+        this.defaultUri = "http://sdk.test4.g.uc.cn";
+    } else {
+        this.defaultUri = "http://sdk.g.uc.cn";
+    }
     this.client = restify.createJsonClient({
         url: this.defaultUri,
         retry: false,
@@ -187,8 +191,8 @@ module.exports =
 {
     name: 'uc',
     cfgDesc: cfgDesc,
-    createSDK: function (userAction, logger, cfgChecker) {
-                return new UCChannel(userAction, logger, cfgChecker);
+    createSDK: function (userAction, logger, cfgChecker, debug) {
+                return new UCChannel(userAction, logger, cfgChecker, debug);
             }
 };
 

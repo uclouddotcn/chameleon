@@ -94,7 +94,7 @@ public class SingleSDKChannelAPI {
         }
 
         @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
 
         }
 
@@ -151,6 +151,25 @@ public class SingleSDKChannelAPI {
 
         @Override
         public void onDestroy(Activity activity) {
+
+        }
+
+        @Override
+        public void onStart(Activity activity) {
+
+        }
+
+        @Override
+        public void onStop(Activity activity) {
+
+        }
+
+        /**
+         * when the activity receive new intent
+         * @param activity
+         * @param intent the intent
+         */
+        public void onNewIntent(Activity activity, Intent intent) {
 
         }
     }

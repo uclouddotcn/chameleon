@@ -46,6 +46,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     var ProjectMgr = function() {
         $log.log('init the env');
         this.exec = require('child_process').execFile;
+        this.spawn = require('child_process').spawn;
         this.tmpLib = require('tmp');
         this.fs = require('fs');
         this.pathLib = require('path');
@@ -97,30 +98,54 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         }
     };
 
-    ProjectMgr.prototype.doRunCmd = function (cmd, params, timeout, callback) {
+    ProjectMgr.prototype.doRunCmd = function (cmd, params, logfile, timeout, callback) {
         if (typeof timeof === 'function') {
             callback = timeout;
             timeout = 60; //default one minute
         }
-        var c = spawn(cmd, params);
-    }
+        var proc = this.spawn(cmd, params);
+        if (logfile) {
+            var logstream = fs.createWriteStream(logfile);
+            proc.stdout.pipe(logstream);
+            proc.stderr.pipe(logstream);
+        }
+        var timerHandle = setTimeout(function () {
+            timerHandle = null;
+            proc.kill('SIGKILL');
+        }, timeout*1000);
+        proc.on('exit', function (code, signal) {
+            if (code !== 0) {
+                var e = new Error();
+                e.code = code;
+                e.signal = signal;
+                callback(e);
+            } else {
+                callback(null);
+            }
+            callback(code, signal);
+            if (timerHandle) {
+                clearTimeout(timerHandle);
+            }
+            if (logstream) {
+                proc.stdout.unpipe(logstream);
+                proc.stderr.unpipe(logstream);
+                logstream.end();
+            }
+        })
+    };
 
     ProjectMgr.prototype.compileProject = function(project, target) {
         var defered = $q.defer();
         var buildscript = this.pathLib.join(project.__doc.path, 'chameleon_build.py');
         var inputParams = [buildscript, 'build', 'release', target];
-        this.exec('python', inputParams, {
-                timeout: 120000,
-                maxBuffer: 1024*1024
-            }, function (error, stdout, stderr) {
-                $log.log("std out " + stdout);
-                $log.log("std err " + stderr);
+        var logfile = this.getTempFile(project, "compile_"+target);
+        this.doRunCmd('python', inputParams, logfile, 20*60, function (error) {
                 var compileResult = null;
                 if (error) {
                     compileResult = {
-                        code: error.code,
+                        code: error.code || -1,
                         target: target,
-                        s: stderr + '\n\n 详细log是：\n' + stdout
+                        logfile: logfile
                     };
                     return defered.resolve(compileResult);
                 }
@@ -173,14 +198,17 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     ProjectMgr.prototype.updateSignCfg = function (project, channelId, cfg) {
         var defered = $q.defer();
         var self = this;
-        project.setSignCfg(cfg);
-        project.saveSignCfg(function (err) {
-            if (err) {
-                defered.reject(err);
-            } else {
-                defered.resolve();
-            }
-        });
+        if (channelId) {
+        } else {
+            project.setSignCfg(cfg);
+            project.saveSignCfg(function (err) {
+                if (err) {
+                    defered.reject(err);
+                } else {
+                    defered.resolve();
+                }
+            });
+        }
         return defered.promise;
     };
 
@@ -203,7 +231,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 } else {
                     defered.resolve();
                 }
-            })
+            });
         }
         return defered.promise;
     }

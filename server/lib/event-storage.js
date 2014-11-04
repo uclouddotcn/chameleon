@@ -1,8 +1,10 @@
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var path = require('path');
+var fs = require('fs');
 var loadModule = require('./libloader').loadModule;
 var async = require('async');
+var constants = require('./constants');
 
 // API
 module.exports.createStorageDriver = 
@@ -15,6 +17,11 @@ var EventStorage = function (options, logger) {
     self.storages = [];
     self.logger = logger;
     if (!options) {
+        var FileBillLogger = require('./file-billlogger');
+        if (!fs.existsSync(constants.billDir)) {
+            fs.mkdirSync(constants.billDir);
+        }
+        this.storages.push(new FileBillLogger(constants.billDir));
         return;
     }
     if (util.isArray(options)) {

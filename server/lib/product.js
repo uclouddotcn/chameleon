@@ -4,6 +4,7 @@ var createAppCbSvr = require('./app_callback_svr').create;
 var ChannelMgr = require('./channelmgr');
 var UserAction = require('./user-events');
 var util = require('util');
+var Constants = require('./constants');
 
 /**
  * every products will have one instance, manage
@@ -27,7 +28,7 @@ function Product(productName, cfgPath, cfg, eventCenter, pendingOrderStore, plug
     this._appcbsvr = createAppCbSvr(cfg.appcb);
     this.channelMgr = ChannelMgr.create();
     this._eventCenter = eventCenter;
-    this._userAction = UserAction.createUserAction(productName, 
+    this._userAction = UserAction.createUserAction(productName,
         this, this._appcbsvr, pendingOrderStore, eventCenter, logger);
     this._logger = logger;
     this._sdkMgr = new SDKPluginManager(pluginMgr, this._userAction, this._logger);
@@ -42,16 +43,18 @@ Product.prototype.loadAllChannels = function (channelCfg) {
     Object.keys(channelCfg).forEach(function (key) {
         self.startChannel(key, channelCfg[key]);
     });
-    // start test channel
-    this.startChannel("test", {
-        sdks: [
-            {
-                name: 'test',
-                type: 'user,pay',
-                cfg: {}
-            }
-        ]
-    });
+    if (Constants.debug) {
+        // start test channel
+        this.startChannel("test", {
+            sdks: [
+                {
+                    name: 'test',
+                    type: 'user,pay',
+                    cfg: {}
+                }
+            ]
+        });
+    }
 };
 
 /**
@@ -167,7 +170,7 @@ Product.prototype.pendingPay =function(req, res, next) {
             payInfo = "";
         }
         res.send({code: 0,
-            orderId: orderId, payInfo: payInfo});
+            orderId: orderId, payInfo: JSON.stringify(payInfo)});
         next();
     });
 };
@@ -209,7 +212,7 @@ SDKPluginManager.prototype.getPlugin = function (channelName, sdkname, cfg) {
     }
     var plugin= this._plugins[sdkname];
     if (!plugin) {
-        plugin = pluginModule.m.createSDK(this._userAction, this._logger, pluginModule.checker);
+        plugin = pluginModule.m.createSDK(this._userAction, this._logger, pluginModule.checker, Constants.debug);
     }
     var inst = plugin.createPluginWrapper(channelName, cfg);
     if (inst == null) {

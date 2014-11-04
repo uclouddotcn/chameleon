@@ -34,6 +34,7 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
-    compile fileTree(dir: "libs", includes: ["*.jar"])
+    compile fileTree(dir: 'libs', includes: ['*.jar'])
     compile project(':chameleon')
+    compile files('libs/open_sdk_r4066.jar')
 }

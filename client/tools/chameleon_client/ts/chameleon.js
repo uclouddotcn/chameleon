@@ -1,9 +1,3 @@
-/// <reference path="declare/node.d.ts"/>
-/// <reference path="declare/async.d.ts"/>
-/// <reference path="declare/ncp.d.ts"/>
-/// <reference path="declare/fs-extra.d.ts"/>
-/// <reference path="declare/xml2js.d.ts"/>
-/// <reference path="declare/adm-zip.d.ts"/>
 var fs = require('fs-extra');
 var childprocess = require("child_process");
 var pathLib = require("path");
@@ -370,6 +364,7 @@ var SDKCfg = (function () {
             ver: this.ver,
             chamver: this.chamver.toString()
         }, { encoding: 'utf-8' }, cb);
+        this.metaInfo.afterCfgSet(cfg);
     };
 
     Object.defineProperty(SDKCfg.prototype, "desc", {
@@ -403,8 +398,8 @@ var SDKLibInfo = (function () {
             this.version = new Version('1.0.0');
             this.realVer = "0.0.0";
         } else {
-            this.version = new Version(version.chamver);
-            this.realVer = version.version;
+            this.version = new Version(version.version);
+            this.realVer = version.realVer;
         }
     }
     return SDKLibInfo;
@@ -467,6 +462,12 @@ var SDKMetaScript = (function () {
             return cfg;
         }
     };
+
+    SDKMetaScript.prototype.afterCfgSet = function (cfg) {
+        if (this.mod['afterCfgSet']) {
+            this.mod['afterCfgSet'](cfg);
+        }
+    };
     return SDKMetaScript;
 })();
 
@@ -520,6 +521,12 @@ var SDKMetaInfo = (function () {
             return cfg;
         }
     };
+
+    SDKMetaInfo.prototype.afterCfgSet = function (cfg) {
+        if (this.script) {
+            return this.script.afterCfgSet(cfg);
+        }
+    };
     return SDKMetaInfo;
 })();
 exports.SDKMetaInfo = SDKMetaInfo;
@@ -533,7 +540,8 @@ var ChannelMetaInfo = (function () {
         res.desc = jsonobj['name'];
         res.sdk = jsonobj['sdk'];
         res.hasIcon = jsonobj['icon'];
-        res.hasSplashScreen = jsonobj['splashscreen'];
+        res.hasSplashScreen = jsonobj['splashscreen'] === 1;
+        res.useDefaultSplash = jsonobj['splashscreen'] === 2;
         res.name = name;
         return res;
     };
@@ -602,7 +610,7 @@ var ChannelMetaInfo = (function () {
             h: 'high',
             xh: 'xhigh'
         };
-        var re = /(\w+)_(\w+)_(\d+)_(\d+)_(.+).png/;
+        var re = /(\w+)_(\w+)_(\d+)_(\d+)(_(.+))?\.(png|jpg)/;
         for (var f in files) {
             var aa = re.exec(files[f]);
             if (!aa) {
@@ -613,7 +621,7 @@ var ChannelMetaInfo = (function () {
                 density: TYPE_MAP[aa[2]],
                 width: parseInt(aa[3]),
                 height: parseInt(aa[4]),
-                desc: aa[3] + '*' + aa[4] + ' ' + aa[5],
+                desc: aa[3] + '*' + aa[4] + ' ' + aa[6],
                 path: pathLib.join(scPath, files[f])
             };
             res[o.orient].push(o);
@@ -637,6 +645,19 @@ var ChannelMetaInfo = (function () {
 
     ChannelMetaInfo.prototype.getSplashScreen = function (orient) {
         return this.sc[orient];
+    };
+
+    ChannelMetaInfo.prototype.validatePkgName = function (pkgName) {
+        if (this.pkgsuffix) {
+            var r = new RegExp(this.pkgsuffix.replace(/\./g, '\\.'));
+            if (!r.test(pkgName)) {
+                if (this.pkgsuffix[0] === '^') {
+                    throw new Error('包名配置错误，该渠道要求包名必须为 "' + this.pkgsuffix.slice(1) + '" 开头');
+                } else {
+                    throw new Error('包名配置错误，该渠道要求包名必须为 "' + this.pkgsuffix.slice(0, this.pkgsuffix.length - 1) + '" 结尾');
+                }
+            }
+        }
     };
     return ChannelMetaInfo;
 })();
@@ -748,17 +769,22 @@ var DependLib = (function () {
 var IconCornerPos = exports.IconCornerPos;
 
 var ChannelCfg = (function () {
-    function ChannelCfg(metaInfo, channelPath) {
+    function ChannelCfg(prj, metaInfo, channelPath) {
         this.metaInfo = metaInfo;
         this.channelPath = channelPath;
+        this._prj = prj;
+        this._packageName = '.' + metaInfo.name;
     }
-    ChannelCfg.loadFromJson = function (jsonobj, channelMeta, channelPath) {
-        var res = new ChannelCfg(channelMeta, channelPath);
+    ChannelCfg.loadFromJson = function (prj, jsonobj, channelMeta, channelPath) {
+        var res = new ChannelCfg(prj, channelMeta, channelPath);
         if (jsonobj.splashscreen) {
             res._splashscreen = jsonobj.splashscreen;
         }
         if (jsonobj.icons) {
             res._icons = jsonobj.icons;
+        }
+        if (jsonobj.signcfg) {
+            res.signCfg = jsonobj.signcfg;
         }
         for (var i in jsonobj.dependLibs) {
             var d = jsonobj.dependLibs[i];
@@ -773,6 +799,7 @@ var ChannelCfg = (function () {
                 }
             });
         }
+        res._packageName = jsonobj.package;
         return res;
     };
 
@@ -834,6 +861,15 @@ var ChannelCfg = (function () {
 
     Object.defineProperty(ChannelCfg.prototype, "packageName", {
         get: function () {
+            if (this._packageName) {
+                if (this._packageName[0] === '.') {
+                    return this._prj.packageName + this._packageName;
+                } else {
+                    return this._packageName;
+                }
+            } else {
+                return this._prj.packageName;
+            }
             return this.metaInfo.pkgsuffix;
         },
         enumerable: true,
@@ -891,10 +927,16 @@ var ChannelCfg = (function () {
         configurable: true
     });
 
+    ChannelCfg.prototype.setSignCfg = function (cfg) {
+        this.signCfg = cfg;
+    };
+
     ChannelCfg.prototype.dumpJsonObj = function () {
         var res = {};
-        res['splashscreen'] = this._splashscreen;
+        res['package'] = this._packageName;
+        res['splashscreen'] = this._splashscreen || (this.metaInfo.useDefaultSplash ? "default" : null);
         res['icons'] = this._icons;
+        res['signcfg'] = this.signCfg;
         if (this.userLib.cfg == this.payLib.cfg) {
             var dl = this.userLib.dumpJsonObj();
             dl.type = 'user,pay';
@@ -913,6 +955,19 @@ var ChannelCfg = (function () {
         this.userLib = new DependLib();
         this.userLib.cfg = sdk.name;
         this.userLib.sdkid = sdk.metaInfo.name;
+    };
+
+    ChannelCfg.prototype.validatePkgName = function (pkgName) {
+        this.metaInfo.validatePkgName(pkgName);
+    };
+
+    ChannelCfg.prototype.setPackageName = function (pkg) {
+        var prefix = pkg.substr(0, this._prj.packageName.length + 1);
+        if (prefix === this._prj.packageName + '.') {
+            this._packageName = pkg.substr(this._prj.packageName.length);
+        } else {
+            this._packageName = pkg;
+        }
     };
 
     ChannelCfg.prototype.setPayLib = function (sdk) {
@@ -1023,23 +1078,6 @@ var ChameleonTool = (function () {
 
     ChameleonTool.checkSingleLock = function (callback) {
         setImmediate(callback, null);
-        /*
-        var homePath = ChameleonTool.getChameleonHomePath();
-        fs.ensureDir(homePath, function (err) {
-        var name = pathLib.join(homePath, '.lock');
-        try {
-        var fd = fs.openSync(name, 'wx');
-        process.on('exit', function () {
-        fs.unlinkSync(name);
-        });
-        try { fs.closeSync(fd) } catch (err) {}
-        callback(null);
-        } catch (err) {
-        Logger.log("Fail to lock", err);
-        callback(new ChameleonError(ErrorCode.OP_FAIL, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
-        }
-        });
-        */
     };
 
     ChameleonTool.getChameleonHomePath = function () {
@@ -1194,6 +1232,8 @@ var ChameleonTool = (function () {
             var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
             async.series([
                 function (callback) {
+                    newPrj.loadAndroidProjectInfo(callback);
+                }, function (callback) {
                     fs.copy(chameleonRes, chameleonPath, null, function (err) {
                         if (err) {
                             callback(err);
@@ -1218,8 +1258,6 @@ var ChameleonTool = (function () {
                     async.parallel(otherCopy, function (err) {
                         callback(err);
                     });
-                }, function (callback) {
-                    newPrj.loadAndroidProjectInfo(callback);
                 }], function (err) {
                 if (err) {
                     if (err instanceof ChameleonError) {
@@ -1299,7 +1337,7 @@ var ChameleonTool = (function () {
         if (prj.getChannelCfg(channelName)) {
             throw new ChameleonError(3 /* OP_FAIL */, '该渠道已经安装了：' + channelMeta.desc);
         }
-        return new ChannelCfg(channelMeta, null);
+        return new ChannelCfg(prj, channelMeta, null);
     };
 
     ChameleonTool.prototype.createChannel = function (prj, chcfg, cfg, cb) {
@@ -1427,6 +1465,7 @@ var Project = (function () {
         this.projectCfg = new ProjectCfg();
         this.channelCfg = {};
         this.sdkCfg = {};
+        this._upgradeHistory = [];
     }
     Project.prototype.addChannelCfg = function (name, chcfg) {
         this.channelCfg[name] = chcfg;
@@ -1446,6 +1485,14 @@ var Project = (function () {
             return null;
         }
     };
+
+    Object.defineProperty(Project.prototype, "upgradeHistory", {
+        get: function () {
+            return this._upgradeHistory;
+        },
+        enumerable: true,
+        configurable: true
+    });
 
     Project.prototype.addSDKCfg = function (name, sdkcfg) {
         this.sdkCfg[name] = sdkcfg;
@@ -1512,15 +1559,23 @@ var Project = (function () {
             }
             return false;
         }).map(function (name) {
-            return _this.channelCfg[name].desc;
+            return {
+                desc: _this.channelCfg[name].desc,
+                name: name
+            };
         });
 
         this.projectCfg.version = newVersion;
         this.dumpProjectJson(null);
-        return {
+        var res = {
+            version: newVersion.toString(),
             upgradeLibs: upgradeLibs,
             upgradeChannels: affectedChannels
         };
+        var p = pathLib.join(this.prjPath, 'chameleon', 'upgradeinfo.json');
+        this._upgradeHistory.push(res);
+        fs.writeJson(p, this._upgradeHistory);
+        return res;
     };
 
     Project.prototype.collectInstalledLib = function () {
@@ -1559,6 +1614,8 @@ var Project = (function () {
         var icons = cfg['icons'];
         var paySDK = cfg['payLib'];
         var userSDK = cfg['userLib'];
+        var pkg = cfg['packageName'];
+        var signcfg = cfg['signcfg'];
         var updateCfg = {
             cfg: {
                 splashscreen: null,
@@ -1585,6 +1642,14 @@ var Project = (function () {
             setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '这个渠道需要定制化闪屏，请设置'));
             return;
         }
+
+        try  {
+            chcfg.validatePkgName(pkg);
+        } catch (e) {
+            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, e.message));
+            return;
+        }
+
         if (splashscreen && cfg['splashscreenToCp']) {
             var sc = cfg['splashscreenToCp'];
             var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/');
@@ -1608,6 +1673,7 @@ var Project = (function () {
                 }
             }
         }
+        chcfg.setSignCfg(signcfg);
 
         async.series([
             function (callback) {
@@ -1615,6 +1681,7 @@ var Project = (function () {
             }, function (callback) {
                 chcfg.setPayLib(paySDK);
                 chcfg.setUserLib(userSDK);
+                chcfg.setPackageName(pkg);
                 chcfg.splashscreen = updateCfg.cfg.splashscreen;
                 if (updateCfg.cfg.icons) {
                     chcfg.setIconPos(updateCfg.cfg.icons.position);
@@ -1779,11 +1846,22 @@ var Project = (function () {
         });
     };
 
+    Object.defineProperty(Project.prototype, "packageName", {
+        get: function () {
+            return this.am.getPkgName();
+        },
+        enumerable: true,
+        configurable: true
+    });
+
     Project.loadProject = function (infoJson, path, cb) {
         var chameleonPath = pathLib.join(path, 'chameleon');
         var prj = new Project();
         prj.prjPath = path;
         async.parallel([
+            function (callback) {
+                prj.loadAndroidProjectInfo(callback);
+            },
             function (callback) {
                 var prjpath = pathLib.join(chameleonPath, 'champroject.json');
                 fs.readFile(prjpath, function (err, buf) {
@@ -1795,6 +1873,22 @@ var Project = (function () {
                     prj.projectCfg.globalCfg.loadFromJson(obj['globalcfg']);
                     prj.projectCfg.version = new Version(obj.version);
                     callback(null);
+                });
+            },
+            function (callback) {
+                var prjpath = pathLib.join(chameleonPath, 'upgradeinfo.json');
+                fs.readFile(prjpath, function (err, buf) {
+                    if (err) {
+                        callback(null);
+                        return;
+                    }
+                    try  {
+                        var obj = JSON.parse(buf.toString('utf-8'));
+                        prj._upgradeHistory = obj;
+                        callback(null);
+                    } catch (e) {
+                        callback(null);
+                    }
                 });
             },
             function (callback) {
@@ -1817,7 +1911,7 @@ var Project = (function () {
                                 Logger.log('unknown channel ' + subfolders[i]);
                                 continue;
                             }
-                            var chcfg = ChannelCfg.loadFromJson(JSON.parse(content), meta, pathLib.join(prj.prjPath, 'chameleon', 'channels', subfolders[i]));
+                            var chcfg = ChannelCfg.loadFromJson(prj, JSON.parse(content), meta, pathLib.join(prj.prjPath, 'chameleon', 'channels', subfolders[i]));
                             prj.addChannelCfg(subfolders[i], chcfg);
                         }
                     } catch (e) {
@@ -1868,9 +1962,6 @@ var Project = (function () {
                     }
                     callback(null);
                 });
-            },
-            function (callback) {
-                prj.loadAndroidProjectInfo(callback);
             }
         ], function (err) {
             if (err) {

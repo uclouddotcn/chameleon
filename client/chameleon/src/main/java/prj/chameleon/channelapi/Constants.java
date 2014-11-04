@@ -37,9 +37,16 @@ public class Constants {
         public final static int ERR_PAY_FAIL = 11; // fail to pay
         public final static int ERR_PAY_CANCEL = 12; // user cancel the payment
         public final static int ERR_PAY_IN_PROGRESS = 13; // payment is in progress..
+        public final static int ERR_PAY_SESSION_INVALID = 14; // the pay token is expired
+        public final static int ERR_PAY_UNKNOWN = 15; // 支付结果未定，有些支付渠道无法实时到账
+        // 如果返回这个错误码，可能是托管的二级货币余额不足，引导了用户充值之后
+        // 可以提示用户重新进行购买
+        public final static int ERR_PAY_RETRY = 16;
 
         // login action errors 21~30
         public final static int ERR_LOGIN_IN_PROGRESS = 21;
+        public final static int ERR_LOGIN_IN_QQ_NON_INSTALLED = 22;
+        public final static int ERR_LOGIN_IN_WX_NON_INSTALLED = 23;
     }
 
     public final static class ApplicationEvent {

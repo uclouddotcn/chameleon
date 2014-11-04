@@ -9,7 +9,10 @@
         "validator": "3.5.0",
         "uuid": "1.4.1",
         "async": "0.2.10",
-        "bunyan": "0.22.1"
+        "bunyan": "0.22.1",
+        "adm-zip": "0.4.4",
+        "commander": "2.3.0",
+        "forever": "*"
     }
 }
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/more_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/thrdcall_more_icon_margin"
+    android:paddingRight="@dimen/thrdcall_more_icon_margin" >
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="@dimen/thrdcall_more_item_widht"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
+        android:divider="@drawable/thrdcall_more_divideline_bkg"
+        android:fadingEdge="none"
+        android:scrollingCache="false" >
+    </ListView>
+
+</LinearLayout>

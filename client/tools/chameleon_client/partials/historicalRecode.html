@@ -1,0 +1,28 @@
+<div class="container-fluid">
+<div class="modal-header">
+    <h3>历史更新记录</h3>
+</div>
+<div class="modal-body">
+    <div class="vlist-warp">
+        <dl class="dl-horizontal dl-config" ng-repeat="v in vlist" ng-init="vindex=$index">
+            <dt>版本号：</dt>
+            <dd>{{v.version}}</dd>
+            <dt>更新SDK：</dt>
+            <dd ng-repeat="i in v.upgradeLibs">
+                <b>{{i.name}}</b> <em>{{i.from}}</em> -- <em>{{i.to}}</em>
+            </dd>
+            <dt>需要更新的渠道：</dt>
+            <dd >
+                <span ng-init="iindex=$index" ng-repeat="i in v.upgradeChannels">{{i.desc}}{{iindex==v.upgradeChannels.length-1 ? '' :'，'}}</span>
+                <input type="button" class="btn btn-default btn-xs" value="开始编译" ng-click="build(v)">
+            </dd>
+        </dl>
+    </div>
+
+
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="close(svrsetting.$dirty)">关闭</button>
+</div>
+</div>

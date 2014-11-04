@@ -97,7 +97,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ChannelInterface.onActivityResult(requestCode, resultCode, data);
+        ChannelInterface.onActivityResult(this, requestCode, resultCode, data);
     }
 
     /**
@@ -194,6 +194,24 @@ public class MainActivity extends Activity implements IAccountActionListener {
         cb.onFinished(Constants.ErrorCode.ERR_OK, newUserInfo);
     }
     ////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ChannelInterface.onStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ChannelInterface.onStop(this);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ChannelInterface.onNewIntent(this, intent);
+    }
 
 
     @Override
@@ -317,7 +335,7 @@ public class MainActivity extends Activity implements IAccountActionListener {
         params.put("token", ChannelInterface.getPayToken());
         params.put("productId", "xxxx");
         params.put("uid", ChannelInterface.getUin());
-        params.put("count", "1");
+        params.put("count", "10000");
         params.put("productName", "testproduct");
         params.put("productDesc", "the test product ");
         final Activity activity = this;

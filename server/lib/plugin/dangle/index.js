@@ -64,7 +64,7 @@ DangleChannel.prototype.verifyLogin = function(wrapper, token, others, callback)
             callback(null, {
                 code: 0,
                 loginInfo: {
-                   uid: obj.memberId,
+                   uid: obj.memberId.toString(),
                    token: obj.token,
                    name: obj.nickname,
                    channel: wrapper.channelName
@@ -98,11 +98,15 @@ DangleChannel.prototype.send = function (res, body) {
 
 DangleChannel.prototype.respondsToPay = function (req, res, next) {
     var self = this;
+    self._logger.debug({req: req}, 'recv callback from dangle');
     var params = req.params;
     try {
-        var customInfos = params.ext.split('|');
-        var channel = customInfos[0];
-        var orderId = customInfos[1];
+        var customInfos = JSON.parse(params.ext);
+        var channel = customInfos.ch;
+        var orderId = customInfos.o;
+        if (!orderId || !channel) {
+            throw new Error('Fail to extract orderid or channel from ext: ' + params.ext);
+        }
         var wrapper = this._channels[channel];
         if (!wrapper) {
             this._userAction.payFail(channel, orderId, ErrorCode.ERR_PAY_ILL_CHANNEL);
@@ -127,11 +131,12 @@ DangleChannel.prototype.respondsToPay = function (req, res, next) {
         var calcString = "order="+params.order+
             "&money="+params.money+
             "&mid="+params.mid+
+            "&time="+params.time+
             "&result="+params.result+
             "&ext="+params.ext+
             "&key="+cfgItem.paymentKey;
         var expectSign = self.calcSecret(calcString);
-        if (expectSign !== calcString) {
+        if (expectSign !== sign) {
             self.send(res, 'invalid sign');
             return next();
         }
@@ -139,8 +144,8 @@ DangleChannel.prototype.respondsToPay = function (req, res, next) {
             chOrderId: channelOrderNo,
             timestamp: timestamp
         };
-        self._userAction.pay(wrapper.channelName, uid, null, obj.o,
-            success, obj.p, 0, money, other,
+        self._userAction.pay(wrapper.channelName, uid, null, orderId,
+            success, null, 0, money, other,
         function (err, result) {
             if (err) {
                 self._logger.error({err: err}, "fail to pay");

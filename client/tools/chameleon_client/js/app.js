@@ -66,8 +66,8 @@ var chameleonApp = angular.module('chameleonApp', [
                 url: '/playmanage/:projectId',
                 templateUrl: 'partials/play_manage.html',
                 resolve: {
-                    project: ['$stateParams', 'ProjectMgr', 'WaitingDlg','globalCache', '$q',
-                        function ($stateParams, ProjectMgr, WaitingDlg,globalCache, $q) {
+                    project: ['$stateParams', 'ProjectMgr', '$modal', 'WaitingDlg','globalCache', '$q',
+                        function ($stateParams, ProjectMgr, $modal, WaitingDlg,globalCache, $q) {
 
                             var defered = $q.defer();
                             // 全部数据
@@ -75,7 +75,26 @@ var chameleonApp = angular.module('chameleonApp', [
                             promise.then(function (project) {
                                 ProjectMgr.checkProjectUpgrade(project, function (err, desc) {
                                     // show desc
-                                    defered.resolve(project);
+                                    if (desc) {
+                                        var instance = $modal.open({
+                                            templateUrl: 'partials/historicalRecode.html',
+                                            controller: 'ManageServerController',
+                                            size: 'lg',
+                                            backdrop: false,
+                                            keyboard: false,
+                                            resolve: {
+                                                project: function () {
+                                                    return project;
+                                                }
+                                            }
+                                        });
+                                        instance.result.then(function(data){
+                                        },function(reason){
+                                        });
+                                        defered.resolve(project);
+                                    } else {
+                                        defered.resolve(project);
+                                    }
                                 });
                             }, function (err) {
                                 defered.reject(err);
@@ -419,8 +438,7 @@ var chameleonApp = angular.module('chameleonApp', [
                                         controller: 'LogPanelController',
                                         resolve: {
                                             logs: function () {
-                                                console.log(res.s)
-                                                return [res.s];
+                                                return [res];
                                             }
                                         }
                                     });
@@ -640,6 +658,7 @@ var chameleonApp = angular.module('chameleonApp', [
                                 promise = WaitingDlg.wait(promise, '更新配置中');
                                 promise.then(function (newcfg) {
                                     delete $scope.channel.isdirty;
+                                    $scope.disable = false;
                                 }, function (e) {
                                     alert(e.message);
                                 });

@@ -225,22 +225,6 @@
     	 if use a channel
          -->
     <target name="-package-resources" depends="-crunch">
-        <if>
-            <condition>
-                <isset property="chameleon.library"/>
-            </condition>
-            <then>
-                <xpath input="${chameleon.library.path}/info.xml" 
-                    expression="/channel/@pkgsuffix" 
-                    output="chameleon.wrap_package" default=""/>
-            </then>
-            <else>
-                <property name="chameleon.wrap_package" value=""></property>
-            </else>
-        </if>
-        <echo level="info">${chameleon.wrap_package}</echo>
-        <property name="project.app.package.new" 
-            value="${project.app.package}${chameleon.wrap_package}" />
 
         <!-- only package resources if *not* a library project -->
         <do-only-if-not-library elseText="Library project: do not package resources..." >
@@ -250,7 +234,6 @@
                     versionname="${version.name}"
                     debug="${build.is.packaging.debug}"
                     manifest="${out.manifest.abs.file}"
-                    manifestpackage="${project.app.package.new}"
                     assets="${asset.absolute.dir}"
                     androidjar="${project.target.android.jar}"
                     apkfolder="${out.absolute.dir}"

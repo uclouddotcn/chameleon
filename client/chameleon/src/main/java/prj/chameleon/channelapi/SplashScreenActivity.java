@@ -4,24 +4,71 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Xml;
 import android.widget.ImageView;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SplashScreenActivity extends Activity {
     private ArrayList<Drawable> mListImages;
     private ArrayList<Integer> mListDurations;
+    private int mBgColor = Color.BLACK;
     private String mMainActivity;
+
+    private int loadSingleItem(XmlPullParser parser) throws XmlPullParserException, IOException {
+        while (parser.getEventType() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                parser.next();
+                continue;
+            }
+            String image = parser.getAttributeValue(null, "image");
+            int duration = Integer.parseInt(parser.getAttributeValue(null, "duration"));
+            InputStream is = getAssets().open(image);
+            mListImages.add(Drawable.createFromStream(is, null));
+            mListDurations.add(duration);
+            return duration;
+        }
+        return 0;
+    }
+
+    private int initFromXml() {
+
+        mListImages = new ArrayList<Drawable>();
+        mListDurations = new ArrayList<Integer>();
+        AssetManager mg = getResources().getAssets();
+        try {
+            int totalTime = 0;
+            XmlPullParser parser = Xml.newPullParser();
+            parser.setInput(mg.open("chameleon/splashscreen/info.xml"), "utf-8");
+            parser.next();
+            String color = parser.getAttributeValue(null, "background");
+            if (color != null) {
+                mBgColor = Color.parseColor(color);
+            }
+            while (parser.next() != XmlPullParser.END_DOCUMENT) {
+                totalTime += loadSingleItem(parser);
+            }
+            return totalTime;
+        } catch (IOException e) {
+            return -1;
+        } catch (XmlPullParserException e) {
+            return -1;
+        }
+    }
 
     private int initFromAsset() {
         mListImages = new ArrayList<Drawable>();
@@ -69,7 +116,10 @@ public class SplashScreenActivity extends Activity {
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int totalTime = initFromAsset();
+        int totalTime = initFromXml();
+        if (totalTime < 0) {
+            totalTime = initFromAsset();
+        }
         try {
             ActivityInfo app = getPackageManager().getActivityInfo(this.getComponentName(),
                     PackageManager.GET_ACTIVITIES|PackageManager.GET_META_DATA);
@@ -94,8 +144,9 @@ public class SplashScreenActivity extends Activity {
                 }
                 if (amDrawable.getNumberOfFrames() > 0) {
                     ImageView imgView = new ImageView(this);
-                    this.setContentView(imgView);
                     imgView.setImageDrawable(amDrawable);
+                    imgView.setBackgroundColor(mBgColor);
+                    this.setContentView(imgView);
                 }
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {

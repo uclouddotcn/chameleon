@@ -105,7 +105,7 @@ WandoujiaChannel.prototype.respondsToPay = function (req, res, next) {
         var rspObj = JSON.parse(params.content);
         var other = {
             timeStamp: rspObj.timeStamp,
-            channelOrderId: rspObj.orderId,
+            chOrderId: rspObj.orderId,
             chargeType: rspObj.chargeType,
             cardNo: rspObj.cardNo
         };

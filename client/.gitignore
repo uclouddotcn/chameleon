@@ -15,3 +15,4 @@ _book
 *.iml
 sample/chameleon_cc2d/proj.android/bin
 bin
+chameleon_build

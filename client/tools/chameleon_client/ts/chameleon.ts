@@ -385,6 +385,7 @@ export class SDKCfg {
             ver: this.ver,
             chamver: this.chamver.toString()
         }, {encoding : 'utf-8'}, cb);
+        this.metaInfo.afterCfgSet(cfg);
     }
 
     get desc(): string {
@@ -417,8 +418,8 @@ export class SDKLibInfo {
             this.version = new Version('1.0.0');
             this.realVer = "0.0.0";
         } else {
-            this.version = new Version(version.chamver);
-            this.realVer = version.version;
+            this.version = new Version(version.version);
+            this.realVer = version.realVer;
         }
     }
 }
@@ -486,6 +487,12 @@ class SDKMetaScript {
             return cfg;
         }
     }
+
+    afterCfgSet(cfg: any) {
+        if (this.mod['afterCfgSet']) {
+            this.mod['afterCfgSet'](cfg);
+        }
+    }
 }
 
 export class SDKMetaInfo {
@@ -544,12 +551,19 @@ export class SDKMetaInfo {
             return cfg;
         }
     }
+
+    afterCfgSet(cfg: any): any {
+        if (this.script) {
+            return this.script.afterCfgSet(cfg);
+        }
+    }
 }
 
 export class ChannelMetaInfo {
     pkgsuffix : string;
     hasIcon: boolean;
     hasSplashScreen: boolean;
+    useDefaultSplash: boolean;
     availableIconPos: number;
     name: string;
     desc: string;
@@ -563,7 +577,8 @@ export class ChannelMetaInfo {
         res.desc = jsonobj['name'];
         res.sdk = jsonobj['sdk'];
         res.hasIcon = jsonobj['icon'];
-        res.hasSplashScreen = jsonobj['splashscreen'];
+        res.hasSplashScreen = jsonobj['splashscreen'] === 1;
+        res.useDefaultSplash = jsonobj['splashscreen'] === 2;
         res.name = name;
         return res;
     }
@@ -632,7 +647,7 @@ export class ChannelMetaInfo {
             h: 'high',
             xh: 'xhigh'
         };
-        var re = /(\w+)_(\w+)_(\d+)_(\d+)_(.+).png/
+        var re = /(\w+)_(\w+)_(\d+)_(\d+)(_(.+))?\.(png|jpg)/
         for (var f in files) {
             var aa = re.exec(files[f]);
             if (!aa) {
@@ -643,7 +658,7 @@ export class ChannelMetaInfo {
                 density: TYPE_MAP[aa[2]],
                 width: parseInt(aa[3]),
                 height: parseInt(aa[4]),
-                desc: aa[3] + '*' + aa[4] + ' ' + aa[5],
+                desc: aa[3] + '*' + aa[4] + ' ' + aa[6],
                 path: pathLib.join(scPath, files[f])
             };
             res[o.orient].push(o);
@@ -667,6 +682,19 @@ export class ChannelMetaInfo {
 
     getSplashScreen(orient) : string{
         return this.sc[orient];
+    }
+
+    validatePkgName(pkgName: string) {
+        if (this.pkgsuffix) {
+            var r = new RegExp(this.pkgsuffix.replace(/\./g, '\\.'));
+            if (!r.test(pkgName)) {
+                if (this.pkgsuffix[0] === '^') {
+                    throw new Error('包名配置错误，该渠道要求包名必须为 "' + this.pkgsuffix.slice(1) + '" 开头');
+                } else {
+                    throw new Error('包名配置错误，该渠道要求包名必须为 "' + this.pkgsuffix.slice(0, this.pkgsuffix.length-1) + '" 结尾');
+                }
+            }
+        }
     }
 }
 
@@ -777,13 +805,16 @@ export enum IconCornerPos {
 }
 
 export class ChannelCfg {
-    static loadFromJson(jsonobj: any, channelMeta: ChannelMetaInfo, channelPath: string): ChannelCfg {
-        var res = new ChannelCfg(channelMeta, channelPath);
+    static loadFromJson(prj: Project, jsonobj: any, channelMeta: ChannelMetaInfo, channelPath: string): ChannelCfg {
+        var res = new ChannelCfg(prj, channelMeta, channelPath);
         if (jsonobj.splashscreen) {
             res._splashscreen = jsonobj.splashscreen;
         }
         if (jsonobj.icons) {
             res._icons = jsonobj.icons;
+        }
+        if (jsonobj.signcfg) {
+            res.signCfg = jsonobj.signcfg;
         }
         for (var i in jsonobj.dependLibs) {
             var d = jsonobj.dependLibs[i];
@@ -798,20 +829,26 @@ export class ChannelCfg {
                 }
             })
         }
+        res._packageName = jsonobj.package;
         return res;
     }
 
-    constructor(metaInfo: ChannelMetaInfo, channelPath: string) {
+    constructor(prj: Project, metaInfo: ChannelMetaInfo, channelPath: string) {
         this.metaInfo = metaInfo;
         this.channelPath = channelPath;
+        this._prj = prj;
+        this._packageName = '.' + metaInfo.name;
     }
 
+    private _prj: Project;
     private userLib: DependLib;
     private payLib: DependLib;
+    private _packageName: string;
     _splashscreen: string;
     private _icons: {position: IconCornerPos};
     metaInfo: ChannelMetaInfo;
     channelPath: string;
+    signCfg: any;
     _shownIcon: string;
 
 
@@ -852,6 +889,15 @@ export class ChannelCfg {
     }
 
     get packageName(): string {
+        if (this._packageName) {
+            if (this._packageName[0] === '.') {
+                return this._prj.packageName + this._packageName;
+            } else {
+                return this._packageName;
+            }
+        } else {
+            return this._prj.packageName;
+        }
         return this.metaInfo.pkgsuffix;
     }
 
@@ -882,10 +928,16 @@ export class ChannelCfg {
         return this.channelPath == null;
     }
 
+    setSignCfg(cfg: any) {
+        this.signCfg = cfg;
+    }
+
     dumpJsonObj(): any {
         var res = {};
-        res['splashscreen'] = this._splashscreen;
+        res['package'] = this._packageName;
+        res['splashscreen'] = this._splashscreen || (this.metaInfo.useDefaultSplash ? "default" : null);
         res['icons'] = this._icons;
+        res['signcfg'] = this.signCfg;
         if (this.userLib.cfg == this.payLib.cfg) {
             var dl = this.userLib.dumpJsonObj();
             dl.type = 'user,pay';
@@ -904,6 +956,19 @@ export class ChannelCfg {
         this.userLib = new DependLib();
         this.userLib.cfg = sdk.name;
         this.userLib.sdkid = sdk.metaInfo.name;
+    }
+
+    validatePkgName(pkgName: string) {
+        this.metaInfo.validatePkgName(pkgName);
+    }
+
+    setPackageName(pkg: string) {
+        var prefix = pkg.substr(0, this._prj.packageName.length+1);
+        if (prefix === this._prj.packageName + '.') {
+            this._packageName = pkg.substr(this._prj.packageName.length);
+        } else {
+            this._packageName = pkg;
+        }
     }
 
     setPayLib(sdk: SDKCfg) {
@@ -1186,7 +1251,9 @@ export class ChameleonTool {
             var _id = Math.round(new Date().getTime()/1000).toString();
             var newPrj = Project.createNewProject(name, landscape, this.infoObj.version, prjPath);
             var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
-            async.series([function(callback) {
+            async.series([function (callback) {
+                newPrj.loadAndroidProjectInfo(callback);
+            }, function(callback) {
                 fs.copy(chameleonRes, chameleonPath, null, function (err) {
                     if (err) {
                         callback(err);
@@ -1214,9 +1281,7 @@ export class ChameleonTool {
                 async.parallel(otherCopy, (err) => {
                     callback(err);
                 });
-            }, function (callback) {
-                newPrj.loadAndroidProjectInfo(callback);
-            }], (err) => {
+            }, ], (err) => {
                 if (err) {
                     if (err instanceof ChameleonError) {
                         cb(err);
@@ -1293,7 +1358,7 @@ export class ChameleonTool {
         if (prj.getChannelCfg(channelName)) {
             throw new ChameleonError(ErrorCode.OP_FAIL, '该渠道已经安装了：' + channelMeta.desc);
         }
-        return new ChannelCfg(channelMeta, null);
+        return new ChannelCfg(prj, channelMeta, null);
     }
 
     createChannel(prj: Project, chcfg: ChannelCfg, cfg: any, cb: CallbackFunc<ChannelCfg>) {
@@ -1414,6 +1479,7 @@ export class Project {
     private channelCfg: Dictionary<ChannelCfg> = {};
     private sdkCfg: Dictionary<SDKCfg> = {};
     private am: AndroidManifest;
+    private _upgradeHistory: any[] = [];
     androidTarget: string;
     prjPath: string;
     private signCfg: SignCfg;
@@ -1435,6 +1501,10 @@ export class Project {
         } else {
             return null;
         }
+    }
+
+    get upgradeHistory(): any[] {
+        return this._upgradeHistory;
     }
 
     addSDKCfg(name: string, sdkcfg: SDKCfg) {
@@ -1502,15 +1572,23 @@ export class Project {
             }
             return false;
         }).map((name) => {
-            return this.channelCfg[name].desc;
+            return {
+                desc: this.channelCfg[name].desc,
+                name: name
+            };
         });
 
         this.projectCfg.version = newVersion;
         this.dumpProjectJson(null);
-        return {
+        var res = {
+            version: newVersion.toString(),
             upgradeLibs: upgradeLibs,
             upgradeChannels: affectedChannels
         };
+        var p = pathLib.join(this.prjPath, 'chameleon', 'upgradeinfo.json');
+        this._upgradeHistory.push(res);
+        fs.writeJson(p, this._upgradeHistory);
+        return res;
     }
 
     collectInstalledLib(): SDKLibInfo[] {
@@ -1548,6 +1626,8 @@ export class Project {
         var icons = cfg['icons'];
         var paySDK = cfg['payLib'];
         var userSDK = cfg['userLib'];
+        var pkg = cfg['packageName'];
+        var signcfg = cfg['signcfg'];
         var updateCfg = {
             cfg: {
                 splashscreen: null,
@@ -1574,6 +1654,14 @@ export class Project {
             setImmediate(cb,  new ChameleonError(ErrorCode.OP_FAIL, '这个渠道需要定制化闪屏，请设置'));
             return;
         }
+
+        try {
+            chcfg.validatePkgName(pkg);
+        } catch (e) {
+            setImmediate(cb,  new ChameleonError(ErrorCode.OP_FAIL, e.message));
+            return;
+        }
+
         if (splashscreen && cfg['splashscreenToCp']) {
             var sc = cfg['splashscreenToCp'];
             var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/');
@@ -1597,12 +1685,14 @@ export class Project {
                 }
             }
         }
+        chcfg.setSignCfg(signcfg);
 
         async.series([(callback) => {
             this.copyResInChannel(chcfg.name, updateCfg.copyfile, callback);
         }, (callback) => {
             chcfg.setPayLib(paySDK);
             chcfg.setUserLib(userSDK);
+            chcfg.setPackageName(pkg);
             chcfg.splashscreen = updateCfg.cfg.splashscreen;
             if (updateCfg.cfg.icons) {
                 chcfg.setIconPos(updateCfg.cfg.icons.position);
@@ -1739,7 +1829,6 @@ export class Project {
         return res;
     }
 
-
     loadAndroidProjectInfo(cb: CallbackFunc<any>) {
         var info = Project.extractProjectProperty(this.prjPath);
         this.androidTarget = info['target'];
@@ -1753,11 +1842,18 @@ export class Project {
         });
     }
 
+    get packageName(): string {
+        return this.am.getPkgName();
+    }
+
     static loadProject(infoJson: InfoJson, path: string, cb: CallbackFunc<Project>) {
         var chameleonPath = pathLib.join(path, 'chameleon');
         var prj =  new Project();
         prj.prjPath = path;
         async.parallel([
+            function (callback) {
+                prj.loadAndroidProjectInfo(callback);
+            },
             // load global info
             function (callback) {
                 var prjpath = pathLib.join(chameleonPath, 'champroject.json');
@@ -1770,6 +1866,23 @@ export class Project {
                     prj.projectCfg.globalCfg.loadFromJson(obj['globalcfg']);
                     prj.projectCfg.version = new Version(obj.version);
                     callback(null);
+                });
+            },
+            // load upgrade history
+            function (callback) {
+                var prjpath = pathLib.join(chameleonPath, 'upgradeinfo.json');
+                fs.readFile(prjpath, function (err, buf) {
+                    if (err) {
+                        callback(null);
+                        return;
+                    }
+                    try {
+                        var obj = JSON.parse(buf.toString('utf-8'));
+                        prj._upgradeHistory = obj;
+                        callback(null);
+                    } catch (e) {
+                        callback(null);
+                    }
                 });
             },
             // load channel cfg
@@ -1793,7 +1906,7 @@ export class Project {
                                 Logger.log('unknown channel ' + subfolders[i]);
                                 continue;
                             }
-                            var chcfg = ChannelCfg.loadFromJson(JSON.parse(content), meta, pathLib.join(prj.prjPath, 'chameleon', 'channels', subfolders[i]));
+                            var chcfg = ChannelCfg.loadFromJson(prj, JSON.parse(content), meta, pathLib.join(prj.prjPath, 'chameleon', 'channels', subfolders[i]));
                             prj.addChannelCfg(subfolders[i], chcfg);
                         }
                     } catch (e) {
@@ -1845,9 +1958,6 @@ export class Project {
                     }
                     callback(null);
                 });
-            },
-            function (callback) {
-                prj.loadAndroidProjectInfo(callback);
             }
         ], function (err) {
             if (err) {

@@ -8,9 +8,13 @@ var chameleonControllers = angular.module('chameleonControllers', ['ui.router'])
 chameleonControllers
     .controller('ToolInitCtrl', function($scope) {})
     .controller('loadMethod', ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg','globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg,globalCache) {
+        $scope.project = project;
+
+        console.log(project)
+        $scope.project2 = Project.upgradeHistory;
+
         (function InitProject() {
-            $scope.project = project;
-            console.log(project);
+
             $scope.projectDoc = project.__doc;
             $scope.toolversion = ProjectMgr.version
             $scope.openUpgradePanel = function () {
@@ -73,8 +77,7 @@ chameleonControllers
                             controller: 'LogPanelController',
                             resolve: {
                                 logs: function () {
-                                    console.log(res.s)
-                                    return [res.s];
+                                    return [res];
                                 }
                             }
                         });
@@ -105,7 +108,10 @@ chameleonControllers
             ];
         })();
         $scope.show.index = true;
-
+        $scope.disable = true;
+        $scope.editinput = function () {
+            $scope.disable = false
+        }
         var promise = ProjectMgr.getProjectList();
         promise.then(
             function (data) {
@@ -203,13 +209,16 @@ chameleonControllers
 
         // compile dialog
         $scope.openBuildDialog = function () {
-            var instance = $modal.open({
+            $modal.open({
                 templateUrl: 'partials/buildproject.html',
                 controller: 'BuildProjectController',
                 size: 'lg',
                 resolve: {
                     project: function () {
                         return project;
+                    },
+                    defaultSelected: function () {
+                        return null;
                     }
                 },
                 backdrop: false,
@@ -239,6 +248,35 @@ chameleonControllers
                 }
             });
         };
+
+
+        //The historical recode update
+        $scope.historicalRecode = function () {
+            var instance = $modal.open({
+                templateUrl: 'partials/historicalRecode.html',
+                controller: 'ManageServerController',
+                size: 'lg',
+                backdrop: false,
+                keyboard: false,
+                resolve: {
+                    project: function () {
+                        return project;
+                    }
+                }
+            });
+            instance.result.then(function(data){
+                console.log(data)
+            },function(reason){
+                console.log(reason)
+            })
+        };
+
+
+
+
+
+
+
 
         (function SettingUpChTable() {
             $scope.channels = [];
@@ -276,7 +314,7 @@ chameleonControllers
                     scHeight: scHeight,
                     iconshown: iconshown,
                     icons: nowChannel.icons,
-                    packageName: project.am.getPkgName() + nowChannel.packageName
+                    packageName: nowChannel.packageName
                 };
             }
             $scope.installedChTable = {
@@ -322,7 +360,9 @@ chameleonControllers
                     gridEventHandler = null;
                 }
             });
-
+            $scope.watchPackage = function () {
+                $scope.vForm.vPackage.$dirty = true;
+            }
             $scope.saveChannel = function () {
                 try {
                     $scope.channel.payLib = $scope.channel.sdk;
@@ -332,6 +372,8 @@ chameleonControllers
                     promise = WaitingDlg.wait(promise, '更新配置中');
                     promise.then(function (newcfg) {
                         delete $scope.channel.isdirty;
+                        $scope.disable = true;
+                        $scope.vForm.vPackage.$dirty = false;
                     }, function (e) {
                         alert(e.message);
                     });
@@ -401,6 +443,59 @@ chameleonControllers
                 instance.result.then(function (image) {
                     $scope.channel.splashscreen = image.path;
                     $scope.channel.splashscreenToCp = image;
+                    $scope.channel.isdirty = true;
+                }, function () {
+                    console.log('dialog dismissed');
+                });
+            };
+
+            $scope.setChannelSignCfg = function () {
+                var instance = $modal.open({
+                    templateUrl: 'partials/setsign.html',
+                    controller: 'SetSignController',
+                    backdrop: false,
+                    keyboard: false,
+                    resolve: {
+                        signcfg: function () {
+                            var signcfg = $scope.channel.signcfg;
+                            if (!signcfg) {
+                                return {
+                                    keystroke: '',
+                                    keypass: '',
+                                    storepass: '',
+                                    alias: '',
+                                    channel: $scope.channel.data.name
+                                };
+                            } else {
+                                var pathLib = require('path');
+                                if (!signcfg.keystroke) {
+                                    var keystroke = '';
+                                } else {
+                                    var keystroke = pathLib.join($scope.projectDoc.path, $scope.channel.signcfg.keystroke);
+                                }
+                                return {
+                                    keystroke: keystroke,
+                                    keypass: signcfg.keypass,
+                                    storepass: signcfg.storepass,
+                                    alias: signcfg.alias,
+                                    channel: $scope.channel.data.name
+                                };
+                            }
+                        }
+                    }
+                });
+                instance.result.then(function (signcfg) {
+                    if (signcfg) {
+                        var pathLib = require('path');
+                        var relpath = pathLib.relative($scope.projectDoc.path,
+                            signcfg.keystroke);
+                        if (pathLib.sep !== '/') {
+                            relpath = relpath.split(pathLib.sep).join('/');
+                        }
+                        console.log('pathLib:' + pathLib)
+                        signcfg.keystroke = relpath;
+                    }
+                    $scope.channel.signcfg = signcfg;
                     $scope.channel.isdirty = true;
                 }, function () {
                     console.log('dialog dismissed');
@@ -749,6 +844,7 @@ chameleonControllers
             }
             $scope.channel = {
                 desc: nowChannel.desc,
+                signcfg: nowChannel.signCfg,
                 splashscreen: nowChannel.splashscreen,
                 sdk: sdk,
                 data: nowChannel,
@@ -756,7 +852,7 @@ chameleonControllers
                 scHeight: scHeight,
                 iconshown: iconshown,
                 icons: nowChannel.icons,
-                packageName: project.am.getPkgName() + nowChannel.packageName
+                packageName: nowChannel.packageName
             };
         }
 
@@ -815,7 +911,7 @@ chameleonControllers
                 }
                 var nowChannel = selectedChannel[0];
                 initShownChannel(nowChannel);
-
+                $scope.disable = true;
                 /**
                  * 渠道列表这里就已经获取到了sdk列表的数据 start
                  * */
@@ -1198,6 +1294,10 @@ chameleonControllers
             $modalInstance.close($scope.signcfgModel);
         };
 
+        $scope.dismissSign = function () {
+            $modalInstance.close(null);
+        };
+
         $scope.cancel = function () {
             $modalInstance.dismiss();
         };
@@ -1245,7 +1345,7 @@ chameleonControllers
         'ProjectMgr','$timeout', function($scope, $stateParams, ProjectMgr,$timeout) {
 
         }])
-    .controller('BuildProjectController',function ($scope, $modalInstance, $modal, project, ProjectMgr) {
+    .controller('BuildProjectController',function ($scope, $modalInstance, $modal, project, defaultSelected, ProjectMgr) {
         $scope.channels = [];
         var channels = project.getAllChannels();
         for (var i in channels) {
@@ -1254,8 +1354,17 @@ chameleonControllers
                 status: 0
             });
         }
-        $scope.compiling = false;
         $scope.selectedChannels = [];
+        if (defaultSelected) {
+            for (var i in defaultSelected) {
+                for (var j in $scope.channels) {
+                    if ($scope.channels[j].name === defaultSelected[i]) {
+                        $scope.selectedChannels.push($scope.channels[j]);
+                    }
+                }
+            }
+        }
+        $scope.compiling = false;
         $scope.channelTable = {
             data: 'channels',
             columnDefs: [
@@ -1295,7 +1404,10 @@ chameleonControllers
             if (r.code == 0) {
                 return '编译'+r.target+'成功';
             } else {
-                return '编译'+r.target+'失败:\n' + r.s;
+                return {
+                    msg: '编译'+r.target+'失败',
+                    logfile: r.logfile
+                };
             }
         };
         $scope.showBuildLog = function () {
@@ -1360,16 +1472,52 @@ chameleonControllers
         };
     })
     .controller('LogPanelController',function ($scope, $modalInstance, logs) {
-        $scope.logs = logs;
+        $scope.logs = [];
+        $scope.openLog = function (logfile) {
+            console.log(logfile);
+            require('nw.gui').Shell.openItem(logfile);
+        };
+        for (var i = 0; i < logs.length; i++) {
+            if (typeof logs[i] === 'string') {
+                $scope.logs.push({
+                    msg: logs[i]
+                });
+            } else {
+                $scope.logs.push({
+                    msg: logs[i].msg,
+                    logfile: logs[i].logfile
+                });
+            }
+        }
     })
-    .controller('ManageServerController',function ($scope, $modalInstance, $log, project, ProjectMgr, fileDialog) {
+    .controller('ManageServerController',function ($scope, $modal, $modalInstance, $log, project, ProjectMgr, fileDialog) {
         $scope.svrinfo = project.__doc.svrinfo;
+        $scope.vlist = project.upgradeHistory;
+
         if (!$scope.svrinfo) {
             $scope.svrinfo  = {
                 nick: project.__doc._id.toString(),
                 paycbUrl: ''
             };
         }
+
+        $scope.build = function (h) {
+            $modal.open({
+                templateUrl: 'partials/buildproject.html',
+                controller: 'BuildProjectController',
+                size: 'lg',
+                resolve: {
+                    project: function () {
+                        return project;
+                    },
+                    defaultSelected: function () {
+                        return h.upgradeChannels.map(function (o) {return o.name});
+                    }
+                },
+                backdrop: false,
+                keyboard: false
+            });
+        };
 
         $scope.close = function (dirty) {
             if (dirty) {

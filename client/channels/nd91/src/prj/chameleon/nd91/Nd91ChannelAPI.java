@@ -50,6 +50,7 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private IAccountActionListener mAccountActionListener;
     private NdToolBar mToolbar;
     private PlatformBackgroundListener mBackgroundListener = new PlatformBackgroundListener();
+    private OnInitCompleteListener mInitListener;
     private boolean mCfgLandScape;
     private long mCfgAppID;
     private boolean mIsForceUpdate;
@@ -80,7 +81,7 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         if (mIsDebug) {
             NdCommplatform.getInstance().ndSetDebugMode(0);
         }
-        OnInitCompleteListener listener = new OnInitCompleteListener(){
+        mInitListener = new OnInitCompleteListener(){
             @Override
             protected void onComplete(int ndFlag) {
                 switch (ndFlag) {
@@ -116,7 +117,7 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
         appInfo.setCtx(activity);
         int d = NdCommplatform.getInstance().ndInit(activity, appInfo,
-                listener);
+                mInitListener);
         Log.d(Constants.TAG, "nd91 init get " + String.valueOf(d));
         if (d != NdErrorCode.ND_COM_PLATFORM_SUCCESS) {
             cb.onFinished(Constants.ErrorCode.ERR_ILL_PARAMS, null);
@@ -482,6 +483,13 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         return NdCommplatform.getInstance().isLogined();
     }
 
+
+    @Override
+    public void onDestroy(Activity activity) {
+        if (mInitListener != null) {
+            mInitListener.destroy();
+        }
+    }
     /**
      * destroy the sdk instance
      * @param activity the activity to give the real SDK

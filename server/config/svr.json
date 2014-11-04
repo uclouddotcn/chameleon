@@ -11,19 +11,18 @@
     },
 
     "pendingOrderStoreCfg" : {
-        "type": "leveldb",
-        "ttl" : 900
+        "type" : "redis",
+        "instance" : [
+            {
+                "port": 6379,
+                "host": "127.0.0.1"
+            }
+        ],
+        "ttl": 3600
     },
      
     "channelCbSvr" :  {
-        "port" : 8082,
+        "port" : 80,
         "host" : "0.0.0.0"
-    },
-
-    "billCfg" : {
-        "name": "bunyanlogger",
-        "cfg": {
-            "path": "./log/bill.log"
-        }
     }
 }

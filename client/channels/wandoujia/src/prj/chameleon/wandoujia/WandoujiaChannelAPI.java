@@ -228,6 +228,11 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
 
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
-
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+            }
+        });
     }
 }

@@ -1,6 +1,7 @@
 package prj.chameleon.channelapi.unity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -164,7 +165,6 @@ public class UnityChannelInterface {
     /**
      * start a buy request, refer the meaning of the parameters to prj.chameleon.platformapi.UnityChannelInterface
      *
-     * @param id
      * @param orderId
      * @param uidInGame
      * @param userNameInGame
@@ -175,8 +175,7 @@ public class UnityChannelInterface {
      * @param realPayMoney
      * @throws UnsupportedEncodingException
      */
-    public static void buy(final int id,
-                           final String orderId,
+    public static void buy(final String orderId,
                            final String uidInGame,
                            final String userNameInGame,
                            final String serverId,
@@ -329,6 +328,25 @@ public class UnityChannelInterface {
             }
         });
     }
+
+    public static void onActivityResult(final Activity activity, final int requestCode, final int resultCode, final Intent data) {
+        prj.chameleon.channelapi.ChannelInterface.onActivityResult(activity, requestCode, resultCode, data);
+    }
+
+
+    public static void onStart(Activity activity) {
+        prj.chameleon.channelapi.ChannelInterface.onStart(activity);
+    }
+
+    public static void onStop(Activity activity) {
+        prj.chameleon.channelapi.ChannelInterface.onStop(activity);
+    }
+
+    public static void onNewIntent(Activity activity, Intent intent) {
+        prj.chameleon.channelapi.ChannelInterface.onStop(activity);
+    }
+
+
     /**
      * request anti addiction info
      *

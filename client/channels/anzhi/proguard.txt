@@ -1,0 +1,3 @@
+-keep class com.anzhi.usercenter.sdk**{*;}
+-keep class com.unionpay.upomp.tbow.**{*;}
+-keep class **.R$*{*;}

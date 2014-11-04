@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #encoding utf-8
-import os, subprocess, sys
+import os, subprocess, sys, shutil
 
-NPM_CMD = 'cnpm'
+NPM_CMD = 'npm'
 UNZIP_CMD = 'unzip'
 SCRIPT_DIR = os.path.split(os.path.abspath(__file__))[0]
 ZIP_FILE = os.path.join(SCRIPT_DIR, 'chameleon.zip')
@@ -45,13 +45,22 @@ def npmApp(path):
 def main():
     if len(sys.argv) < 2:
         raise RuntimeError('use ./install.py installpath, for example "./install.py ~/chameleon"')
-    p = sys.argv[1]
+    with open(os.path.join(SCRIPT_DIR, 'version.txt')) as f:
+        c = f.read()
+        c = c.strip('\n')
+        c = c.strip('\r')
+        c = c.replace('.', '_')
+    p = os.path.join(sys.argv[1], 'chameleon'+'_'+c)
     if not os.path.exists(p):
         os.makedirs(p)
+    cfgPath = os.path.join(sys.argv[1], 'config')
+    if not os.path.exists(cfgPath):
+        os.makedirs(cfgPath)
+    shutil.copy2(os.path.join(SCRIPT_DIR, 'svr.json'), 
+            os.path.join(cfgPath, 'svr.json'))
     extractPlugin(p)
     npmApp(p)
     npmAllPlugins(p)
-    os.makedirs(os.path.join(p, 'log'))
     
 if __name__ == '__main__':
     sys.exit(main())

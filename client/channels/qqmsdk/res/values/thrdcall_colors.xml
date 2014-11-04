@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="thrdcall_transparent">#00000000</color>
+    <color name="thrdcall_black">#ff000000</color>
+    <color name="thrdcall_white">#ffffffff</color>
+
+    <drawable name="thrdcall_transparent">#00000000</drawable>
+
+    <color name="thrdcall_theme_page_bkg_normal">#ffffffff</color>
+
+    <!-- 特殊调用 -->
+    <color name="thrdcall_more_text_shadow_color">#ff000000</color>
+    <color name="thrdcall_menu_text_shadow_color">#80ffffff</color>
+    <color name="thrdcall_menu_text_color">#ff333333</color>
+    <color name="thrdcall_menu_pressed">#4d4d4d</color>
+    <color name="thrdcall_menu_normal">#3c3f43</color>
+
+</resources>

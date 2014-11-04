@@ -41,10 +41,10 @@ TestChannel.prototype.getPayUrlInfo = function ()  {
 };
 
 
-TestChannel.prototype.pendingPay = function (params, infoFromSDK, callback) {
+TestChannel.prototype.pendingPay = function (channelName, params, infoFromSDK, callback) {
     var self = this;
     var orderId = uuid.v4();
-    var wrapper = this._channels[infoFromSDK.channel];
+    var wrapper = this._channels[channelName];
     if (wrapper) {
         setImmediate(callback, null, orderId, params);
         setTimeout(function () {
