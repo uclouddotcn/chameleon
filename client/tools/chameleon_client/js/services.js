@@ -136,8 +136,8 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
 
     ProjectMgr.prototype.compileProject = function(project, target) {
         var defered = $q.defer();
-        var buildscript = this.pathLib.join(project.__doc.path, 'chameleon_build.py');
-        var inputParams = [buildscript, 'build', 'release', target];
+        var buildscript = this.pathLib.join(globalenv.appFolder, 'chameleon', 'tools', 'buildtool', 'chameleon_build.py');
+        var inputParams = [buildscript, 'build', project.__doc.path, 'release', target];
         var logfile = this.getTempFile(project, "compile_"+target);
         this.doRunCmd('python', inputParams, logfile, 20*60, function (error) {
                 var compileResult = null;

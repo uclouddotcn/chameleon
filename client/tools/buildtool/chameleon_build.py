@@ -4,6 +4,7 @@ import subprocess, sys, traceback, os, re, json, codecs
 from collections import OrderedDict
 from tempfile import NamedTemporaryFile
 import xml.dom.minidom as xml
+import imp, shutil
 
 SCRIPTDIR = os.path.abspath(os.path.split(os.path.realpath(__file__))[0]).decode(sys.getfilesystemencoding())
 VALID_BUILD_TYPES = ['debug', 'release']
@@ -15,14 +16,13 @@ if os.name == 'nt':
 else:
     ANT_CMD = os.path.join(ANT_HOME, 'bin', 'ant')
 
-def getInstalledChannels(prjpath, ):
+def getInstalledChannels(prjpath):
     channelDir = os.path.join(prjpath, 'chameleon', 'channels')
     if not os.path.exists(channelDir):
         return []
     return os.listdir(channelDir)
 
 def runProcess(cmd):
-    print ' '.join(cmd)
     p = subprocess.Popen(cmd+['-f', os.path.join(SCRIPTDIR, 'ant', 'build.xml')])
     return p.wait()
 
@@ -103,7 +103,6 @@ class BuildCmd(object):
         props = self.composeProperties(binfo, libraries)
         with NamedTemporaryFile(delete=False) as f:
             p = f.name
-            print '\n'.join(props)
             f.write('\n'.join(props))
         return TempFile(p)
 
@@ -196,13 +195,13 @@ class BuildCmd(object):
         return t
     
     def preBuild(self, binfo):
-        p = os.path.join(SCRIPTDIR, 'channels')
-        if not os.path.exists(os.path.join(p, binfo.channel)):
+        p = os.path.join(SCRIPTDIR, '..', '..', 'channelinfo', binfo.channel, 'script')
+        if not os.path.exists(os.path.join(p, 'build.py')):
             pass
         else:
-            fp, pathname, description = imp.find_module(channel, p)
+            fp, pathname, description = imp.find_module('build', [p])
             try:
-                m = imp.load_module(name, fp, pathname, description)
+                m = imp.load_module('build', fp, pathname, description)
                 f = m.__dict__.get('preBuild')
                 if f:
                     f(binfo)
@@ -215,69 +214,53 @@ class BuildCmd(object):
 
 class CleanCmd(object):
     def __init__(self):
-        self.opt = OptionParser(usage="usage: %prog clean [channel]")
+        self.opt = OptionParser(usage="usage: %prog clean prjpath channel")
         self.opt.add_option("-a", '--all', dest='cleanall', action="store_true",
                 help='clean all channnels', default=False)
 
     def briefDesc(self):
         return "clean the app with channel"
 
-    def execute(self, args):
-        (options, myargs) = self.opt.parse_args(args)
-        if len(myargs) < 1:
-            self.opt.print_help()
-            return -1
-        supportChannels = getInstalledChannels()
-        if options.cleanall: 
-            for channel in supportChannels:
-                print 'cleaning for %s' %channel
-                ret = runProcess([ANT_CMD, 'clean'], channel)
-        else:
-            if len(myargs) > 1:
-                channel = myargs[1]
-                if channel not in supportChannels:
-                    raise RuntimeError(u"channel %s is not installed" %channel)
-            else:
-                channel = None
-            return runProcess([ANT_CMD, 'clean'], channel)
-
-class InstallCmd(object):
-    def __init__(self):
-        self.opt = OptionParser(usage="usage: %prog install buildtype[debug or release] [channel]")
-
-    def briefDesc(self):
-        return "install the app with channel"
+    def cleanChannel(self, prjpath, channel):
+        p = os.path.join(prjpath, 'chameleon_build', 'intermediate', channel)
+        if os.path.exists(p):
+            shutil.rmtree(p)
 
     def execute(self, args):
         (options, myargs) = self.opt.parse_args(args)
         if len(myargs) < 2:
             self.opt.print_help()
             return -1
-        supportChannels = getInstalledChannels()
-        buildtype = myargs[1]
-        if buildtype not in VALID_BUILD_TYPES:
-            raise RuntimeError(u"unknown build type %s, use 'debug' or 'release' ")
-        if len(myargs) == 2:
-            channel = None
+        prjpath = os.path.abspath(myargs[1])
+        supportChannels = getInstalledChannels(prjpath)
+        if options.cleanall: 
+            for channel in supportChannels:
+                print 'cleaning for %s' %channel
+                self.cleanChannel(prjpath, channel)
         else:
+            if len(myargs) < 3:
+                self.opt.print_help()
+                return -1
             channel = myargs[2]
             if channel not in supportChannels:
                 raise RuntimeError(u"channel %s is not installed" %channel)
-        installTarget = 'installd'
-        if buildtype == 'release':
-            installTarget = 'installr'
-        return runProcess([ANT_CMD, installTarget], channel)
+            self.cleanChannel(prjpath, channel)
+        return 0
 
 class ListChannelCmd(object):
     def __init__(self):
-        self.opt = OptionParser(usage="usage: %prog list")
+        self.opt = OptionParser(usage="usage: %prog list prjpath")
 
     def briefDesc(self):
         return "list installed channels"
 
     def execute(self, args):
         (options, myargs) = self.opt.parse_args(args)
-        supportChannels = getInstalledChannels()
+        if len(myargs) < 2:
+            self.opt.print_help()
+            return -1
+        prjpath = os.path.abspath(myargs[1])
+        supportChannels = getInstalledChannels(prjpath)
         print 'Installed channels:'
         print '\t\n'.join(supportChannels)
         return 0
@@ -285,8 +268,7 @@ class ListChannelCmd(object):
 CMDS = OrderedDict((
         ('list', ListChannelCmd()),
         ('build', BuildCmd()),
-        ('clean', CleanCmd()),
-        ('install', InstallCmd())))
+        ('clean', CleanCmd())))
 
 def printHelp():
     print 'use this to build, clean and install the target with channel. Support commands are:\n'
@@ -299,7 +281,6 @@ def main():
         printHelp()
         return -1
     try:
-        os.chdir(SCRIPTDIR)
         cmd = sys.argv[1]
         if cmd == 'help':
             return printHelp()

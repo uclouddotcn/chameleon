@@ -8,6 +8,7 @@ CHANNEL_DIR = os.path.join(BASEDIR, 'channels')
 CHANNELINFO_DIR = os.path.join(BASEDIR, 'channelinfo')
 CPP_SRC_ROOT = os.path.join(BASEDIR, 'chameleon', 'src', 'main', 'chameleoncb')
 BUILD_SCRIPT_DIR = os.path.join(BASEDIR, 'tools', 'buildscript')
+BUILD_TOOL_DIR = os.path.join(BASEDIR, 'tools', 'buildtool')
 
 def copyFileInList(srcroot, targetroot, filelist):
     for f in filelist:
@@ -107,12 +108,14 @@ def copyChameleonCpp(targetFolder):
 def initProjectFolder(targetFolder, version):
     targetChannelPath = os.path.join(targetFolder, 'channels')
     targetScriptPath = os.path.join(targetFolder, 'ChannelScript')
+    toolPath = os.path.join(targetFolder, 'tools')
     chameleonCbPath = os.path.join(targetFolder, 'chameleoncb')
     infoJsonFile = os.path.join(targetFolder, 'info.json')
     channelListFile = os.path.join(CHANNELINFO_DIR, 'channellist.json')
     shutil.copytree(BUILD_SCRIPT_DIR, targetFolder)
     copyChameleonCpp(targetFolder)
     initTargetScriptFolder(targetScriptPath)
+    os.makedirs(toolPath)
     channelInfos = packChannels(CHANNEL_DIR, targetChannelPath)
     with codecs.open(channelListFile, 'r', 'utf8') as channelListFObj:
         channellistobj = json.load(channelListFObj)
@@ -124,6 +127,7 @@ def initProjectFolder(targetFolder, version):
         if ci.script:
             shutil.copy2(ci.script, os.path.join(targetScriptPath, ci.name+'_script.js'))
     shutil.copytree(CHANNELINFO_DIR, os.path.join(targetFolder, 'channelinfo'))
+    shutil.copytree(BUILD_TOOL_DIR, os.path.join(toolPath, 'buildtool'))
 
 def compileChannel(gradleCmd, channel):
     taskTarget = ':channels:%s' %channel
