@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="chameleon_dummy_prj" default="help">
+    <echo>${chameleon_prop_file}</echo>
+    <loadproperties srcFile="${chameleon_prop_file}"/>
+    <import file="${chameleon_script}/ant/chameleon_rules.xml" />
+    <import file="${basedir}/build.xml"/>
+</project>
