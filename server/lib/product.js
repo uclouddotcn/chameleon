@@ -138,7 +138,7 @@ function (req, res, next) {
     var channelName = params.channel;
     var channel = this.channelMgr.getChannel(params.channel);
     if (!channel) {
-        throw new Error(util.format('Not channel ' + params.channel + 'for product' + this._productName));
+        throw new Error(util.format('Not channel ' + params.channel + ' for product ' + this._productName));
     }
     this._userAction.verifyUserLogin( channel,
         req.params.token,
