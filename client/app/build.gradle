@@ -60,6 +60,9 @@ android {
                 }
             }
         }
+        huawei {
+
+        }
         anzhi {
 
         }
@@ -97,6 +100,7 @@ dependencies {
     oppoCompile project(':channels:oppo')
     dangleCompile project(':channels:dangle')
     anzhiCompile project(':channels:anzhi')
+    huaweiCompile project(':channels:huawei')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
