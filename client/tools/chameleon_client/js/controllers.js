@@ -1574,9 +1574,6 @@ chameleonControllers
         console.log($scope)
     })
     .controller('SelectChannelController',function ($scope, $modalInstance, $stateParams,allsdks,globalCache) {
-//        var promise = ProjectMgr.loadProject($stateParams.projectId);
-//        var sdksaa = promise.getAllSDKs();
-
         $scope.selected = [];
         $scope.useSDK = function () {
             console.log($scope.selected)
@@ -1837,35 +1834,17 @@ chameleonControllers
 
     }])
     .controller('canctrl',['$scope', '$log', '$stateParams', '$state', '$modal',  'WaitingDlg', '$timeout',function ($scope, $log, $stateParams, $state, $modal, WaitingDlg,$timeout) {
-        $('input[type=text]').change(function(){
-            $timeout(function(){
-                $scope.channelCfgForm.appid.$dirty = true;
-                $scope.channelCfgForm.appkey.$dirty = true;
-                $scope.channelCfgForm.appsecret.$dirty = true;
-            })
-        })
         $scope.updateCurrentCfg = function () {
 
             var sdk = $scope.selectedsdk;
             var promise = sdk.updateFunc();
             promise = WaitingDlg.wait(promise, '更新配置中');
-
-
             promise.then(function () {
-                $timeout(function(){
-                    $scope.channelCfgForm.appid.$dirty = false;
-                    $scope.channelCfgForm.appkey.$dirty = false;
-                    $scope.channelCfgForm.appsecret.$dirty = false;
-                })
-
-
+                $scope.channelCfgForm.$setPristine();
             }, function (e) {
                 alert(e.message);
             });
         };
-
-
-
     }])
 
 

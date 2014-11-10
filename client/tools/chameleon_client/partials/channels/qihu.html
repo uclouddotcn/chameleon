@@ -45,7 +45,7 @@
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <button type="submit" class="btn" ng-disabled="!channelCfgForm.appid.$dirty && !channelCfgForm.appkey.$dirty && !channelCfgForm.appSecret.$dirty && !channelCfgForm.uri.$dirty && !channelCfgForm.urc.$dirty">保存</button>
+                    <button type="submit" class="btn" ng-disabled="!channelCfgForm.$dirty || channelCfgForm.$invalid">保存</button>
                 </div>
             </div>
         </form>

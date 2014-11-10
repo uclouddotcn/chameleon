@@ -245,7 +245,15 @@ var ConfigDesc = (function () {
             var name = this.items[i].name;
             var cfgitem = this.items[i].item;
             var wrapname = ConfigDesc.wrapName(cfgitem, item.ignore, name);
-            target[name] = jsonobj[wrapname];
+            if (jsonobj[wrapname]) {
+                target[name] = jsonobj[wrapname];
+            } else {
+                if (this.items[i].defaultValue) {
+                    target[name] = item.defaultValue;
+                } else {
+                    target[name] = cfgitem.initvalue;
+                }
+            }
         }
     };
 
