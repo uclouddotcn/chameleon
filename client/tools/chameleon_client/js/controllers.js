@@ -10,7 +10,6 @@ chameleonControllers
     .controller('loadMethod', ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg','globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg,globalCache) {
         $scope.project = project;
 
-        console.log(project)
         $scope.project2 = Project.upgradeHistory;
 
         (function InitProject() {
@@ -839,8 +838,6 @@ chameleonControllers
             var sdk = null;
             if (nowChannel.userSDK) {
                 sdk = project.getSDKCfg(nowChannel.userSDK);
-
-
             }
             $scope.channel = {
                 desc: nowChannel.desc,
@@ -854,7 +851,10 @@ chameleonControllers
                 icons: nowChannel.icons,
                 packageName: nowChannel.packageName
             };
-        }
+            if (sdk) {
+                $scope.selected[0] = sdk;
+            }
+        };
 
         $scope.selected = [];
         $scope.gridOptions = {
@@ -874,20 +874,12 @@ chameleonControllers
             showGroupPanel: false,
             showFooter: false,
             afterSelectionChange : function(){
-                console.log($scope.selected)
                 $scope.channel.sdk = $scope.selected[0];
                 $scope.channel.isdirty = true;
                 $scope.saveSDK = function () {
-
-
-
                 }
-
-
             },
             rowTemplate: '<div ng-click="saveSDK()"  style="height: 100%" ng-class="{red: row.getProperty(\'outdated\')}"><div ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell "><div ng-cell></div></div></div>'
-
-
         };
         $scope.installedChTable = {
             data: 'channels',
@@ -916,7 +908,6 @@ chameleonControllers
                  * 渠道列表这里就已经获取到了sdk列表的数据 start
                  * */
                 var sdks = project.getAllSDKs();
-                console.log(sdks);
                 var allsdks = [];
                 var requiredSDK =
                     $scope.channel.data.requiredSDK;
@@ -1580,7 +1571,6 @@ chameleonControllers
         $scope.selected = [];
         $scope.useSDK = function () {
             console.log($scope.selected)
-            debugger;
             $modalInstance.close($scope.selected[0]);
         };
 
@@ -1595,7 +1585,7 @@ chameleonControllers
             data: 'allsdks',
             columnDefs: [
                 {
-                    displayName: '现有的SDK配置1',
+                    displayName: '现有的SDK配置',
                     field: 'desc',
                     width: '*',
                     resizable: false,
