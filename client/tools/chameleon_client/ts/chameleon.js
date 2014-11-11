@@ -245,7 +245,15 @@ var ConfigDesc = (function () {
             var name = this.items[i].name;
             var cfgitem = this.items[i].item;
             var wrapname = ConfigDesc.wrapName(cfgitem, item.ignore, name);
-            target[name] = jsonobj[wrapname];
+            if (jsonobj[wrapname]) {
+                target[name] = jsonobj[wrapname];
+            } else {
+                if (this.items[i].defaultValue) {
+                    target[name] = item.defaultValue;
+                } else {
+                    target[name] = cfgitem.initvalue;
+                }
+            }
         }
     };
 
@@ -1220,7 +1228,8 @@ var ChameleonTool = (function () {
                 var prjLibPath = pathLib.join(prj.prjPath, 'libs');
                 var chamLibPath = pathLib.join(prj.prjPath, 'chameleon', 'libs');
                 var otherCopy = [
-                    fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null)
+                    fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null),
+                    fs.copy.bind(fs, pathLib.join(chameleonPath, 'chameleon_build.py'), pathLib.join(prj.prjPath, 'chameleon_build.py'), null)
                 ];
                 if (fs.existsSync(pathLib.join(prjLibPath, 'chameleon_unity.jar'))) {
                     otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon_unity.jar'), pathLib.join(prjLibPath, 'chameleon_unity.jar'), null));
@@ -1271,7 +1280,8 @@ var ChameleonTool = (function () {
                     var prjLibPath = pathLib.join(prjPath, 'libs');
                     var chamLibPath = pathLib.join(prjPath, 'chameleon', 'libs');
                     var otherCopy = [
-                        fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null)
+                        fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null),
+                        fs.copy.bind(fs, pathLib.join(chameleonPath, 'chameleon_build.py'), pathLib.join(prjPath, 'chameleon_build.py'), null)
                     ];
                     if (unity) {
                         otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon_unity.jar'), pathLib.join(prjLibPath, 'chameleon_unity.jar'), null));
