@@ -16,11 +16,63 @@
 
 
 ## 修改生成的Main Activity
-Chameleon Unity的接口类是 ``` prj.chameleon.platformapi.unity.UnityChannelInterface```
+首先添加import
 
-1. 在 UnityPlayerNativeActivity.onCreate中添加 ```UnityChannelInterface.init(this);```
-2. 在 UnityPlayerNativeActivity.onPause添加 ```UnityChannelInterface.onPause();```
-3. 在 UnityPlayerNativeActivity.onResume添加 ```UnityChannelInterface.onResume();```
+```
+import prj.chameleon.channelapi.unity.UnityChannelInterface;
+import android.content.Intent;
+```
+
+然后在Activity中添加事件回调的处理函数
+
+
+```
+        protected void onCreate (Bundle savedInstanceState)
+        {
+        	// unity initial funcitons
+            //...
+            //
+            UnityChannelInterface.init(this);
+        }
+        protected void onDestroy ()
+        {
+            mUnityPlayer.quit();
+            super.onDestroy();
+            UnityChannelInterface.onDestroy();
+        }
+        protected void onPause()
+        {
+            super.onPause();
+            mUnityPlayer.pause();
+            UnityChannelInterface.onPause();
+        }
+        protected void onResume()
+        {
+            super.onResume();
+            mUnityPlayer.resume();
+            UnityChannelInterface.onResume();
+        }
+        @Override
+        public void onStart() {
+            super.onStart();
+            UnityChannelInterface.onStart(this);
+        }
+        @Override
+        public void onStop() {
+            super.onStop();
+            UnityChannelInterface.onStop(this);
+        }
+
+        @Override
+        public void onNewIntent(Intent intent) {
+            super.onNewIntent(intent);
+            UnityChannelInterface.onNewIntent(this, intent);
+        }
+
+
+
+```
+
 
 ## 开始使用接口
 Unity的接口也有两个部分，第一个部分是请求接口，第二个部分是回调接口
@@ -189,6 +241,20 @@ ChameleonSDK
 		public static bool onLoginRsp(string rsp) {
 			return mBridge.callFunc<bool>("onLoginRsp", rsp);
 		}
+		
+		/**
+		 * submit player info
+		 * @param roleId role id in game
+		 * @param roleName role name in game
+		 * @param roleLevel role level in game
+		 * @param zoneId zone id
+		 * @param zoneName zone name
+		 */
+		public static void submitPlayerInfo(string roleId,
+		                                    string roleName,
+		                                    string roleLevel,
+		                                    int zoneId,
+		                                    string zoneName)		
 ```
 
 ### 回调接口

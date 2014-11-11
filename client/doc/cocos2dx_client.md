@@ -4,6 +4,14 @@
 
 使用````prj.chameleon.channelapi.cbinding.NativeChannelInterface```接口中的函数，修改Cocos2dx生成的activity，重载onResume和onPause，在onCreateView中添加初始化函数，例如
 
+首先添加import
+
+```
+import prj.chameleon.channelapi.cbinding.NativeChannelInterface;
+import android.content.Intent;
+```
+
+然后在Activity中添加事件回调的处理函数
 
 ```
     @Override
@@ -17,6 +25,34 @@
         super.onResume();
         NativeChannelInterface.onPause();
     }
+    
+    @Override
+    public void onStart() {
+        super.onStart();
+        NativeChannelInterface.onStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        NativeChannelInterface.onStop(this);
+    }
+    
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        NativeChannelInterface.onDestroy();
+    }
+
+
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+            NativeChannelInterface.onNewIntent(this, intent);
+    }
+
+
 
 
     public Cocos2dxGLSurfaceView onCreateView() {
@@ -214,6 +250,21 @@ namespace ChameleonChannelAPI{
      * @return {bool} 登陆是否验证登陆成功
      */
     bool onLoginRsp(const std::string & loginRsp);
+    
+     /**
+     * 提交用户信息
+     * @param roleId 用户在游戏中的ID
+     * @param roleName 用户在游戏中的名
+     * @param roleLevel 用户等级
+     * @param zoneId zone id
+     * @param zoneName zone的名称
+     */
+    bool submitPlayerInfo(const std::string & roleId, 
+                          const std::string & roleName, 
+                          const std::string & roleLevel, 
+                          int zoneId,
+                          const std::string & zoneName);
+
 
     /**
      * 是否登录
@@ -337,7 +388,7 @@ public:
 
 
 ###编译
-先使用Cocos2dx的脚本编译好so文件，之后使用chameleon_build.py即可打包各个渠道
+先使用Cocos2dx的脚本编译好so文件，之后使用客户端工具即可打包各个渠道
 
 
 
