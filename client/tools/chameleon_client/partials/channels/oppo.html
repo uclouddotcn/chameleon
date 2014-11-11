@@ -1,45 +1,48 @@
-<div class="row-fluid">
-    <h4>{{selectedsdk.name}}</h4>
-</div>
-<div class="row-fluid">
-    <form name="channelCfgForm" class="form-horizontal" ng-submit="updateCurrentCfg()">
-        <div class="control-group">
-            <label class="control-label" for="appid">Game ID</label>
-	    <div class="controls">
-	        <input id="appid" type="text" style="width:60%" ng-model="selectedsdk.cfg.gameId"/>
-	    </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="appkey">APP KEY</label>
-	    <div class="controls">
-	        <input id="appkey" type="text" style="width:60%" ng-model="selectedsdk.cfg.appKey"/>
-	    </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="appsecret">APP SECRET</label>
-	    <div class="controls">
-	        <input id="appsecret" type="text" style="width:60%" ng-model="selectedsdk.cfg.appSecret"/>
-	    </div>
-        </div>
-	<div class="control-group" >
-            <label class="control-label" for="orientation">是否允许切换账户</label>
-            <div class="controls">
-	    <div class="btn-group">
-                <label class="btn btn-primary" ng-model="selectedsdk.cfg.allowSwitchAccount" btn-radio="true">是</label>
-                <label class="btn btn-primary" ng-model="selectedsdk.cfg.allowSwitchAccount" btn-radio="false">否</label>
-	    </div>
+<div ng-controller="canctrl">
+    <div class="row-fluid">
+        <h4>{{selectedsdk.name}}</h4>
+    </div>
+    <div class="row-fluid">
+        <form name="channelCfgForm" class="form-horizontal" ng-submit="updateCurrentCfg()">
+            <div class="control-group">
+                <label class="control-label" for="appid">Game ID</label>
+                <div class="controls">
+                    <input id="appid" type="text" style="width:60%" ng-model="selectedsdk.cfg.gameId"/>
+                </div>
             </div>
-	</div>
-        <div class="control-group">
-            <label class="control-label" for="uri">支付回调URL</label>
-	    <div class="controls">
-	        <input id="uri" type="text" style="width:60%" ng-model="selectedsdk.cfg.payCallback"/>
-	    </div>
-        </div>
-	<div class="control-group">
-	    <div class="controls">
-	        <button type="submit" class="btn">保存</button>
-	    </div>
-	</div>
-    </form>
+            <div class="control-group">
+                <label class="control-label" for="appkey">APP KEY</label>
+                <div class="controls">
+                    <input id="appkey" type="text" style="width:60%" ng-model="selectedsdk.cfg.appKey"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="appsecret">APP SECRET</label>
+                <div class="controls">
+                    <input id="appsecret" type="text" style="width:60%" ng-model="selectedsdk.cfg.appSecret"/>
+                </div>
+            </div>
+            <div class="control-group" >
+                    <label class="control-label">是否允许切换账户</label>
+                    <div class="controls">
+                <div class="btn-group">
+                        <label class="btn btn-primary" ng-model="selectedsdk.cfg.allowSwitchAccount" btn-radio="true">是</label>
+                        <label class="btn btn-primary" ng-model="selectedsdk.cfg.allowSwitchAccount" btn-radio="false">否</label>
+                </div>
+                    </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="uri">支付回调URL</label>
+                <div class="controls">
+                    <input id="uri" type="url" style="width:60%" ng-model="selectedsdk.cfg.payCallback"/>
+                </div>
+                <span class="error" ng-show="channelCfgForm.uri.$dirty && channelCfgForm.uri.$invalid">Please provide a valid email address</span>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn" ng-disabled="!channelCfgForm.$dirty || channelCfgForm.$invalid">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>

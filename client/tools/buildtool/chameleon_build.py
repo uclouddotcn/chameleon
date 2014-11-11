@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 from optparse import OptionParser
 import subprocess, sys, traceback, os, re, json, codecs
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 from tempfile import NamedTemporaryFile
 import xml.dom.minidom as xml
 import imp, shutil
 
+LibInfo = namedtuple('LibInfo', ['name', 'cfg'])
 SCRIPTDIR = os.path.abspath(os.path.split(os.path.realpath(__file__))[0]).decode(sys.getfilesystemencoding())
 VALID_BUILD_TYPES = ['debug', 'release']
 ANT_HOME = os.getenv('ANT_HOME')
@@ -67,7 +68,7 @@ class BuildInfo(object):
             raise RuntimeError()
 
     def _loadAssets(self, prjpath):
-        assets = [os.path.join(prjpath, 'chameleon', 'libs', x) for x in self.libDependency]
+        assets = [os.path.join(prjpath, 'chameleon', 'libs', x.name) for x in self.libDependency]
         self.assets = [x for x in assets if os.path.exists(os.path.join(x, 'assets'))]
 
     def _loadChannelCfg(self, prjpath, channel):
@@ -75,8 +76,11 @@ class BuildInfo(object):
         self.libDependency = []
         with codecs.open(os.path.join(channelFolder, 'project.json'), 'r', 'utf-8') as f:
             self.cfg = json.load(f)
-            for dependLibs in self.cfg['dependLibs']:
-                self.libDependency.append(dependLibs['name'])
+        for dependLibs in self.cfg['dependLibs']:
+            p = os.path.join(self.prjpath, 'chameleon', 'sdkcfg', dependLibs['cfg'])
+            with codecs.open(p, 'r', 'utf8') as ff:
+                cfg = json.load(ff)
+            self.libDependency.append(LibInfo(dependLibs['name'], cfg))
 
     def _getSignCfg(self):
         self.signcfg = None
@@ -159,9 +163,9 @@ class BuildCmd(object):
             signcfg = binfo.signcfg
             if signcfg:
                 p['key.store'] = signcfg['keystroke']
-                p['key.store.password'] = signcfg['keypass']
+                p['key.store.password'] = signcfg['storepass']
                 p['key.alias'] = signcfg['alias']
-                p['key.alias.password'] = signcfg['storepass']
+                p['key.alias.password'] = signcfg['keypass']
         except Exception, e:
             print >> sys.stderr, e
             raise RuntimeError("Fail to get sign config: " + e)
@@ -191,7 +195,7 @@ class BuildCmd(object):
         t = [(nextLibIndex, os.path.join('chameleon', 'channels', binfo.channel))]
         for l in binfo.libDependency:
             nextLibIndex += 1
-            t.append((nextLibIndex, os.path.join('chameleon', 'libs', l)))
+            t.append((nextLibIndex, os.path.join('chameleon', 'libs', l.name)))
         return t
     
     def preBuild(self, binfo):
@@ -209,8 +213,25 @@ class BuildCmd(object):
                 # Since we may exit via an exception, close fp explicitly.
                 if fp:
                     fp.close()
+        self._runSDKPreBuild(binfo)
 
-        
+    def _runSDKPreBuild(self, binfo):
+        for l in binfo.libDependency:
+            p = os.path.join(SCRIPTDIR, 'buildscript', l.name)
+            if not os.path.exists(os.path.join(p, 'build.py')):
+                pass
+            else:
+                fp, pathname, description = imp.find_module('build', [p])
+                try:
+                    m = imp.load_module('build', fp, pathname, description)
+                    f = m.__dict__.get('preBuild')
+                    if f:
+                        f(binfo, l.cfg)
+                finally:
+                    # Since we may exit via an exception, close fp explicitly.
+                    if fp:
+                        fp.close()
+            
 
 class CleanCmd(object):
     def __init__(self):
