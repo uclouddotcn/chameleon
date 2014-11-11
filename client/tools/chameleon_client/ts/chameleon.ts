@@ -1216,8 +1216,6 @@ export class ChameleonTool {
             var otherCopy = [
                 fs.copy.bind(fs, pathLib.join(chamLibPath , 'chameleon.jar'),
                     pathLib.join(prjLibPath, 'chameleon.jar'), null),
-                fs.copy.bind(fs, pathLib.join(chameleonPath , 'chameleon_build.py'),
-                    pathLib.join(prj.prjPath, 'chameleon_build.py'), null),
             ];
             if (fs.existsSync(pathLib.join(prjLibPath, 'chameleon_unity.jar'))) {
                 otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath , 'chameleon_unity.jar'),
@@ -1271,8 +1269,6 @@ export class ChameleonTool {
                 var otherCopy = [
                     fs.copy.bind(fs, pathLib.join(chamLibPath , 'chameleon.jar'),
                         pathLib.join(prjLibPath, 'chameleon.jar'), null),
-                    fs.copy.bind(fs, pathLib.join(chameleonPath , 'chameleon_build.py'),
-                        pathLib.join(prjPath, 'chameleon_build.py'), null),
                 ];
                 if (unity) {
                     otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath , 'chameleon_unity.jar'),
