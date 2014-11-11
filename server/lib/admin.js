@@ -15,8 +15,9 @@ var FunctionUnits = require('./functionunits');
  * @param {ProductMgr} productMgr - product manager
  * @param {Object} options - not used now...
  * @param {object} logger - logger object
+ * @param {object} statLogger - statistics logger object
  */
-var Admin = function(pluginMgr, productMgr, options, logger) {
+var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
     var self = this;
     self.server = restify.createServer({
         name: 'Admin',
@@ -29,7 +30,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
     self.productMgr = productMgr;
     self.server.use(restify.bodyParser());
     self.server.use(restify.queryParser());
-    self.productSum = EventSummarizer.createEventSum(productMgr);
+    self.productSum = EventSummarizer.createEventSum(productMgr, statLogger);
 
    self.server.get('cmd', function (req, res, next) {
        var params = req.params;
@@ -239,8 +240,8 @@ Admin.prototype.registerExitFunc = function (func) {
     this.exitFunc = func;
 }
 
-module.exports.createAdmin = function(pluginMgr, productMgr, options, logger) {
-    return new Admin(pluginMgr, productMgr, options, logger);
+module.exports.createAdmin = function(pluginMgr, productMgr, options, logger, statLogger) {
+    return new Admin(pluginMgr, productMgr, options, logger, statLogger);
 };
 
 // internal functions

@@ -61,7 +61,7 @@ function start(cfg, debug) {
 
     // create admin server
     var adminSvr = createAdmin(pluginMgr, productMgr, 
-        cfg.admin, logger.adminLogger);
+        cfg.admin, logger.adminLogger, logger.statLogger);
 
     var exitFuncs = function () {
         async.series([sdkSvr.close.bind(sdkSvr),

@@ -35,6 +35,12 @@ var SdkSvr = function (productMgr, options, logger) {
     self.logger = logger;
 
     self.server.use(restify.bodyParser({mapParams:true}));
+    self.server.on('after', function (req, res) {
+        var latency = res.get('Response-Time');
+        if (typeof (latency) !== 'number')
+            latency = Date.now() - req._time;
+        productMgr.emit('_cmd_latency', req.url, latency)
+    })
 
     self.server.on('uncaughtException', function (req, res, route, error) {
         req.log.error({err: error}, 'uncaught exception');

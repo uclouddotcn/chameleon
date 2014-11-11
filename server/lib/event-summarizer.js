@@ -1,7 +1,5 @@
 
-function ProductSummarizer (checktimePeriod)  {
-    this._period = checktimePeriod;
-    this._lastChecktime = 0;
+function ProductSummarizer ()  {
 }
 
 /**
@@ -9,7 +7,6 @@ function ProductSummarizer (checktimePeriod)  {
  * @param success is login succeed
  */
 ProductSummarizer.prototype.addLogin = function (success) {
-    this.ifAcrossChecktime();
     if (success) {
         this.loginStatus.success += 1;
     } else {
@@ -19,7 +16,6 @@ ProductSummarizer.prototype.addLogin = function (success) {
 };
 
 ProductSummarizer.prototype.addPay = function (success) {
-    this.ifAcrossChecktime();
     if (success) {
         this.payStatus.success += 1;
     } else {
@@ -28,21 +24,11 @@ ProductSummarizer.prototype.addPay = function (success) {
 };
 
 ProductSummarizer.prototype.addDisgard = function () {
-    this.ifAcrossChecktime();
     this.payStatus.disgard += 1;
 };
 
 ProductSummarizer.prototype.addPrePay = function () {
-    this.ifAcrossChecktime();
     this.payStatus.start += 1;
-};
-
-ProductSummarizer.prototype.ifAcrossChecktime = function () {
-    var now = Date.now();
-    if (Date.now() - this._lastChecktime > this._period) {
-        this.clear();
-        this._lastChecktime = now;
-    }
 };
 
 ProductSummarizer.prototype.clear = function () {
@@ -59,8 +45,11 @@ ProductSummarizer.prototype.clear = function () {
     }
 };
 
-function EventSummarizer(eventCenter) {
+function EventSummarizer(eventCenter, statLogger) {
     this._productSum = {};
+    this._cmdSummary = {};
+    this._statLogger = statLogger;
+    this._lastChecktime = 0;
     var self = this;
     eventCenter.on('login', function (product, channel, uid, newOthers) {
         self.getSum(product).addLogin(true);
@@ -85,12 +74,17 @@ function EventSummarizer(eventCenter) {
     eventCenter.on('disgard-order', function (orderInfo) {
         self.getSum(orderInfo.product).addDisgard();
     });
+
+    eventCenter.on('_cmd_latency', function (url, latency) {
+        self.addLatency(url, latency);
+    });
+    this.reset();
 }
 
 EventSummarizer.prototype.getSum = function (productName) {
     var product = this._productSum[productName];
     if (!product) {
-        product = this._productSum[productName] = new ProductSummarizer(600*1000);
+        product = this._productSum[productName] = new ProductSummarizer(60*1000);
     }
     return product;
 };
@@ -106,7 +100,50 @@ EventSummarizer.prototype.getProductSummary = function (productName) {
     };
 };
 
+EventSummarizer.prototype.addLatency = function (url, latency) {
+    var cs = this._cmdSummary[url];
+    if (!cs) {
+        cs = this._cmdSummary[url] = {
+            min: -1,
+            max: -1,
+            count: 0,
+            latency: 0
+        };
+    }
+    if (cs.min === -1 || latency < cs.min) {
+        cs.min = latency;
+    }
+    if (latency > cs.max) {
+        cs.max = latency;
+    }
+    cs.count++;
+    cs.latency += latency;
+};
+
+EventSummarizer.prototype.reset = function () {
+    var self = this;
+    setTimeout(function () {
+        self.reset();
+        self.doLog();
+        self.clear();
+    }, 60000)
+};
+
+EventSummarizer.prototype.doLog = function () {
+    var self = this;
+    this._statLogger.info({product: this._productSum, cmd: Object.keys(this._cmdSummary).map(function (key) {
+        var a = self._cmdSummary[key];
+        return {
+            min: a.min,
+            max: a.max,
+            latency: a.count === 0 ? -1 : Math.round(a.latency / a.count)
+        };
+    })
+    });
+}
+
 EventSummarizer.prototype.getSummary = function () {
+    var self = this;
     var res = {
         login: {
             total: 0,
@@ -118,7 +155,15 @@ EventSummarizer.prototype.getSummary = function () {
             success: 0,
             failure: 0,
             disgard:0
-        }
+        },
+        cmd: Object.keys(this._cmdSummary).map(function (key) {
+            var a = self._cmdSummary[key];
+            return {
+                min: a.min,
+                max: a.max,
+                latency: a.count === 0 ? -1 : Math.round(a.latency / a.count)
+            };
+        })
     };
     for (var i in this._productSum) {
         var product = this._productSum[i];
@@ -134,7 +179,21 @@ EventSummarizer.prototype.getSummary = function () {
     return res;
 };
 
+EventSummarizer.prototype.clear = function () {
+    var self = this;
+    Object.keys(this._productSum).forEach(function (key) {
+        self._productSum[key].clear();
+    });
+    Object.keys(self._cmdSummary).forEach(function (key) {
+        self._cmdSummary[key].min = -1;
+        self._cmdSummary[key].max = -1;
+        self._cmdSummary[key].count = 0;
+        self._cmdSummary[key].latency = 0;
+    });
 
-module.exports.createEventSum = function (eventCenter) {
-    return new EventSummarizer(eventCenter);
+}
+
+
+module.exports.createEventSum = function (eventCenter, statLogger) {
+    return new EventSummarizer(eventCenter, statLogger);
 };
