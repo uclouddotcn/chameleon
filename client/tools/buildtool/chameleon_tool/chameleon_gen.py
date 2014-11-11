@@ -6,7 +6,7 @@ from AndroidManifest import AndroidManifestInst
 def error(s):
     print >> sys.stderr, s
 
-def modifyManifest(channel, libs, manifestFilePath):
+def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath):
     projectJsonPath = os.path.join('chameleon', 'channels', channel, 
             'project.json')
     with codecs.open(projectJsonPath, 'r') as f:
@@ -14,10 +14,7 @@ def modifyManifest(channel, libs, manifestFilePath):
     sc = obj.get("splashscreen")
     icons = obj.get("icons")
     pkgname = obj.get("package")
-    cppath = manifestFilePath+'.orig'
-    if os.path.exists(cppath) and not isNewerThan(manifestFilePath, cppath):
-        return
-    manifestInst = loadManifest(manifestFilePath)
+    manifestInst = loadManifest(manifestFilePathOrig)
     oldPkgName = manifestInst.getPkgName()
     if pkgname is None:
         pkgname = oldPkgName+'.'+channel
@@ -32,7 +29,6 @@ def modifyManifest(channel, libs, manifestFilePath):
     if icons is not None:
         manifestInst.setIcon('chameleon_icon')
     manifestInst.safeDump(manifestFilePath)
-    shutil.copyfile(manifestFilePath, cppath)
 
 def loadManifest(path):
     return AndroidManifestInst(path)
@@ -189,14 +185,15 @@ def main():
     if len(sys.argv) < 5:
         return -1
     channel = sys.argv[1]
-    manifestFilePath = sys.argv[2]
-    genPath = sys.argv[3]
-    pkgName = sys.argv[4]
-    debug = sys.argv[5]
+    manifestFilePathOrig = sys.argv[2]
+    manifestFilePath = sys.argv[3]
+    genPath = sys.argv[4]
+    pkgName = sys.argv[5]
+    debug = sys.argv[6]
     error(pkgName)
     globalcfg = getCommCfg()
     libs = getDependLibs(channel, globalcfg)   
-    modifyManifest(channel, libs, manifestFilePath) 
+    modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath) 
     genInstantializer(channel, genPath, globalcfg, libs, debug)
 
 sys.exit(main())

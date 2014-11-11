@@ -14,6 +14,7 @@
     <property name="out.rs.libs.absolute.dir" location="${out.dir}/rsLibs" />
     <property name="out.aidl.absolute.dir" location="${out.dir}/aidl" />
     <property name="out.dexed.absolute.dir" location="${out.dir}/dexedLibs" />
+    <property name="out.manifest.abs.file.orig" location="${out.dir}/AndroidManifest.xml.orig" />
     <property name="out.manifest.abs.file" location="${out.dir}/AndroidManifest.xml" />
     <property name="gen.absolute.dir" location="${out.dir.base}/gen" />
 
@@ -75,7 +76,7 @@
         <!-- always merge manifest -->
         <mergemanifest
                 appManifest="${manifest.abs.file}"
-                outManifest="${out.manifest.abs.file}"
+                outManifest="${out.manifest.abs.file.orig}"
                 enabled="${manifestmerger.enabled}">
             <library refid="project.library.manifest.file.path" />
         </mergemanifest>
@@ -111,6 +112,24 @@
                 <source path="${source.absolute.dir}"/>
             </renderscript>
 
+            <if>
+                <condition>
+                    <isset property="chameleon.library"/>
+                </condition>
+                <then>
+                    <exec executable="python" failonerror="true">
+                        <arg value="${chameleon_script}/chameleon_tool/chameleon_gen.py"/>
+                        <arg value="${chameleon.library}"/>
+                        <arg value="${out.manifest.abs.file.orig}"/>
+                        <arg value="${out.manifest.abs.file}"/>
+                        <arg value="${gen.absolute.dir}"/>
+                        <arg value="${project.app.package}"/>
+                        <arg value="${build.is.packaging.debug}"/>
+                    </exec>
+
+                </then>
+            </if>
+
             <echo level="info">----------</echo>
             <echo level="info">Handling Resources...</echo>
             <aapt executable="${aapt}"
@@ -131,22 +150,6 @@
                 <res path="${resource.absolute.dir}" />
             </aapt>
 
-            <if>
-                <condition>
-                    <isset property="chameleon.library"/>
-                </condition>
-                <then>
-                    <exec executable="python" failonerror="true">
-                        <arg value="${chameleon_script}/chameleon_tool/chameleon_gen.py"/>
-                        <arg value="${chameleon.library}"/>
-                        <arg value="${out.manifest.abs.file}"/>
-                        <arg value="${gen.absolute.dir}"/>
-                        <arg value="${project.app.package}"/>
-                        <arg value="${build.is.packaging.debug}"/>
-                    </exec>
-
-                </then>
-            </if>
             <echo level="info">----------</echo>
             <echo level="info">Handling BuildConfig class...</echo>
             <buildconfig

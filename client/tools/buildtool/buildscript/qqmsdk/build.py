@@ -20,7 +20,8 @@ def preBuild(binfo, cfg):
         os.makedirs(realp)
     except:
         pass
-    if cfg.get('env') == 'test':
+    print cfg
+    if cfg.get('btest'):
         with open(os.path.join(realp, 'msdkconfig.ini'), 'w') as f:
             f.write(MSDK_DEBUG)
     else:

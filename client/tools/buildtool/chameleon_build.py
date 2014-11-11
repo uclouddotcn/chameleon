@@ -70,6 +70,9 @@ class BuildInfo(object):
     def _loadAssets(self, prjpath):
         assets = [os.path.join(prjpath, 'chameleon', 'libs', x.name) for x in self.libDependency]
         self.assets = [x for x in assets if os.path.exists(os.path.join(x, 'assets'))]
+        p = os.path.join(prjpath, 'chameleon', 'channels', self.channel)
+        if os.path.exists(os.path.join(p, 'assets')):
+            self.assets.append(p)
 
     def _loadChannelCfg(self, prjpath, channel):
         channelFolder = os.path.join(prjpath, 'chameleon', 'channels', channel)
@@ -80,7 +83,7 @@ class BuildInfo(object):
             p = os.path.join(self.prjpath, 'chameleon', 'sdkcfg', dependLibs['cfg'])
             with codecs.open(p, 'r', 'utf8') as ff:
                 cfg = json.load(ff)
-            self.libDependency.append(LibInfo(dependLibs['name'], cfg))
+            self.libDependency.append(LibInfo(dependLibs['name'], cfg.get('cfg')))
 
     def _getSignCfg(self):
         self.signcfg = None
@@ -105,6 +108,7 @@ class BuildCmd(object):
 
     def openTempProperty(self, binfo, libraries):
         props = self.composeProperties(binfo, libraries)
+        print props
         with NamedTemporaryFile(delete=False) as f:
             p = f.name
             f.write('\n'.join(props))
