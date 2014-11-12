@@ -88,7 +88,8 @@ SdkSvr.prototype.listen = function(port, host, next) {
 
 SdkSvr.prototype.close = function (callback) {
     this.logger.info('sdk svr exit');
-    this.server.close(callback);
+    setImmediate(callback);
+    this.server.close();
 };
 
 SdkSvr.prototype._onProductInstalled = function (productInfo) {

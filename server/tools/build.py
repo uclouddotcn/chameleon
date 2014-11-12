@@ -9,6 +9,10 @@ def version():
         return c
 
 def main():
+    v = version()
+    v = v.replace('.', '_')
+    global _TEMP_FOLDER
+    _TEMP_FOLDER = _TEMP_FOLDER + '_' + v
     if os.path.exists(_TEMP_FOLDER):
         shutil.rmtree(_TEMP_FOLDER)
     os.makedirs(_TEMP_FOLDER)
@@ -22,9 +26,10 @@ def main():
         raise RuntimeError('fail to pack the source tree')
     shutil.copy2('install.py', _TEMP_FOLDER)
     shutil.copy2('../../version/version.txt', _TEMP_FOLDER)
-    v = version()
-    v = v.replace('.', '_')
-    ret = subprocess.call(['zip', '-r', 'chameleon_%s.zip' %v, _TEMP_FOLDER])
+    target = 'chameleon_%s.zip' %v
+    if os.path.exists(target):
+        os.remove(target)
+    ret = subprocess.call(['zip', '-r', target, _TEMP_FOLDER])
     if ret != 0:
         raise RuntimeError('fail to pack the whole tree')
 olddir = os.getcwd()
