@@ -140,7 +140,7 @@ EventSummarizer.prototype.doLog = function () {
         };
     })
     });
-}
+};
 
 EventSummarizer.prototype.getSummary = function () {
     var self = this;
