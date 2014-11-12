@@ -1,5 +1,6 @@
 
 function ProductSummarizer ()  {
+    this.clear();
 }
 
 /**
