@@ -1,7 +1,6 @@
 package prj.chameleon.test;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -26,6 +25,7 @@ public class UserAccount {
         } else {
             mLoginCallback.onAction(0, userName);
         }
+        clearLoginCallback();
     }
 
     public void clearLoginCallback() {
