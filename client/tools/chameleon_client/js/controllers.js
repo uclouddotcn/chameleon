@@ -1401,6 +1401,16 @@ chameleonControllers
                 };
             }
         };
+
+        $scope.openBuildPath = function() {
+            var p = pathLib.join(project.__doc.path, 'chameleon_build', 'release');
+            if (!fs.existsSync(p)) {
+                alert("请先编译当前工程!!!");
+                return;
+            }
+            require('nw.gui').Shell.openItem(p);
+        };
+
         $scope.showBuildLog = function () {
             $modal.open({
                 templateUrl: 'partials/logpanel.html',

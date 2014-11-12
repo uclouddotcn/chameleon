@@ -47,7 +47,6 @@
          This file is an integral part of the build system for your
          application and should be checked into Version Control Systems. -->
     <loadproperties srcFile="project.properties" />
-    <import file="chameleon/chameleon_rules.xml" />
     <!-- quick check on sdk.dir -->
     <fail
             message="sdk.dir is missing. Make sure to generate local.properties using 'android update project' or to inject it through the ANDROID_HOME environment variable."

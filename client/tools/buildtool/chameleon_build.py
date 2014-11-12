@@ -24,8 +24,13 @@ def getInstalledChannels(prjpath):
     return os.listdir(channelDir)
 
 def runProcess(cmd):
-    p = subprocess.Popen(cmd+['-f', os.path.join(SCRIPTDIR, 'ant', 'build.xml')])
-    return p.wait()
+    olddir = os.getcwd()
+    os.chdir(SCRIPTDIR)
+    try:
+        p = subprocess.Popen(cmd+['-f', os.path.join('ant', 'build.xml')])
+        return p.wait()
+    finally:
+        os.chdir(olddir)
 
 class TempFile(object):
     def __init__(self, filename):
@@ -156,9 +161,9 @@ class BuildCmd(object):
 
     def composeProperties(self, binfo, libraries):
         p = {
-                'chameleon_script': SCRIPTDIR,
-                'basedir': binfo.prjpath,
-                'chameleon.out.dir': binfo.buildpath,
+                'chameleon_script': SCRIPTDIR.replace('\\', '/'),
+                'basedir': binfo.prjpath.replace('\\', '/'),,
+                'chameleon.out.dir': binfo.buildpath.replace('\\', '/'),,
                 'chameleon.apk.out.dir': 'chameleon_build',
                 'chameleon.assets': ':'.join(binfo.assets),
                 'chameleon.apk.out.name': binfo.apkname
@@ -196,10 +201,10 @@ class BuildCmd(object):
         return c
 
     def composeDependLib(self, binfo, nextLibIndex):
-        t = [(nextLibIndex, os.path.join('chameleon', 'channels', binfo.channel))]
+        t = [(nextLibIndex, 'chameleon/channels/'+ binfo.channel)]
         for l in binfo.libDependency:
             nextLibIndex += 1
-            t.append((nextLibIndex, os.path.join('chameleon', 'libs', l.name)))
+            t.append((nextLibIndex, 'chameleon/libs/'+l.name))
         return t
     
     def preBuild(self, binfo):
