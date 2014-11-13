@@ -161,11 +161,11 @@ class BuildCmd(object):
 
     def composeProperties(self, binfo, libraries):
         p = {
-                'chameleon_script': SCRIPTDIR.replace('\\', '/'),
-                'basedir': binfo.prjpath.replace('\\', '/'),,
-                'chameleon.out.dir': binfo.buildpath.replace('\\', '/'),,
+                'chameleon_script': SCRIPTDIR,
+                'basedir': binfo.prjpath,
+                'chameleon.out.dir': binfo.buildpath,
                 'chameleon.apk.out.dir': 'chameleon_build',
-                'chameleon.assets': ':'.join(binfo.assets),
+                'chameleon.assets': ';'.join([x for x in binfo.assets]),
                 'chameleon.apk.out.name': binfo.apkname
                 }
         try:
@@ -182,7 +182,7 @@ class BuildCmd(object):
             p['chameleon.library'] = binfo.channel #os.path.join(prjpath, 'chameleon', 'channels', channel)
         if libraries and len(libraries) > 0:
             p.update(dict([('android.library.reference.%d' %x, y) for x, y in libraries]))
-        return ['%s=%s'%(x,y) for (x,y) in p.items()]
+        return ['%s=%s'%(x,y.replace('\\', '\\\\')) for (x,y) in p.items()]
 
     def readProperty(self, prjpath):
         pat = re.compile('android\.library\.reference\.(\d+)=(.+)')

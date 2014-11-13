@@ -81,10 +81,13 @@ def groupAssets(assets):
 def mergeAssetsToApk(args):
     parser = OptionParser()
     (options, args) = parser.parse_args(args)
+    if len(args) < 5:
+        buildlog("copy file from %s to %s" %(args[2], args[3]))
+        shutil.copy2(args[2], args[3])
+        return 0
     targetChannel = args[0]
-    assets = args[1].split(':')
+    assets = args[1].split(';')
     aapt = args[2]
-    buildlog(args[1])
     ignorePat = "!.svn:!.git:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
     inputPkg = args[3]
     targetpkg = args[4]
