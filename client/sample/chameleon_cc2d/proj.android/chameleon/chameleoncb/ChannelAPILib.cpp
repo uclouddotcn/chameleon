@@ -465,11 +465,7 @@ int antiAddiction(int id) {
     return callJniMethod(env, FUNC_ID_ANTI_ADDICTION, result, (jint)id);
 }
 
-<<<<<<< HEAD
-int exit(int id) {
-=======
 int exit() {
->>>>>>> bc883af6b0c6186350e5752deec55bf28abda29a
     void * result = NULL;
     JNIEnv * env = g_apiLib.GetEnv();
     if (env == NULL) {
