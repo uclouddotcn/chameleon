@@ -119,11 +119,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         gpi.setServerId(0);
         UCLogLevel logLevel;
         boolean isDebug = mIsDebug;
-        if (isDebug) {
-            logLevel = UCLogLevel.DEBUG;
-        } else {
-            logLevel = UCLogLevel.WARN;
-        }
+        logLevel = UCLogLevel.DEBUG;
         try {
             UCGameSDK.defaultSDK().setBindOperation(new BindGuestListener());
             UCGameSDK.defaultSDK().setOrientation(mOrientation);
