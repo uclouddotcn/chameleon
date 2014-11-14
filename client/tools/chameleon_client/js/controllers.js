@@ -1562,6 +1562,9 @@ chameleonControllers
                 for (var i in cfgs) {
                     zip.addFile(nick + '/' + i, new Buffer(JSON.stringify(cfgs[i])), "");
                 }
+                zip.addFile('manifest.json', new Buffer(JSON.stringify({
+                    'product': $scope.svrinfo.nick
+                })));
                 fileDialog.saveAs(function (filename) {
                     zip.writeZip(filename+'.zip');
                     alert('保存成功');
