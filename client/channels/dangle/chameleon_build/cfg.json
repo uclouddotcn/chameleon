@@ -1,0 +1,29 @@
+{
+    "desc": "当乐",
+    "name": "dangle",
+    "chamversion": "1.2.1",
+    "version": "3.0.4",
+    "cfgitem": {
+        "merchantId": {
+            "type": "string",
+            "desc": "厂商ID"
+        },
+        "appId": {
+            "type": "string",
+            "desc": "app id"
+        },
+        "serverSeqNum": {
+            "type": "string",
+            "desc": "server seq"
+        },
+        "appKey": {
+            "type": "string",
+            "desc": "app key"
+        }, 
+        "paymentKey": {
+            "type": "string",
+            "desc": "payment key"
+        }
+    }
+}
+

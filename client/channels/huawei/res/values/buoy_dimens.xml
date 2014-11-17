@@ -1,0 +1,6 @@
+<resources>
+    <!-- default -->
+   	<dimen name="icon_width">66dp</dimen>
+   	<dimen name="big_height">55dp</dimen>
+   	<dimen name="red_icon_margin">10dp</dimen>
+</resources>

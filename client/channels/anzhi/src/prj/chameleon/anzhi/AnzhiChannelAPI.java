@@ -156,6 +156,7 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
         AnzhiUserCenter.getInstance().login(activity, true);
         mLoginCb = cb;
+        mAccountActionListener = accountActionListener;
     }
 
     /**

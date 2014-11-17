@@ -1,5 +1,6 @@
 var bunyan = require('bunyan');
 var path = require('path');
+var constants = require('./constants');
 
 function defaultAdminLoggerCfg(level) {
     var infoLv = 'info';
@@ -11,7 +12,7 @@ function defaultAdminLoggerCfg(level) {
         streams: [
             {
                 type: 'rotating-file',
-                path: path.join(__dirname, '../../log/adminsvr.log'),
+                path: path.join(constants.logDir, 'adminsvr.log'),
                 level: infoLv,
                 period: '1d',
                 count: 4
@@ -20,6 +21,24 @@ function defaultAdminLoggerCfg(level) {
         serializers: bunyan.stdSerializers
     };
 }
+
+function defaultStatisticsLoggerCfg() {
+    var infoLv = 'info';
+    return {
+        name: 'statistics',
+        streams: [
+            {
+                type: 'rotating-file',
+                path: path.join(constants.logDir, 'statistics.log'),
+                level: infoLv,
+                period: '1d',
+                count: 4
+            }
+        ],
+        serializers: bunyan.stdSerializers
+    };
+}
+
 
 function defaultServerLoggerCfg(level) {
     var infoLv = 'info';
@@ -64,6 +83,9 @@ function Logger(debug, options) {
     var svrCfg = options.server ||
         defaultServerLoggerCfg(options.level);
 
+    var statCfg = options.stat ||
+        defaultStatisticsLoggerCfg();
+
     if (debug) {
         adminCfg.src = true;
         svrCfg.src = true;
@@ -71,7 +93,7 @@ function Logger(debug, options) {
 
     this.adminLogger = bunyan.createLogger(adminCfg);
     this.svrLogger = bunyan.createLogger(svrCfg);
-
+    this.statLogger = bunyan.createLogger(statCfg);
 }
 
 Logger.prototype.adminLog = function() {
@@ -83,6 +105,9 @@ Logger.prototype.svrLog = function() {
     return this.svrLogger;
 };
 
+Logger.prototype.statLog = function() {
+    return this.statLogger;
+};
 
 module.exports = Logger;
 
