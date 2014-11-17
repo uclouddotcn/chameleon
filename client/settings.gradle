@@ -13,6 +13,4 @@ include ':channels:wandoujia'
 include ':channels:xiaomi'
 include ':channels:qqmsdk'
 include ':channels:anzhi'
-include ':channels:huawei'
-include ':channels:meizu'
 

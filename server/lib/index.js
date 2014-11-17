@@ -84,6 +84,27 @@ function start(cfg, debug) {
         exitFuncs();
     });
 
+    var exitFuncs = function () {
+        async.series([sdkSvr.close.bind(sdkSvr),
+            channelCbSvr.close.bind(channelCbSvr),
+            adminSvr.close.bind(adminSvr),
+            pendingOrderStore.close.bind(pendingOrderStore),
+            eventStorageEng.close.bind(eventStorageEng)],
+            function (err) {
+                if (err) {
+                    logger.error({err: err}, 'Fail to termniate');
+                    return;
+                }
+                process.exit(0);
+            }
+        );
+    };
+
+    process.on('SIGTERM', function () {
+        logger.svrLogger.info("on SIGTERM");
+        exitFuncs();
+    });
+
     // init the internal modules sequentially
     async.series([
         // init admin svr

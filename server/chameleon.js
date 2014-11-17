@@ -114,6 +114,7 @@ function main() {
                     return;
                 }
                 if (!data || data.length === 0) {
+                    onDeadFunc();
                     console.log('done');
                     return;
                 }

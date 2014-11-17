@@ -114,6 +114,7 @@ var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
     });
 
     // path for getting a specific plugin instance
+    /*
     self.server.get('/product/:name', function (req, res, next) {
         var product = productMgr.products[req.params.name];
         if (!product) {
@@ -124,6 +125,7 @@ var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
             return next();
         }
     });
+    */
 
     // path for add a product
     self.server.post('/product/:name', function (req, res, next) {
