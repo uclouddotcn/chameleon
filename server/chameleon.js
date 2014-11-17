@@ -227,6 +227,7 @@ function main() {
                 });
             } catch (e) {
                 console.error("invalid zip file: " + e.message);
+                console.error(e.stack);
             }
         });
 
