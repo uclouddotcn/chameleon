@@ -24,6 +24,7 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath):
         manifestInst.fullQualifyName(oldPkgName)
         manifestInst.setPkgName(pkgname)
     mergeLibManifests(libs, manifestInst)
+    manifestInst.replace({'channel': channel})
     if sc is not None:
         manifestInst.replaceEntryActivity()
     if icons is not None:

@@ -448,7 +448,6 @@ function checkPayCallback(self, orderInfo, pendingOrderInfo, callback) {
         orderInfo.appUid = pendingOrderInfo.appUid;
     }
     var err = validatePayOrder(self, pendingOrderInfo, orderInfo);
-    self.logger.error({err: err}, 'Fail to verify order');
     if (err) {
     // if the checking failed, the pending order may be already payed,
     // or there is some internal problem occured, either way we can't help
