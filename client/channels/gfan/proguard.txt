@@ -1,0 +1,5 @@
+-keep class **.R$* {*;}
+-keep class com.mappn.sdk.** {*;}
+-keep class com.alipay.** {*;}
+-keep class com.mokredit.payment.MKtLineLyt$*{<methods>;}
+-keep class members class com.mokredit.payment.MKtLineLyt$*{*;}

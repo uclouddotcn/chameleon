@@ -1,0 +1,166 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
+    package="prj.chameleon.gfan">
+
+    <!-- start for gfan sdk -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <!-- end for gfan sdk -->
+
+    <application>
+        <!-- start for gfan sdk -->
+        <activity
+            android:name="com.mappn.sdk.uc.activity.LoginActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/Transparent" />
+        <activity
+            android:name="com.mappn.sdk.uc.activity.RegisterActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/Transparent" />
+        <activity
+            android:name="com.mappn.sdk.uc.activity.ChooseAccountActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/Transparent" />
+        <activity
+            android:name="com.mappn.sdk.pay.payment.PaymentsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/Transparent" />
+        <activity
+            android:name="com.mappn.sdk.pay.chargement.ChargeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/Transparent" />
+        <activity
+            android:name="com.mappn.sdk.pay.account.LoginActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/Transparent"
+            android:windowSoftInputMode="adjustUnspecified" />
+        <activity
+            android:name="com.mappn.sdk.pay.chargement.FeedbackActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/Transparent" />
+        <!-- 免注册登录 -->
+        <activity
+            android:name="com.mappn.sdk.uc.activity.OnekeyLoignActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/Transparent" />
+        <!-- 完善用户信息 -->
+        <activity
+            android:name="com.mappn.sdk.uc.activity.ModfiyActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/Transparent" />
+
+        <service android:name="com.mappn.sdk.pay.GfanPayService" />
+        <!-- mo9 -->
+        <activity
+            android:name="com.mokredit.payment.MktPayment"
+            android:configChanges="keyboardHidden|orientation"
+            android:windowSoftInputMode="adjustResize" />
+        <!-- start for net bank -->
+
+        <activity
+            android:name="com.unionpay.upomp.lthj.plugin.ui.SplashActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.unionpay.upomp.lthj.android.plugin.init.test" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.unionpay.upomp.lthj.plugin.ui.IndexActivityGroup"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.unionpay.upomp.lthj.android.plugin.index.test" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.unionpay.upomp.lthj.plugin.ui.HomeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.unionpay.upomp.lthj.plugin.ui.PayActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.unionpay.upomp.lthj.plugin.ui.AccountActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.unionpay.upomp.lthj.plugin.ui.BankCardInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.unionpay.upomp.lthj.plugin.ui.SupportCardActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.unionpay.upomp.lthj.plugin.ui.UserProtocolActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.unionpay.upomp.lthj.plugin.ui.AboutActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- end for net bank -->
+        <!--alipay sdk begin -->
+        <activity
+            android:name="com.alipay.android.mini.window.sdk.MiniPayActivity"
+            android:configChanges="orientation"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/msp_app_name"
+            android:launchMode="singleTop"
+            android:process="com.alipay.sdk"
+            android:screenOrientation="portrait"
+            android:theme="@style/MspAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+            <intent-filter android:priority="800" >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.alipay.android.mini.window.sdk.MiniWebActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:process="com.alipay.sdk"
+            android:theme="@style/MspAppTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.alipay.android.app.MspService"
+            android:process="com.alipay.sdk"
+            android:exported="false" >
+            <intent-filter android:priority="800" />
+        </service>
+
+        <!--alipay sdk end -->
+
+        <meta-data
+            android:name="gfan_pay_appkey"
+            android:value="" chameleon:replace="android:value=${appKey}" />
+        <meta-data
+            android:name="gfan_cpid"
+            android:value="" chameleon:replace="android:value=${appCpid}"/>
+        <!-- end for gfan sdk -->
+    </application>
+</manifest>
