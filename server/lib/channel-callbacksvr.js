@@ -96,7 +96,8 @@ ChannelCallbackSvr.prototype._onRemoveChannel = function (pluginInstInfo) {
 
 ChannelCallbackSvr.prototype.close = function (callback) {
     this.logger.info('channel cb svr exit');
-    this.server.close(callback);
+    setImmediate(callback);
+    this.server.close();
 };
 
 // internal

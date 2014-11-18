@@ -5,6 +5,7 @@ var util = require('util');
 var constants = require('./constants');
 var Product = require('./product');
 var restify = require('restify');
+var async = require('async');
 
 var ProductMgr = function(pluginMgr, pendingOrderStore, logger) {
     this.products = {};
@@ -39,8 +40,7 @@ ProductMgr.prototype.loadProductsSync = function () {
     });
 };
 
-ProductMgr.prototype.addProduct =
-function (name, productCfg, cb) {
+ProductMgr.prototype.addProduct = function (name, productCfg, cb) {
     var cfgpath = constants.productDir;
     var p = pathLib.join(cfgpath, name);
     var self = this;
@@ -60,13 +60,12 @@ function (name, productCfg, cb) {
     }
 };
 
-ProductMgr.prototype._newProductDir = 
-function (name, productPath, productCfg, cb) {
+ProductMgr.prototype._newProductDir = function (name, productPath, productCfg, cb) {
     fs.mkdir(productPath, function (err) {
         if (err) {
             return cb(new restify.InternalError(err.message));
         }
-        var productCfgPath = pathLib.join(productPath, 'product.json');
+        var productCfgPath = pathLib.join(productPath, '_product.json');
         fs.writeFile(productCfgPath, JSON.stringify(productCfg), 
             function (err) {
                 if (err) {
@@ -85,8 +84,7 @@ function (name, productPath, productCfg, cb) {
  * @param {string} productName the name of the product
  * @param {string} cfgpath the path of the product config
  */
-ProductMgr.prototype._loadProductSync = 
-function (productName, cfgpath) {
+ProductMgr.prototype._loadProductSync = function (productName, cfgpath) {
     var self = this;    
     var productCfg = null;
     var channelCfg = {};

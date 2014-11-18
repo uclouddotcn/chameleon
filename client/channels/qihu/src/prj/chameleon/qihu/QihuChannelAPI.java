@@ -373,10 +373,27 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
-        activity.runOnUiThread(new Runnable() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ProtocolKeys.IS_SCREEN_ORIENTATION_LANDSCAPE, mCfgLandscape);
+        // 必需参数,使用360SDK的退出模块。
+        bundle.putInt(ProtocolKeys.FUNCTION_CODE, ProtocolConfigs.FUNC_CODE_QUIT);
+        Intent intent = new Intent(activity, ContainerActivity.class);
+        intent.putExtras(bundle);
+        Matrix.invokeActivity(activity, intent, new IDispatcherCallback() {
             @Override
-            public void run() {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+            public void onFinished(String s) {
+                try {
+                    JSONObject obj = new JSONObject(s);
+                    switch (obj.getInt("which")) {
+                        case 0:
+                            cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                            break;
+                        default:
+                            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                    }
+                } catch (JSONException e) {
+                    cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                }
             }
         });
     }

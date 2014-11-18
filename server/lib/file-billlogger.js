@@ -58,28 +58,4 @@ FileBillLogger.prototype.write = function write(s) {
     return this.stream.write(s);
 };
 
-
-var f = new FileBillLogger('./temp');
-var count = 0;
-setTimeout (function () {
-    if (f.alive()) {
-        f.record({
-            a: "123",
-            b: 10,
-            c: 23232323,
-            count: count
-        });
-        count ++;
-        setTimeout(arguments.callee, 7);
-    }
-}, 7);
-
-setTimeout(function () {
-    f.close(function () {
-        console.log('close the stream');
-        console.log(count);
-        process.exit(0);
-    });
-}, 10000);
-
 module.exports = FileBillLogger;

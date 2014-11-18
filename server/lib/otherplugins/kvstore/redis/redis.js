@@ -61,6 +61,7 @@ RedisClient.prototype.createClient = function (instCfg) {
         if (self.activeClients.length === 0) {
             if (self.closecb) {
                 self.closecb();
+                self.closecb = null;
             } else {
                 self.store.emit('store-fail', 'redis instance all dead');
             }
@@ -124,7 +125,7 @@ RedisClient.prototype.del = function (key, callback) {
 
 RedisClient.prototype.close = function (callback) {
     for (var i in this.clients) {
-        this.clients[i].unref();
+        this.clients[i].quit();
     }
     this.closecb = callback;
 };

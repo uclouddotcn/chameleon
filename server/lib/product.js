@@ -5,6 +5,8 @@ var ChannelMgr = require('./channelmgr');
 var UserAction = require('./user-events');
 var util = require('util');
 var Constants = require('./constants');
+var pathLib = require('path');
+var fs = require('fs');
 
 /**
  * every products will have one instance, manage
@@ -32,7 +34,28 @@ function Product(productName, cfgPath, cfg, eventCenter, pendingOrderStore, plug
         this, this._appcbsvr, pendingOrderStore, eventCenter, logger);
     this._logger = logger;
     this._sdkMgr = new SDKPluginManager(pluginMgr, this._userAction, this._logger);
+    this.cfg = cfg;
 }
+
+Product.prototype.getChannel = function (name) {
+    return this.channelMgr.getChannel(name);
+}
+
+Product.prototype.updateCfg = function (cfg, cb) {
+    try {
+        checkAppCallbackSvrCfg(cfg);
+        this._appcbsvr.updateCfg(cfg.appcb);
+        var productCfgPath = pathLib.join(this._cfgPath, '_product.json');
+        fs.writeFile(productCfgPath, JSON.stringify(cfg), function (err) {
+            if (err) {
+                return cb(new Error("Fail to write to file"));
+            }
+            cb();
+        });
+    } catch (e) {
+        cb(e);
+    }
+};
 
 /**
  * load all channels
@@ -115,7 +138,7 @@ function (req, res, next) {
     var channelName = params.channel;
     var channel = this.channelMgr.getChannel(params.channel);
     if (!channel) {
-        throw new Error(util.format('Not channel ' + params.channel + 'for product' + this._productName));
+        throw new Error(util.format('Not channel ' + params.channel + ' for product ' + this._productName));
     }
     this._userAction.verifyUserLogin( channel,
         req.params.token,

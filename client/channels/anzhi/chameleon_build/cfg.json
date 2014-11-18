@@ -1,0 +1,18 @@
+{
+    "desc": "安智",
+    "name": "anzhi",
+    "chamversion": "1.2.2",
+    "version": "3.1.2",
+    "cfgitem": {
+        "appKey" : {
+            "type": "string",
+            "desc": "app key"
+        },
+
+        "appSecret" : {
+            "type": "string",
+            "desc": "app secret"
+        }
+    }
+}
+

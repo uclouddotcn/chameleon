@@ -15,8 +15,9 @@ var FunctionUnits = require('./functionunits');
  * @param {ProductMgr} productMgr - product manager
  * @param {Object} options - not used now...
  * @param {object} logger - logger object
+ * @param {object} statLogger - statistics logger object
  */
-var Admin = function(pluginMgr, productMgr, options, logger) {
+var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
     var self = this;
     self.server = restify.createServer({
         name: 'Admin',
@@ -29,7 +30,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
     self.productMgr = productMgr;
     self.server.use(restify.bodyParser());
     self.server.use(restify.queryParser());
-    self.productSum = EventSummarizer.createEventSum(productMgr);
+    self.productSum = EventSummarizer.createEventSum(productMgr, statLogger);
 
    self.server.get('cmd', function (req, res, next) {
        var params = req.params;
@@ -75,7 +76,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
     // path for get all plugins
     self.server.get('/plugins', function (req, res, next) {
         var infos = pluginMgr.getAllPluginInfos().map(formatPluginInfo);
-        res.send(JSON.stringify(infos));
+        res.send(infos);
         return next();
     });
 
@@ -98,7 +99,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
                 return next(new restify.InvalidArgumentError(err.message));
             }
             var showChannelInfo = doFormatPluginInfo(info);
-            res.send(JSON.stringify(showChannelInfo));
+            res.send({code: 0, channel: showChannelInfo});
             return next();
         });
     });
@@ -108,7 +109,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
         var products = Object.keys(productMgr.products).map(function (key) {
             return productMgr.products[key].productName();
         });
-        res.send(JSON.stringify(products));
+        res.send(products);
         return next();
     });
 
@@ -120,7 +121,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
             return next(new restify.ResourceNotFoundError(req.params.name));
         } else {
             var showProductInfo = doFormatProductInfo(product);
-            res.send(JSON.stringify(showProductInfo));
+            res.send(showProductInfo);
             return next();
         }
     });
@@ -130,7 +131,13 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
     self.server.post('/product/:name', function (req, res, next) {
         var product = productMgr.products[req.params.name];
         if (product) {
-            return next(new restify.InvalidArgumentError('duplicate products'));
+            product.updateCfg(req.body, function (err) {
+                if (err) {
+                    return next(new restify.InvalidArgumentError(e.message));
+                }
+                res.send({code: 0});
+                return next();
+            });
         } else {
             productMgr.addProduct(req.params.name, req.body, function (err) {
                 if (err) {
@@ -148,19 +155,18 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
         if (!product) {
             return next(new restify.ResourceNotFoundError(req.params.name));
         } else {
-            fs.readFile(pathLib.join(Constants.productDir, req.params.name, req.params.channelName+'.json'), {encoding: 'utf-8'},
-            function (err, data) {
-                if (err) {
-                    return next(new restify.ResourceNotFoundError("cant find channel config under product"));
+            try {
+                if (product.getChannel(req.params.channelName)) {
+                    product.modifyChannel(req.params.channelName, req.body);
+                } else {
+                    product.startChannel(req.params.channelName, req.body);
                 }
-                try {
-                    product.startChannel(req.params.channelName, JSON.parse(data));
-                    res.send(JSON.stringify({code: 0}));
-                } catch (e) {
-                    return next(new restify.InvalidArgumentError(e.message));
-                }
+                product.saveChannelCfg(req.params.channelName);
+                res.send({code: 0});
                 return next();
-            });
+            } catch (e) {
+                return next(new restify.InvalidArgumentError(e));
+            }
         }
     });
 
@@ -175,7 +181,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
                 product.modifyChannel(
                     req.params.channelName, req.body);
                 product.saveChannelCfg(req.params.channelName);
-                res.send(JSON.stringify({code: 0}));
+                res.send({code: 0});
             } catch (e) {
                 return next(new restify.InvalidArgumentError(e.message));
             }
@@ -193,7 +199,7 @@ var Admin = function(pluginMgr, productMgr, options, logger) {
             if (err) {
                 return next(restify.InvalidArgumentError(err.toString()));
             }
-            res.send(JSON.stringify({code: 0}));
+            res.send({code: 0});
             return next();
         }
     });
@@ -229,15 +235,16 @@ Admin.prototype.exit = function () {
 
 Admin.prototype.close = function (callback) {
     this.logger.info('admin server exit');
-    return this.server.close(callback);
+    setImmediate(callback);
+    return this.server.close();
 };
 
 Admin.prototype.registerExitFunc = function (func) {
     this.exitFunc = func;
 }
 
-module.exports.createAdmin = function(pluginMgr, productMgr, options, logger) {
-    return new Admin(pluginMgr, productMgr, options, logger);
+module.exports.createAdmin = function(pluginMgr, productMgr, options, logger, statLogger) {
+    return new Admin(pluginMgr, productMgr, options, logger, statLogger);
 };
 
 // internal functions
@@ -248,7 +255,8 @@ function formatPluginInfo(pluginInfo) {
 
 function doFormatProductInfo(product) {
     return {
-        name: product.productName,
+        name: product._productName,
+        cfg: product.cfg,
         channels: product.channelMgr.getAllChannels().map(
             formatPluginInfo)
     };
