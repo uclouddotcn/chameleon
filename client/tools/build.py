@@ -216,12 +216,21 @@ def exportChamleonClient(clientZipTarget):
 
 def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
     os.mkdir(targetFolder)
-    unzipFiles(zf, targetFolder)
-    shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
+    os.mkdir(os.path.join(targetFolder, 'app'))
+    unzipFiles(zf, os.path.join(targetFolder, 'app'))
+    shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'app', 'chameleon'))
+    downloadDependency(os.path.join(targetFolder, 'app'))
+    placePlatformStartScript(targetFolder)
     if place is not None:
-        place(targetFolder)
-        downloadDependency(targetFolder)
+        place(os.path.join(targetFolder, 'nw'))
 
+def placePlatformStartScript(targetFolder):
+    if sys.platform == 'win32':
+        with open(os.path.join(targetFolder, 'chameleon.bat'), 'w') as f:
+            f.write('start nw\\nw.exe app')
+    else:
+        with open(os.path.join(targetFolder, 'chameleon.bat'), 'w') as f:
+            f.write('open nw\\nw.app app')
 
 def placeNodeWebkitWin(targetFolder):
     src = os.path.join('nodewebkit-bin', 'nodewebkit-win.zip')
@@ -235,7 +244,7 @@ def downloadDependency(targetFolder):
     olddir = os.getcwd()
     try:
         os.chdir(targetFolder)
-        ret = subprocess.check_call([NPM_CMD, 'install'])
+        ret = subprocess.check_call([NPM_CMD, 'install', '--production'])
         if ret != 0:
             raise RuntimeError('Fail to download dependency for %s' %targetFolder)
         ret = subprocess.check_call([BOWER_CMD, 'install'])
