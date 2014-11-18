@@ -3,7 +3,16 @@ import sys, subprocess, shutil, os
 SCRIPT_DIR = os.path.split(os.path.abspath(__file__))[0]
 _TEMP_FOLDER = 'chameleon_svr_build'
 
+def version():
+    with open('../../version/version.txt', 'r') as f:
+        c = f.read().strip('\n')
+        return c
+
 def main():
+    v = version()
+    v = v.replace('.', '_')
+    global _TEMP_FOLDER
+    _TEMP_FOLDER = _TEMP_FOLDER + '_' + v
     if os.path.exists(_TEMP_FOLDER):
         shutil.rmtree(_TEMP_FOLDER)
     os.makedirs(_TEMP_FOLDER)
@@ -16,8 +25,11 @@ def main():
     if ret != 0:
         raise RuntimeError('fail to pack the source tree')
     shutil.copy2('install.py', _TEMP_FOLDER)
-    shutil.copy2('../doc/chameleon-svr.pdf', _TEMP_FOLDER)
-    ret = subprocess.call(['zip', 'chameleon.zip', _TEMP_FOLDER+'/*'])
+    shutil.copy2('../../version/version.txt', _TEMP_FOLDER)
+    target = 'chameleon_%s.zip' %v
+    if os.path.exists(target):
+        os.remove(target)
+    ret = subprocess.call(['zip', '-r', target, _TEMP_FOLDER])
     if ret != 0:
         raise RuntimeError('fail to pack the whole tree')
 olddir = os.getcwd()

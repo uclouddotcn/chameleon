@@ -12,6 +12,17 @@ var AppCallbackSvr = function (cfg) {
         version: '*'
     });
     this.payCbUrl = cfg.payCbUrl;
+    this.host = cfg.host;
+};
+
+AppCallbackSvr.prototype.updateCfg = function (cfg) {
+    if (this.host !== cfg.host) {
+        this.client = restify.createJsonClient( {
+            url: cfg.host,
+            version: '*'
+        });
+    }
+    this.payCbUrl = cfg.payCbUrl;
 };
 
 AppCallbackSvr.prototype.pay = function (channel, 

@@ -1,0 +1,30 @@
+{
+    "desc": "QQ互娱",
+    "name": "qqmsdk",
+    "chamversion": "1.2.2",
+    "version": "1.7.2a",
+    "enableWrapPackage": 0,
+    "cfgitem": {
+
+        "qqAppId" : {
+            "type": "string",
+            "desc": "app id"
+        },
+
+        "qqAppKey" : {
+            "type": "string",
+            "desc": "app key"
+        },
+
+        "moneyIcon" : {
+            "type": "string",
+            "desc": "qq支付时候所需要的支付图标，必须是48*48的"
+        },
+        "test": {
+            "type": "boolean",
+            "default": "false",
+            "desc": "是否使用测试环境"
+        }
+    }
+}
+

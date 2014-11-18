@@ -52,6 +52,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         public String mOfferId;
 
         public String mMoneyIconFile;
+        public boolean mIsTest;
     }
 
     private static class PaymentEnv {
@@ -269,6 +270,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfg.mWXAppKey = cfg.getString("wxAppKey");
         mCfg.mOfferId = cfg.getString("qqAppId");
         mCfg.mMoneyIconFile = cfg.getString("moneyIcon");
+        mCfg.mIsTest = cfg.getBoolean("test");
     }
 
    /**
@@ -663,7 +665,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mUniPay.setCallBack(mUnipayStubCallBack);
         mUniPay.bindUnipayService();
         mUniPay.setOfferId(mCfg.mQQAppId);
-        if (mIsDebug) {
+        if (mCfg.mIsTest) {
             mUniPay.setEnv("test");
         } else {
             mUniPay.setEnv("release");

@@ -1,3 +1,9 @@
+/// <reference path="declare/node.d.ts"/>
+/// <reference path="declare/async.d.ts"/>
+/// <reference path="declare/ncp.d.ts"/>
+/// <reference path="declare/fs-extra.d.ts"/>
+/// <reference path="declare/xml2js.d.ts"/>
+/// <reference path="declare/adm-zip.d.ts"/>
 var fs = require('fs-extra');
 var childprocess = require("child_process");
 var pathLib = require("path");
@@ -239,7 +245,15 @@ var ConfigDesc = (function () {
             var name = this.items[i].name;
             var cfgitem = this.items[i].item;
             var wrapname = ConfigDesc.wrapName(cfgitem, item.ignore, name);
-            target[name] = jsonobj[wrapname];
+            if (jsonobj[wrapname]) {
+                target[name] = jsonobj[wrapname];
+            } else {
+                if (this.items[i].defaultValue) {
+                    target[name] = item.defaultValue;
+                } else {
+                    target[name] = cfgitem.initvalue;
+                }
+            }
         }
     };
 
@@ -1078,6 +1092,23 @@ var ChameleonTool = (function () {
 
     ChameleonTool.checkSingleLock = function (callback) {
         setImmediate(callback, null);
+        /*
+        var homePath = ChameleonTool.getChameleonHomePath();
+        fs.ensureDir(homePath, function (err) {
+        var name = pathLib.join(homePath, '.lock');
+        try {
+        var fd = fs.openSync(name, 'wx');
+        process.on('exit', function () {
+        fs.unlinkSync(name);
+        });
+        try { fs.closeSync(fd) } catch (err) {}
+        callback(null);
+        } catch (err) {
+        Logger.log("Fail to lock", err);
+        callback(new ChameleonError(ErrorCode.OP_FAIL, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
+        }
+        });
+        */
     };
 
     ChameleonTool.getChameleonHomePath = function () {
@@ -1197,8 +1228,7 @@ var ChameleonTool = (function () {
                 var prjLibPath = pathLib.join(prj.prjPath, 'libs');
                 var chamLibPath = pathLib.join(prj.prjPath, 'chameleon', 'libs');
                 var otherCopy = [
-                    fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null),
-                    fs.copy.bind(fs, pathLib.join(chameleonPath, 'chameleon_build.py'), pathLib.join(prj.prjPath, 'chameleon_build.py'), null)
+                    fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null)
                 ];
                 if (fs.existsSync(pathLib.join(prjLibPath, 'chameleon_unity.jar'))) {
                     otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon_unity.jar'), pathLib.join(prjLibPath, 'chameleon_unity.jar'), null));
@@ -1249,8 +1279,7 @@ var ChameleonTool = (function () {
                     var prjLibPath = pathLib.join(prjPath, 'libs');
                     var chamLibPath = pathLib.join(prjPath, 'chameleon', 'libs');
                     var otherCopy = [
-                        fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null),
-                        fs.copy.bind(fs, pathLib.join(chameleonPath, 'chameleon_build.py'), pathLib.join(prjPath, 'chameleon_build.py'), null)
+                        fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon.jar'), pathLib.join(prjLibPath, 'chameleon.jar'), null)
                     ];
                     if (unity) {
                         otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon_unity.jar'), pathLib.join(prjLibPath, 'chameleon_unity.jar'), null));

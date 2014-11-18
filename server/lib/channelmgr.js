@@ -20,7 +20,7 @@ function ChannelMgr() {
 ChannelMgr.prototype.getAllChannels = function () {
     var self = this;
     var ret = Object.keys(self.channels).map(function (key) {
-        ret.push(makeChannelInfo(self.channels[key]));
+        return makeChannelInfo(self.channels[key]);
     });
     return ret;
 };
@@ -93,13 +93,12 @@ ChannelMgr.prototype.saveChannelCfg = function (channelName, localPath) {
  * @name ChannelMgr.prototype.modifyPluginInfo
  * @function
  * @param {string} name name of the plugin
- * @param {object} param the request param item
- * @param {object} param.cfg the config item
+ * @param {object} cfg the config item
  * @param {string} localPath the config path of the product
  */
-ChannelMgr.prototype.modifyChannel = function(name, param, localPath) {
+ChannelMgr.prototype.modifyChannel = function(name, cfg, localPath) {
     var self = this;
-    if (!param.cfg) {
+    if (!cfg) {
         throw Error("cfg item doesn't exists in request");
     }
     var channel = self.channels[name];
@@ -107,12 +106,11 @@ ChannelMgr.prototype.modifyChannel = function(name, param, localPath) {
          throw Error("plugin " + name + " does't exist");
     }
 
-    if (param.cfg) {
+    if (!cfg) {
         throw new Error('miss cfg in request');
     }
 
-    channel.reload(param.cfg);
-    self.saveChannelCfg(channel, localPath);
+    channel.reload(cfg);
 };
 
 /**
@@ -150,7 +148,6 @@ function makeChannelInfo(channel) {
     if (channel) {
         return {
             name: channel.name,
-            m: channel.m.name,
             info: channel.getInfo()
         };
     } else {
