@@ -55,6 +55,9 @@ android {
         anzhi {
 
         }
+        huawei {
+
+        }
         meizu {
 
         }
@@ -95,6 +98,7 @@ dependencies {
     oppoCompile project(':channels:oppo')
     dangleCompile project(':channels:dangle')
     anzhiCompile project(':channels:anzhi')
+    huaweiCompile project(':channels:huawei')
     meizuCompile project(':channels:meizu')
     gfanCompile project(':channels:gfan')
     // generate the compile dependency
