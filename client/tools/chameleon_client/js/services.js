@@ -136,8 +136,8 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
 
     ProjectMgr.prototype.compileProject = function(project, target) {
         var defered = $q.defer();
-        var buildscript = this.pathLib.join(project.__doc.path, 'chameleon_build.py');
-        var inputParams = [buildscript, 'build', 'release', target];
+        var buildscript = this.pathLib.join(this.chtool.chameleonPath, 'tools', 'buildtool', 'chameleon_build.py');
+        var inputParams = [buildscript, 'build', project.__doc.path, 'release', target];
         var logfile = this.getTempFile(project, "compile_"+target);
         this.doRunCmd('python', inputParams, logfile, 20*60, function (error) {
                 var compileResult = null;
@@ -442,6 +442,12 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
     ProjectMgr.prototype.loadProject = function (projectId) {
         var defered = $q.defer();
         var self = this;
+        if (this.project && this.project.__doc._id === projectId) {
+            global.setImmediate(function () {
+                defered.resolve(self.project);
+            });
+            return defered.promise;
+        }
         self.db.findOne({_id: projectId}, function (err, doc) {
             if (err) {
                 $log.log('Fail to load project ' + err);
@@ -454,6 +460,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 }
                 try {
                     project.__doc = doc;
+                    self.project = project;
                     defered.resolve(project);
                 } catch (e) {
                     $log.log(e);
@@ -495,7 +502,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             });
         } catch (e) {
             $log.log('Fail to fetch project list ' + e.message);
-            setImmediate(function () {
+            global.setImmediate(function () {
                 defered.resolve([]);
             });
         }

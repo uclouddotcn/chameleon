@@ -35,6 +35,7 @@ Channel.prototype.reload = function (sdkcfgs) {
         }
     });
     self.apis = apis;
+    self.sdkcfgs = sdkcfgs
 };
 
 Channel.prototype.verifyLogin = function (token, others, callback) {

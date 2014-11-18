@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="chameleon" default="help">
+    <condition property="chameleon.library.path" value="chameleon/channels/${chameleon.library}" else="chameleon/chameleon">
+        <isset property="chameleon.library" />
+    </condition>
+    <condition property="out.dir.base" value="${chameleon.out.dir}" else="bin">
+        <isset property="chameleon.out.dir" />
+    </condition>
+    <property name="out.dir" value="${out.dir.base}/build" />
+    <property name="out.absolute.dir" value="${out.dir}"/>
+    <property name="out.classes.absolute.dir" location="${out.dir}/classes" />
+    <property name="out.res.absolute.dir" location="${out.dir}/res" />
+    <property name="out.rs.obj.absolute.dir" location="${out.dir}/rsObj" />
+    <property name="out.rs.libs.absolute.dir" location="${out.dir}/rsLibs" />
+    <property name="out.aidl.absolute.dir" location="${out.dir}/aidl" />
+    <property name="out.dexed.absolute.dir" location="${out.dir}/dexedLibs" />
+    <property name="out.manifest.abs.file.orig" location="${out.dir}/AndroidManifest.xml.orig" />
+    <property name="out.manifest.abs.file" location="${out.dir}/AndroidManifest.xml" />
+    <property name="gen.absolute.dir" location="${out.dir.base}/gen" />
+
+    <!-- Intermediate files -->
+    <property name="dex.file.name" value="classes.dex" />
+    <property name="intermediate.dex.file" location="${out.absolute.dir}/${dex.file.name}" />
+    <property name="resource.package.file.name" value="${ant.project.name}.ap_" />
+    <property name="resource.package.file.name.temp" value="${ant.project.name}_temp.ap_" />
+
+    <target name="-set-debug-files" depends="-set-mode-check">
+
+        <property name="out.packaged.file" location="${out.absolute.dir}/${ant.project.name}-debug-unaligned.apk" />
+        <property name="out.final.file" location="${chameleon.apk.out.dir}/debug/${chameleon.apk.out.name}-debug.apk" />
+        <property name="build.is.mode.set" value="true" />
+    </target>
+
+    <target name="-set-release-mode" depends="-set-mode-check">
+        <property name="out.packaged.file" location="${out.absolute.dir}/${ant.project.name}-release-unsigned.apk" />
+        <property name="out.final.file" location="${chameleon.apk.out.dir}/release/${chameleon.apk.out.name}-release.apk" />
+        <property name="build.is.mode.set" value="true" />
+
+        <!-- record the current build target -->
+        <property name="build.target" value="release" />
+
+        <property name="build.is.instrumented" value="false" />
+
+        <!-- release mode is only valid if the manifest does not explicitly
+             set debuggable to true. default is false. -->
+        <xpath input="${manifest.abs.file}" expression="/manifest/application/@android:debuggable"
+                output="build.is.packaging.debug" default="false"/>
+
+        <!-- signing mode: release -->
+        <property name="build.is.signing.debug" value="false" />
+
+        <!-- Renderscript optimization level: aggressive -->
+        <property name="renderscript.opt.level" value="${renderscript.release.opt.level}" />
+
+        <if condition="${build.is.packaging.debug}">
+            <then>
+                <echo>*************************************************</echo>
+                <echo>****  Android Manifest has debuggable=true   ****</echo>
+                <echo>**** Doing DEBUG packaging with RELEASE keys ****</echo>
+                <echo>*************************************************</echo>
+            </then>
+            <else>
+                <!-- property only set in release mode.
+                     Useful for if/unless attributes in target node
+                     when using Ant before 1.8 -->
+                <property name="build.is.mode.release" value="true"/>
+            </else>
+        </if>
+    </target>
+
+
+
+
+    <!-- rewrite code-gen for supporting generating code -->
+    <target name="-code-gen">
+        <!-- always merge manifest -->
+        <mergemanifest
+                appManifest="${manifest.abs.file}"
+                outManifest="${out.manifest.abs.file.orig}"
+                enabled="${manifestmerger.enabled}">
+            <library refid="project.library.manifest.file.path" />
+        </mergemanifest>
+
+        <do-only-if-manifest-hasCode
+                elseText="hasCode = false. Skipping aidl/renderscript/R.java">
+            <echo level="info">Handling aidl files...</echo>
+            <aidl executable="${aidl}"
+                    framework="${project.target.framework.aidl}"
+                    libraryBinAidlFolderPathRefid="project.library.bin.aidl.folder.path"
+                    genFolder="${gen.absolute.dir}"
+                    aidlOutFolder="${out.aidl.absolute.dir}">
+                <source path="${source.absolute.dir}"/>
+            </aidl>
+
+            <!-- renderscript generates resources so it must be called before aapt -->
+            <echo level="info">----------</echo>
+            <echo level="info">Handling RenderScript files...</echo>
+            <!-- set the rs target prop in case it hasn't been set. -->
+            <property name="renderscript.target" value="${project.minSdkVersion}" />
+            <renderscript
+                    buildToolsRoot="${android.build.tools.dir}"
+                    genFolder="${gen.absolute.dir}"
+                    resFolder="${out.res.absolute.dir}"
+                    rsObjFolder="${out.rs.obj.absolute.dir}"
+                    libsFolder="${out.rs.libs.absolute.dir}"
+                    targetApi="${renderscript.target}"
+                    optLevel="${renderscript.opt.level}"
+                    supportMode="${renderscript.support.mode}"
+                    binFolder="${out.absolute.dir}"
+                    buildType="${build.is.packaging.debug}"
+                    previousBuildType="${build.last.is.packaging.debug}">
+                <source path="${source.absolute.dir}"/>
+            </renderscript>
+
+            <if>
+                <condition>
+                    <isset property="chameleon.library"/>
+                </condition>
+                <then>
+                    <exec executable="python" failonerror="true">
+                        <arg value="${chameleon_script}/chameleon_tool/chameleon_gen.py"/>
+                        <arg value="${chameleon.library}"/>
+                        <arg value="${out.manifest.abs.file.orig}"/>
+                        <arg value="${out.manifest.abs.file}"/>
+                        <arg value="${gen.absolute.dir}"/>
+                        <arg value="${project.app.package}"/>
+                        <arg value="${build.is.packaging.debug}"/>
+                    </exec>
+
+                </then>
+            </if>
+
+            <echo level="info">----------</echo>
+            <echo level="info">Handling Resources...</echo>
+            <aapt executable="${aapt}"
+                    command="package"
+                    verbose="${verbose}"
+                    manifest="${out.manifest.abs.file}"
+                    originalManifestPackage="${project.app.package}"
+                    androidjar="${project.target.android.jar}"
+                    rfolder="${gen.absolute.dir}"
+                    nonConstantId="${android.library}"
+                    libraryResFolderPathRefid="project.library.res.folder.path"
+                    libraryPackagesRefid="project.library.packages"
+                    libraryRFileRefid="project.library.bin.r.file.path"
+                    ignoreAssets="${aapt.ignore.assets}"
+                    binFolder="${out.absolute.dir}"
+                    proguardFile="${out.absolute.dir}/proguard.txt">
+                <res path="${out.res.absolute.dir}" />
+                <res path="${resource.absolute.dir}" />
+            </aapt>
+
+            <echo level="info">----------</echo>
+            <echo level="info">Handling BuildConfig class...</echo>
+            <buildconfig
+                    genFolder="${gen.absolute.dir}"
+                    package="${project.app.package}"
+                    buildType="${build.is.packaging.debug}"
+                    previousBuildType="${build.last.is.packaging.debug}"/>
+
+        </do-only-if-manifest-hasCode>
+    </target>
+
+
+    <!-- Obfuscate target
+        This is only active in release builds when proguard.config is defined
+        in default.properties.
+
+        To replace Proguard with a different obfuscation engine:
+        Override the following targets in your build.xml, before the call to <setup>
+            -release-obfuscation-check
+                Check whether obfuscation should happen, and put the result in a property.
+            -debug-obfuscation-check
+                Obfuscation should not happen. Set the same property to false.
+            -obfuscate
+                check if the property set in -debug/release-obfuscation-check is set to true.
+                If true:
+                    Perform obfuscation
+                    Set property out.dex.input.absolute.dir to be the output of the obfuscation
+    -->
+    <target name="-obfuscate">
+        <if condition="${proguard.enabled}">
+            <then>
+                <property name="obfuscate.absolute.dir" location="${out.absolute.dir}/proguard" />
+                <property name="preobfuscate.jar.file" value="${obfuscate.absolute.dir}/original.jar" />
+                <property name="obfuscated.jar.file" value="${obfuscate.absolute.dir}/obfuscated.jar" />
+                <!-- input for dex will be proguard's output -->
+                <property name="out.dex.input.absolute.dir" value="${obfuscated.jar.file}" />
+
+                <!-- Add Proguard Tasks -->
+                <property name="proguard.jar" location="${android.tools.dir}/proguard/lib/proguard.jar" />
+                <taskdef name="proguard" classname="proguard.ant.ProGuardTask" classpath="${proguard.jar}" />
+
+                <exec executable="python"  failonerror="true">
+                    <arg value="${chameleon_script}/chameleon_tool/collect_proguard.py"/>
+                    <arg value="${chameleon.library}"/>
+                    <arg value="${gen.absolute.dir}/proguard.txt"/>
+                </exec>
+                <!-- Set the android classpath Path object into a single property. It'll be
+                     all the jar files separated by a platform path-separator.
+                     Each path must be quoted if it contains spaces.
+                -->
+                <pathconvert property="project.target.classpath.value" refid="project.target.class.path">
+                    <firstmatchmapper>
+                        <regexpmapper from='^([^ ]*)( .*)$$' to='"\1\2"'/>
+                        <identitymapper/>
+                    </firstmatchmapper>
+                </pathconvert>
+
+                <!-- Build a path object with all the jar files that must be obfuscated.
+                     This include the project compiled source code and any 3rd party jar
+                     files. -->
+                <path id="project.all.classes.path">
+                    <pathelement location="${preobfuscate.jar.file}" />
+                    <path refid="project.all.jars.path" />
+                </path>
+                <!-- Set the project jar files Path object into a single property. It'll be
+                     all the jar files separated by a platform path-separator.
+                     Each path must be quoted if it contains spaces.
+                -->
+                <pathconvert property="project.all.classes.value" refid="project.all.classes.path">
+                    <firstmatchmapper>
+                        <regexpmapper from='^([^ ]*)( .*)$$' to='"\1\2"'/>
+                        <identitymapper/>
+                    </firstmatchmapper>
+                </pathconvert>
+
+                <!-- Turn the path property ${proguard.config} from an A:B:C property
+                     into a series of includes: -include A -include B -include C
+                     suitable for processing by the ProGuard task. Note - this does
+                     not include the leading '-include "' or the closing '"'; those
+                     are added under the <proguard> call below.
+                -->
+                <path id="proguard.configpath">
+                    <pathelement path="${proguard.config}"/>
+                </path>
+                <pathconvert pathsep='" -include "' property="proguard.configcmd" refid="proguard.configpath"/>
+
+                <mkdir   dir="${obfuscate.absolute.dir}" />
+                <delete file="${preobfuscate.jar.file}"/>
+                <delete file="${obfuscated.jar.file}"/>
+                <jar basedir="${out.classes.absolute.dir}"
+                    destfile="${preobfuscate.jar.file}" />
+                <proguard>
+                    -include      "${proguard.configcmd}"
+                    -include      "${gen.absolute.dir}/proguard.txt"
+                    -include      "${out.absolute.dir}/proguard.txt"
+                    -injars       ${project.all.classes.value}
+                    -outjars      "${obfuscated.jar.file}"
+                    -libraryjars  ${project.target.classpath.value}
+                    -dump         "${obfuscate.absolute.dir}/dump.txt"
+                    -printseeds   "${obfuscate.absolute.dir}/seeds.txt"
+                    -printusage   "${obfuscate.absolute.dir}/usage.txt"
+                    -printmapping "${obfuscate.absolute.dir}/mapping.txt"
+                </proguard>
+            </then>
+        </if>
+    </target>
+
+    <target name="-chameleon-post-package">
+        <echo>${chameleon.library}</echo>
+        <if>
+            <condition>
+                <isset property="chameleon.library"/>
+            </condition>
+            <then>
+                <exec executable="python" failonerror="true">
+                    <arg value="${chameleon_script}/chameleon_tool/chameleon_build.py"/>
+                    <arg value="${chameleon.library}"/>
+                    <arg value="${chameleon.assets}"/>
+                    <arg value="${aapt}"/>
+                    <arg value="${out.absolute.dir}/${resource.package.file.name.temp}"/>
+                    <arg value="${out.absolute.dir}/${resource.package.file.name}"/>
+                </exec>
+            </then>
+        </if>
+    </target>
+
+    <!-- rewrite the package resource target, will rename the package 
+    	 if use a channel
+         -->
+    <target name="-package-resources" depends="-crunch">
+
+        <!-- only package resources if *not* a library project -->
+        <do-only-if-not-library elseText="Library project: do not package resources..." >
+            <aapt executable="${aapt}"
+                    command="package"
+                    versioncode="${version.code}"
+                    versionname="${version.name}"
+                    debug="${build.is.packaging.debug}"
+                    manifest="${out.manifest.abs.file}"
+                    assets="${asset.absolute.dir}"
+                    androidjar="${project.target.android.jar}"
+                    apkfolder="${out.absolute.dir}"
+                    nocrunch="${build.packaging.nocrunch}"
+                    resourcefilename="${resource.package.file.name.temp}"
+                    resourcefilter="${aapt.resource.filter}"
+                    libraryResFolderPathRefid="project.library.res.folder.path"
+                    libraryPackagesRefid="project.library.packages"
+                    libraryRFileRefid="project.library.bin.r.file.path"
+                    previousBuildType="${build.last.target}"
+                    buildType="${build.target}"
+                    ignoreAssets="${aapt.ignore.assets}">
+                <res path="${out.res.absolute.dir}" />
+                <res path="${resource.absolute.dir}" />
+                <!-- <nocompress /> forces no compression on any files in assets or res/raw -->
+                <!-- <nocompress extension="xml" /> forces no compression on specific file extensions in assets and res/raw -->
+            </aapt>
+        </do-only-if-not-library>
+    </target>
+
+    <!-- Packages the application. -->
+    <target name="-package" depends="-dex, -package-resources, -chameleon-post-package">
+        <!-- only package apk if *not* a library project -->
+        <do-only-if-not-library elseText="Library project: do not package apk..." >
+            <if condition="${build.is.instrumented}">
+                <then>
+                    <package-helper>
+                        <extra-jars>
+                            <!-- Injected from external file -->
+                            <jarfile path="${emma.dir}/emma_device.jar" />
+                        </extra-jars>
+                    </package-helper>
+                </then>
+                <else>
+                    <package-helper />
+                </else>
+            </if>
+        </do-only-if-not-library>
+    </target>
+
+</project>
+

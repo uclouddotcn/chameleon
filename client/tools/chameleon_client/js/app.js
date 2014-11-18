@@ -413,7 +413,6 @@ var chameleonApp = angular.module('chameleonApp', [
                                                 needReconfig: infoObj.isMajorOutdated
                                             });
                                         }
-                                        console.log(res)
                                         return res;
                                     }
                                 }

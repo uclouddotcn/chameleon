@@ -1,0 +1,30 @@
+{
+    "desc": "Oppo",
+    "name": "oppo",
+    "chamversion": "1.2.1",
+    "version": "1.6.6",
+    "cfgitem": {
+        "gameId" : {
+            "type": "string",
+            "desc": "game id"
+        }, 
+        "appKey" : {
+            "type": "string",
+            "desc": "app key"
+        },
+        "appSecret" : {
+            "type": "string",
+            "desc": "app secret"
+        },
+        "allowSwitchAccount" : {
+            "type": "boolean",
+            "desc": "game id",
+            "default": "false"
+        },
+        "payCallback" : {
+            "type": "url",
+            "desc": "payment callback"
+        }
+    }
+}
+

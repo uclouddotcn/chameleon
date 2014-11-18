@@ -26,6 +26,7 @@ package prj.chamelon.cc2d;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 import prj.chameleon.channelapi.cbinding.NativeChannelInterface;
+import android.content.Intent;
 
 import android.os.Bundle;
 
@@ -49,9 +50,28 @@ public class chameleon_cc2d extends Cocos2dxActivity{
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         NativeChannelInterface.onDestroy();
+        super.onDestroy();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        NativeChannelInterface.onStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        NativeChannelInterface.onStop(this);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+            NativeChannelInterface.onNewIntent(this, intent);
+    }
+
 
     public Cocos2dxGLSurfaceView onCreateView() {
     	Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);
