@@ -51,16 +51,14 @@ android {
         }
         qqmsdk {
             applicationId "com.tencent.tmgp.sanguofire"
-            signingConfigs {
-                debug {
-                    storeFile file("../mykeystore")
-                    storePassword "a1988106"
-                    keyAlias "com.xianyugame.hxsg"
-                    keyPassword "1988106"
-                }
-            }
         }
         anzhi {
+
+        }
+        meizu {
+
+        }
+        gfan {
 
         }
 
@@ -97,6 +95,8 @@ dependencies {
     oppoCompile project(':channels:oppo')
     dangleCompile project(':channels:dangle')
     anzhiCompile project(':channels:anzhi')
+    meizuCompile project(':channels:meizu')
+    gfanCompile project(':channels:gfan')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
