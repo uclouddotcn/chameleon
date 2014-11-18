@@ -23,7 +23,7 @@ def loadJsonFile(channelPath):
     cfgJsonFile = os.path.join(channelPath, 'chameleon_build', 'cfg.json')
     with codecs.open(cfgJsonFile, 'r', 'utf8') as f:
         obj = json.load(f)
-        if not (obj.has_key('name') and 
+        if not (obj.has_key('name') and
                 obj.has_key('chamversion') and
                 obj.has_key('version') and
                 obj.has_key('cfgitem')):
@@ -52,7 +52,7 @@ def collectChannelInfo(channelParentFolder):
             folderPath = os.path.join(channelParentFolder, folder)
             if os.path.isdir(folderPath) and \
                 os.path.exists(os.path.join(folderPath, 'chameleon_build', 'cfg.json')):
-                result.append(getChannelInfo(folder, 
+                result.append(getChannelInfo(folder,
                     os.path.join(channelParentFolder, folder)))
             else:
                 print >> sys.stdout, 'ignore %s' %folder
@@ -80,14 +80,14 @@ def copyChannel(channel, channelPath, targetPath, versionInfo):
         ignoreDirs = ignore(root, dirs)
         for d in ignoreDirs:
             dirs.remove(d)
-        copyfilelist += [os.path.join(root, x) 
+        copyfilelist += [os.path.join(root, x)
                 for x in filter(lambda f : f not in ignoreFiles, files)]
     relfilelist = [os.path.relpath(x, channelPath) for x in copyfilelist]
     copyFileInList(channelPath, targetPath, relfilelist)
-    shutil.copy2(os.path.join(channelPath, 'AndroidManifest.xml'), 
+    shutil.copy2(os.path.join(channelPath, 'AndroidManifest.xml'),
             os.path.join(targetPath, 'AndroidManifest.xml.template'))
     relfilelist.append('AndroidManifest.xml.template')
-    shutil.copyfile(os.path.join(BUILD_SCRIPT_DIR, 'Resource', 'default', 
+    shutil.copyfile(os.path.join(BUILD_SCRIPT_DIR, 'Resource', 'default',
         'AndroidManifest.xml'), os.path.join(targetPath, 'AndroidManifest.xml'))
     with codecs.open(os.path.join(targetPath, 'filelist.txt'), 'w', 'utf8') as f:
         f.write('\n'.join(relfilelist))
@@ -116,7 +116,7 @@ def initProjectFolder(targetFolder, version):
     channelInfos = packChannels(CHANNEL_DIR, targetChannelPath)
     with codecs.open(channelListFile, 'r', 'utf8') as channelListFObj:
         channellistobj = json.load(channelListFObj)
-    cfg = {'version': version, 'channels': [x.cfg for x in channelInfos], 
+    cfg = {'version': version, 'channels': [x.cfg for x in channelInfos],
             'channellist': channellistobj}
     with codecs.open(infoJsonFile, 'w', 'utf8') as f:
         json.dump(cfg, f, indent=4)
@@ -138,8 +138,12 @@ def compileChannel(gradleCmd, channel):
 
 if sys.platform == 'win32':
     GRADLE_CWD = 'gradlew.bat'
+    NPM_CMD = 'npm.cmd'
+    BOWER_CMD = 'bower.cmd'
 else:
     GRADLE_CWD = 'gradlew'
+    NPM_CMD = 'npm'
+    BOWER_CMD = 'bower'
 
 def compileAllChannels(channels):
     olddir = os.getcwd()
@@ -150,10 +154,10 @@ def compileAllChannels(channels):
             compileChannel(gradleCmd, channel)
     finally:
         os.chdir(olddir)
-    
+
 
 def buildChameleonLib(targetFolder):
-    targetLibFoldr = os.path.realpath(os.path.join(targetFolder, 'Resource', 
+    targetLibFoldr = os.path.realpath(os.path.join(targetFolder, 'Resource',
         'chameleon', 'libs'))
     olddir = os.getcwd()
     os.chdir(BASEDIR)
@@ -199,7 +203,7 @@ def exportChamleonClient(clientZipTarget):
     oldpath = os.getcwd()
     try:
         os.chdir('chameleon_client')
-        ret = subprocess.call(['git', 'archive', '--format', 
+        ret = subprocess.call(['git', 'archive', '--format',
             'zip', '-o', clientZipTarget, 'HEAD'])
     finally:
         os.chdir(oldpath)
@@ -218,7 +222,7 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
 def placeNodeWebkitWin(targetFolder):
     src = os.path.join('nodewebkit-bin', 'nodewebkit-win.zip')
     unzipFiles(src, targetFolder)
-    
+
 def placeNodeWebkitOsx(targetFolder):
     src = os.path.join('nodewebkit-bin', 'node-webkit.app')
     shutil.copytree(src, os.path.join(targetFolder, 'node-webkit.app'))
@@ -227,10 +231,10 @@ def downloadDependency(targetFolder):
     olddir = os.getcwd()
     try:
         os.chdir(targetFolder)
-        ret = subprocess.check_call(['npm', 'install'])
+        ret = subprocess.check_call([NPM_CMD, 'install'])
         if ret != 0:
             raise RuntimeError('Fail to download dependency for %s' %targetFolder)
-        ret = subprocess.check_call(['bower', 'install'])
+        ret = subprocess.check_call([BOWER_CMD, 'install'])
         if ret != 0:
             raise RuntimeError('Fail to download dependency for %s' %targetFolder)
     finally:
