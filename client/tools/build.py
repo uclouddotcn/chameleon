@@ -224,6 +224,14 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
     if place is not None:
         place(os.path.join(targetFolder, 'nw'))
 
+def buildChameleonClientMacOS(zf, chameleonFolder, targetFolder, place):
+    os.mkdir(targetFolder)
+    unzipFiles(zf, targetFolder)
+    shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
+    downloadDependency(targetFolder)
+    if place is not None:
+        place(targetFolder)
+
 def placePlatformStartScript(targetFolder):
     if sys.platform == 'win32':
         with open(os.path.join(targetFolder, 'chameleon.bat'), 'w') as f:
@@ -261,7 +269,7 @@ def mergeToNodewebkit(targetFolder):
     if sys.platform == 'win32':
         buildChameleonClient(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_win'), placeNodeWebkitWin)
     else:
-        buildChameleonClient(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
+        buildChameleonClientMacOS(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
 
 
 def build():
