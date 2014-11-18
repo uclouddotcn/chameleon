@@ -1,6 +1,5 @@
 import xml.dom.minidom as xml
-from string import Template
-import tempfile, os, codecs, sys
+import tempfile, os, codecs, sys, re
 
 class TempFile(object):
     def __init__(self, finalTargetFilePath):
@@ -245,14 +244,20 @@ def parseReplaceVal(val):
     ts = val.split(';;')
     return [t.split('=') for t in ts]
 
+REPLACE_RE = re.compile('%(.+?)%')
+
 def replaceNodeAttr(node, cfg):
     replaceVal = node.getAttribute("chameleon:replace")
+    def repl(o):
+        c = o.group(1)
+        if cfg.get(c) is None:
+            return c
+        return cfg.get(c)
     if len(replaceVal) != 0:
         replaceVal = parseReplaceVal(replaceVal)
         for name, val in replaceVal:
-            valTemplate = Template(val)
-            t = valTemplate.safe_substitute(cfg)
-            node.setAttribute(name, t)
+            realv = REPLACE_RE.sub(repl, val)
+            node.setAttribute(name, realv)
         node.removeAttribute("chameleon:replace")
 
 def _fillSplashScreenActivity(doc, splashActivity, oldEntryActivity, orientation):

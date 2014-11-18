@@ -1270,7 +1270,7 @@ var ChameleonTool = (function () {
                             return;
                         }
                         fs.ensureDir(pathLib.join(chameleonPath, 'sdkcfg'));
-                        fs.ensureDir(pathLib.join(chameleonPath, 'channels'));
+                        fs.ensfureDir(pathLib.join(chameleonPath, 'channels'));
                         callback(null);
                     });
                 }, function (callback) {

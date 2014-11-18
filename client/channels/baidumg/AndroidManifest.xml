@@ -39,7 +39,7 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/StyledIndicators"
-            chameleon:replace="android:screenOrientation=${orientation}">
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
 
         <activity
@@ -47,7 +47,7 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:screenOrientation="portrait"
             android:theme="@style/DK.Theme.NoBackGround"
-            chameleon:replace="android:screenOrientation=${orientation}">
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
 
         <activity
@@ -55,7 +55,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            chameleon:replace="android:screenOrientation=${orientation}">
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
 
         <activity
@@ -64,7 +64,7 @@
             android:excludeFromRecents="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            chameleon:replace="android:screenOrientation=${orientation}">
+            chameleon:replace="android:screenOrientation=%orientation%">
             <intent-filter>
                 <action android:name="android.intent.action.Run" />
 
@@ -79,7 +79,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            chameleon:replace="android:screenOrientation=${orientation}">
+            chameleon:replace="android:screenOrientation=%orientation%">
             <intent-filter>
                 <action android:name="android.intent.action.Run" />
 
