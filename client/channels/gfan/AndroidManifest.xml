@@ -150,17 +150,18 @@
         <service android:name="com.alipay.android.app.MspService"
             android:process="com.alipay.sdk"
             android:exported="false" >
-            <intent-filter android:priority="800" />
+            <intent-filter android:priority="800" >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </service>
 
         <!--alipay sdk end -->
 
         <meta-data
-            android:name="gfan_pay_appkey"
-            android:value="" chameleon:replace="android:value=${appKey}" />
+            android:name="gfan_pay_appkey" android:value="330543028" chameleon:replace="android:value=%appKey%" />
         <meta-data
-            android:name="gfan_cpid"
-            android:value="" chameleon:replace="android:value=${appCpid}"/>
+            android:name="gfan_cpid" android:value="渠道1" chameleon:replace="android:value=%appCpid%"/>
         <!-- end for gfan sdk -->
     </application>
 </manifest>
