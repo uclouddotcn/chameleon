@@ -256,7 +256,7 @@ def replaceNodeAttr(node, cfg):
     if len(replaceVal) != 0:
         replaceVal = parseReplaceVal(replaceVal)
         for name, val in replaceVal:
-            realv = REPLACE_RE.sub(repl, val)
+            realv = REPLACE_RE.sub(repl, unicode(val))
             node.setAttribute(name, realv)
         node.removeAttribute("chameleon:replace")
 
