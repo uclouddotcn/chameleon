@@ -15,8 +15,9 @@ public class ChameleonSDK : MonoBehaviour  {
 		public class EventListener {
 			/**
 			 *  callback while the sdk is inited
+			 * @param code, whether the init is successful
 			 */
-			public virtual void onInit() {}
+			public virtual void onInit(int code) {}
 			/**
 			 *  callback when the user login successfully
 			 *  @param loginInfo, the login info string which can send to chameleon server directly
@@ -78,6 +79,9 @@ public class ChameleonSDK : MonoBehaviour  {
 
 		private static ChameleonBridge mBridge;
 
+		public static void init(ChameleonSDK.EventListener listener) {
+			mBridge.initChameleon (listener);
+		}
 
 		/**
 		 * login
@@ -283,12 +287,6 @@ public class ChameleonSDK : MonoBehaviour  {
 		                                    int zoneId,
 		                                    string zoneName) {
 			mBridge.callFunc ("submitPlayerInfo", roleId, roleName, roleLevel, zoneId, zoneName);
-		}
-		/**
-		 * register the listener of the channel event
-		 */
-		public static void registerListener(ChameleonSDK.EventListener listener) {
-			mBridge.registerListener (listener);
 		}
 
 		/**

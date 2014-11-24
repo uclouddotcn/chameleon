@@ -2,6 +2,7 @@ package prj.chameleon.channelapi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -20,7 +21,7 @@ public class ChannelInterface {
      * init the SDK
      * @param activity the activity to give the real SDK
      *
-     * @deprecated @param isDebug (deprecated) whether set sdk to debug mode
+     * @param isDebug (deprecated) whether set sdk to debug mode
      * @param cb callback function when the request is finished, the JSON object is null
      */
 	public static void init(final Activity activity,
@@ -29,6 +30,22 @@ public class ChannelInterface {
         Log.d(Constants.TAG, "on init from channel interface");
         _plugins.init(activity, cb);
 	}
+
+    /**
+     * test if in debug mode
+     * @return {boolean}, whether in debug mode
+     */
+    public static boolean isDebug() {
+        return isDebug;
+    }
+
+    /**
+     * set debug mode
+     * @param debug if debug mode
+     */
+    public static void setDebug(boolean debug) {
+        isDebug = debug;
+    }
 
     /**
      * get channel user id
@@ -552,6 +569,7 @@ public class ChannelInterface {
     }
     private static Plugins _plugins = new Plugins();
     private static boolean isToobarCreated = false;
+    private static boolean isDebug = false;
 
     public static void addApiGroup(APIGroup apiGroup) {
         _plugins.addApiGroup(apiGroup);

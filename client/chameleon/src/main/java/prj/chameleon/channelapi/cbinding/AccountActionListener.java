@@ -16,19 +16,9 @@ import prj.chameleon.channelapi.IAccountActionListener;
  */
 public class AccountActionListener implements IAccountActionListener {
 
-    private WeakReference<NativeChannelInterface.IRunEnv> mRunEnv;
-
-    public AccountActionListener(NativeChannelInterface.IRunEnv runEnv) {
-        mRunEnv = new WeakReference<NativeChannelInterface.IRunEnv>(runEnv);
-    }
-
     @Override
     public void preAccountSwitch() {
-        NativeChannelInterface.IRunEnv runEnv = mRunEnv.get();
-        if (runEnv == null) {
-            return;
-        }
-        runEnv.run(new Runnable() {
+        NativeChannelInterface.runInRunEnv(new Runnable() {
             @Override
             public void run() {
                 ChannelAPINative.preAccountSwitch();
@@ -38,11 +28,7 @@ public class AccountActionListener implements IAccountActionListener {
 
     @Override
     public void afterAccountSwitch(final int code, final JSONObject newUserInfo) {
-        NativeChannelInterface.IRunEnv runEnv = mRunEnv.get();
-        if (runEnv == null) {
-            return;
-        }
-        runEnv.run(new Runnable() {
+        NativeChannelInterface.runInRunEnv(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -56,11 +42,7 @@ public class AccountActionListener implements IAccountActionListener {
 
     @Override
     public void onAccountLogout() {
-        NativeChannelInterface.IRunEnv runEnv = mRunEnv.get();
-        if (runEnv == null) {
-            return;
-        }
-        runEnv.run(new Runnable() {
+        NativeChannelInterface.runInRunEnv(new Runnable() {
             @Override
             public void run() {
                 ChannelAPINative.onAccountLogout();
@@ -70,11 +52,7 @@ public class AccountActionListener implements IAccountActionListener {
 
     @Override
     public void onGuestBind(final JSONObject newUserInfo) {
-        NativeChannelInterface.IRunEnv runEnv = mRunEnv.get();
-        if (runEnv == null) {
-            return;
-        }
-        runEnv.run(new Runnable() {
+        NativeChannelInterface.runInRunEnv(new Runnable() {
             @Override
             public void run() {
                 try {

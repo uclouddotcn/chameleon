@@ -21,26 +21,22 @@ namespace chameleon
 		#region Used by ChamleonSDK
 		public void init() {
 			Debug.Log ("inited");
-			AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-			AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-			Debug.Log (activity);
 			mJObj = new AndroidJavaClass( "prj.chameleon.channelapi.unity.UnityChannelInterface" );
-			Debug.Log (activity);
-			mJObj.CallStatic( "init", activity);
+		}
+
+		public void initChameleon(ChameleonSDK.EventListener listener) {
+			mEvtListener = listener;
+			mJObj.CallStatic( "init");
 		}
 
 		public T callFunc<T>(string func, params object[] list) {
-			Debug.Log (string.Format("callfunc %s, %d", func, list.Length));
+			Debug.Log (string.Format("callfunc {0}, {1}", func, list.Length));
 			return mJObj.CallStatic<T> (func, list);	
 		}
 
 		public void callFunc(string func, params object[] list) {
-			Debug.Log (string.Format ("callfunc %s, %d", func, list.Length));
-				mJObj.CallStatic (func, list);	
-		}
-
-		public void registerListener(ChameleonSDK.EventListener listener) {
-			mEvtListener = listener;
+			Debug.Log (string.Format("callfunc {0}, {1}", func, list.Length));
+			mJObj.CallStatic (func, list);	
 		}
 
 		public void unregisterListener() {
@@ -51,7 +47,9 @@ namespace chameleon
 		#region Used by java side
 		public void onInited(string message) {
 			if (mEvtListener != null) {
-				mEvtListener.onInit();
+				var obj = JSON.Parse(message);
+				int code = obj["code"].AsInt;
+				mEvtListener.onInit(code);
 			}
 		}
 

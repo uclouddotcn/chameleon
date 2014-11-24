@@ -65,6 +65,7 @@ enum {
     FUNC_ID_GET_PAYTOKEN,
     FUNC_ID_ONLOGINRSP,
     FUNC_ID_SUBMIT_PLAYER_INFO,
+    FUNC_ID_INIT,
     FUNC_ID_COUNT
 };
 
@@ -89,7 +90,8 @@ static const char *FUNC_TYPE[][2] = {
     {"isLogined", "()Z"},
     {"getPayToken", "()[B"},
     {"onLoginRsp", "([B)Z"},
-    {"submitPlayerInfo", "([B[B[BI[B)V"}
+    {"submitPlayerInfo", "([B[B[BI[B)V"},
+    {"init", "()V"}
 };
 
 template<typename T>
@@ -118,7 +120,15 @@ int callJniMethod(JNIEnv * env, int funcCode, T* result, ...) {
 
 
 JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_init
-  (JNIEnv * env, jclass clazz, jboolean isDebug, jbyteArray platformName) {
+  (JNIEnv * env, jclass clazz, jint ret, jboolean isDebug, jbyteArray platformName) {
+    if (ret != 0) {
+        if (!g_apiLib.mCb) {
+            LOGW("There is not callback registered");
+            return;
+        }
+        g_apiLib.mCb->onInited(ret, isDebug);
+        return;
+    }
     jclass cplatformAPI = env->FindClass(PLATFORMAPI_CLASS);
     if (cplatformAPI == NULL) {
         jthrowable throwable = env->ExceptionOccurred();
@@ -140,6 +150,11 @@ JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_i
         } 
     }
     g_channelName = JniHelper::ConvertByteArray(env, platformName);
+    if (!g_apiLib.mCb) {
+        LOGW("There is not callback registered");
+        return;
+    }
+    g_apiLib.mCb->onInited(ret, isDebug);
     LOGE("get platform name %s", g_channelName.c_str());
 }
 
@@ -289,8 +304,18 @@ JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_o
 /////////////////////////////// ChameleonChannelAPI 
 namespace Chameleon {
 namespace ChameleonChannelAPI {
-void registCallback(ChannelAPICallbackInf * callbackImp) {
+int init(ChannelAPICallbackInf * callbackImp) {
     g_apiLib.mCb = callbackImp;
+    void * result = NULL;
+    JNIEnv * env = g_apiLib.GetEnv();
+    if (env == NULL) {
+        return -1;
+    }
+    return callJniMethod(env, FUNC_ID_INIT, result);
+}
+
+void unregisterCallback() {
+    g_apiLib.mCb = NULL;
 }
 
 int loginGuest(int id) {
@@ -321,6 +346,15 @@ int login(int id) {
         return -1;
     }
     return callJniMethod(env, FUNC_ID_LOGIN, result, (jint)id);
+}
+
+int logout() {
+    void * result = NULL;
+    JNIEnv * env = g_apiLib.GetEnv();
+    if (env == NULL) {
+        return -1;
+    }
+    return callJniMethod(env, FUNC_ID_LOGOUT, result);
 }
 
 int charge(int id, 

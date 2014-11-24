@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
 
 import prj.chameleon.channelapi.ChannelInterface;
 import prj.chameleon.channelapi.Constants;
@@ -21,7 +22,7 @@ public class NativeChannelInterface {
     }
 
     private static Activity mActivity;
-    private static AccountActionListener mAccountActionListener;
+    private static final AccountActionListener mAccountActionListener = new AccountActionListener();
     private static class GlSurfaceViewRunEnv implements IRunEnv{
         public WeakReference<GLSurfaceView> mGlView;
         GlSurfaceViewRunEnv(GLSurfaceView view) {
@@ -37,6 +38,47 @@ public class NativeChannelInterface {
         }
     }
 
+    private static class RequestProxy {
+        private LinkedList<Runnable> mPendingQueue = new LinkedList<Runnable>();
+        private Activity mActivity = null;
+        private boolean mIsInited = false;
+
+        // run on UI thread only
+        public void setInitDone (Activity activity) {
+            setActivity(activity);
+            for (Runnable runnable : mPendingQueue) {
+                Log.d(Constants.TAG, "run all queueed runnables");
+                runnable.run();
+            }
+            mPendingQueue.clear();
+        }
+
+        public boolean isInited() {
+            return mIsInited;
+        }
+
+        public synchronized void request(Runnable runnable) {
+            if (!mIsInited) {
+                Log.d(Constants.TAG, "not inited yet, push to queue");
+                mPendingQueue.add(runnable);
+            } else {
+                mActivity.runOnUiThread(runnable);
+            }
+        }
+
+        public synchronized void onDestroy() {
+            mIsInited = false;
+            mActivity = null;
+        }
+
+        private synchronized void setActivity(Activity activity) {
+            mIsInited = true;
+            mActivity = activity;
+        }
+    }
+
+    private static RequestProxy mRequestProxy = new RequestProxy();
+
     private static class UIRunEnv implements IRunEnv {
         @Override
         public void run(Runnable runnable) {
@@ -46,88 +88,65 @@ public class NativeChannelInterface {
 
     private static IRunEnv mRunEnv;
 
+
     /**
-     *  init the cbinding channel interface
-     * @param activity the main activity
-     * @param isDebug whether set the sdk to deubg mode
-     * @param runEnv the callback will be run in the envrionment
+     * set the native running enviroment
+     * @param activity the activity to give the real SDK
+     * @param runEnv callback running env
      */
-    public static void init(final Activity activity, final boolean isDebug, final IRunEnv runEnv) {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ChannelInterface.init(activity, isDebug, new IDispatcherCb() {
-                    @Override
-                    public void onFinished(int retCode, JSONObject data) {
-                        Log.d(Constants.TAG, String.format("on init finished %d", retCode));
-                        try {
-                            ChannelAPINative.init(isDebug, getChannelName());
-                        } catch (UnsupportedEncodingException e) {
-                            Log.e(Constants.TAG, "Fail to encode to UTF-8???", e);
-                        }
-                    }
-                });
-            }
-        });
+    public static void setRunningEnv(final Activity activity, final IRunEnv runEnv) {
         mActivity = activity;
         mRunEnv = runEnv;
     }
 
     /**
-     *  init the cbinding channel interface with the render thread of GLSurfaceView as running envrionment
-     * @param activity the main activity
-     * @param isDebug whether set the sdk to deubg mode
-     *        IRunEnv
+     * set the native running enviroment
+     * @param activity the activity to give the real SDK
+     * @param view the gl rendering view
      */
-    public static void init(final Activity activity, final boolean isDebug, final GLSurfaceView view) {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(Constants.TAG, "start init activity");
-                ChannelInterface.init(activity, isDebug, new IDispatcherCb() {
-                    @Override
-                    public void onFinished(int retCode, JSONObject data) {
-                        Log.d(Constants.TAG, String.format("on init finished %d", retCode));
-                        try {
-                            ChannelAPINative.init(isDebug, getChannelName());
-                        } catch (UnsupportedEncodingException e) {
-                            Log.e(Constants.TAG, "Fail to encode to UTF-8???", e);
-                        }
-                    }
-                });
-            }
-        });
+    public static void setRunningEnv(final Activity activity, final GLSurfaceView view) {
         mActivity = activity;
         mRunEnv = new GlSurfaceViewRunEnv(view);
-        mAccountActionListener = new AccountActionListener(mRunEnv);
     }
 
     /**
      *  init the cbinding channel interface with UI thread as running envrionment
      * @param activity the main activity
-     * @param isDebug whether set the sdk to deubg mode
-     *        IRunEnv
      */
-    public static void init(final Activity activity, final boolean isDebug) {
-        activity.runOnUiThread(new Runnable() {
+    public static void setRunningEnv(final Activity activity) {
+        mActivity = activity;
+        mRunEnv = new UIRunEnv();
+    }
+
+
+    /**
+     *  init the cbinding channel interface
+     */
+    public static void init() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ChannelInterface.init(activity, isDebug, new IDispatcherCb() {
+                ChannelInterface.init(mActivity, false, new IDispatcherCb() {
                     @Override
-                    public void onFinished(int retCode, JSONObject data) {
+                    public void onFinished(final int retCode, JSONObject data) {
                         Log.d(Constants.TAG, String.format("on init finished %d", retCode));
-                        try {
-                            ChannelAPINative.init(isDebug, getChannelName());
-                        } catch (UnsupportedEncodingException e) {
-                            Log.e(Constants.TAG, "Fail to encode to UTF-8???", e);
-                        }
+                        mRequestProxy.setInitDone(mActivity);
+                        runInRunEnv(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    ChannelAPINative.init(retCode, ChannelInterface.isDebug(), getChannelName());
+                                } catch (UnsupportedEncodingException e) {
+                                    Log.e(Constants.TAG, "Fail to encode to UTF-8???", e);
+                                }
+                            }
+                        });
                     }
                 });
             }
         });
-        mActivity = activity;
-        mRunEnv = new UIRunEnv();
     }
+
 
     /**
      * login as a guest
@@ -135,7 +154,7 @@ public class NativeChannelInterface {
      */
     public static void loginGuest(final int id) {
         Log.d(Constants.TAG, "login guest");
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.loginGuest(mActivity, new IDispatcherCb() {
@@ -166,7 +185,7 @@ public class NativeChannelInterface {
                                 }
                             }
                         };
-                        mRunEnv.run(callbackFunc);
+                        runInRunEnv(callbackFunc);
                     }
                 }, mAccountActionListener);
             }
@@ -184,7 +203,7 @@ public class NativeChannelInterface {
     public static boolean registGuest(final int id, final byte[] tips) throws UnsupportedEncodingException {
 
         final String strTips = new String(tips, "UTF-8");
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.registGuest(mActivity, strTips, new IDispatcherCb() {
@@ -198,14 +217,14 @@ public class NativeChannelInterface {
                                     return;
                                 }
                                 try {
-                                    ChannelAPINative.onRegistGuest(id, retCode,data.toString().getBytes("UTF-8"));
+                                    ChannelAPINative.onRegistGuest(id, retCode, data.toString().getBytes("UTF-8"));
                                 } catch (Exception e) {
                                     Log.e(Constants.TAG, "fail to get result", e);
-                                    ChannelAPINative.onRegistGuest(id, Constants.ErrorCode.ERR_INTERNAL,null);
+                                    ChannelAPINative.onRegistGuest(id, Constants.ErrorCode.ERR_INTERNAL, null);
                                 }
                             }
                         };
-                        mRunEnv.run(callbackFunc);
+                        runInRunEnv(callbackFunc);
                     }
                 });
             }
@@ -219,7 +238,7 @@ public class NativeChannelInterface {
      */
     public static void login(final int id) {
         Log.d(Constants.TAG, "call login");
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.login(mActivity, new IDispatcherCb() {
@@ -241,7 +260,7 @@ public class NativeChannelInterface {
                                 }
                             }
                         };
-                        mRunEnv.run(callbackFunc);
+                        runInRunEnv(callbackFunc);
 
                     }
                 }, mAccountActionListener);
@@ -279,7 +298,7 @@ public class NativeChannelInterface {
         final String strServerId = new String(serverId, "UTF-8");
         final String strCurrencyName = new String(currencyName, "UTF-8");
         final String strPayInfo = new String(payInfo, "UTF-8");
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
 
@@ -294,7 +313,7 @@ public class NativeChannelInterface {
                                         ChannelAPINative.onCharge(id, Constants.ErrorCode.ERR_OK);
                                     }
                                 };
-                                mRunEnv.run(callbackFunc);
+                                runInRunEnv(callbackFunc);
 
                             }
                         });
@@ -334,7 +353,7 @@ public class NativeChannelInterface {
         final String strProductName = new String(productName, "UTF-8");
         final String strProductID = new String(productID, "UTF-8");
         final String strPayInfo = new String(payInfo, "UTF-8");
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 Log.d(Constants.TAG, String.format("real pay moeny %d", realPayMoney));
@@ -354,7 +373,7 @@ public class NativeChannelInterface {
                                         ChannelAPINative.onBuy(id, Constants.ErrorCode.ERR_OK);
                                     }
                                 };
-                                mRunEnv.run(callbackFunc);
+                                runInRunEnv(callbackFunc);
 
                             }
                         });
@@ -367,7 +386,7 @@ public class NativeChannelInterface {
      * logout current user
      */
     public static void logout() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.logout(mActivity);
@@ -389,7 +408,7 @@ public class NativeChannelInterface {
      * @param id the identity of the request
      */
     public static void switchAccount(final int id) {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 boolean isStarting = ChannelInterface.switchAccount(mActivity, new IDispatcherCb() {
@@ -413,7 +432,7 @@ public class NativeChannelInterface {
                             }
 
                         };
-                        mRunEnv.run(callbackFunc);
+                        runInRunEnv(callbackFunc);
                     }
                 });
                 // if the request failed, run callback immediately
@@ -425,7 +444,7 @@ public class NativeChannelInterface {
                                     null);
                         }
                     };
-                    mRunEnv.run(callbackFunc);
+                    runInRunEnv(callbackFunc);
                 }
             }
         });
@@ -436,7 +455,7 @@ public class NativeChannelInterface {
      * @param position
      */
     public static void createAndShowToolBar(final int position) {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.createToolBar(mActivity, position);
@@ -451,7 +470,7 @@ public class NativeChannelInterface {
      * @param visible
      */
     public static void showFloatBar(final boolean visible) {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.showFloatBar(mActivity, visible);
@@ -464,7 +483,7 @@ public class NativeChannelInterface {
      * destroy the toolbar
      */
     public static void destroyToolBar() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.destroyToolBar(mActivity);
@@ -477,21 +496,16 @@ public class NativeChannelInterface {
      * @param id
      */
     public static void onResume(final int id) {
-        mActivity.runOnUiThread(new Runnable() {
+        ChannelInterface.onResume(mActivity, new IDispatcherCb() {
             @Override
-            public void run() {
-                ChannelInterface.onResume(mActivity, new IDispatcherCb() {
+            public void onFinished(int retCode, JSONObject data) {
+                Runnable callbackFunc = new Runnable() {
                     @Override
-                    public void onFinished(int retCode, JSONObject data) {
-                        Runnable callbackFunc = new Runnable() {
-                            @Override
-                            public void run() {
-                                ChannelAPINative.onPause();
-                            }
-                        };
-                        mRunEnv.run(callbackFunc);
+                    public void run() {
+                        ChannelAPINative.onPause();
                     }
-                });
+                };
+                runInRunEnv(callbackFunc);
             }
         });
     }
@@ -500,24 +514,16 @@ public class NativeChannelInterface {
      *
      */
     public static void onDestroy() {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ChannelInterface.onDestroy(mActivity);
-            }
-        });
+        ChannelInterface.onDestroy(mActivity);
+        mRequestProxy.onDestroy();
+        mActivity = null;
     }
 
     /**
      * notify the platform we are coming back from a pause
      */
     public static void onPause() {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ChannelInterface.onPause(mActivity);
-            }
-        });
+        ChannelInterface.onPause(mActivity);
     }
 
     /**
@@ -551,7 +557,7 @@ public class NativeChannelInterface {
      * @throws UnsupportedEncodingException
      */
     public static void antiAddiction(final int id) throws UnsupportedEncodingException {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.antiAddiction(mActivity,
@@ -570,7 +576,7 @@ public class NativeChannelInterface {
                                         }
                                     }
                                 };
-                                mRunEnv.run(callbackFunc);
+                                runInRunEnv(callbackFunc);
                             }
                         });
             }
@@ -591,13 +597,13 @@ public class NativeChannelInterface {
      * exit the underlying channel sdk
      */
     public static void exit() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.exit(mActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(final int retCode, JSONObject data) {
-                        mRunEnv.run(new Runnable() {
+                        runInRunEnv(new Runnable() {
                             @Override
                             public void run() {
                                 ChannelAPINative.onExit(retCode);
@@ -618,20 +624,25 @@ public class NativeChannelInterface {
                                    final byte[] message) throws UnsupportedEncodingException {
         final String strProtocol = new String(protocol, "UTF-8");
         final String strMessage = new String(message, "UTF-8");
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 ChannelInterface.runProtocol(mActivity, strProtocol, strMessage,
                         new IDispatcherCb() {
                             @Override
-                            public void onFinished(int retCode, JSONObject data) {
-                                try {
-                                    ChannelAPINative.onProtocolDone(id, retCode, strProtocol.getBytes("UTF-8"),
-                                            data.toString().getBytes("UTF-8"));
-                                } catch (UnsupportedEncodingException e) {
-                                    Log.e(Constants.TAG, "encode error", e);
-                                    ChannelAPINative.onProtocolDone(id, retCode, null, null);
-                                }
+                            public void onFinished(final int retCode, final JSONObject data) {
+                                runInRunEnv(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            ChannelAPINative.onProtocolDone(id, retCode, strProtocol.getBytes("UTF-8"),
+                                                    data.toString().getBytes("UTF-8"));
+                                        } catch (UnsupportedEncodingException e) {
+                                            Log.e(Constants.TAG, "encode error", e);
+                                            ChannelAPINative.onProtocolDone(id, retCode, null, null);
+                                        }
+                                    }
+                                });
                             }
                         });
             }
@@ -678,20 +689,31 @@ public class NativeChannelInterface {
         return ChannelInterface.onLoginRsp(new String(rsp, "UTF-8"));
     }
 
-    public static void submitPlayerInfo(byte[] roleId,
-                                        byte[] roleName,
-                                        byte[] roleLevel,
-                                        int zoneId,
-                                        byte[] zoneName) {
-        try {
-            ChannelInterface.submitPlayerInfo(mActivity,
-                    new String(roleId, "UTF-8"),
-                    new String(roleName, "UTF-8"),
-                    new String(roleLevel, "UTF-8"),
-                    zoneId,
-                    new String(zoneName, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            Log.e(Constants.TAG, "Fail to convert utf-8 string", e);
+    public static void submitPlayerInfo(final byte[] roleId,
+                                        final byte[] roleName,
+                                        final byte[] roleLevel,
+                                        final int zoneId,
+                                        final byte[] zoneName) {
+        mRequestProxy.request(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ChannelInterface.submitPlayerInfo(mActivity,
+                            new String(roleId, "UTF-8"),
+                            new String(roleName, "UTF-8"),
+                            new String(roleLevel, "UTF-8"),
+                            zoneId,
+                            new String(zoneName, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    Log.e(Constants.TAG, "Fail to convert utf-8 string", e);
+                }
+            }
+        });
+    }
+
+    static void runInRunEnv(Runnable runnable) {
+        if (mRequestProxy.isInited()) {
+            mRunEnv.run(runnable);
         }
     }
 }

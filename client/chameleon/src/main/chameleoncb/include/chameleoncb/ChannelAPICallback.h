@@ -7,6 +7,15 @@ namespace Chameleon {
 class ChannelAPICallbackInf {
 public:
     virtual ~ChannelAPICallbackInf() {}
+
+    /**
+     * on init done event
+     * @param {int} init ret code
+     * @param {bool} whether in debug mode
+     */
+    virtual void onInited(int ret, bool isDebug) {}
+
+
     /**
      * 玩家将要进行切换账户，这个函数只会在玩家使用平台的activity时候由平台触发的
      * 回调, 一般在这个时候做一些玩家数据保存工作，当前玩家马上就要登出了
