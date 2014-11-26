@@ -30,11 +30,11 @@
         <!-- 登录配置开始 -->
         <meta-data
             android:name="lenovo.open.appid"
-            android:value="1406040827749.app.ln"  chameleon:replace="android:value=${appId}"  />
+            android:value="1406040827749.app.ln"  chameleon:replace="android:value=%appId%S"  />
 
         <meta-data
             android:name="lenovo.gamesdk.new"
-            android:value="2.1.4" chameleon:replace="android:value=${appNew}" />
+            android:value="2.1.4" chameleon:replace="android:value=%appNew%" />
 
         <!-- 闪屏界面，默认横屏，通过screenOrientation可以进行修改-->
         <activity
