@@ -13,6 +13,11 @@ var xml2js = require('xml2js');
 var util = require('util');
 var AdmZip = require('adm-zip');
 var urlLib = require('url');
+var common = require('./utils');
+
+var Version = common.Version;
+var ChameleonError = common.ChameleonError;
+var ErrorCode = common.ErrorCode;
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -21,25 +26,6 @@ var DESITY_MAP = {
     xxhigh: 'drawable-xxhdpi',
     xxxhigh: 'drawable-xxxhdpi'
 };
-
-var ChameleonError = (function () {
-    function ChameleonError(code, message, name) {
-        if (typeof message === "undefined") { message = ""; }
-        if (typeof name === "undefined") { name = ""; }
-        this.name = name;
-        this.message = message;
-        this.errCode = code;
-    }
-    ChameleonError.newFromError = function (err, code) {
-        if (typeof code === "undefined") { code = 1 /* UNKNOWN */; }
-        var e = new ChameleonError(code);
-        e.name = err.name;
-        e.message = err.message;
-        return e;
-    };
-    return ChameleonError;
-})();
-exports.ChameleonError = ChameleonError;
 
 var Logger = (function () {
     function Logger() {
@@ -54,14 +40,6 @@ var Logger = (function () {
     };
     return Logger;
 })();
-
-(function (ErrorCode) {
-    ErrorCode[ErrorCode["UNKNOWN"] = 1] = "UNKNOWN";
-    ErrorCode[ErrorCode["SDK_PATH_ILLEGAL"] = 2] = "SDK_PATH_ILLEGAL";
-    ErrorCode[ErrorCode["OP_FAIL"] = 3] = "OP_FAIL";
-    ErrorCode[ErrorCode["CFG_ERROR"] = 4] = "CFG_ERROR";
-})(exports.ErrorCode || (exports.ErrorCode = {}));
-var ErrorCode = exports.ErrorCode;
 
 var Utils = (function () {
     function Utils() {
@@ -420,50 +398,6 @@ var SDKLibInfo = (function () {
 })();
 exports.SDKLibInfo = SDKLibInfo;
 
-var Version = (function () {
-    function Version(ver) {
-        var t = ver.split('.');
-        this.major = parseInt(t[0]);
-        this.medium = parseInt(t[1]);
-        if (t.length == 3) {
-            this.minor = parseInt(t[2]);
-        } else {
-            this.minor = 0;
-        }
-    }
-    Version.prototype.cmp = function (that) {
-        if (this.major > that.major) {
-            return 1;
-        } else if (this.major < that.major) {
-            return -1;
-        } else {
-            if (this.medium < that.medium) {
-                return -1;
-            } else if (this.medium > that.medium) {
-                return 1;
-            } else {
-                if (this.minor < that.minor) {
-                    return -1;
-                } else if (this.minor > that.minor) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        }
-    };
-
-    Version.prototype.isMajorUpgrade = function (that) {
-        return (this.major > that.major) || (this.major === that.major && this.medium > that.medium);
-    };
-
-    Version.prototype.toString = function () {
-        return this.major + '.' + this.medium + '.' + this.minor;
-    };
-    return Version;
-})();
-exports.Version = Version;
-
 var SDKMetaScript = (function () {
     function SDKMetaScript(path) {
         this._path = path;
@@ -502,7 +436,7 @@ var SDKMetaInfo = (function () {
             res.cfgdesc.registerItem1(itemname, type, itemcfg[itemname]['default'], itemcfg[itemname]['ignoreInA']);
         }
         if (jsonobj['script']) {
-            var p = pathLib.join(chameloenPath, 'ChannelScript', jsonobj['script']);
+            var p = pathLib.join(chameloenPath, 'script', jsonobj['script']);
             res.script = new SDKMetaScript(p);
         }
         return res;
@@ -1175,9 +1109,8 @@ var ChameleonTool = (function () {
         var needUpgradeLibs = this.getNeedUpgradeLibs(installedLibs);
         var upgradeFunc = function (lib, cb) {
             var prjLibPath = pathLib.join(prj.prjPath, 'chameleon', 'libs', lib);
-            var libPath = pathLib.join(_this.chameleonPath, 'channels', lib);
             fs.remove(prjLibPath, function () {
-                fs.copy(libPath, prjLibPath, null, cb);
+                _this.initSDKLib(prj, lib, cb);
             });
         };
         var funcs = needUpgradeLibs.map(function (lib) {
@@ -1215,6 +1148,7 @@ var ChameleonTool = (function () {
     ChameleonTool.prototype.upgradePrjChameleon = function (prj, cb) {
         var chameleonPath = pathLib.join(prj.prjPath, 'chameleon');
         var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
+        var chameleonCbPath = pathLib.join(this.chameleonPath, 'Resource', 'chameleoncb.zip');
         async.series([
             function (callback) {
                 fs.copy(chameleonRes, chameleonPath, null, function (err) {
@@ -1232,6 +1166,16 @@ var ChameleonTool = (function () {
                 ];
                 if (fs.existsSync(pathLib.join(prjLibPath, 'chameleon_unity.jar'))) {
                     otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon_unity.jar'), pathLib.join(prjLibPath, 'chameleon_unity.jar'), null));
+                } else {
+                    otherCopy.push(function (cb) {
+                        try  {
+                            var z = new AdmZip(chameleonCbPath);
+                            z.extractAllTo(pathLib.join(prj.prjPath, 'chameleon'), true);
+                            setImmediate(cb, null);
+                        } catch (e) {
+                            setImmediate(cb, e);
+                        }
+                    });
                 }
                 async.parallel(otherCopy, function (err) {
                     callback(err);
@@ -1260,6 +1204,7 @@ var ChameleonTool = (function () {
             var _id = Math.round(new Date().getTime() / 1000).toString();
             var newPrj = Project.createNewProject(name, landscape, this.infoObj.version, prjPath);
             var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
+            var chameleonCbPath = pathLib.join(this.chameleonPath, 'Resource', 'chameleoncb.zip');
             async.series([
                 function (callback) {
                     newPrj.loadAndroidProjectInfo(callback);
@@ -1270,7 +1215,8 @@ var ChameleonTool = (function () {
                             return;
                         }
                         fs.ensureDir(pathLib.join(chameleonPath, 'sdkcfg'));
-                        fs.ensfureDir(pathLib.join(chameleonPath, 'channels'));
+                        fs.ensureDir(pathLib.join(chameleonPath, 'channels'));
+                        fs.ensureDir(pathLib.join(chameleonPath, 'libs'));
                         callback(null);
                     });
                 }, function (callback) {
@@ -1283,6 +1229,16 @@ var ChameleonTool = (function () {
                     ];
                     if (unity) {
                         otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath, 'chameleon_unity.jar'), pathLib.join(prjLibPath, 'chameleon_unity.jar'), null));
+                    } else {
+                        otherCopy.push(function (cb) {
+                            try  {
+                                var z = new AdmZip(chameleonCbPath);
+                                z.extractAllTo(pathLib.join(prjPath, 'chameleon'), true);
+                                setImmediate(cb, null);
+                            } catch (e) {
+                                setImmediate(cb, e);
+                            }
+                        });
                     }
                     async.parallel(otherCopy, function (err) {
                         callback(err);
@@ -1432,19 +1388,16 @@ var ChameleonTool = (function () {
     };
 
     ChameleonTool.prototype.initSDKLib = function (prj, sdkname, cb) {
-        var _this = this;
-        var targetPath = pathLib.join(prj.prjPath, 'chameleon', 'libs', sdkname);
-        var src = pathLib.join(this.chameleonPath, 'channels', sdkname);
+        var targetParentPath = pathLib.join(prj.prjPath, 'chameleon', 'libs');
+        var targetPath = pathLib.join(targetParentPath, sdkname);
+        var src = pathLib.join(this.chameleonPath, 'sdk', 'libs', sdkname + '.zip');
         if (!fs.existsSync(src)) {
             throw new ChameleonError(3 /* OP_FAIL */, '未知的SDK: ' + sdkname);
         }
-        fs.copy(src, targetPath, null, function (err) {
-            if (err) {
-                Logger.log('Fail to copy lib tree', err);
-                cb(new ChameleonError(1 /* UNKNOWN */, '未知的错误'));
-                return;
-            }
-            _this.androidEnv.updateProject(targetPath, prj.androidTarget, function (err) {
+        try  {
+            var zip = new AdmZip(src);
+            zip.extractAllTo(targetParentPath, true);
+            this.androidEnv.updateProject(targetPath, prj.androidTarget, function (err) {
                 if (err) {
                     Logger.log('Fail to update project', err);
                     cb(new ChameleonError(1 /* UNKNOWN */, '未知的错误'));
@@ -1452,11 +1405,14 @@ var ChameleonTool = (function () {
                 }
                 cb(null);
             });
-        });
+        } catch (e) {
+            Logger.log('Fail to copy lib tree', e);
+            setImmediate(cb, new ChameleonError(1 /* UNKNOWN */, '未知的错误'));
+        }
     };
 
     ChameleonTool.getUserPath = function () {
-        return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+        return process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME;
     };
 
     ChameleonTool.prototype.upgradeFromFile = function (filePath) {

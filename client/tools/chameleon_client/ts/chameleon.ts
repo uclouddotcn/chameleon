@@ -14,6 +14,12 @@ import xml2js = require('xml2js');
 import util = require('util');
 import AdmZip = require('adm-zip');
 import urlLib = require('url');
+import common = require('./utils');
+
+import Version = common.Version;
+import ChameleonError = common.ChameleonError;
+import ErrorCode = common.ErrorCode;
+import CallbackFunc = common.CallbackFunc;
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -27,28 +33,6 @@ export interface DBCallback {
     (err: Error, result?: Object) : void;
 }
 
-export class ChameleonError implements Error {
-    name:string;
-    message:string;
-    errCode:ErrorCode;
-
-    constructor(code: ErrorCode, message = "", name = "") {
-        this.name = name;
-        this.message = message;
-        this.errCode = code;
-    }
-
-    static newFromError (err: Error, code = ErrorCode.UNKNOWN): ChameleonError {
-        var e = new ChameleonError(code);
-        e.name = err.name;
-        e.message = err.message;
-        return e;
-    }
-}
-
-export interface CallbackFunc<T> {
-    (err: ChameleonError, result?: T) : void;
-}
 
 export interface DB {
     set(table: string, key: string, value: Object, cb?: DBCallback): void;
@@ -66,14 +50,6 @@ class Logger {
         console.log(logmsg)
     }
 }
-
-export enum ErrorCode {
-    UNKNOWN = 1,
-    SDK_PATH_ILLEGAL,
-    OP_FAIL,
-    CFG_ERROR
-}
-
 
 class Utils {
     static dumpJsonFile(obj: any, dest: string, callback?: CallbackFunc<any>) {
@@ -432,53 +408,6 @@ export class SDKLibInfo {
     }
 }
 
-export class Version {
-    major: number;
-    medium: number;
-    minor: number;
-    constructor(ver: string) {
-        var t = ver.split('.');
-        this.major = parseInt(t[0]);
-        this.medium = parseInt(t[1]);
-        if (t.length == 3) {
-            this.minor = parseInt(t[2]);
-        } else {
-            this.minor = 0;
-        }
-    }
-
-    cmp (that: Version): number {
-        if (this.major > that.major) {
-            return 1;
-        } else if (this.major < that.major) {
-            return -1;
-        } else {
-            if (this.medium < that.medium) {
-                return -1;
-            } else if (this.medium > that.medium) {
-                return 1;
-            } else {
-                if (this.minor < that.minor) {
-                    return -1;
-                } else if (this.minor > that.minor){
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-
-        }
-    }
-
-    isMajorUpgrade(that: Version) {
-        return (this.major > that.major) || (this.major === that.major && this.medium > that.medium);
-    }
-
-    toString(): string {
-        return this.major+'.'+this.medium+'.'+this.minor;
-    }
-}
-
 class SDKMetaScript {
     private _path: string;
     private mod: any;
@@ -526,7 +455,7 @@ export class SDKMetaInfo {
                 itemcfg[itemname]['ignoreInA']);
         }
         if (jsonobj['script']) {
-            var p = pathLib.join(chameloenPath, 'ChannelScript', jsonobj['script']);
+            var p = pathLib.join(chameloenPath, 'script', jsonobj['script']);
             res.script = new SDKMetaScript(p);
         }
         return res;
@@ -1172,9 +1101,8 @@ export class ChameleonTool {
         var needUpgradeLibs = this.getNeedUpgradeLibs(installedLibs);
         var upgradeFunc =  (lib, cb) => {
             var prjLibPath = pathLib.join(prj.prjPath, 'chameleon', 'libs', lib);
-            var libPath = pathLib.join(this.chameleonPath, 'channels', lib);
             fs.remove(prjLibPath, () => {
-               fs.copy(libPath, prjLibPath, null, cb) ;
+               this.initSDKLib(prj, lib, cb);
             })
         };
         var funcs = needUpgradeLibs.map((lib) => {return upgradeFunc.bind(null, lib.name)});
@@ -1210,6 +1138,7 @@ export class ChameleonTool {
     upgradePrjChameleon(prj: Project, cb: CallbackFunc<any>) {
         var chameleonPath = pathLib.join(prj.prjPath, 'chameleon');
         var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
+        var chameleonCbPath = pathLib.join(this.chameleonPath, 'Resource', 'chameleoncb.zip');
         async.series([function(callback) {
             fs.copy(chameleonRes, chameleonPath, null, function (err) {
                 if (err) {
@@ -1228,6 +1157,16 @@ export class ChameleonTool {
             if (fs.existsSync(pathLib.join(prjLibPath, 'chameleon_unity.jar'))) {
                 otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath , 'chameleon_unity.jar'),
                     pathLib.join(prjLibPath, 'chameleon_unity.jar'), null))
+            } else {
+                otherCopy.push((cb) => {
+                    try {
+                        var z = new AdmZip(chameleonCbPath);
+                        z.extractAllTo(pathLib.join(prj.prjPath, 'chameleon'), true);
+                        setImmediate(cb, null)
+                    } catch (e) {
+                        setImmediate(cb, e);
+                    }
+                });
             }
             async.parallel(otherCopy, (err) => {
                 callback(err);
@@ -1257,6 +1196,7 @@ export class ChameleonTool {
             var _id = Math.round(new Date().getTime()/1000).toString();
             var newPrj = Project.createNewProject(name, landscape, this.infoObj.version, prjPath);
             var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
+            var chameleonCbPath = pathLib.join(this.chameleonPath, 'Resource', 'chameleoncb.zip');
             async.series([function (callback) {
                 newPrj.loadAndroidProjectInfo(callback);
             }, function(callback) {
@@ -1267,6 +1207,7 @@ export class ChameleonTool {
                     }
                     fs.ensureDir(pathLib.join(chameleonPath, 'sdkcfg'));
                     fs.ensureDir(pathLib.join(chameleonPath, 'channels'));
+                    fs.ensureDir(pathLib.join(chameleonPath, 'libs'));
                     callback(null);
                 });
             }, function (callback) {
@@ -1281,6 +1222,16 @@ export class ChameleonTool {
                 if (unity) {
                     otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath , 'chameleon_unity.jar'),
                         pathLib.join(prjLibPath, 'chameleon_unity.jar'), null))
+                } else {
+                    otherCopy.push(function (cb) {
+                        try {
+                            var z = new AdmZip(chameleonCbPath);
+                            z.extractAllTo(pathLib.join(prjPath, 'chameleon'), true);
+                            setImmediate(cb, null)
+                        } catch (e) {
+                            setImmediate(cb, e);
+                        }
+                    });
                 }
                 async.parallel(otherCopy, (err) => {
                     callback(err);
@@ -1422,17 +1373,15 @@ export class ChameleonTool {
     }
 
     initSDKLib(prj: Project, sdkname: string, cb: CallbackFunc<any>) {
-        var targetPath = pathLib.join(prj.prjPath, 'chameleon', 'libs', sdkname);
-        var src = pathLib.join(this.chameleonPath, 'channels', sdkname);
+        var targetParentPath = pathLib.join(prj.prjPath, 'chameleon', 'libs')
+        var targetPath = pathLib.join(targetParentPath , sdkname);
+        var src = pathLib.join(this.chameleonPath, 'sdk', 'libs', sdkname+'.zip');
         if (!fs.existsSync(src)) {
             throw new ChameleonError(ErrorCode.OP_FAIL, '未知的SDK: ' + sdkname);
         }
-        fs.copy(src, targetPath, null, (err) => {
-            if (err) {
-                Logger.log('Fail to copy lib tree', err);
-                cb(new ChameleonError(ErrorCode.UNKNOWN, '未知的错误'));
-                return;
-            }
+        try {
+            var zip = new AdmZip(src);
+            zip.extractAllTo(targetParentPath, true);
             this.androidEnv.updateProject(targetPath, prj.androidTarget, (err) => {
                 if (err) {
                     Logger.log('Fail to update project', err);
@@ -1441,11 +1390,14 @@ export class ChameleonTool {
                 }
                 cb(null);
             })
-        });
+        } catch (e) {
+            Logger.log('Fail to copy lib tree', e);
+            setImmediate(cb, new ChameleonError(ErrorCode.UNKNOWN, '未知的错误'));
+        }
     }
 
     static getUserPath() : string {
-        return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+        return process.platform === 'win32' ? process.env.USERPROFILE: process.env.HOME;
     }
 
     upgradeFromFile(filePath) {

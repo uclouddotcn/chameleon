@@ -6,6 +6,7 @@ var fs = require('fs');
 var pathLib = require('path');
 var globalenv = require('./js/globalenv')
 var chameleon = require('./ts/chameleon');
+var Downloader = require('./ts/upgrader').Downloader;
 
 var ChameleonTool = chameleon.ChameleonTool;
 var Project = chameleon.Project;
@@ -68,6 +69,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             self.homeDir = ChameleonTool.getChameleonHomePath();
             self.sdkdb = new Database({filename: pathLib.join(self.homeDir, 'sdkdb.nedb'), autoload: true});
             self.db = new Database({filename: pathLib.join(self.homeDir, 'productdb.nedb'), autoload: true});
+            self.tooldb = new Database({filename: pathLib.join(self.homeDir, 'tools.nedb'), autoload: true});
             chameleon.ChameleonTool.initTool(new PouchDBWrapper(self.sdkdb), function (err, chtool) {
                 if (err) {
                     defered.reject(err);
@@ -75,9 +77,37 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 }
                 self.chtool = chtool;
                 defered.resolve(chtool);
+                self.tryUpgrade();
             });
         });
         return defered.promise;
+    }
+
+    ProjectMgr.prototype.tryUpgrade = function (err, doc) {
+        var self = this;
+        self.tooldb.findOne({_id: 'lastUpgradeTimestamp'}, function (err, doc) {
+            var timestamp = 0;
+            if (!err) {
+                timestamp = (doc && doc.timestamp) ?  doc.timestamp : 0;
+            }
+            var downloader = new Downloader("http://localhost:8080", self.chtool.version.toString(), globalenv.TEMP_FOLDER);
+            downloader.downloadUpdate(timestamp, function (err, updateInfo) {
+                if (err)  {
+                    return;
+                }
+                if (updateInfo && updateInfo.hasUpgrade) {
+                    fs.writeFile(pathLib.join(pathLib.join(self.homeDir, 'upgrade.txt')), JSON.stringify(updateInfo), function (err) {
+                        if (err)  {
+                            return;
+                        }
+                        var ok = window.confirm("已经准备好更新，是否重启客户端？");
+                        if (ok) {
+                            App.restart();
+                        }
+                    });
+                }
+            });
+        });
     }
 
     ProjectMgr.prototype.removeProject = function(project) {

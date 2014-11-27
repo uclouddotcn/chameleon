@@ -151,6 +151,7 @@ declare class NodeProcess extends EventEmitter {
     uptime(): number;
     hrtime(): number[];
     hrtime(start: number[]): number[];
+    send(msg: Object);
 }
 
 interface Timer {
@@ -284,6 +285,7 @@ declare module "http" {
         setEncoding(encoding?: string): void;
         pause(): void;
         resume(): void;
+        setTimeout(timeout: number, callback?: Function): void;
     }
     export interface Agent { maxSockets: number; sockets: any; requests: any; }
 
@@ -1005,6 +1007,7 @@ declare module "stream" {
         write(buffer: NodeBuffer): boolean;
         end(): void;
         end(str: string, enconding: string): void;
+        end(callback: Function): void;
         end(buffer: NodeBuffer): void;
         destroy(): void;
         destroySoon(): void;
