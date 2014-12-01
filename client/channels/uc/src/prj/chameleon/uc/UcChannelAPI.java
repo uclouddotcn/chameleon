@@ -133,11 +133,10 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                                 case UCGameSDKStatusCode.SUCCESS:
                                     cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                                     break;
-                                case UCGameSDKStatusCode.INIT_FAIL: //初始化失败,不能进行后续操作 break;
+                                default: //初始化失败,不能进行后续操作 break;
                                     Log.e(Constants.TAG, "Fail to init uc sdk: " + msg);
                                     cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
                                     break;
-                                default:
                             }
                         }
                     }

@@ -137,6 +137,7 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         } else {
             AnzhiUserCenter.getInstance().setActivityOrientation(1);
         }
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
     /**
      * user login to platform
