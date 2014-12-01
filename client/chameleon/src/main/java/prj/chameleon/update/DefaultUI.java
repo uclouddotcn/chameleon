@@ -15,10 +15,12 @@ public class DefaultUI implements UpdateLisener {
     public ProgressDialog downloadProgress;
     public DefaultUILisener callbake;
     private boolean mIsSetMax = false;
+    private boolean mIsCancle = false;
 
-    public DefaultUI(Context context, int resId, String downloadUrl, String md5, int threadCount){
+    public DefaultUI(Context context, int resId, String downloadUrl, String md5, int threadCount, boolean isCancel){
         this.context = context;
         this.resId = resId;
+        this.mIsCancle = isCancel;
         this.downloadManager = new UpdateManager(context, downloadUrl, md5, threadCount);
     }
 
@@ -35,13 +37,15 @@ public class DefaultUI implements UpdateLisener {
         downloadProgress.setTitle("下载进度：");
         downloadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         downloadProgress.setCanceledOnTouchOutside(false);
-        downloadProgress.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                downloadManager.cancelDownload();
-                dialog.dismiss();
-            }
-        });
+        if (mIsCancle){
+            downloadProgress.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    downloadManager.cancelDownload();
+                    dialog.dismiss();
+                }
+            });
+        }
         downloadProgress.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {

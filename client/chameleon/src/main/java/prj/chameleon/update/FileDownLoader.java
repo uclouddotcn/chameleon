@@ -31,7 +31,7 @@ public class FileDownLoader {
 	private int curFailCount;
 	private int maxFailCount = 5;
     private BlockingDeque<TaskInfo> queue;
-    private ProgressListner listener;
+    private ProgressLisener listener;
 
     public volatile boolean compel = false;
 
@@ -122,7 +122,7 @@ public class FileDownLoader {
 
     //TODO 文件下载方法
     //listner 监听器
-	public int download(ProgressListner listener, Context context) {
+	public int download(ProgressLisener listener, Context context) {
         int ret = 0;
         this.listener = listener;
         queue = new LinkedBlockingDeque<TaskInfo>();

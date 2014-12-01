@@ -1,17 +1,14 @@
 package prj.chameleon.update;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -230,7 +227,7 @@ public class UpdateManager
         }else {
             mTotalSize = downloadingSize / 1000;
 
-            int retSize = mFileDownLoader.download(new ProgressListner() {
+            int retSize = mFileDownLoader.download(new ProgressLisener() {
                 @Override
                 public void onDownloadSize(int size) {
                     mDownloadedSize = size / 1000;
