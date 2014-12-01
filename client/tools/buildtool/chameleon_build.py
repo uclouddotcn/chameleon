@@ -10,6 +10,7 @@ LibInfo = namedtuple('LibInfo', ['name', 'cfg'])
 SCRIPTDIR = os.path.abspath(os.path.split(os.path.realpath(__file__))[0]).decode(sys.getfilesystemencoding())
 VALID_BUILD_TYPES = ['debug', 'release']
 ANT_HOME = os.getenv('ANT_HOME')
+ANDROID_HOME = os.getenv('ANDROID_HOME')
 if ANT_HOME is None:
     raise RuntimeError(u'please set ANT_HOME first')
 if os.name == 'nt':
@@ -125,8 +126,12 @@ class BuildCmd(object):
             os.makedirs(os.path.join(prjpath, 'chameleon_build', buildtype))
         libraries = self.composeDependLib(binfo, nextLibIndex)
         self.preBuild(binfo)
+        if os.path.exists(os.path.join(prjpath, 'build.xml')):
+            prjBuildXmlFile = os.path.join(prjpath, 'build.xml')
+        else:
+            prjBuildXmlFile = os.path.join(SCRIPTDIR, 'ant', 'default_build.xml')
         with self.openTempProperty(binfo, libraries) as tf:
-            ret = runProcess([ANT_CMD, buildtype, '-Dchameleon_prop_file='+tf.filename, '-Dbasedir='+prjpath])
+            ret = runProcess([ANT_CMD, buildtype, '-Dchameleon_prop_file='+tf.filename, '-Dbasedir='+prjpath, '-Dprj_build_xml='+prjBuildXmlFile])
         return ret
 
     def execute(self, args):
