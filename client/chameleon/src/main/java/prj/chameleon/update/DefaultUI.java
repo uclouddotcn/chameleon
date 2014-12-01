@@ -147,6 +147,9 @@ public class DefaultUI implements UpdateLisener {
 
     @Override
     public void onFinish(String savePath, String apkName) {
+        if (downloadProgress != null){
+            downloadProgress.dismiss();
+        }
         callbake.onFinish(savePath, apkName);
     }
 }
