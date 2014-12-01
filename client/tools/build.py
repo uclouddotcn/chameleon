@@ -20,9 +20,6 @@ def copyFileInList(srcroot, targetroot, filelist):
 
 ChannelInfo = namedtuple('ChannelInfo', 'name path cfg script')
 
-def archive(p, rootdir, basedir):
-    shutil.make_archive(p, 'zip', rootdir, os.path.relpath(basedir, rootdir))
-
 def loadJsonFile(channelPath):
     cfgJsonFile = os.path.join(channelPath, 'chameleon_build', 'cfg.json')
     with codecs.open(cfgJsonFile, 'r', 'utf8') as f:
@@ -97,8 +94,6 @@ def copyChannel(channel, channelPath, targetPath, versionInfo):
         f.write('\n'.join(relfilelist))
     with codecs.open(os.path.join(targetPath, 'version.json'), 'w', 'utf8') as f:
         json.dump(versionInfo, f, indent=4)
-    archive(targetPath, os.path.join(targetPath, '..'), targetPath)
-    shutil.rmtree(targetPath)
 
 def initTargetScriptFolder(targetScriptFolder):
     if not os.path.exists(targetScriptFolder):
@@ -106,15 +101,15 @@ def initTargetScriptFolder(targetScriptFolder):
 
 def copyChameleonCpp(targetFolder):
     cppTargetFolder = os.path.join(targetFolder, 'Resource', 'chameleon', 'chameleoncb')
-    archive(os.path.join(targetFolder, 'Resource', 'chameleoncb'), os.path.join(CPP_SRC_ROOT, '..'), CPP_SRC_ROOT)
+    shutil.copytree(CPP_SRC_ROOT, cppTargetFolder)
 
 
 # copy channel folders and channel resources, generate build info json
 def initProjectFolder(targetFolder, version):
-    targetSDKPath = os.path.join(targetFolder, 'sdk')
-    targetChannelPath = os.path.join(targetSDKPath, 'libs')
-    targetScriptPath = os.path.join(targetFolder, 'script')
+    targetChannelPath = os.path.join(targetFolder, 'channels')
+    targetScriptPath = os.path.join(targetFolder, 'ChannelScript')
     toolPath = os.path.join(targetFolder, 'tools')
+    chameleonCbPath = os.path.join(targetFolder, 'chameleoncb')
     infoJsonFile = os.path.join(targetFolder, 'info.json')
     channelListFile = os.path.join(CHANNELINFO_DIR, 'channellist.json')
     shutil.copytree(BUILD_SCRIPT_DIR, targetFolder)
@@ -171,19 +166,19 @@ def buildChameleonLib(targetFolder):
     olddir = os.getcwd()
     os.chdir(BASEDIR)
     try:
-        #gradleCmd = os.path.join(BASEDIR, GRADLE_CWD)
-        #ret = subprocess.check_call([gradleCmd, 'chameleon:clean'])
-        #if ret != 0:
-        #    raise RuntimeError('Fail to clean the chameleon sdk')
-        #ret = subprocess.check_call([gradleCmd, 'chameleon_unity:clean'])
-        #if ret != 0:
-        #    raise RuntimeError('Fail to clean the chameleon unity sdk')
-        #ret = subprocess.check_call([gradleCmd, 'chameleon:assembleRelease'])
-        #if ret != 0:
-        #    raise RuntimeError('Fail to assemble the chameleon sdk')
-        #ret = subprocess.check_call([gradleCmd, 'chameleon_unity:assembleRelease'])
-        #if ret != 0:
-        #    raise RuntimeError('Fail to assemble the chameleon unity sdk')
+        gradleCmd = os.path.join(BASEDIR, GRADLE_CWD)
+        ret = subprocess.check_call([gradleCmd, 'chameleon:clean'])
+        if ret != 0:
+            raise RuntimeError('Fail to clean the chameleon sdk')
+        ret = subprocess.check_call([gradleCmd, 'chameleon_unity:clean'])
+        if ret != 0:
+            raise RuntimeError('Fail to clean the chameleon unity sdk')
+        ret = subprocess.check_call([gradleCmd, 'chameleon:assembleRelease'])
+        if ret != 0:
+            raise RuntimeError('Fail to assemble the chameleon sdk')
+        ret = subprocess.check_call([gradleCmd, 'chameleon_unity:assembleRelease'])
+        if ret != 0:
+            raise RuntimeError('Fail to assemble the chameleon unity sdk')
         shutil.copy2(os.path.join("chameleon", "build", "intermediates", "bundles", "release", "classes.jar"),
             os.path.join(targetLibFoldr, 'chameleon.jar'))
         shutil.copy2(os.path.join("chameleon_unity", "build", "intermediates", "bundles", "release", "classes.jar"),
@@ -288,7 +283,7 @@ def build():
     print 'build chameleon libs...'
     buildChameleonLib(chameleonTarget)
     print 'build chameleon client...'
-    #mergeToNodewebkit(targetFolder)
+    mergeToNodewebkit(targetFolder)
     print 'done'
 
 build()
