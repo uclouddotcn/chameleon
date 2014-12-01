@@ -249,7 +249,19 @@ function main() {
             }
         });
 
-    program.parse(process.argv);
+    program
+        .command('*')
+        .description('show help')
+        .action(function () {
+            console.log('unknown command');
+            program.help();
+        });
+
+    if (process.argv.length === 2) {
+        program.help();
+    } else {
+        program.parse(process.argv);
+    }
 }
 
 
