@@ -82,6 +82,7 @@ public class Instantializer implements IInstantializer{
         commCfg.mIsLandscape = $landscape;
         commCfg.mIsDebug = $debug;
         ChannelInterface.setChannelName("$channel");
+        ChannelInterface.setDebug($debug);
         
         $initfuncs
     }
@@ -151,28 +152,6 @@ def genLibInstantializer(l):
 
 def isNewerThan(a, b):
     return os.path.getmtime(a) > os.path.getmtime(b)
-
-def genRFileForPkgName(channel, genPath, pkgName):
-    s = pkgName.split('.')
-    d = os.path.join(*([genPath] + s))
-    src = os.path.join(d, 'R.java')
-    suffix = getPkgSuffix(channel)
-    if len(suffix) == 0:
-        return
-    newPkgName = pkgName + '.' + suffix
-    targetD = os.path.join(d, suffix)
-    target = os.path.join(targetD, 'R.java')
-    if not os.path.exists(src):
-        error('Fail to locate old source %s' %src)
-    if not os.path.exists(targetD):
-        os.makedirs(targetD)
-    if not os.path.exists(target) or isNewerThan(src, target):
-        with codecs.open(src, 'r', 'utf8') as srcF, codecs.open(target, 'w', 'utf8') as targetF:
-            for l in srcF.readlines():
-                if l.startswith('package %s;' %pkgName):
-                    targetF.write('package %s;\n' %newPkgName)
-                else:
-                    targetF.write(l)
 
 def getPkgSuffix(channel):
     doc = xml.parse(os.path.join('chameleon', 'channels', channel, 'info.xml'))
