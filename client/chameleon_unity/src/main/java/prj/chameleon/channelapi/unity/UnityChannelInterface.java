@@ -13,6 +13,7 @@ import java.util.LinkedList;
 
 import prj.chameleon.channelapi.ChannelInterface;
 import prj.chameleon.channelapi.Constants;
+import prj.chameleon.channelapi.DummyChannelAPI;
 import prj.chameleon.channelapi.IDispatcherCb;
 
 public class UnityChannelInterface {
@@ -323,7 +324,7 @@ public class UnityChannelInterface {
                 prj.chameleon.channelapi.ChannelInterface.onResume(UnityPlayer.currentActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(int retCode, JSONObject data) {
-                        U3DHelper.SendMessage("onResume", Constants.ErrorCode.ERR_OK, null);
+                        U3DHelper.SendMessage("onPause", Constants.ErrorCode.ERR_OK, null);
                     }
                 });
             }

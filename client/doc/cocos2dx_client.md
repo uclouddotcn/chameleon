@@ -19,13 +19,13 @@ import android.content.Intent;
         super.onResume();
         NativeChannelInterface.onResume(1);
     }
-    
+
     @Override
     public void onPause() {
         super.onResume();
         NativeChannelInterface.onPause();
     }
-    
+
     @Override
     public void onStart() {
         super.onStart();
@@ -37,7 +37,7 @@ import android.content.Intent;
         super.onStop();
         NativeChannelInterface.onStop(this);
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -60,7 +60,7 @@ import android.content.Intent;
     	glSurfaceView.setEGLConfigChooser(5, 6, 5, 0, 16, 8);
 
         NativeChannelInterface.init(this, true, glSurfaceView);
-    	
+
     	return glSurfaceView;
     }
 
@@ -139,13 +139,13 @@ namespace ChameleonChannelAPI{
      * @param {bool} allowUserChange, 是否允许玩家自己输入
      * @return {int}, 0表示异步请求成功，否则表示失败
      */
-    int charge(int id, 
-               const std::string & orderId, 
-               const std::string & uidInGame, 
-               const std::string & userNameInGame, 
-               const std::string & serverId, 
-               const std::string & currencyName, 
-               const std::string & payInfo, 
+    int charge(int id,
+               const std::string & orderId,
+               const std::string & uidInGame,
+               const std::string & userNameInGame,
+               const std::string & serverId,
+               const std::string & currencyName,
+               const std::string & payInfo,
                int rate,
                int realPayMoney,
                bool allowUserChange);
@@ -166,11 +166,11 @@ namespace ChameleonChannelAPI{
      * @return {int}, 0表示异步请求成功，否则表示失败
      */
     int buy(int id,
-            const std::string & orderId, 
-            const std::string & uidInGame, 
-            const std::string & userNameInGame, 
-            const std::string & serverId, 
-            const std::string & productName, 
+            const std::string & orderId,
+            const std::string & uidInGame,
+            const std::string & userNameInGame,
+            const std::string & serverId,
+            const std::string & productName,
             const std::string & productId,
             const std::string & payInfo,
             int productCount,
@@ -214,7 +214,7 @@ namespace ChameleonChannelAPI{
      */
     int antiAddiction(int id);
 
-    /** 
+    /**
      * 退出渠道SDK
      * @return {int}, 0表示异步请求成功，否则表示失败
      */
@@ -250,7 +250,7 @@ namespace ChameleonChannelAPI{
      * @return {bool} 登陆是否验证登陆成功
      */
     bool onLoginRsp(const std::string & loginRsp);
-    
+
      /**
      * 提交用户信息
      * @param roleId 用户在游戏中的ID
@@ -259,9 +259,9 @@ namespace ChameleonChannelAPI{
      * @param zoneId zone id
      * @param zoneName zone的名称
      */
-    bool submitPlayerInfo(const std::string & roleId, 
-                          const std::string & roleName, 
-                          const std::string & roleLevel, 
+    bool submitPlayerInfo(const std::string & roleId,
+                          const std::string & roleName,
+                          const std::string & roleLevel,
                           int zoneId,
                           const std::string & zoneName);
 
@@ -381,7 +381,7 @@ public:
      */
     virtual void onExit() {}
 
-    virtual void onRunProtocol(int id, int code, const std::string & protocol, 
+    virtual void onRunProtocol(int id, int code, const std::string & protocol,
       const std::string & message) {}
 };
 ```
@@ -389,7 +389,3 @@ public:
 
 ###编译
 先使用Cocos2dx的脚本编译好so文件，之后使用客户端工具即可打包各个渠道
-
-
-
-

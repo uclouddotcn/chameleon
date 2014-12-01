@@ -54,7 +54,7 @@ namespace chameleon
 		}
 
 		public void onLogin(string message) {
-			Debug.Log ("on login in bridge");
+			Debug.Log ("on login in bridge: " + message);
 			if (mEvtListener != null) {
 				var obj = JSON.Parse(message);
 				int code = obj["code"].AsInt;

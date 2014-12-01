@@ -1393,7 +1393,10 @@ chameleonControllers
         $scope.result = [];
         var showResult = function (r) {
             if (r.code == 0) {
-                return '编译'+r.target+'成功';
+                return {
+                    msg: '编译'+r.target+'成功',
+                    logfile: r.logfile
+                };
             } else {
                 return {
                     msg: '编译'+r.target+'失败',
@@ -1849,24 +1852,3 @@ chameleonControllers
             });
         };
     }])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
