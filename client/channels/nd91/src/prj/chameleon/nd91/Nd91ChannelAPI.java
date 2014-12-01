@@ -463,6 +463,7 @@ public final class Nd91ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         NdCommplatform.getInstance().ndPause(new NdPageCallbackListener.OnPauseCompleteListener(activity) {
             @Override
             public void onComplete() {
+                Log.d(Constants.TAG, "nd91 on resume");
                 cb.onFinished(Constants.ErrorCode.ERR_OK, null);
             }
         });

@@ -27,6 +27,7 @@ import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 import prj.chameleon.channelapi.cbinding.NativeChannelInterface;
 import android.content.Intent;
+import android.util.Log;
 
 import android.os.Bundle;
 
@@ -45,14 +46,14 @@ public class chameleon_cc2d extends Cocos2dxActivity{
 
     @Override
     public void onPause() {
-        super.onResume();
+        super.onPause();
         NativeChannelInterface.onPause();
     }
 
     @Override
     public void onDestroy() {
-        NativeChannelInterface.onDestroy();
         super.onDestroy();
+        NativeChannelInterface.onDestroy();
     }
 
     @Override
