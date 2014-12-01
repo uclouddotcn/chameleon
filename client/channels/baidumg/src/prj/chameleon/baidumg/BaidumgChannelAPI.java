@@ -170,6 +170,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 }
             }
         });
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
 

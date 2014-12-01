@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="cn.ucloud.game.chameleon"
+    xmlns:chameleon="http://schemas.chameleon.cn/chameleon"
+      package="prj.chamelon.cc2d"
       android:versionCode="1"
       android:versionName="1.0">
 
@@ -11,6 +12,9 @@
         android:icon="@drawable/icon"
         android:name="prj.chameleon.channelapi.ChameleonApplication">
 
+        <meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"
+            chameleon:replace="android:value=${channel}"/>
+
         <activity android:name="prj.chamelon.cc2d.chameleon_cc2d"
                   android:label="@string/app_name"
                   android:screenOrientation="landscape"
@@ -20,6 +24,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name="prj.chameleon.test.LoginActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="landscape"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  android:configChanges="orientation">
         </activity>
     </application>
     <supports-screens android:largeScreens="true"

@@ -85,6 +85,7 @@ public:
     void RemoveListener(int eventType, int handle) {
         return mEventEmitter.RemoveListener(eventType, handle);
     }
+    int Init();
     int HeartBeat();
     int Login();
     int LoginGuest();
@@ -119,6 +120,7 @@ public:
     }
 
     // chameleon callback inf imp
+    virtual void onInited(int ret, bool debug);
     virtual void preAccountSwitch();
     virtual void afterAccountSwitch(int code, 
         const std::string * loginInfo);
