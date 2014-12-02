@@ -103,7 +103,11 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             callback = timeout;
             timeout = 60; //default one minute
         }
-        var proc = this.spawn(cmd, params);
+        var proc = this.spawn(cmd, params, {
+            env: {
+                'ANDROID_HOME': this.sdkPath
+            }
+        });
         if (logfile) {
             var logstream = fs.createWriteStream(logfile);
             proc.stdout.pipe(logstream);

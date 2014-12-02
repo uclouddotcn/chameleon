@@ -3,5 +3,5 @@
     <echo>${chameleon_prop_file}</echo>
     <loadproperties srcFile="${chameleon_prop_file}"/>
     <import file="${chameleon_script}/ant/chameleon_rules.xml" />
-    <import file="${basedir}/build.xml"/>
+    <import file="${prj_build_xml}"/>
 </project>
