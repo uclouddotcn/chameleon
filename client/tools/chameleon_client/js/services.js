@@ -261,7 +261,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             }
         });
         return defered.promise;
-    }
+    };
 
     ProjectMgr.prototype.updateGlobalCfg = function (project, cfg) {
         var defered = $q.defer();
@@ -275,7 +275,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         });
 
         return defered.promise;
-    }
+    };
 
     ProjectMgr.prototype.bindProject = function (name, path) {
         var defered = $q.defer();

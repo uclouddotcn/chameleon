@@ -1,5 +1,6 @@
 package prj.chameleon.channelapi;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -10,8 +11,10 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -28,6 +31,7 @@ public class SplashScreenActivity extends Activity {
     private ArrayList<Integer> mListDurations;
     private int mBgColor = Color.BLACK;
     private String mMainActivity;
+    private boolean mIsFillParent = false;
 
     private int loadSingleItem(XmlPullParser parser) throws XmlPullParserException, IOException {
         while (parser.getEventType() != XmlPullParser.END_TAG) {
@@ -88,6 +92,7 @@ public class SplashScreenActivity extends Activity {
                 count = count+1;
             }
             totalTime = count*2000;
+            mIsFillParent = true;
             return totalTime;
 
         } catch (Exception e) {
@@ -146,6 +151,11 @@ public class SplashScreenActivity extends Activity {
                     ImageView imgView = new ImageView(this);
                     imgView.setImageDrawable(amDrawable);
                     imgView.setBackgroundColor(mBgColor);
+                    if (mIsFillParent) {
+                        imgView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    } else {
+                        imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    }
                     this.setContentView(imgView);
                 }
                 Handler handler = new Handler();
