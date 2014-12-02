@@ -971,15 +971,25 @@ chameleonControllers
         $scope.inited = inited;
         $scope.setSDKRoot = function () {
             fileDialog.openDir(function (d) {
-                $scope.env.sdk_root = d;
+                $scope.env.sdkroot = d;
+                if (!$scope.env.anthome) {
+                    $scope.env.anthome = ProjectMgr.guessAntHome(d);
+                }
                 $scope.$apply();
             })
         }
         $scope.env = {
-            sdk_root: sdkroot
+            sdkroot: sdkroot,
+            anthome: ProjectMgr.guessAntHome(sdkroot)
+        };
+        $scope.setAntHome = function () {
+            fileDialog.openDir(function (d) {
+                $scope.env.anthome = d;
+                $scope.$apply();
+            })
         };
         $scope.submit = function () {
-            var promise = ProjectMgr.setAndroidPath($scope.env.sdk_root);
+            var promise = ProjectMgr.setAndroidPath($scope.env);
             promise.then(function () {
                 $modalInstance.close();
             }, function (err) {

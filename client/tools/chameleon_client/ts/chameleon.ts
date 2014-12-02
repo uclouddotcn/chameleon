@@ -85,6 +85,7 @@ class Utils {
 export class AndroidEnv {
     _sdkPath: string;
     androidBin: string;
+    antHome: string;
     private db: DB;
 
     constructor(db: DB) {
@@ -92,21 +93,49 @@ export class AndroidEnv {
     }
 
     initFromDB (cb : CallbackFunc<any>) {
-        this.db.get('env', 'sdkpath', (err: Error, value?: Object) => {
-            if (err || !value) {
-                cb(null);
-                return;
+        var funcs = [
+            (callback) => {
+                this.db.get('env', 'anthome', (err: Error, value?: Object) => {
+                    if (err || !value) {
+                        callback(null, null);
+                        return;
+                    }
+                    var obj = value;
+                    var p = obj['value'];
+                    if (AndroidEnv.verifyAntHome(p)) {
+                        callback(null, p);
+                    } else {
+                        callback(null, null);
+                    }
+                }) ;
+            },
+            (anthome, callback) => {
+                this.db.get('env', 'sdkpath', (err: Error, value?: Object) => {
+                    if (err || !value) {
+                        callback(null);
+                        return;
+                    }
+                    var obj = value;
+                    var p = obj['value'];
+                    if (!anthome) {
+                        anthome = AndroidEnv.guessAntHome(p);
+                    }
+                    this.verifySDKPath({anthome: anthome, sdkroot: p}, (err) => {
+                        if (err) {
+                            callback(err);
+                            return;
+                        }
+                        this.sdkPath = obj['value'];
+                        this.antHome = anthome;
+                        callback(null);
+                    });
+                });
             }
-            var obj = value;
-            var p = obj['value'];
-            this.verifySDKPath(p, (err) => {
-                if (err) {
-                    cb(null);
-                    return;
-                }
-                this.sdkPath = obj['value'];
-                cb(null);
-            });
+        ];
+        async.waterfall(funcs, (err) => {
+            console.log(err);
+            // hide all error here, check the valid later
+            return cb(null);
         });
     }
 
@@ -139,6 +168,33 @@ export class AndroidEnv {
         this._sdkPath = p;
         this.androidBin = AndroidEnv.getAndroidBin(p);
         this.db.set('env', 'sdkpath', {value: p});
+        //this.antHome = AndroidEnv.guessAntHome(p);
+    }
+
+    static guessAntHome(p: string): string {
+        var pluginPath = pathLib.normalize(pathLib.join(p, '..', 'eclipse', 'plugins'));
+        var res = /org\.apache\.ant_/;
+        if (!fs.existsSync(pluginPath)) {
+            return null;
+        }
+        var antEntry = fs.readdirSync(pluginPath).filter(function (e) {
+            return !!res.exec(e);
+        });
+        if (antEntry.length == 0) {
+            return null;
+        }
+        for (var i = 0; i < antEntry.length; ++i) {
+            var antHome = pathLib.join(pluginPath, antEntry[i]);
+            if (AndroidEnv.verifyAntHome(antHome)) {
+                console.log("guess ANT_HOME: " + antHome);
+                return antHome;
+            }
+        }
+        return null;
+    }
+
+    private static verifyAntHome(p: string) {
+        return fs.existsSync(pathLib.join(p, 'bin', 'ant')) || fs.existsSync(pathLib.join(p, 'bin', 'ant.bat'));
     }
 
     private static getAndroidBin(p: string) : string{
@@ -151,8 +207,12 @@ export class AndroidEnv {
         return s;
     }
 
-    verifySDKPath(p: string, cb: CallbackFunc<any>) {
-        var androidBin = AndroidEnv.getAndroidBin(p);
+    verifySDKPath(initEnv: {sdkroot: string; anthome: string}, cb: CallbackFunc<any>) {
+        if (!initEnv.anthome || !AndroidEnv.verifyAntHome(initEnv.anthome)) {
+            setImmediate(cb, new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, '非法的ANT HOME路径'));
+            return;
+        }
+        var androidBin = AndroidEnv.getAndroidBin(initEnv.sdkroot);
         childprocess.execFile(androidBin, ['list', 'target'], {timeout: 30000}, function (err, stdout, stderr) {
             if (err) {
                 cb(new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, '非法的Android SDK路径，请确保路径在sdk路径下'));
@@ -1114,6 +1174,10 @@ export class ChameleonTool {
         return pathLib.join(ChameleonTool.getUserPath(), '.prj_chameleon');
     }
 
+    guessAntHome(sdkroot: string): string {
+        return AndroidEnv.guessAntHome(sdkroot);
+    }
+
     getChannelList(): ChannelMetaInfo[] {
         return this.infoObj.getChannelMetaInfos();
     }
@@ -1138,13 +1202,23 @@ export class ChameleonTool {
         return this.infoObj.getChannelMetaInfos();
     }
 
-    setAndroidPath(path: string, cb: CallbackFunc<any>) {
-        this.androidEnv.verifySDKPath(path, (err) => {
+    get sdkPath(): string {
+        return this.androidEnv._sdkPath;
+    }
+
+    get antHome(): string {
+        return this.androidEnv.antHome;
+    }
+
+    setAndroidPath(initEnv: {sdkroot: string; anthome: string}, cb: CallbackFunc<any>) {
+        this.androidEnv.verifySDKPath(initEnv, (err) => {
             if (err) {
-                cb(new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, path+"路径之下无法找到Android SDK"));
+                cb(new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, initEnv.sdkroot+"路径之下无法找到Android SDK"));
                 return;
             }
-            this.androidEnv.sdkPath = path;
+            this.androidEnv.sdkPath = initEnv.sdkroot;
+            this.androidEnv.antHome = initEnv.anthome;
+            this.db.set('env', 'anthome', initEnv.anthome);
             cb(null);
         })
     }

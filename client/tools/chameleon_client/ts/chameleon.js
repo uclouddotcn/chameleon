@@ -78,21 +78,50 @@ var AndroidEnv = (function () {
     }
     AndroidEnv.prototype.initFromDB = function (cb) {
         var _this = this;
-        this.db.get('env', 'sdkpath', function (err, value) {
-            if (err || !value) {
-                cb(null);
-                return;
+        var funcs = [
+            function (callback) {
+                _this.db.get('env', 'anthome', function (err, value) {
+                    if (err || !value) {
+                        callback(null, null);
+                        return;
+                    }
+                    var obj = value;
+                    var p = obj['value'];
+                    if (AndroidEnv.verifyAntHome(p)) {
+                        callback(null, p);
+                    } else {
+                        callback(null, null);
+                    }
+                });
+            },
+            function (anthome, callback) {
+                _this.db.get('env', 'sdkpath', function (err, value) {
+                    if (err || !value) {
+                        callback(null);
+                        return;
+                    }
+                    var obj = value;
+                    var p = obj['value'];
+                    if (!anthome) {
+                        anthome = AndroidEnv.guessAntHome(p);
+                    }
+                    _this.verifySDKPath({ anthome: anthome, sdkroot: p }, function (err) {
+                        if (err) {
+                            callback(err);
+                            return;
+                        }
+                        _this.sdkPath = obj['value'];
+                        _this.antHome = anthome;
+                        callback(null);
+                    });
+                });
             }
-            var obj = value;
-            var p = obj['value'];
-            _this.verifySDKPath(p, function (err) {
-                if (err) {
-                    cb(null);
-                    return;
-                }
-                _this.sdkPath = obj['value'];
-                cb(null);
-            });
+        ];
+        async.waterfall(funcs, function (err) {
+            console.log(err);
+
+            // hide all error here, check the valid later
+            return cb(null);
         });
     };
 
@@ -123,11 +152,38 @@ var AndroidEnv = (function () {
             this._sdkPath = p;
             this.androidBin = AndroidEnv.getAndroidBin(p);
             this.db.set('env', 'sdkpath', { value: p });
+            //this.antHome = AndroidEnv.guessAntHome(p);
         },
         enumerable: true,
         configurable: true
     });
 
+
+    AndroidEnv.guessAntHome = function (p) {
+        var pluginPath = pathLib.normalize(pathLib.join(p, '..', 'eclipse', 'plugins'));
+        var res = /org\.apache\.ant_/;
+        if (!fs.existsSync(pluginPath)) {
+            return null;
+        }
+        var antEntry = fs.readdirSync(pluginPath).filter(function (e) {
+            return !!res.exec(e);
+        });
+        if (antEntry.length == 0) {
+            return null;
+        }
+        for (var i = 0; i < antEntry.length; ++i) {
+            var antHome = pathLib.join(pluginPath, antEntry[i]);
+            if (AndroidEnv.verifyAntHome(antHome)) {
+                console.log("guess ANT_HOME: " + antHome);
+                return antHome;
+            }
+        }
+        return null;
+    };
+
+    AndroidEnv.verifyAntHome = function (p) {
+        return fs.existsSync(pathLib.join(p, 'bin', 'ant')) || fs.existsSync(pathLib.join(p, 'bin', 'ant.bat'));
+    };
 
     AndroidEnv.getAndroidBin = function (p) {
         var s = '';
@@ -139,8 +195,12 @@ var AndroidEnv = (function () {
         return s;
     };
 
-    AndroidEnv.prototype.verifySDKPath = function (p, cb) {
-        var androidBin = AndroidEnv.getAndroidBin(p);
+    AndroidEnv.prototype.verifySDKPath = function (initEnv, cb) {
+        if (!initEnv.anthome || !AndroidEnv.verifyAntHome(initEnv.anthome)) {
+            setImmediate(cb, new ChameleonError(2 /* SDK_PATH_ILLEGAL */, '非法的ANT HOME路径'));
+            return;
+        }
+        var androidBin = AndroidEnv.getAndroidBin(initEnv.sdkroot);
         childprocess.execFile(androidBin, ['list', 'target'], { timeout: 30000 }, function (err, stdout, stderr) {
             if (err) {
                 cb(new ChameleonError(2 /* SDK_PATH_ILLEGAL */, '非法的Android SDK路径，请确保路径在sdk路径下'));
@@ -1115,6 +1175,10 @@ var ChameleonTool = (function () {
         return pathLib.join(ChameleonTool.getUserPath(), '.prj_chameleon');
     };
 
+    ChameleonTool.prototype.guessAntHome = function (sdkroot) {
+        return AndroidEnv.guessAntHome(sdkroot);
+    };
+
     ChameleonTool.prototype.getChannelList = function () {
         return this.infoObj.getChannelMetaInfos();
     };
@@ -1139,14 +1203,32 @@ var ChameleonTool = (function () {
         return this.infoObj.getChannelMetaInfos();
     };
 
-    ChameleonTool.prototype.setAndroidPath = function (path, cb) {
+    Object.defineProperty(ChameleonTool.prototype, "sdkPath", {
+        get: function () {
+            return this.androidEnv._sdkPath;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(ChameleonTool.prototype, "antHome", {
+        get: function () {
+            return this.androidEnv.antHome;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    ChameleonTool.prototype.setAndroidPath = function (initEnv, cb) {
         var _this = this;
-        this.androidEnv.verifySDKPath(path, function (err) {
+        this.androidEnv.verifySDKPath(initEnv, function (err) {
             if (err) {
-                cb(new ChameleonError(2 /* SDK_PATH_ILLEGAL */, path + "路径之下无法找到Android SDK"));
+                cb(new ChameleonError(2 /* SDK_PATH_ILLEGAL */, initEnv.sdkroot + "路径之下无法找到Android SDK"));
                 return;
             }
-            _this.androidEnv.sdkPath = path;
+            _this.androidEnv.sdkPath = initEnv.sdkroot;
+            _this.androidEnv.antHome = initEnv.anthome;
+            _this.db.set('env', 'anthome', initEnv.anthome);
             cb(null);
         });
     };
