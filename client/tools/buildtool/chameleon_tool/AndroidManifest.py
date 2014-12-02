@@ -252,7 +252,7 @@ def replaceNodeAttr(node, cfg):
         c = o.group(1)
         if cfg.get(c) is None:
             return c
-        return cfg.get(c)
+        return unicode(cfg.get(c))
     if len(replaceVal) != 0:
         replaceVal = parseReplaceVal(replaceVal)
         for name, val in replaceVal:

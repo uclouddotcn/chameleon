@@ -98,6 +98,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         }
     };
 
+    ProjectMgr.prototype.guessAntHome = function (p) {
+        return this.chtool.guessAntHome(p);
+    }
+
     ProjectMgr.prototype.doRunCmd = function (cmd, params, logfile, timeout, callback) {
         if (typeof timeof === 'function') {
             callback = timeout;
@@ -105,7 +109,8 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         }
         var proc = this.spawn(cmd, params, {
             env: {
-                'ANDROID_HOME': this.sdkPath
+                'ANDROID_HOME': this.chtool.sdkPath,
+                'ANT_HOME': this.chtool.antHome
             }
         });
         if (logfile) {
@@ -143,7 +148,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         var buildscript = this.pathLib.join(this.chtool.chameleonPath, 'tools', 'buildtool', 'chameleon_build.py');
         var inputParams = [buildscript, 'build', project.__doc.path, 'release', target];
         var logfile = this.getTempFile(project, "compile_"+target);
-        this.doRunCmd('python', inputParams, logfile, 20*60, function (error) {
+        this.doRunCmd('python', inputParams, logfile, 40*60, function (error) {
                 var compileResult = null;
                 if (error) {
                     compileResult = {
@@ -360,15 +365,14 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         return defered.promise;
     };
 
-    ProjectMgr.prototype.setAndroidPath = function (path) {
+    ProjectMgr.prototype.setAndroidPath = function (initEnv) {
         var defered = $q.defer();
         var self = this;
-        this.chtool.androidEnv.verifySDKPath(path, function (err) {
+        this.chtool.setAndroidPath(initEnv, function (err) {
             if (err) {
                 defered.reject(err);
                 return;
             }
-            self.chtool.androidEnv.sdkPath = path;
             defered.resolve();
         });
         return defered.promise;

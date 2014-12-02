@@ -22,7 +22,7 @@ import android.content.Intent;
 
     @Override
     public void onPause() {
-        super.onResume();
+        super.onPause();
         NativeChannelInterface.onPause();
     }
 
@@ -59,8 +59,8 @@ import android.content.Intent;
     	Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);
     	glSurfaceView.setEGLConfigChooser(5, 6, 5, 0, 16, 8);
 
-        NativeChannelInterface.init(this, true, glSurfaceView);
-
+		// 设置运行环境
+        NativeChannelInterface.setRunningEnv(this, glSurfaceView);
     	return glSurfaceView;
     }
 
