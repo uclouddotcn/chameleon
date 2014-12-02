@@ -107,11 +107,11 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             callback = timeout;
             timeout = 60; //default one minute
         }
+        var env = process.env;
+        env['ANDROID_HOME'] = this.chtool.sdkPath;
+        env['ANT_HOME'] = this.chtool.sdkPath;
         var proc = this.spawn(cmd, params, {
-            env: {
-                'ANDROID_HOME': this.chtool.sdkPath,
-                'ANT_HOME': this.chtool.antHome
-            }
+            env: env
         });
         if (logfile) {
             var logstream = fs.createWriteStream(logfile);
