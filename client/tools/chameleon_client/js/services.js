@@ -109,7 +109,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         }
         var env = process.env;
         env['ANDROID_HOME'] = this.chtool.sdkPath;
-        env['ANT_HOME'] = this.chtool.sdkPath;
+        env['ANT_HOME'] = this.chtool.antHome;
         var proc = this.spawn(cmd, params, {
             env: env
         });
@@ -140,7 +140,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 proc.stderr.unpipe(logstream);
                 logstream.end();
             }
-        })
+        });
+        proc.on('error', function (e) {
+            callback(e);
+        });
     };
 
     ProjectMgr.prototype.compileProject = function(project, target) {
