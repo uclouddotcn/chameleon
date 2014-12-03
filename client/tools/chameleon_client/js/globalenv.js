@@ -22,6 +22,6 @@ module.exports.createProjectTmpFile = function (projectid, name) {
     var p = createProjectFolder(projectid);
     var filep = pathLib.join(p, name);
     return filep;
-}
+};
 
 
