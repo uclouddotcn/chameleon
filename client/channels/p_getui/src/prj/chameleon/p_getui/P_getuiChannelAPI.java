@@ -16,12 +16,12 @@ public final class P_getuiChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
 
     @Override
     public void enablePush(Activity activity) {
-        PushManager.getInstance().turnOnPush(activity);
+        PushManager.getInstance().turnOnPush(activity.getApplicationContext());
     }
 
     @Override
     public void disablePush(Activity activity) {
-        PushManager.getInstance().turnOffPush(activity);
+        PushManager.getInstance().turnOffPush(activity.getApplicationContext());
     }
 
     @Override
@@ -65,7 +65,7 @@ public final class P_getuiChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
         int duration = 0 ;
         if (endHour >= startHour)
             duration = endHour - startHour;
-        PushManager.getInstance().setSilentTime(activity, startHour, duration);
+        PushManager.getInstance().setSilentTime(activity.getApplicationContext(), startHour, duration);
     }
 
     @Override
