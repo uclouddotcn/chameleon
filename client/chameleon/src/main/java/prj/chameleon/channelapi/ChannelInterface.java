@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *  ChannelInterface is the only interface for client to use
@@ -404,6 +405,85 @@ public class ChannelInterface {
         _plugins.onActivityResult(activity, requestCode, resultCode, data);
     }
 
+
+    //push
+
+    /**
+     * enable push
+     * @param activity
+     */
+    public static void enablePush(Activity activity){
+        _plugins.mPushApi.enablePush(activity);
+    }
+
+    /**
+     * disable push
+     * @param activity
+     */
+    public static void disablePush(Activity activity){
+        _plugins.mPushApi.disablePush(activity);
+    }
+
+    /**
+     * resume push
+     * @param activity
+     */
+    public static void resumePush(Activity activity){
+        _plugins.mPushApi.resumePush(activity);
+    }
+
+
+    /**
+     * set tags
+     * @param activity activity
+     * @param tags Tags list to be set
+     * @param cb callback
+     */
+    public static void setTags(Activity activity, List<String> tags, IDispatcherCb cb){
+        _plugins.mPushApi.setTags(activity, tags, cb);
+    }
+
+    /**
+     * get tags
+     * @param activity activity
+     * @param cb callback
+     * @return Tags list
+     */
+    public static void getTags(Activity activity, IDispatcherCb cb){
+        _plugins.mPushApi.getTags(activity, cb);
+    }
+
+    /**
+     * delete tags
+     * @param activity activity
+     * @param tags Tags list to be delete
+     * @param cb callback
+     */
+    public static void delTags(Activity activity, List<String> tags, IDispatcherCb cb){
+        _plugins.mPushApi.delTags(activity, tags, cb);
+    }
+
+
+    /**
+     * enable debug Mode
+     * @param debugEnable whether to enable debug mode
+     */
+    public static void enableDebugMode(boolean debugEnable){
+        _plugins.mPushApi.enableDebugMode(debugEnable);
+    }
+
+    /**
+     * set no disturb mode
+     * @param startHour start hour
+     * @param startMinute start minute
+     * @param endHour end hour
+     * @param endMinute end minute
+     */
+    public static void setNoDisturbMode(int startHour, int startMinute, int endHour, int endMinute){
+        _plugins.mPushApi.setNoDisturbMode(startHour, startMinute, endHour, endMinute);
+    }
+
+
     /**
      *  the channel implementation for current package
      */
@@ -411,6 +491,7 @@ public class ChannelInterface {
         private ArrayList<APIGroup> mApiGroups = new ArrayList<APIGroup>();
         private IChannelUserAPI mUserApi;
         private IChannelPayAPI mPayApi;
+        private IChannelPushAPI mPushApi;
         private String mChannelName;
         private boolean mInited = false;
 
@@ -550,6 +631,12 @@ public class ChannelInterface {
                     throw new RuntimeException("pay api is already registered");
                 }
                 mPayApi = (IChannelPayAPI) group.getApi();
+            }
+            if (group.testType(Constants.PluginType.PUSH_API)) {
+                if (mPushApi != null) {
+                    throw new RuntimeException("push api is already registered");
+                }
+                mPushApi = (IChannelPushAPI) group.getApi();
             }
             mApiGroups.add(group);
         }
