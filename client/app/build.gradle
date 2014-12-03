@@ -50,10 +50,21 @@ android {
 
         }
         qqmsdk {
+            applicationId "com.tencent.tmgp.sanguofire"
         }
         anzhi {
 
         }
+        huawei {
+
+        }
+        meizu {
+
+        }
+        gfan {
+
+        }
+
     }
 
     // generate productFlavors according to the setting of productFlavor.json
@@ -87,6 +98,9 @@ dependencies {
     oppoCompile project(':channels:oppo')
     dangleCompile project(':channels:dangle')
     anzhiCompile project(':channels:anzhi')
+    huaweiCompile project(':channels:huawei')
+    meizuCompile project(':channels:meizu')
+    gfanCompile project(':channels:gfan')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
