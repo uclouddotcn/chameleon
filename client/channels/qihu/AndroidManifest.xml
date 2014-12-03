@@ -98,10 +98,10 @@
             android:process=":QLocal" >
         </service>
 
-        <meta-data android:name="QHOPENSDK_APPID" android:value="201392056" chameleon:replace="android:value=${appId}"/>
-        <meta-data android:name="QHOPENSDK_APPKEY" android:value="21e398e6d73b83aba8cb2fce1d4ca71b"  chameleon:replace="android:value=${appKey}"/>
-        <meta-data android:name="QHOPENSDK_PRIVATEKEY" android:value="8aa53aaca2febbb059fccb4a1abc88a1"  chameleon:replace="android:value=${appPrivateKey}"/>
-        <meta-data android:name="QHOPENSDK_CHANNEL" android:value="default" chameleon:replace="android:value=${channel}"/>
+        <meta-data android:name="QHOPENSDK_APPID" android:value="201392056" chameleon:replace="android:value=%appId%"/>
+        <meta-data android:name="QHOPENSDK_APPKEY" android:value="21e398e6d73b83aba8cb2fce1d4ca71b"  chameleon:replace="android:value=%appKey%"/>
+        <meta-data android:name="QHOPENSDK_PRIVATEKEY" android:value="8aa53aaca2febbb059fccb4a1abc88a1"  chameleon:replace="android:value=%appPrivateKey%"/>
+        <meta-data android:name="QHOPENSDK_CHANNEL" android:value="default" chameleon:replace="android:value=%channel%"/>
     </application>
 
 

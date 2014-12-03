@@ -91,7 +91,7 @@ bool HelloWorld::init()
     } else {
         mVecHandles.push_back(handle);
     }
-
+    g_userAccountMgr.Init();
     return true;
 }
 

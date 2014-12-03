@@ -2,6 +2,7 @@ package prj.chameleon.channelapi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -20,7 +21,7 @@ public class ChannelInterface {
      * init the SDK
      * @param activity the activity to give the real SDK
      *
-     * @deprecated @param isDebug (deprecated) whether set sdk to debug mode
+     * @param isDebug (deprecated) whether set sdk to debug mode
      * @param cb callback function when the request is finished, the JSON object is null
      */
 	public static void init(final Activity activity,
@@ -29,6 +30,22 @@ public class ChannelInterface {
         Log.d(Constants.TAG, "on init from channel interface");
         _plugins.init(activity, cb);
 	}
+
+    /**
+     * test if in debug mode
+     * @return {boolean}, whether in debug mode
+     */
+    public static boolean isDebug() {
+        return isDebug;
+    }
+
+    /**
+     * set debug mode
+     * @param debug if debug mode
+     */
+    public static void setDebug(boolean debug) {
+        isDebug = debug;
+    }
 
     /**
      * get channel user id
@@ -241,7 +258,7 @@ public class ChannelInterface {
      * @param cb JSON object will be null
      */
     public static void onResume(Activity activity, IDispatcherCb cb) {
-        _plugins.mUserApi.onResume(activity, cb);
+        _plugins.onResume(activity, cb);
     }
 
     /**
@@ -249,7 +266,7 @@ public class ChannelInterface {
      * @param activity the activity to give the real SDK
      */
     public static void onPause(Activity activity) {
-        _plugins.mUserApi.onPause(activity);
+        _plugins.onPause(activity);
     }
 
     /**
@@ -395,8 +412,13 @@ public class ChannelInterface {
         private IChannelUserAPI mUserApi;
         private IChannelPayAPI mPayApi;
         private String mChannelName;
+        private boolean mInited = false;
 
         public void onResume(final Activity activity, final IDispatcherCb cb) {
+            if (!mInited) {
+                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                return;
+            }
             final Iterator<APIGroup> iterator = mApiGroups.iterator();
             final Runnable initProc = new Runnable() {
                 @Override
@@ -422,6 +444,9 @@ public class ChannelInterface {
         }
 
         public void onPause(Activity activity) {
+            if (!mInited) {
+                return;
+            }
             for (APIGroup group : mApiGroups) {
                 group.onPause(activity);
             }
@@ -431,6 +456,7 @@ public class ChannelInterface {
             for (APIGroup group : mApiGroups) {
                 group.onDestroy(activity);
             }
+            mInited = false;
         }
 
         public void init(final Activity activity, final IDispatcherCb cb) {
@@ -439,6 +465,7 @@ public class ChannelInterface {
                 @Override
                 public void run() {
                     if (!iterator.hasNext()) {
+                        mInited = true;
                         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                         return;
                     }
@@ -459,6 +486,9 @@ public class ChannelInterface {
         }
 
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+            if (!mInited) {
+                return;
+            }
             for (APIGroup group : mApiGroups) {
                 group.onActivityResult(activity, requestCode, resultCode, data);
             }
@@ -533,18 +563,27 @@ public class ChannelInterface {
         }
 
         public void onStart(Activity activity) {
+            if (!mInited) {
+                return;
+            }
             for (APIGroup group : mApiGroups) {
                 group.onStart(activity);
             }
         }
 
         public void onStop(Activity activity) {
+            if (!mInited) {
+                return;
+            }
             for (APIGroup group : mApiGroups) {
                 group.onStop(activity);
             }
         }
 
         public void onNewIntent(Activity activity, Intent intent) {
+            if (!mInited) {
+                return;
+            }
             for (APIGroup group : mApiGroups) {
                 group.onNewIntent(activity, intent);
             }
@@ -552,6 +591,7 @@ public class ChannelInterface {
     }
     private static Plugins _plugins = new Plugins();
     private static boolean isToobarCreated = false;
+    private static boolean isDebug = false;
 
     public static void addApiGroup(APIGroup apiGroup) {
         _plugins.addApiGroup(apiGroup);

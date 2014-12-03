@@ -91,7 +91,6 @@ const string DEV_URL("http://118.192.73.182:7900/");
 UserAccountMgr::UserAccountMgr():
 mLoginStatus(LOGOUT), mIsToolbarCreated(false) {
     mEventEmitter.Init(EVENT_COUNT);
-    ChameleonChannelAPI::registCallback(this);
     mCmdSeq = rand() % 10000;
     mPlayerEventHandlers["charge"] = 
       std::bind(&UserAccountMgr::onRespondChargeEvent, 
@@ -104,7 +103,11 @@ mLoginStatus(LOGOUT), mIsToolbarCreated(false) {
 }
 
 UserAccountMgr::~UserAccountMgr() {
-    ChameleonChannelAPI::registCallback(NULL);
+    ChameleonChannelAPI::unregisterCallback();
+}
+
+int UserAccountMgr::Init() {
+    ChameleonChannelAPI::init(this);
 }
 
 void UserAccountMgr::onRespondChargeEvent(rapidjson::Value& value) {
@@ -697,6 +700,15 @@ void UserAccountMgr::sendSDKBuy(UserAccountMgr::BuyInfo* info) {
     } else {
         CCLog("Fail to request buy %d", ret);
         return;
+    }
+}
+void UserAccountMgr::onInited(int ret, bool debug) {
+    CCLog("on inited from chameleon %d", ret);
+    if (ret != Chameleon::CHAMELEON_ERR_OK) {
+        // init fails
+        return;
+    } else {
+        g_userAccountMgr.Login();
     }
 }
 

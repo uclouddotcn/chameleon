@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     prj_chameleon_channelapi_cbinding_ChannelAPINative
  * Method:    init
- * Signature: (Z[B)V
+ * Signature: (IZ[B)V
  */
 JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_init
-  (JNIEnv *, jclass, jboolean, jbyteArray);
+  (JNIEnv *, jclass, jint, jboolean, jbyteArray);
 
 /*
  * Class:     prj_chameleon_channelapi_cbinding_ChannelAPINative

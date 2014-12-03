@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../buildscript/Resource/chameleon/tools')
+sys.path.append('../buildtool/chameleon_tool')
 #sys.path.append('../buildscript/ChameleonTool/')
 
 import xml.dom.minidom as xml
@@ -89,7 +89,7 @@ class TestAndroidManifest(unittest.TestCase):
                     self.assertEqual(1, len(ts))
                     t = ts[0]
                     self.assertEqual(t.getAttribute('android:scheme'), 
-                            'Wandoujia-PaySdk-replaceAppId')
+                            'Wandoujia-PaySdk-replaceAppId-landscape')
                     result[1] = True
                 if n.getAttribute('android:name') == 'MarioAccountActivity':
                     self.assertEqual(n.getAttribute('android:configChanges'),
