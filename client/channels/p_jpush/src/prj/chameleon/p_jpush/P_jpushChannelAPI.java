@@ -1,5 +1,8 @@
 package prj.chameleon.p_jpush;
 import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
+import android.os.Bundle;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -10,16 +13,16 @@ import java.util.regex.Pattern;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
 public final class P_jpushChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
 
-    @Override
-    public void init(Activity activity, IDispatcherCb cb) {
-        JPushInterface.init(activity);     		// 初始化 JPush
-        JPushInterface.stopPush(activity);      //默认启动  这里把它关闭掉
+    private boolean debugEnable = false;
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
+        debugEnable = cfg.getBoolean("debug");
     }
 
     @Override
@@ -33,13 +36,8 @@ public final class P_jpushChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
     }
 
     @Override
-    public void resumePush(Activity activity) {
-        JPushInterface.resumePush(activity.getApplicationContext());
-    }
-
-    @Override
-    public void addAlias(Activity activity, String alias, final IDispatcherCb cb) {
-        JPushInterface.setAlias(activity.getApplicationContext(), alias, new TagAliasCallback(){
+    public void addAlias(Activity activity, String alias, String type, final IDispatcherCb cb) {
+        JPushInterface.setAlias(activity.getApplicationContext(), alias+type, new TagAliasCallback(){
             @Override
             public void gotResult(int code, String s, Set<String> strings) {
                 if (code == 0){
@@ -52,8 +50,8 @@ public final class P_jpushChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
     }
 
     @Override
-    public void removeAlias(Activity activity, String alias, IDispatcherCb cb) {
-
+    public void removeAlias(Activity activity, String alias, String type, IDispatcherCb cb) {
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
@@ -79,22 +77,30 @@ public final class P_jpushChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
 
     @Override
     public void getTags(Activity activity, IDispatcherCb cb) {
-
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
     public void delTags(Activity activity, List<String> tags, IDispatcherCb cb) {
-
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
-    public void enableDebugMode(Activity activity, boolean debugEnable) {
-        JPushInterface.setDebugMode(debugEnable); 	// 设置开启日志,发布时请关闭日志
+    public void setNoDisturbMode(Activity activity, int startHour, int endHour) {
+        JPushInterface.setSilenceTime(activity.getApplicationContext(), startHour, 0, endHour, 0);
     }
 
     @Override
-    public void setNoDisturbMode(Activity activity, int startHour, int startMinute, int endHour, int endMinute) {
-        JPushInterface.setSilenceTime(activity.getApplicationContext(), startHour, startMinute, endHour, endMinute);
+    public void onApplicationEvent(int event, Object... arguments) {
+        switch (event) {
+            case Constants.ApplicationEvent.AFTER_ON_CREATE:
+                Application app = (Application) arguments[0];
+                JPushInterface.setDebugMode(debugEnable); 	// 设置开启日志,发布时请关闭日志
+                JPushInterface.init(app);     		// 初始化 JPush
+                JPushInterface.stopPush(app);      //默认启动  这里把它关闭掉
+                break;
+        }
+
     }
 
     // 校验Tag Alias 只能是数字,英文字母和中文
@@ -103,4 +109,5 @@ public final class P_jpushChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
         Matcher m = p.matcher(s);
         return m.matches();
     }
+
 }

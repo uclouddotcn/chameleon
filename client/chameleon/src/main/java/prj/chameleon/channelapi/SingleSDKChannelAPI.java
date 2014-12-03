@@ -179,8 +179,13 @@ public class SingleSDKChannelAPI {
     public static abstract class SinglePushSDK implements IChannelPushAPI{
 
         @Override
-        public void onResume(Activity activity, IDispatcherCb cb) {
+        public void init(Activity activity, IDispatcherCb cb) {
+            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        }
 
+        @Override
+        public void onResume(Activity activity, IDispatcherCb cb) {
+            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
         }
 
         @Override
@@ -190,11 +195,6 @@ public class SingleSDKChannelAPI {
 
         @Override
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-
-        }
-
-        @Override
-        public void onApplicationEvent(int event, Object... arguments) {
 
         }
 
@@ -220,7 +220,7 @@ public class SingleSDKChannelAPI {
 
         @Override
         public void exit(Activity activity, IDispatcherCb cb) {
-
+            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
         }
     }
 }

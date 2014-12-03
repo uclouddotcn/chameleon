@@ -1,5 +1,6 @@
 package prj.chameleon.p_getui;
 import android.app.Activity;
+import android.app.Application;
 
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
@@ -14,11 +15,6 @@ import prj.chameleon.channelapi.SingleSDKChannelAPI;
 public final class P_getuiChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
 
     @Override
-    public void init(Activity activity, IDispatcherCb cb) {
-        PushManager.getInstance().initialize(activity);
-    }
-
-    @Override
     public void enablePush(Activity activity) {
         PushManager.getInstance().turnOnPush(activity);
     }
@@ -29,18 +25,13 @@ public final class P_getuiChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
     }
 
     @Override
-    public void resumePush(Activity activity) {
-        PushManager.getInstance().turnOnPush(activity);
+    public void addAlias(Activity activity, String alias, String type, IDispatcherCb cb) {
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
-    public void addAlias(Activity activity, String alias, IDispatcherCb cb) {
-
-    }
-
-    @Override
-    public void removeAlias(Activity activity, String alias, IDispatcherCb cb) {
-
+    public void removeAlias(Activity activity, String alias, String type, IDispatcherCb cb) {
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
@@ -61,25 +52,29 @@ public final class P_getuiChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
 
     @Override
     public void getTags(Activity activity, IDispatcherCb cb) {
-
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
     public void delTags(Activity activity, List<String> tags, IDispatcherCb cb) {
-
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
-    public void enableDebugMode(Activity activity, boolean debugEnable) {
-
-    }
-
-    @Override
-    public void setNoDisturbMode(Activity activity, int startHour, int startMinute, int endHour, int endMinute) {
+    public void setNoDisturbMode(Activity activity, int startHour, int endHour) {
         int duration = 0 ;
         if (endHour >= startHour)
             duration = endHour - startHour;
         PushManager.getInstance().setSilentTime(activity, startHour, duration);
     }
 
+    @Override
+    public void onApplicationEvent(int event, Object... arguments) {
+        switch (event) {
+            case Constants.ApplicationEvent.AFTER_ON_CREATE:
+                Application app = (Application) arguments[0];
+                PushManager.getInstance().initialize(app);
+                break;
+        }
+    }
 }

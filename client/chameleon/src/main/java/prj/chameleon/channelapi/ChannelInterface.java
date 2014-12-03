@@ -409,97 +409,77 @@ public class ChannelInterface {
     //push
 
     /**
-     * enable push
-     * @param activity
+     * enable push 开启推送服务
+     * @param activity activity
      */
     public static void enablePush(Activity activity){
         _plugins.mPushApi.enablePush(activity);
     }
 
     /**
-     * disable push
-     * @param activity
+     * disable push 关闭推送服务
+     * @param activity activity
      */
     public static void disablePush(Activity activity){
         _plugins.mPushApi.disablePush(activity);
     }
 
     /**
-     * resume push
-     * @param activity
-     */
-    public static void resumePush(Activity activity){
-        _plugins.mPushApi.resumePush(activity);
-    }
-
-    /**
-     * add alias
-     * @param activity
-     * @param alias
-     * @param cb
-     */
-    public static void addAlias(Activity activity, String alias, IDispatcherCb cb){
-        _plugins.mPushApi.addAlias(activity, alias, cb);
-    }
-
-    /**
-     * remove alias
-     * @param activity
-     * @param alias
-     * @param cb
-     */
-    public static void removeAlias(Activity activity, String alias, IDispatcherCb cb){
-        _plugins.mPushApi.removeAlias(activity, alias, cb);
-    }
-
-    /**
-     * set tags
+     * add alias 添加别名
      * @param activity activity
-     * @param tags Tags list to be set
-     * @param cb callback
+     * @param alias 别名
+     * @param cb 回调函数 是否成功
+     */
+    public static void addAlias(Activity activity, String alias, String type, IDispatcherCb cb){
+        _plugins.mPushApi.addAlias(activity, alias, type, cb);
+    }
+
+    /**
+     * remove alias 删除别名
+     * @param activity activity
+     * @param alias 要删除的别名
+     * @param cb callback 回调函数 是否成功
+     */
+    public static void removeAlias(Activity activity, String alias, String type, IDispatcherCb cb){
+        _plugins.mPushApi.removeAlias(activity, alias, type, cb);
+    }
+
+    /**
+     * set tags 设置标签 可多个
+     * @param activity activity
+     * @param tags Tags list to be set 要设置的标签list
+     * @param cb callback 回调函数 是否成功
      */
     public static void setTags(Activity activity, List<String> tags, IDispatcherCb cb){
         _plugins.mPushApi.setTags(activity, tags, cb);
     }
 
     /**
-     * get tags
+     * get tags 获取所有标签list
      * @param activity activity
-     * @param cb callback
-     * @return Tags list
+     * @param cb callback 回调函数 返回的标签列表会在回调函数中以json串的方式返回
      */
     public static void getTags(Activity activity, IDispatcherCb cb){
         _plugins.mPushApi.getTags(activity, cb);
     }
 
     /**
-     * delete tags
+     * delete tags 删除标签
      * @param activity activity
-     * @param tags Tags list to be delete
-     * @param cb callback
+     * @param tags Tags list to be delete 要删除的标签列表
+     * @param cb callback 回调函数 是否成功
      */
     public static void delTags(Activity activity, List<String> tags, IDispatcherCb cb){
         _plugins.mPushApi.delTags(activity, tags, cb);
     }
 
-
     /**
-     * enable debug Mode
-     * @param debugEnable whether to enable debug mode
+     * set no disturb mode 设置免打扰时间
+     * @param startHour start hour 开始时间 单位：小时，范围：[0-23]
+     * @param endHour end hour 结束时间 单位：小时，范围：[0-23]
      */
-    public static void enableDebugMode(Activity activity, boolean debugEnable){
-        _plugins.mPushApi.enableDebugMode(activity, debugEnable);
-    }
-
-    /**
-     * set no disturb mode
-     * @param startHour start hour
-     * @param startMinute start minute
-     * @param endHour end hour
-     * @param endMinute end minute
-     */
-    public static void setNoDisturbMode(Activity activity, int startHour, int startMinute, int endHour, int endMinute){
-        _plugins.mPushApi.setNoDisturbMode(activity, startHour, startMinute, endHour, endMinute);
+    public static void setNoDisturbMode(Activity activity, int startHour, int endHour){
+        _plugins.mPushApi.setNoDisturbMode(activity, startHour, endHour);
     }
 
 

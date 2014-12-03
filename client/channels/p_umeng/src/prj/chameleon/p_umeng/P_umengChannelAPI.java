@@ -1,5 +1,7 @@
 package prj.chameleon.p_umeng;
 import android.app.Activity;
+import android.app.Application;
+import android.os.Bundle;
 
 import com.umeng.message.ALIAS_TYPE;
 import com.umeng.message.PushAgent;
@@ -9,15 +11,16 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
 public final class P_umengChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
 
-    @Override
-    public void init(Activity activity, IDispatcherCb cb) {
-
+    private boolean debugEnable = false;
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
+        debugEnable = cfg.getBoolean("debug");
     }
 
     @Override
@@ -31,14 +34,9 @@ public final class P_umengChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
     }
 
     @Override
-    public void resumePush(Activity activity) {
-        PushAgent.getInstance(activity).enable();
-    }
-
-    @Override
-    public void addAlias(Activity activity, String alias, IDispatcherCb cb) {
+    public void addAlias(Activity activity, String alias, String type, IDispatcherCb cb) {
         try {
-            PushAgent.getInstance(activity).addAlias(alias, "chameleon");
+            PushAgent.getInstance(activity).addAlias(alias, type);
             cb.onFinished(Constants.ErrorCode.ERR_OK, null);
         } catch (JSONException e) {
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
@@ -46,9 +44,9 @@ public final class P_umengChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
     }
 
     @Override
-    public void removeAlias(Activity activity, String alias, IDispatcherCb cb) {
+    public void removeAlias(Activity activity, String alias, String type, IDispatcherCb cb) {
         try {
-            PushAgent.getInstance(activity).removeAlias(alias, "chameleon");
+            PushAgent.getInstance(activity).removeAlias(alias, type);
             cb.onFinished(Constants.ErrorCode.ERR_OK, null);
         } catch (JSONException e) {
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
@@ -93,13 +91,18 @@ public final class P_umengChannelAPI extends SingleSDKChannelAPI.SinglePushSDK {
     }
 
     @Override
-    public void enableDebugMode(Activity activity, boolean debugEnable) {
-        PushAgent.getInstance(activity).setDebugMode(debugEnable);
+    public void setNoDisturbMode(Activity activity, int startHour, int endHour) {
+        PushAgent.getInstance(activity).setNoDisturbMode(startHour, 0, endHour, 0);
     }
 
     @Override
-    public void setNoDisturbMode(Activity activity, int startHour, int startMinute, int endHour, int endMinute) {
-        PushAgent.getInstance(activity).setNoDisturbMode(startHour, startMinute, endHour, endMinute);
-    }
+    public void onApplicationEvent(int event, Object... arguments) {
+        switch (event) {
+            case Constants.ApplicationEvent.AFTER_ON_CREATE:
+                Application app = (Application) arguments[0];
+                PushAgent.getInstance(app).setDebugMode(debugEnable);
+                break;
+        }
 
+    }
 }

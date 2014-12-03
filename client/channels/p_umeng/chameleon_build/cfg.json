@@ -15,6 +15,10 @@
         "appchannel" : {
             "type": "string",
             "desc": "app channel id"
+        },
+        "debug" : {
+            "type": "boolean",
+            "desc": "false"
         }
     }
 }

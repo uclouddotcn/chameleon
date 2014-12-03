@@ -7,6 +7,10 @@
         "appkey" : {
             "type": "string",
             "desc": "app key"
+        },
+        "debug" : {
+            "type": "boolean",
+            "desc": "false"
         }
     }
 }
