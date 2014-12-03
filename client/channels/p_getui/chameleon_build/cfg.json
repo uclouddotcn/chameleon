@@ -1,0 +1,28 @@
+{
+    "desc": "个推",
+    "name": "p_getui",
+    "chamversion": "1.3.0",
+    "version": "V2.3.0.0",
+    "cfgitem": {
+        "appid" : {
+            "type": "string",
+            "desc": "app id"
+        },
+
+        "appkey" : {
+            "type": "string",
+            "desc": "app key"
+        },
+
+        "appsecret" : {
+            "type": "string",
+            "desc": "app secret"
+        },
+
+        "groupid" : {
+            "type": "string",
+            "desc": "group id"
+        }
+    }
+}
+

@@ -7,6 +7,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class SingleSDKChannelAPI {
     public static abstract class SingleSDK implements IChannelPayAPI, IChannelUserAPI {
         protected String mChannel;
@@ -170,6 +172,54 @@ public class SingleSDKChannelAPI {
          * @param intent the intent
          */
         public void onNewIntent(Activity activity, Intent intent) {
+
+        }
+    }
+
+    public static abstract class SinglePushSDK implements IChannelPushAPI{
+
+        @Override
+        public void onResume(Activity activity, IDispatcherCb cb) {
+
+        }
+
+        @Override
+        public void onPause(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+
+        }
+
+        @Override
+        public void onApplicationEvent(int event, Object... arguments) {
+
+        }
+
+        @Override
+        public void onDestroy(Activity activity) {
+
+        }
+
+        @Override
+        public void onStart(Activity activity) {
+
+        }
+
+        @Override
+        public void onStop(Activity activity) {
+
+        }
+
+        @Override
+        public void onNewIntent(Activity activity, Intent intent) {
+
+        }
+
+        @Override
+        public void exit(Activity activity, IDispatcherCb cb) {
 
         }
     }

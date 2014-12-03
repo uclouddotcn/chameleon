@@ -432,6 +432,25 @@ public class ChannelInterface {
         _plugins.mPushApi.resumePush(activity);
     }
 
+    /**
+     * add alias
+     * @param activity
+     * @param alias
+     * @param cb
+     */
+    public static void addAlias(Activity activity, String alias, IDispatcherCb cb){
+        _plugins.mPushApi.addAlias(activity, alias, cb);
+    }
+
+    /**
+     * remove alias
+     * @param activity
+     * @param alias
+     * @param cb
+     */
+    public static void removeAlias(Activity activity, String alias, IDispatcherCb cb){
+        _plugins.mPushApi.removeAlias(activity, alias, cb);
+    }
 
     /**
      * set tags
@@ -468,8 +487,8 @@ public class ChannelInterface {
      * enable debug Mode
      * @param debugEnable whether to enable debug mode
      */
-    public static void enableDebugMode(boolean debugEnable){
-        _plugins.mPushApi.enableDebugMode(debugEnable);
+    public static void enableDebugMode(Activity activity, boolean debugEnable){
+        _plugins.mPushApi.enableDebugMode(activity, debugEnable);
     }
 
     /**
@@ -479,8 +498,8 @@ public class ChannelInterface {
      * @param endHour end hour
      * @param endMinute end minute
      */
-    public static void setNoDisturbMode(int startHour, int startMinute, int endHour, int endMinute){
-        _plugins.mPushApi.setNoDisturbMode(startHour, startMinute, endHour, endMinute);
+    public static void setNoDisturbMode(Activity activity, int startHour, int startMinute, int endHour, int endMinute){
+        _plugins.mPushApi.setNoDisturbMode(activity, startHour, startMinute, endHour, endMinute);
     }
 
 

@@ -29,6 +29,22 @@ public interface IChannelPushAPI extends IAPIBase {
     public void resumePush(Activity activity);
 
 
+    //Alias
+
+    /**
+     * add alias
+     * @param alias
+     * @param type
+     */
+    public void addAlias(Activity activity, String alias,IDispatcherCb cb);
+
+    /**
+     * remove alias
+     * @param alias
+     * @param type
+     */
+    public void removeAlias(Activity activity, String alias, IDispatcherCb cb);
+
     //tags
 
     /**
@@ -59,15 +75,15 @@ public interface IChannelPushAPI extends IAPIBase {
      * enable debug Mode
      * @param debugEnable whether to enable debug mode
      */
-    public void enableDebugMode(boolean debugEnable);
+    public void enableDebugMode(Activity activity, boolean debugEnable);
 
     /**
      * set no disturb mode
-     * @param startHour start hour
-     * @param startMinute start minute
-     * @param endHour end hour
-     * @param endMinute end minute
+     * @param startHour start hour scope[0-23]
+     * @param startMinute start minute scope[0-59]
+     * @param endHour end hour scope[0-23] End time is greater than the start time
+     * @param endMinute end minute scope[0-59]
      */
-    public void setNoDisturbMode(int startHour, int startMinute, int endHour, int endMinute);
+    public void setNoDisturbMode(Activity activity, int startHour, int startMinute, int endHour, int endMinute);
 
 }
