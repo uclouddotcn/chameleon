@@ -288,7 +288,7 @@ def build():
     print 'build chameleon libs...'
     buildChameleonLib(chameleonTarget)
     print 'build chameleon client...'
-    #mergeToNodewebkit(targetFolder)
+    mergeToNodewebkit(targetFolder)
     print 'done'
 
 build()
