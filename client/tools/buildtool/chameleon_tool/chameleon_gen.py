@@ -6,7 +6,7 @@ from AndroidManifest import AndroidManifestInst
 def error(s):
     print >> sys.stderr, s
 
-def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath):
+def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg):
     projectJsonPath = os.path.join('chameleon', 'channels', channel, 
             'project.json')
     with codecs.open(projectJsonPath, 'r') as f:
@@ -25,8 +25,12 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath):
         manifestInst.setPkgName(pkgname)
     mergeLibManifests(libs, manifestInst)
     manifestInst.replace({'channel': channel})
+    if globalcfg['blandscape']:
+        orientation = 'landscape'
+    else:
+        orientation = 'portrait'
     if sc is not None:
-        manifestInst.replaceEntryActivity()
+        manifestInst.replaceEntryActivity(orientation)
     if icons is not None:
         manifestInst.setIcon('chameleon_icon')
     manifestInst.safeDump(manifestFilePath)
@@ -173,7 +177,7 @@ def main():
     error(pkgName)
     globalcfg = getCommCfg()
     libs = getDependLibs(channel, globalcfg)   
-    modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath) 
+    modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg) 
     genInstantializer(channel, genPath, globalcfg, libs, debug)
 
 sys.exit(main())
