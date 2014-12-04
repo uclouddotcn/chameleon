@@ -1,6 +1,7 @@
 package prj.chameleon.meizu;
 
 import android.app.Activity;
+import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -48,8 +49,18 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
+    public void onApplicationEvent(int event, Object... arguments) {
+        switch (event) {
+            case Constants.ApplicationEvent.AFTER_ON_CREATE:
+                Application app = (Application) arguments[0];
+                MzGameCenterPlatform.init(app, mCfg.mAppID, mCfg.mAppKey);
+                break;
+        }
+    }
+
+    @Override
     public void init(Activity activity, IDispatcherCb cb) {
-        MzGameCenterPlatform.init(activity, mCfg.mAppID, mCfg.mAppKey);
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
@@ -82,7 +93,7 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void logout(Activity activity) {
-        MzGameCenterPlatform.logout(activity);
+        MzGameCenterPlatform.logout(activity.getApplicationContext());
     }
 
     @Override

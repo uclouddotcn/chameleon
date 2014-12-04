@@ -1,0 +1,21 @@
+{
+    "desc": "机锋",
+    "name": "gfan",
+    "chamversion": "1.0",
+    "version": "3.7.0",
+    "enableWrapPackage": 0,
+    "cfgitem": {
+
+        "appKey" : {
+            "type": "string",
+            "desc": "app key"
+        },
+
+        "appCpid": {
+            "type": "string",
+            "desc": "app cpid",
+            "ignoreInA" : 1
+        }
+    }
+}
+
