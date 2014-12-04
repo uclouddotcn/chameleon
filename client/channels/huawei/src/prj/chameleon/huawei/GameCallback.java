@@ -23,12 +23,12 @@ class GameCallback implements IGameCallBack {
 
     @Override
     public void onInitStarted() {
-        mCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        //mCb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
     public void onInitFailed(int errorCode) {
-        mCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        mCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
     }
 
     /**
@@ -36,6 +36,12 @@ class GameCallback implements IGameCallBack {
      */
     @Override
     public void onInitSuccessed() {
+        mCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+    }
+
+    @Override
+    public void onValidFail() {
+
     }
 
     @Override
@@ -100,6 +106,7 @@ class GameCallback implements IGameCallBack {
                     }
                 }).create().show();
 
+        dialog.show();
     }
 
     @Override
