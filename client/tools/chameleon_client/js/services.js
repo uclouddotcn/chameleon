@@ -44,6 +44,24 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         xxxhigh: 'drawable-xxxhdpi'
     };
 
+    function restartApp() {
+        var child_process = require("child_process");
+        var gui = require('nw.gui');
+        gui.Window.get().hide(); // hide window to prevent black display
+        if (process.platform === 'mac') {
+            var child = child_process.spawn('sh', [
+                    pathLib.join(globalenv.APP_FOLDER, 'restart_mac.sh'),
+                    pathLib.normalize(process.execPath+'/../../../../../../'),
+                    '--args' ,
+                    globalenv.APP_FOLDER],
+                {detached: true});
+        } else {
+            var child = child_process.spawn(pathLib.join(globalenv.APP_FOLDER, '..', 'chameleon.bat'), {detached: true});
+        }
+        child.unref();
+        gui.App.quit();  // quit node-webkit app
+    }
+
     var ProjectMgr = function() {
         $log.log('init the env');
         this.exec = require('child_process').execFile;
@@ -83,14 +101,14 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         return defered.promise;
     }
 
-    ProjectMgr.prototype.tryUpgrade = function (err, doc) {
+    ProjectMgr.prototype.tryUpgrade = function () {
         var self = this;
         self.tooldb.findOne({_id: 'lastUpgradeTimestamp'}, function (err, doc) {
             var timestamp = 0;
             if (!err) {
                 timestamp = (doc && doc.timestamp) ?  doc.timestamp : 0;
             }
-            var downloader = new Downloader("http://localhost:8080", self.chtool.version.toString(), globalenv.TEMP_FOLDER);
+            var downloader = new Downloader(self.chtool.updateSvr, self.chtool.version.toString(), globalenv.TEMP_FOLDER);
             downloader.downloadUpdate(timestamp, function (err, updateInfo) {
                 if (err)  {
                     return;
@@ -102,13 +120,13 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                         }
                         var ok = window.confirm("已经准备好更新，是否重启客户端？");
                         if (ok) {
-                            App.restart();
+                            restartApp();
                         }
                     });
                 }
             });
         });
-    }
+    };
 
     ProjectMgr.prototype.removeProject = function(project) {
         this.db.remove({_id: project._id});

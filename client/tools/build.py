@@ -20,6 +20,9 @@ def copyFileInList(srcroot, targetroot, filelist):
 
 ChannelInfo = namedtuple('ChannelInfo', 'name path cfg script')
 
+def archive(p, rootdir, basedir):
+    shutil.make_archive(p, 'zip', rootdir, os.path.relpath(basedir, rootdir))
+
 def loadJsonFile(channelPath):
     cfgJsonFile = os.path.join(channelPath, 'chameleon_build', 'cfg.json')
     with codecs.open(cfgJsonFile, 'r', 'utf8') as f:
@@ -94,6 +97,8 @@ def copyChannel(channel, channelPath, targetPath, versionInfo):
         f.write('\n'.join(relfilelist))
     with codecs.open(os.path.join(targetPath, 'version.json'), 'w', 'utf8') as f:
         json.dump(versionInfo, f, indent=4)
+    archive(targetPath, os.path.join(targetPath, '..'), targetPath)
+    shutil.rmtree(targetPath)
 
 def initTargetScriptFolder(targetScriptFolder):
     if not os.path.exists(targetScriptFolder):
@@ -101,15 +106,15 @@ def initTargetScriptFolder(targetScriptFolder):
 
 def copyChameleonCpp(targetFolder):
     cppTargetFolder = os.path.join(targetFolder, 'Resource', 'chameleon', 'chameleoncb')
-    shutil.copytree(CPP_SRC_ROOT, cppTargetFolder)
+    archive(os.path.join(targetFolder, 'Resource', 'chameleoncb'), os.path.join(CPP_SRC_ROOT, '..'), CPP_SRC_ROOT)
 
 
 # copy channel folders and channel resources, generate build info json
 def initProjectFolder(targetFolder, version):
-    targetChannelPath = os.path.join(targetFolder, 'channels')
-    targetScriptPath = os.path.join(targetFolder, 'ChannelScript')
+    targetSDKPath = os.path.join(targetFolder, 'sdk')
+    targetChannelPath = os.path.join(targetSDKPath, 'libs')
+    targetScriptPath = os.path.join(targetFolder, 'script')
     toolPath = os.path.join(targetFolder, 'tools')
-    chameleonCbPath = os.path.join(targetFolder, 'chameleoncb')
     infoJsonFile = os.path.join(targetFolder, 'info.json')
     channelListFile = os.path.join(CHANNELINFO_DIR, 'channellist.json')
     shutil.copytree(BUILD_SCRIPT_DIR, targetFolder)
@@ -283,7 +288,7 @@ def build():
     print 'build chameleon libs...'
     buildChameleonLib(chameleonTarget)
     print 'build chameleon client...'
-    mergeToNodewebkit(targetFolder)
+    #mergeToNodewebkit(targetFolder)
     print 'done'
 
 build()

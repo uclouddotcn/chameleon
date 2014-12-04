@@ -12,16 +12,14 @@ function startApp() {
     var gui = require('nw.gui');
     var win = gui.Window.get();
     win.hide();
-    var new_win = gui.Window.get(
-        gui.Window.open('index.html', {
-            toolbar: false,
-            frame: true,
-            position: "center",
-            width: 1024,
-            height: 700,
-            focus: true
-        })
-    );
+    gui.Window.open('index.html', {
+        toolbar: false,
+        frame: true,
+        position: "center",
+        width: 1024,
+        height: 700,
+        focus: true
+    })
 }
 
 var chameleonUpdateApp = angular.module('chameleonUpdateApp', ['ui.bootstrap']);

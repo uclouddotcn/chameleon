@@ -7,6 +7,29 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+/*
+There are two kinds of files chameleon updater needs
+1. version.json
+it contains an array of upgrade package info for every package, the format of entry is
+{"ver": "TO UPGRADE VERSION", "url": "RELATIVE DOWNLOAD URL", "sha1": "SHA1 SIGN FOR VERIFY"}
+2. upgrade package zip
+the contents under a zip file as
+--
+|-- manifest.json  <-- contains upgrade info for this package
+|-- changelog.txt  <-- changelog description
+|-- ...            <-- upgrade resources
+format of manifest.json is:
+{
+"client" : [upgrade entries],   <-- upgrade entries for client tools
+"channel" : [upgrade entries],  <-- upgrade entries for channel settings
+"sdk" : [upgrade entries]       <-- upgrade entries for sdks
+}
+format of upgrade entry is
+{
+"type": "a",                <-- upgrade type, 'a' for add, 'm' for modify, 'd' for delete
+"path": "/relative/path"    <-- relative path to base folder of this kind of upgrade
+}
+*/
 var fs = require('fs');
 var pathLib = require('path');
 var http = require('http');
@@ -72,7 +95,7 @@ var Downloader = (function (_super) {
         var _this = this;
         var funcs = [
             function (cb) {
-                _this.fetchUpgradeList('/chameleon/version.json', lastUpdateTimestamp, cb);
+                _this.fetchUpgradeList('/version.json', lastUpdateTimestamp, cb);
             },
             function (updateList, cb) {
                 _this.downloadFromUpdateList(updateList, cb);
@@ -126,7 +149,7 @@ var Downloader = (function (_super) {
                 }
             });
 
-            res.setTimeout(10000, function () {
+            res.setTimeout(100000, function () {
                 callback(new ChameleonError(3 /* OP_FAIL */, 'Connect to server error'));
             });
         });
@@ -156,9 +179,10 @@ var Downloader = (function (_super) {
                 });
                 res.on('end', function () {
                     fstream.end(function () {
-                        if (sha1 !== sha1hash.digest('hex')) {
+                        var calcedSha1 = sha1hash.digest('hex');
+                        if (sha1 !== calcedSha1) {
                             console.log(sha1);
-                            return callback(new ChameleonError(3 /* OP_FAIL */, 'sha1 not matched'));
+                            return callback(new ChameleonError(3 /* OP_FAIL */, 'sha1 not matched ' + calcedSha1));
                         }
                         callback(null, f);
                     });

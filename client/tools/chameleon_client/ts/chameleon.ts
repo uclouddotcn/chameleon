@@ -970,6 +970,7 @@ export class ChameleonTool {
     chameleonPath: string;
     db: DB;
     homePath: string;
+    updateSvr: string;
     private upgradeMgr: UpgradeMgr;
 
     static initTool(db: DB, cb: CallbackFunc<ChameleonTool>) {
@@ -983,6 +984,7 @@ export class ChameleonTool {
         var content = fs.readFileSync(pathLib.join(workdir, 'env.json'), 'utf-8');
         var envObj = JSON.parse(content);
         res.chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
+        res.updateSvr = envObj.updateSvr;
 
         function loadInfoJsonObj(callback: CallbackFunc<any>) {
             var infojsonPath = pathLib.join(res.chameleonPath, 'info.json');

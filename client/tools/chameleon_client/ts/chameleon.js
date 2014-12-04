@@ -990,6 +990,7 @@ var ChameleonTool = (function () {
         var content = fs.readFileSync(pathLib.join(workdir, 'env.json'), 'utf-8');
         var envObj = JSON.parse(content);
         res.chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
+        res.updateSvr = envObj.updateSvr;
 
         function loadInfoJsonObj(callback) {
             var infojsonPath = pathLib.join(res.chameleonPath, 'info.json');
