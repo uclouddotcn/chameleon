@@ -6,6 +6,7 @@ var fs = require('fs');
 var pathLib = require('path');
 var globalenv = require('./js/globalenv')
 var chameleon = require('./ts/chameleon');
+var Downloader = require('./ts/upgrader').Downloader;
 
 var ChameleonTool = chameleon.ChameleonTool;
 var Project = chameleon.Project;
@@ -43,6 +44,24 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         xxxhigh: 'drawable-xxxhdpi'
     };
 
+    function restartApp() {
+        var child_process = require("child_process");
+        var gui = require('nw.gui');
+        gui.Window.get().hide(); // hide window to prevent black display
+        if (process.platform === 'mac') {
+            var child = child_process.spawn('sh', [
+                    pathLib.join(globalenv.APP_FOLDER, 'restart_mac.sh'),
+                    pathLib.normalize(process.execPath+'/../../../../../../'),
+                    '--args' ,
+                    globalenv.APP_FOLDER],
+                {detached: true});
+        } else {
+            var child = child_process.spawn(pathLib.join(globalenv.APP_FOLDER, '..', 'chameleon.bat'), {detached: true});
+        }
+        child.unref();
+        gui.App.quit();  // quit node-webkit app
+    }
+
     var ProjectMgr = function() {
         $log.log('init the env');
         this.exec = require('child_process').execFile;
@@ -68,6 +87,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             self.homeDir = ChameleonTool.getChameleonHomePath();
             self.sdkdb = new Database({filename: pathLib.join(self.homeDir, 'sdkdb.nedb'), autoload: true});
             self.db = new Database({filename: pathLib.join(self.homeDir, 'productdb.nedb'), autoload: true});
+            self.tooldb = new Database({filename: pathLib.join(self.homeDir, 'tools.nedb'), autoload: true});
             chameleon.ChameleonTool.initTool(new PouchDBWrapper(self.sdkdb), function (err, chtool) {
                 if (err) {
                     defered.reject(err);
@@ -75,10 +95,38 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 }
                 self.chtool = chtool;
                 defered.resolve(chtool);
+                self.tryUpgrade();
             });
         });
         return defered.promise;
     }
+
+    ProjectMgr.prototype.tryUpgrade = function () {
+        var self = this;
+        self.tooldb.findOne({_id: 'lastUpgradeTimestamp'}, function (err, doc) {
+            var timestamp = 0;
+            if (!err) {
+                timestamp = (doc && doc.timestamp) ?  doc.timestamp : 0;
+            }
+            var downloader = new Downloader(self.chtool.updateSvr, self.chtool.version.toString(), globalenv.TEMP_FOLDER);
+            downloader.downloadUpdate(timestamp, function (err, updateInfo) {
+                if (err)  {
+                    return;
+                }
+                if (updateInfo && updateInfo.hasUpgrade) {
+                    fs.writeFile(pathLib.join(pathLib.join(self.homeDir, 'upgrade.txt')), JSON.stringify(updateInfo), function (err) {
+                        if (err)  {
+                            return;
+                        }
+                        var ok = window.confirm("已经准备好更新，是否重启客户端？");
+                        if (ok) {
+                            restartApp();
+                        }
+                    });
+                }
+            });
+        });
+    };
 
     ProjectMgr.prototype.removeProject = function(project) {
         this.db.remove({_id: project._id});

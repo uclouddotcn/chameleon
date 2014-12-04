@@ -1,0 +1,16 @@
+<div class="container-fluid">
+    <div class="modal-header">
+        <h3>更新日志</h3>
+    </div>
+    <div class="modal-body">
+        <div class="logdiv">
+            <div ng-repeat="l in changelogs">
+               <h3>{{l.version.toString()}}</h3>
+               <pre>{{l.log}}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="submit()">OK</button>
+    </div>
+</div>

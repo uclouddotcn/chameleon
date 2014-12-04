@@ -3,6 +3,7 @@ var fs = require('fs');
 var appFolder = pathLib.join(__dirname, '..');
 var tempFolder = pathLib.join(appFolder, 'temp');
 module.exports.APP_FOLDER = appFolder;
+module.exports.TEMP_FOLDER = tempFolder;
 
 module.exports.createTempFolder = function () {
     if (!fs.existsSync(tempFolder)) {
