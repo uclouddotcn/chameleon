@@ -1,0 +1,25 @@
+{
+    "desc": "魅族",
+    "name": "meizu",
+    "chamversion": "1.3.0",
+    "version": "1.0.3",
+    "cfgitem": {
+        "appId" : {
+            "type" : "string",
+            "desc" : "1954374"
+        },
+
+        "appKey" : {
+            "type" : "string",
+            "desc" : "8c4e77886b2c445790b9b9ca164c7657"
+        },
+
+        "appSecret" : {
+            "type" : "string",
+            "desc" : "R5E48l9HinpTQ1xNFgEUajxCVPQIQelC",
+            "ignoreInA" : 1
+        }
+
+    }
+}
+

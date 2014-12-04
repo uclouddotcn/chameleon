@@ -6,7 +6,7 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
     defaultConfig {
-        minSdkVersion 7
+        minSdkVersion 9
         targetSdkVersion 18
     }
     buildTypes {
@@ -67,6 +67,15 @@ android {
         lenovo {
 
         }
+        p_getui {
+
+        }
+        p_jpush {
+
+        }
+        p_umeng {
+
+        }
 
     }
 
@@ -105,6 +114,9 @@ dependencies {
     meizuCompile project(':channels:meizu')
     gfanCompile project(':channels:gfan')
     lenovoCompile project(':channels:lenovo')
+    p_getuiCompile project(':channels:p_getui')
+    p_getuiCompile project(':channels:p_jpush')
+    p_getuiCompile project(':channels:p_umeng')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->

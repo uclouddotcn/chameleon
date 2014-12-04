@@ -6,6 +6,7 @@
     <condition property="out.dir.base" value="${chameleon.out.dir}" else="bin">
         <isset property="chameleon.out.dir" />
     </condition>
+
     <property name="out.dir" value="${out.dir.base}/build" />
     <property name="out.absolute.dir" value="${out.dir}"/>
     <property name="out.classes.absolute.dir" location="${out.dir}/classes" />
@@ -23,6 +24,34 @@
     <property name="intermediate.dex.file" location="${out.absolute.dir}/${dex.file.name}" />
     <property name="resource.package.file.name" value="${ant.project.name}.ap_" />
     <property name="resource.package.file.name.temp" value="${ant.project.name}_temp.ap_" />
+
+    <!-- generic setup -->
+    <target name="-setup" depends="-check-env">
+        <echo level="info">Project Name: ${ant.project.name}</echo>
+        <gettype projectTypeOut="project.type" />
+
+        <!-- sets a few boolean based on project.type
+             to make the if task easier -->
+        <condition property="project.is.library" value="true" else="false">
+            <equals arg1="${project.type}" arg2="library" />
+        </condition>
+        <condition property="project.is.test" value="true" else="false">
+            <equals arg1="${project.type}" arg2="test" />
+        </condition>
+        <condition property="project.is.testapp" value="true" else="false">
+            <equals arg1="${project.type}" arg2="test-app" />
+        </condition>
+
+        <!-- If a test project, resolve absolute path to tested project. -->
+        <if condition="${project.is.test}">
+            <then>
+                <property name="tested.project.absolute.dir" location="${tested.project.dir}" />
+            </then>
+        </if>
+
+        <xpath input="${manifest.abs.file}"
+                expression="/manifest/@package" output="project.chameleon.orig.pkg" />
+    </target>
 
     <target name="-set-debug-files" depends="-set-mode-check">
 
@@ -123,12 +152,15 @@
                         <arg value="${out.manifest.abs.file.orig}"/>
                         <arg value="${out.manifest.abs.file}"/>
                         <arg value="${gen.absolute.dir}"/>
-                        <arg value="${project.app.package}"/>
+                        <arg value="${project.chameleon.orig.pkg}"/>
                         <arg value="${build.is.packaging.debug}"/>
                     </exec>
 
                 </then>
             </if>
+
+            <xpath input="${out.manifest.abs.file}"
+                    expression="/manifest/@package" output="project.app.package" />
 
             <echo level="info">----------</echo>
             <echo level="info">Handling Resources...</echo>
@@ -149,6 +181,21 @@
                 <res path="${out.res.absolute.dir}" />
                 <res path="${resource.absolute.dir}" />
             </aapt>
+
+            <if>
+                <condition>
+                    <isset property="chameleon.library"/>
+                </condition>
+                <then>
+                    <exec executable="python" failonerror="true">
+                        <arg value="${chameleon_script}/chameleon_tool/chameleon_copyr.py"/>
+                        <arg value="${gen.absolute.dir}"/>
+                        <arg value="${project.chameleon.orig.pkg}"/>
+                        <arg value="${project.app.package}"/>
+                    </exec>
+
+                </then>
+            </if>
 
             <echo level="info">----------</echo>
             <echo level="info">Handling BuildConfig class...</echo>

@@ -28,7 +28,7 @@ public final class GfanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void init(Activity activity, IDispatcherCb cb) {
-        GfanPay.getInstance(activity).init();
+        GfanPay.getInstance(activity.getApplicationContext()).init();
     }
 
     @Override

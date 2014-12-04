@@ -4,7 +4,7 @@ package prj.chameleon.channelapi.cbinding;
  * Created by wushauk on 4/21/14.
  */
 public class ChannelAPINative {
-    static native void init(boolean isDebug, byte[] platformName);
+    static native void init(int retCode, boolean isDebug, byte[] platformName);
 
     // functions for account action listener
     static native void preAccountSwitch();

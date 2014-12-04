@@ -4,45 +4,71 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+import com.unity3d.player.UnityPlayer;
+
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
 
 import prj.chameleon.channelapi.ChannelInterface;
 import prj.chameleon.channelapi.Constants;
+import prj.chameleon.channelapi.DummyChannelAPI;
 import prj.chameleon.channelapi.IDispatcherCb;
 
-/**
- * Created by wushauk on 6/9/14.
- */
 public class UnityChannelInterface {
-    private static Activity mActivity;
     private static AccountActionListener mAccountActionListener = new AccountActionListener();
+    private static class RequestProxy {
+        private LinkedList<Runnable> mPendingQueue = new LinkedList<Runnable>();
+        private boolean mIsInited = false;
+
+        // run on UI thread only
+        public void setInitDone () {
+            setInited();
+            for (Runnable runnable : mPendingQueue) {
+                runnable.run();
+            }
+            mPendingQueue.clear();
+        }
+
+        public synchronized void request(Runnable runnable) {
+            if (!mIsInited) {
+                mPendingQueue.add(runnable);
+            } else {
+                UnityPlayer.currentActivity.runOnUiThread(runnable);
+            }
+        }
+
+        public synchronized void onDestroy() {
+            mIsInited = false;
+        }
+
+        private synchronized void setInited() {
+            mIsInited = true;
+        }
+    }
+
+    private static RequestProxy mRequestProxy = new RequestProxy();
+
 
     /**
-     * init the cbinding platform interface
-     *
-     * @param activity the main activity
+     * init the Chameleon
      */
-    public static void init(final Activity activity) {
+    public static void init() {
         Log.d(Constants.TAG, "on init");
-        if (mActivity != null) {
-            return;
-        }
-        mActivity = activity;
-        mActivity.runOnUiThread(new Runnable() {
+        UnityPlayer.currentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.init(activity, true, new IDispatcherCb() {
+                prj.chameleon.channelapi.ChannelInterface.init(UnityPlayer.currentActivity, true, new IDispatcherCb() {
                     @Override
                     public void onFinished(int retCode, JSONObject data) {
                         Log.d(Constants.TAG, String.format("on init finished %d", retCode));
-                        U3DHelper.SendMessage("onInited", "");
+                        mRequestProxy.setInitDone();
+                        U3DHelper.SendMessage("onInited", retCode, null);
                     }
                 });
             }
         });
-
     }
 
     /**
@@ -50,10 +76,10 @@ public class UnityChannelInterface {
      */
     public static void loginGuest() {
         Log.d(Constants.TAG, "login guest");
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.loginGuest(mActivity, new IDispatcherCb() {
+                prj.chameleon.channelapi.ChannelInterface.loginGuest(UnityPlayer.currentActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(final int retCode, final JSONObject data) {
                         if (retCode != Constants.ErrorCode.ERR_OK) {
@@ -87,10 +113,10 @@ public class UnityChannelInterface {
      * @throws UnsupportedEncodingException
      */
     public static boolean registGuest(final String tips) throws UnsupportedEncodingException {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.registGuest(mActivity, tips, new IDispatcherCb() {
+                prj.chameleon.channelapi.ChannelInterface.registGuest(UnityPlayer.currentActivity, tips, new IDispatcherCb() {
                     @Override
                     public void onFinished(final int retCode, final JSONObject data) {
                         U3DHelper.SendMessage("onRegistGuest", retCode, data);
@@ -105,10 +131,10 @@ public class UnityChannelInterface {
      * login
      */
     public static void login() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.login(mActivity, new IDispatcherCb() {
+                prj.chameleon.channelapi.ChannelInterface.login(UnityPlayer.currentActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(final int retCode, final JSONObject data) {
                         if (retCode != Constants.ErrorCode.ERR_OK) {
@@ -145,11 +171,11 @@ public class UnityChannelInterface {
                               final int realPayMoney,
                               final boolean allowUserChange) {
 
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
 
-                prj.chameleon.channelapi.ChannelInterface.charge(mActivity, orderId,
+                prj.chameleon.channelapi.ChannelInterface.charge(UnityPlayer.currentActivity, orderId,
                         uidInGame, userNameInGame, serverId, currencyName, payInfo, rate, realPayMoney, allowUserChange,
                         new IDispatcherCb() {
                             @Override
@@ -184,11 +210,11 @@ public class UnityChannelInterface {
                            final String payInfo,
                            final int productCount,
                            final int realPayMoney) throws UnsupportedEncodingException {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
                 Log.d(Constants.TAG, String.format("real pay moeny %d", realPayMoney));
-                prj.chameleon.channelapi.ChannelInterface.buy(mActivity, orderId,
+                prj.chameleon.channelapi.ChannelInterface.buy(UnityPlayer.currentActivity, orderId,
                         uidInGame, userNameInGame, serverId, productName, productID, payInfo,
                         productCount, realPayMoney,
                         new IDispatcherCb() {
@@ -206,10 +232,10 @@ public class UnityChannelInterface {
      * logout current user
      */
     public static void logout() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.logout(mActivity);
+                prj.chameleon.channelapi.ChannelInterface.logout(UnityPlayer.currentActivity);
             }
         });
 
@@ -230,10 +256,10 @@ public class UnityChannelInterface {
      * @return
      */
     public static void switchAccount() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                boolean isStarting = prj.chameleon.channelapi.ChannelInterface.switchAccount(mActivity, new IDispatcherCb() {
+                boolean isStarting = prj.chameleon.channelapi.ChannelInterface.switchAccount(UnityPlayer.currentActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(final int retCode, final JSONObject data) {
                         U3DHelper.SendMessage("onSwitchAccount", retCode, data);
@@ -251,10 +277,10 @@ public class UnityChannelInterface {
      * create the toolbar and show it in (x,y)
      */
     public static void createAndShowToolBar(final int position) {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.createToolBar(mActivity, position);
+                prj.chameleon.channelapi.ChannelInterface.createToolBar(UnityPlayer.currentActivity, position);
                 showFloatBar(true);
             }
         });
@@ -267,10 +293,10 @@ public class UnityChannelInterface {
      * @param visible
      */
     public static void showFloatBar(final boolean visible) {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.showFloatBar(mActivity, visible);
+                prj.chameleon.channelapi.ChannelInterface.showFloatBar(UnityPlayer.currentActivity, visible);
             }
         });
     }
@@ -280,10 +306,10 @@ public class UnityChannelInterface {
      * destroy the toolbar
      */
     public static void destroyToolBar() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.destroyToolBar(mActivity);
+                prj.chameleon.channelapi.ChannelInterface.destroyToolBar(UnityPlayer.currentActivity);
             }
         });
     }
@@ -292,13 +318,13 @@ public class UnityChannelInterface {
      * notify the platform we are coming back from a pause
      */
     public static void onResume() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.onResume(mActivity, new IDispatcherCb() {
+                prj.chameleon.channelapi.ChannelInterface.onResume(UnityPlayer.currentActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(int retCode, JSONObject data) {
-                        U3DHelper.SendMessage("onResume", Constants.ErrorCode.ERR_OK, null);
+                        U3DHelper.SendMessage("onPause", Constants.ErrorCode.ERR_OK, null);
                     }
                 });
             }
@@ -309,10 +335,10 @@ public class UnityChannelInterface {
      * notify the platform we are paused
      */
     public static void onPause() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.onPause(mActivity);
+                prj.chameleon.channelapi.ChannelInterface.onPause(UnityPlayer.currentActivity);
             }
         });
     }
@@ -321,12 +347,8 @@ public class UnityChannelInterface {
      * notify the platform we are destroyed
      */
     public static void onDestroy() {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                prj.chameleon.channelapi.ChannelInterface.onDestroy(mActivity);
-            }
-        });
+        prj.chameleon.channelapi.ChannelInterface.onDestroy(UnityPlayer.currentActivity);
+        mRequestProxy.onDestroy();
     }
 
     public static void onActivityResult(final Activity activity, final int requestCode, final int resultCode, final Intent data) {
@@ -353,10 +375,10 @@ public class UnityChannelInterface {
      * @throws UnsupportedEncodingException
      */
     public static void antiAddiction() throws UnsupportedEncodingException {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.antiAddiction(mActivity,
+                prj.chameleon.channelapi.ChannelInterface.antiAddiction(UnityPlayer.currentActivity,
                         new IDispatcherCb() {
                             @Override
                             public void onFinished(final int retCode, final JSONObject data) {
@@ -377,10 +399,10 @@ public class UnityChannelInterface {
      * destroy the underlying platform sdk
      */
     public static void destroy() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.exit(mActivity, new IDispatcherCb() {
+                prj.chameleon.channelapi.ChannelInterface.exit(UnityPlayer.currentActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(int retCode, JSONObject data) {
                         U3DHelper.SendMessage("onDestroyed", String.format("{\"code\": %d}", retCode));
@@ -446,17 +468,22 @@ public class UnityChannelInterface {
         return ChannelInterface.onLoginRsp(rsp);
     }
 
-    public static void submitPlayerInfo(String roleId,
-                                        String roleName,
-                                        String roleLevel,
-                                        int zoneId,
-                                        String zoneName) {
-        ChannelInterface.submitPlayerInfo(mActivity,
-                roleId,
-                roleName,
-                roleLevel,
-                zoneId,
-                zoneName);
+    public static void submitPlayerInfo(final String roleId,
+                                        final String roleName,
+                                        final String roleLevel,
+                                        final int zoneId,
+                                        final String zoneName) {
+        mRequestProxy.request(new Runnable() {
+            @Override
+            public void run() {
+                ChannelInterface.submitPlayerInfo(UnityPlayer.currentActivity,
+                        roleId,
+                        roleName,
+                        roleLevel,
+                        zoneId,
+                        zoneName);
+            }
+        });
     }
 }
 

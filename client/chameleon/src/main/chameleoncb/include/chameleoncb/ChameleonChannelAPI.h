@@ -18,9 +18,15 @@ namespace ChameleonChannelAPI{
     void releaseJavaVM(JavaVM * vm);
 
     /**
-     * 注册事件的回调实例
+     * 重置callback
      */
-    void registCallback(ChannelAPICallbackInf * callbackImp);
+    void unregisterCallback();
+
+    /**
+     * 初始化Chameleon
+     * @param {ChannelAPICallbackInf} callbackImp
+     */
+    int init(ChannelAPICallbackInf * callbackImp);
 
     /**
      * 发起游客登录，有些平台不支持游客登录或者平台一些登录策略，也有可能
@@ -44,6 +50,12 @@ namespace ChameleonChannelAPI{
      * @return {int}, 0表示异步请求成功，否则表示失败
      */
     int login(int id);
+
+    /**
+     * 退出登录
+     * @return {int}, 0表示异步请求成功，否则表示失败
+     */
+    int logout();
 
     /**
      * 如果游戏使用了二级货币，那么可以通过这个函数发起充值的请求

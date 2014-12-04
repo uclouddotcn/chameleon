@@ -971,15 +971,25 @@ chameleonControllers
         $scope.inited = inited;
         $scope.setSDKRoot = function () {
             fileDialog.openDir(function (d) {
-                $scope.env.sdk_root = d;
+                $scope.env.sdkroot = d;
+                if (!$scope.env.anthome) {
+                    $scope.env.anthome = ProjectMgr.guessAntHome(d);
+                }
                 $scope.$apply();
             })
         }
         $scope.env = {
-            sdk_root: sdkroot
+            sdkroot: sdkroot,
+            anthome: ProjectMgr.guessAntHome(sdkroot)
+        };
+        $scope.setAntHome = function () {
+            fileDialog.openDir(function (d) {
+                $scope.env.anthome = d;
+                $scope.$apply();
+            })
         };
         $scope.submit = function () {
-            var promise = ProjectMgr.setAndroidPath($scope.env.sdk_root);
+            var promise = ProjectMgr.setAndroidPath($scope.env);
             promise.then(function () {
                 $modalInstance.close();
             }, function (err) {
@@ -1393,7 +1403,10 @@ chameleonControllers
         $scope.result = [];
         var showResult = function (r) {
             if (r.code == 0) {
-                return '编译'+r.target+'成功';
+                return {
+                    msg: '编译'+r.target+'成功',
+                    logfile: r.logfile
+                };
             } else {
                 return {
                     msg: '编译'+r.target+'失败',
@@ -1849,24 +1862,3 @@ chameleonControllers
             });
         };
     }])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

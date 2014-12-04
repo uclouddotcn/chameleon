@@ -22,8 +22,8 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private static final String TAG = TestChannelAPI.class.getSimpleName();
 
     public static class UserInfo {
-        public String mUid = new String();
-        public String mSession = new String();
+        public String mUid = "";
+        public String mSession = "";
         public boolean mIsLogined = false;
     }
     public UserInfo mUserInfo = new UserInfo();
@@ -62,6 +62,7 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void init(Activity activity, final IDispatcherCb cb) {
         Log.i(TAG, "'init()' method is called");
+        mChannel = "test";
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -74,7 +75,7 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void login(Activity activity, final IDispatcherCb cb, IAccountActionListener accountActionListener) {
         Log.i(TAG, "'login()' method is called");
-        UserAccount.getInstance().login(activity, new IActionCallback() {
+        showLoginDialog(activity, new IActionCallback() {
             @Override
             public void onAction(int code, String value) {
                 if (code == 0) {
@@ -186,5 +187,35 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             }
         });
         builder.create().show();
+    }
+
+    private int userNum = 0;
+    public void showLoginDialog(Activity activity, final IActionCallback callback){
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("请选择要登录的测试账号：");
+        builder.setSingleChoiceItems(new String[]{"test_0 登录支付都成功", "test_1 登录即失败", "test_2 登录成功支付失败"}, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                userNum = which;
+            }
+        });
+        builder.setPositiveButton("登录", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (userNum == -1) {
+                    callback.onAction(-1, null);
+                } else {
+                    callback.onAction(0, "test_" + userNum);
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 }

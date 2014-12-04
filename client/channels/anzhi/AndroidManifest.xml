@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
     package="prj.chameleon.anzhi">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.webkit.permission.PLUGIN" />
@@ -38,237 +39,275 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Transparent" >
+            android:theme="@style/Transparent"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.UserCenterMainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.UserDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.RegisterActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.UpdateStarActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.UpdateQQActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.UpdateNickActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.AnzhiCurrencyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.PwdSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.AnzhiMessageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.PwdSettingClearActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.AccountSafeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.BindTelActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.UnbindTelActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.CurrencyChargeWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.ChargeHistoryWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.ConsumHistoryWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.GameChargeWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.OrderRecodeWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.FeedbackWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.OpenLoginforQQActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:theme="@android:style/Theme.Dialog" >
+            android:theme="@android:style/Theme.Dialog"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.OpenLoginforWeiboActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:theme="@android:style/Theme.Dialog" >
+            android:theme="@android:style/Theme.Dialog"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.BindEmailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.UnbindEmailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.FindPwdActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.BindanzhiAccountAcivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/Transparent"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.LoadingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.UcenterOfficialLoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            android:theme="@android:style/Theme.Light.NoTitleBar"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.ModifyPwdActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.ResetPwdActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.FindAccountFailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.NoticeDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.GameCenterActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.AnzhiGameBbsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.GameGiftActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.GiftBagDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.GiftbagRecordActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
 
         <receiver android:name="com.anzhi.usercenter.sdk.control.NetListenerReceiver" >
@@ -285,20 +324,24 @@
         <activity
             android:name="com.unionpay.upomp.tbow.paymain"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Pm"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Pi"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Pr"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Mk"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -308,47 +351,58 @@
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Um"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Ur"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Up"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Ui"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Ua"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Cm"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Car"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Ca"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Cbr"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Cb"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
         <activity
             android:name="com.unionpay.upomp.tbow.activity.Ci"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
 
         <!-- 盓葆惘褫饜 -->
 
@@ -362,7 +416,8 @@
             android:process="com.alipay.sdk"
             android:screenOrientation="portrait"
             android:theme="@style/MspAppTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            chameleon:replace="android:screenOrientation=%orientation%">
             <intent-filter android:priority="800" >
                 <action android:name="android.intent.action.MAIN" />
 

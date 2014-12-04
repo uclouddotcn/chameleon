@@ -34,7 +34,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            chameleon:replace="android:screenOrientation=${orientation}"/>
+            chameleon:replace="android:screenOrientation=%orientation%"/>
 
 
         <activity
@@ -43,7 +43,7 @@
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            chameleon:replace="android:screenOrientation=${orientation}"/>
+            chameleon:replace="android:screenOrientation=%orientation%"/>
 
         <activity
             android:name="com.wandoujia.mariosdk.plugin.apk.activity.InviteActivity"
@@ -51,14 +51,14 @@
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            chameleon:replace="android:screenOrientation=${orientation}"/>
+            chameleon:replace="android:screenOrientation=%orientation%"/>
 
         <activity
             android:name="com.wandoujia.mariosdk.plugin.apk.activity.MiniProfileActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            chameleon:replace="android:screenOrientation=${orientation}"/>
+            chameleon:replace="android:screenOrientation=%orientation%"/>
 
         <activity
             android:name="com.wandoujia.mariosdk.plugin.apk.activity.MarioActivity"
@@ -66,7 +66,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            chameleon:replace="android:screenOrientation=${orientation}"/>
+            chameleon:replace="android:screenOrientation=%orientation%"/>
 
         <activity
             android:name="com.wandoujia.mariosdk.plugin.apk.fantasy.activity.FFActivity"
@@ -74,7 +74,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            chameleon:replace="android:screenOrientation=${orientation}"/>
+            chameleon:replace="android:screenOrientation=%orientation%"/>
 
         <receiver android:name="com.wandoujia.mariosdk.plugin.api.WandouPluginReceiver">
             <intent-filter>
@@ -99,7 +99,7 @@
 
                 <category android:name="android.intent.category.DEFAULT"/>
                 <!-- Make sure to replace XXX by your AppKeyid -->
-                <data android:scheme="Wandoujia-PaySdk-100012000" chameleon:replace="android:scheme=Wandoujia-PaySdk-${appId}"/>
+                <data android:scheme="Wandoujia-PaySdk-100012000" chameleon:replace="android:scheme=Wandoujia-PaySdk-%appId%-%orientation%"/>
             </intent-filter>
         </activity>
 

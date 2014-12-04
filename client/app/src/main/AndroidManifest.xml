@@ -39,11 +39,6 @@
             </intent-filter>
         </activity>
 
-
-        <activity android:name="prj.chameleon.test.LoginActivity"
-            android:theme="@android:style/Theme.Dialog"
-            />
-
     </application>
 
 </manifest>
