@@ -36,5 +36,4 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
     compile fileTree(includes: ['*.jar'], dir: 'libs')
     compile project(':chameleon')
-    compile files('libs/MzGameCenterLib_1.1.5_p.jar')
 }
