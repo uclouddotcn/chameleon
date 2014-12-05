@@ -34,7 +34,7 @@
 
         <meta-data
             android:name="lenovo.gamesdk.new"
-            android:value="2.1.4" chameleon:replace="android:value=%appNew%" />
+            android:value="2.1.4" />
 
         <!-- 闪屏界面，默认横屏，通过screenOrientation可以进行修改-->
         <activity
@@ -143,10 +143,10 @@
         </service>
         <!-- 登录配置结束 -->
 
-
         <!-- 支付配置开始 -->
 
         <!-- 收银台界面，默认横屏，通过screenOrientation可以进行修改-->
+
 
         <!-- new ui start -->
         <activity

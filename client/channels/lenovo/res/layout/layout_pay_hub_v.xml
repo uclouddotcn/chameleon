@@ -73,7 +73,6 @@
                             android:layout_width="239dip"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/linear_goods"
-                            android:layout_marginBottom="7dip"
                             android:gravity="center_vertical" >
 
                             <TextView
@@ -99,29 +98,6 @@
                                 android:textColor="#757575"
                                 android:textSize="21sp" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/margin_2"
-                                android:text="@string/payhub_right_bracket"
-                                android:textColor="#757575"
-                                android:textSize="12sp" />
-
-                            <TextView
-                                android:id="@+id/tv_goods_price"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="98.00"
-                                android:textColor="#757575"
-                                android:textSize="12sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/payhub_yuan_bracket"
-                                android:textColor="#757575"
-                                android:textSize="12sp" />
-
                             <ImageButton
                                 android:id="@+id/Spinner_fee_list"
                                 android:layout_width="wrap_content"
@@ -136,12 +112,53 @@
                             </ImageButton>
                         </LinearLayout>
                         
+                        <LinearLayout
+                            android:id="@+id/linear_order_price_temp"
+                            android:layout_width="239dip"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/linear_order_price"
+                            android:layout_marginBottom="7dip"
+                            android:gravity="center_vertical" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/payhub_order_price"
+                                android:textColor="@color/text_color_black"
+                                android:visibility="invisible" 
+                                android:textSize="21sp" />
+
+                                <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/margin_2"
+                                android:text="@string/payhub_right_bracket"
+                                android:textColor="#757575"
+                                android:textSize="12sp" />
+                            
+                            <TextView
+                                android:id="@+id/tv_goods_price"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="98.00"
+                                android:textColor="#757575"
+                                android:textSize="12sp" />
+                            
+                             <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/payhub_yuan_bracket"
+                                android:textColor="#757575"
+                                android:textSize="12sp" />
+                            
+                        </LinearLayout>
+                        
                         <!-- 折扣 -->
                         <LinearLayout
                             android:id="@+id/layout_pay_type_discount"
                             android:layout_width="239dip"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/linear_order_price"
+                            android:layout_below="@id/linear_order_price_temp"
                             android:layout_marginBottom="7dip"
                             android:gravity="center_vertical" >
 
