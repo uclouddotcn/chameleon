@@ -77,6 +77,7 @@ def copyChannel(channel, channelPath, targetPath, versionInfo):
         '*.template', #ignore the template files
         'chameleon_build', # ignore the tool directory
         'build',
+        'android-support-v4.jar',
         '*.iml')
     copyfilelist = []
     for root, dirs, files in os.walk(channelPath):

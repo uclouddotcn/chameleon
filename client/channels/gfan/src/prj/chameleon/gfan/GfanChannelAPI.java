@@ -25,6 +25,7 @@ public final class GfanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private static String TAG = GfanChannelAPI.class.getSimpleName();
 
     private User muser = null;
+    private IAccountActionListener mAccountActionListener = null;
 
     @Override
     public void init(Activity activity, IDispatcherCb cb) {
@@ -32,7 +33,7 @@ public final class GfanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void login(final Activity activity, final IDispatcherCb cb, IAccountActionListener accountActionListener) {
+    public void login(final Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
         GfanUCenter.login(activity, new GfanUCCallback() {
 
             @Override
@@ -47,6 +48,7 @@ public final class GfanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                                         JsonMaker.makeLoginResponse(user.getToken(),
                                                 String.valueOf(user.getUid()), mChannel);
                                 cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginGuestResponse(false, obj));
+                                mAccountActionListener = accountActionListener;
                             }
                         }
                         @Override
@@ -74,6 +76,10 @@ public final class GfanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void logout(Activity activity) {
         GfanUCenter.logout(activity);
+        if (mAccountActionListener != null) {
+            mAccountActionListener.onAccountLogout();
+        }
+        muser = null;
     }
 
     @Override
@@ -192,7 +198,7 @@ public final class GfanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean isLogined() {
-        return muser == null;
+        return muser != null;
     }
 
     @Override

@@ -40,7 +40,7 @@ class AndroidManifestInst(object):
         AndroidManifestInst._walkElementNode(self._rootNode, 
                 lambda node: replaceNodeAttr(node, cfg))
 
-    def replaceEntryActivity(self):
+    def replaceEntryActivity(self, orientation):
         entryActivityNode = self._findEntryActivity()
         if entryActivityNode is None:
             raise RuntimeError('Fail to find the start entry')
@@ -61,7 +61,7 @@ class AndroidManifestInst(object):
         intentNode.removeChild(launchCatNode)
         splashActivity = self.doc.createElement('activity')
         _fillSplashScreenActivity(self.doc, splashActivity, 
-                oldEntry, entryActivityNode.getAttribute('android:screenOrientation'))
+                oldEntry, orientation)
         self._applicationNode.appendChild(splashActivity)
 
     def merge(self, that):

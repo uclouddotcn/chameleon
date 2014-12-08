@@ -39,6 +39,7 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     private Config mCfg;
     private UserInfo mUserInfo;
+    private IAccountActionListener mAccountActionListener;
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Config();
@@ -64,7 +65,7 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void login(Activity activity, final IDispatcherCb cb, IAccountActionListener accountActionListener) {
+    public void login(Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
         MzGameCenterPlatform.login(activity, new MzLoginListener() {
             @Override
             public void onLoginResult(int code, MzAccountInfo mzAccountInfo, String errorMsg) {
@@ -72,12 +73,13 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 switch(code){
                     case LoginResultCode.LOGIN_SUCCESS:
                         userInfo.mUserId = mzAccountInfo.getUid();
-                        userInfo.mUserSession = mzAccountInfo.getSession();
                         userInfo.mUserName = mzAccountInfo.getName();
+                        userInfo.mUserSession = mzAccountInfo.getSession();
                         mUserInfo = userInfo;
                         cb.onFinished(Constants.ErrorCode.ERR_OK,
                                 JsonMaker.makeLoginResponse(userInfo.mUserSession, userInfo.mUserId,
                                         mChannel));
+                        mAccountActionListener = accountActionListener;
                         break;
                     case LoginResultCode.LOGIN_ERROR_CANCEL:
                         cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
@@ -94,6 +96,10 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void logout(Activity activity) {
         MzGameCenterPlatform.logout(activity.getApplicationContext());
+        if (mAccountActionListener != null) {
+            mAccountActionListener.onAccountLogout();
+        }
+        mUserInfo = null;
     }
 
     @Override
@@ -225,7 +231,7 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean isLogined() {
-        return mUserInfo == null;
+        return mUserInfo != null;
     }
 
     @Override

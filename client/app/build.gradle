@@ -64,6 +64,12 @@ android {
         gfan {
 
         }
+        lenovo {
+
+        }
+        gionee {
+
+        }
         p_getui {
 
         }
@@ -110,6 +116,8 @@ dependencies {
     huaweiCompile project(':channels:huawei')
     meizuCompile project(':channels:meizu')
     gfanCompile project(':channels:gfan')
+    lenovoCompile project(':channels:lenovo')
+    lenovoCompile project(':channels:gionee')
     p_getuiCompile project(':channels:p_getui')
     p_getuiCompile project(':channels:p_jpush')
     p_getuiCompile project(':channels:p_umeng')

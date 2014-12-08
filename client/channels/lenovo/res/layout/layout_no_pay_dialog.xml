@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:paddingBottom="10dp"
+    >
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="0dp"
+        android:layout_margin="0dp"
+        >
+        <ImageButton 
+            android:id="@+id/img_btn_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@drawable/button_close"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
+            />
+        <TextView 
+            android:id="@+id/text_alert_msg"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="您不需要支付"
+            android:layout_below="@id/img_btn_close"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/text_size_19"
+            android:padding="10dp"
+            />
+        <Button 
+            android:id="@+id/btn_ok"
+            android:layout_width="105dp"
+            android:layout_height="wrap_content"
+            android:text="确定"
+            android:background="@drawable/selector_button_dialog"
+            android:layout_below="@id/text_alert_msg"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14"
+            ></Button>
+    </RelativeLayout>
+
+</LinearLayout>

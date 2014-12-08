@@ -1,0 +1,17 @@
+{
+    "desc": "联想",
+    "name": "lenovo",
+    "chamversion": "1.3.0",
+    "version": "V2.2.1",
+    "cfgitem": {
+        "appid" : {
+            "type": "string",
+            "desc": "app id"
+        }
+        "appkey" : {
+            "type": "string",
+            "desc": "app key"
+        }
+    }
+}
+
