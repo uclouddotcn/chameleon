@@ -42,13 +42,32 @@
     "dangle": {
         "name": "当乐",
         "sdk": "dangle",
+        "pkgsuffix": "^com.tencent.tmgp.",
         "splashscreen": 2,
         "icon": "1"
     },
     "anzhi": {
         "name": "安智",
         "sdk": "anzhi",
+        "pkgsuffix": "^com.tencent.tmgp.",
         "splashscreen": 1,
+        "icon": "1"
+    },
+    "meizu": {
+        "name": "魅族",
+        "sdk": "meizu",
+        "pkgsuffix": ".mz$"
+    },
+    "gionee": {
+        "name": "金立",
+        "sdk": "gionee",
+        "pkgsuffix": ".am$",
+        "icon": "1"
+    },
+    "lenovo": {
+        "name": "联想",
+        "sdk": "lenovo",
+        "pkgsuffix": ".lenovo$",
         "icon": "1"
     }
 }
