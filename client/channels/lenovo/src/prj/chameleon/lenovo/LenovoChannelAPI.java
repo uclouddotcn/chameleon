@@ -84,7 +84,7 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         // 请填写商品自己的参数
         payRequest.addParam("appid", mCfg.mAppID);
         payRequest.addParam("waresid", 0);//商户自建商品编码 以此区分是否是虚拟货币购买
-        payRequest.addParam("exorderno", serverId);//外部订单号
+        payRequest.addParam("exorderno", orderId);//外部订单号
         payRequest.addParam("price", realPayMoney);
         payRequest.addParam("cpprivateinfo", payInfo);
 
@@ -136,7 +136,7 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         // 请填写商品自己的参数
         payRequest.addParam("appid", mCfg.mAppID);
         payRequest.addParam("waresid", 1);//商户自建商品编码 以此区分是否是充值
-        payRequest.addParam("exorderno", serverId);
+        payRequest.addParam("exorderno", orderId);
         payRequest.addParam("price", realPayMoney);
         payRequest.addParam("cpprivateinfo", payInfo);
 
