@@ -67,6 +67,7 @@
     "lenovo": {
         "name": "联想",
         "sdk": "lenovo",
+        "pkgsuffix": ".lenovo$",
         "icon": "1"
     }
 }
