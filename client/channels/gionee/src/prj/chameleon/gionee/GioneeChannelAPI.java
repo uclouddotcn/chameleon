@@ -23,7 +23,6 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     private static class Config {
-        public String mAppID;
         public String mAppKey;
     }
 
@@ -91,33 +90,26 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,//总价
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-
         mGamePayer = new GamePayer(activity);
 
         OrderInfo mOrderInfo = new OrderInfo();
         mOrderInfo.setApiKey(mCfg.mAppKey);
-        mOrderInfo.setOutOrderNo(serverId);
+        mOrderInfo.setOutOrderNo(orderId);
         mOrderInfo.setSubmitTime(payInfo);
 
         GamePayer.GamePayCallback mGamePayCallback = mGamePayer.new GamePayCallback(){
-            //支付成功
             @Override
             public void onPaySuccess() {
-                // 可以在这里处理自己的业务
                 cb.onFinished(Constants.ErrorCode.ERR_OK, null);
             }
 
-            //支付取消
             @Override
             public void onPayCancel() {
-                // 可以在这里处理自己的业务
                 cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
             }
 
-            //支付失败，stateCode为支付失败状态码，详见接入指南
             @Override
             public void onPayFail(String stateCode) {
-                // 可以在这里处理自己的业务
                 cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
             }
         };
@@ -146,28 +138,22 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
         OrderInfo mOrderInfo = new OrderInfo();
         mOrderInfo.setApiKey(mCfg.mAppKey);
-        mOrderInfo.setOutOrderNo(serverId);
+        mOrderInfo.setOutOrderNo(orderId);
         mOrderInfo.setSubmitTime(payInfo);
 
         GamePayer.GamePayCallback mGamePayCallback = mGamePayer.new GamePayCallback(){
-            //支付成功
             @Override
             public void onPaySuccess() {
-                // 可以在这里处理自己的业务
                 cb.onFinished(Constants.ErrorCode.ERR_OK, null);
             }
 
-            //支付取消
             @Override
             public void onPayCancel() {
-                // 可以在这里处理自己的业务
                 cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
             }
 
-            //支付失败，stateCode为支付失败状态码，详见接入指南
             @Override
             public void onPayFail(String stateCode) {
-                // 可以在这里处理自己的业务
                 cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
             }
         };
@@ -220,7 +206,6 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void onResume(Activity activity, IDispatcherCb cb) {
         super.onResume(activity, cb);
-        // 在不能静默安装的手机，升级成功后自动调起收银台
         if (mGamePayer != null)
             mGamePayer.onResume();
     }
