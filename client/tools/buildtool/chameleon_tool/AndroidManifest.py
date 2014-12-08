@@ -40,7 +40,7 @@ class AndroidManifestInst(object):
         AndroidManifestInst._walkElementNode(self._rootNode, 
                 lambda node: replaceNodeAttr(node, cfg))
 
-    def replaceEntryActivity(self, orientation):
+    def replaceEntryActivity(self, orientation, channel):
         entryActivityNode = self._findEntryActivity()
         if entryActivityNode is None:
             raise RuntimeError('Fail to find the start entry')
@@ -59,10 +59,14 @@ class AndroidManifestInst(object):
 
         intentNode.removeChild(mainActionNode)
         intentNode.removeChild(launchCatNode)
-        splashActivity = self.doc.createElement('activity')
-        _fillSplashScreenActivity(self.doc, splashActivity, 
+        
+        if channel == 'lenovo':
+            _addLenovoSplashScreenActivity(self.doc, intentNode, orientation)
+        else:
+            splashActivity = self.doc.createElement('activity')
+            _fillSplashScreenActivity(self.doc, splashActivity, 
                 oldEntry, orientation)
-        self._applicationNode.appendChild(splashActivity)
+            self._applicationNode.appendChild(splashActivity)        
 
     def merge(self, that):
         self._mergePermissions(that)
@@ -284,3 +288,10 @@ def _fillSplashScreenActivity(doc, splashActivity, oldEntryActivity, orientation
     intentNode.appendChild(categoryNode)
     categoryNode.setAttribute('android:name', "android.intent.category.LAUNCHER")
 
+def _addLenovoSplashScreenActivity(doc, intentNode, orientation):
+    mainActionNode = doc.createElement('action')
+    intentNode.appendChild(mainActionNode)
+    mainActionNode.setAttribute('android:name', "lenovoid.MAIN")
+    categoryNode = doc.createElement('category')
+    intentNode.appendChild(categoryNode)
+    categoryNode.setAttribute('android:name', "android.intent.category.DEFAULT")

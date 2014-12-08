@@ -30,7 +30,7 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, global
     else:
         orientation = 'portrait'
     if sc is not None:
-        manifestInst.replaceEntryActivity(orientation)
+        manifestInst.replaceEntryActivity(orientation, channel)
     if icons is not None:
         manifestInst.setIcon('chameleon_icon')
     manifestInst.safeDump(manifestFilePath)
