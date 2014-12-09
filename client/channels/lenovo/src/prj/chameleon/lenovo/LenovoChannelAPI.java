@@ -2,8 +2,12 @@ package prj.chameleon.lenovo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.lenovo.lsf.gamesdk.LenovoGameApi;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
@@ -15,12 +19,14 @@ import prj.chameleon.channelapi.SingleSDKChannelAPI;
 public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     private static class UserInfo {
+        public String mUserId;
         public String mUserToken;
     }
 
     private static class Config {
         public String mAppID;
         public String mAppKey;
+        public String mPayUrl;
     }
 
     private Config mCfg;
@@ -31,6 +37,9 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfg = new Config();
         mCfg.mAppID = cfg.getString("appId");
         mCfg.mAppKey = cfg.getString("appKey");
+        if (commCfg.mIsDebug) {
+            mCfg.mPayUrl = cfg.getString("payUrl");
+        }
         mChannel = commCfg.mChannel;
     }
 
@@ -44,6 +53,7 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         LenovoGameApi.doAutoLogin(activity,new LenovoGameApi.IAuthResult() {
             @Override
             public void onFinished(boolean ret, String data) {
+                Log.d(Constants.TAG, "check which thread I am running at");
                 if (ret) {
                     mUserInfo = new UserInfo();
                     mUserInfo.mUserToken = data;
@@ -66,6 +76,24 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
+    public boolean onLoginRsp(String loginRsp) {
+        JSONObject obj = null;
+        try {
+            obj = new JSONObject(loginRsp);
+            int code = obj.getInt("code");
+            if (code != Constants.ErrorCode.ERR_OK) {
+                return false;
+            } else {
+                mUserInfo.mUserId = obj.getJSONObject("loginInfo").getString("uid");
+                return true;
+            }
+        } catch (JSONException e) {
+            Log.e(Constants.TAG, "Fail to parse login rsp", e);
+            return false;
+        }
+    }
+
+    @Override
     public void charge(Activity activity,
                        String orderId,
                        String uidInGame,
@@ -83,10 +111,14 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         LenovoGameApi.GamePayRequest payRequest = new LenovoGameApi.GamePayRequest();
         // 请填写商品自己的参数
         payRequest.addParam("appid", mCfg.mAppID);
+        payRequest.addParam("appkey", mCfg.mAppKey);
         payRequest.addParam("waresid", 0);//商户自建商品编码 以此区分是否是虚拟货币购买
         payRequest.addParam("exorderno", orderId);//外部订单号
         payRequest.addParam("price", realPayMoney);
-        payRequest.addParam("cpprivateinfo", payInfo);
+        payRequest.addParam("cpprivateinfo", currencyName);
+        if (mCfg.mPayUrl != null) {
+            payRequest.addParam("notifyurl", mCfg.mPayUrl);
+        }
 
         LenovoGameApi.doPay(activity,mCfg.mAppKey, payRequest, new LenovoGameApi.IPayResult() {
             @Override
@@ -135,10 +167,14 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         LenovoGameApi.GamePayRequest payRequest = new LenovoGameApi.GamePayRequest();
         // 请填写商品自己的参数
         payRequest.addParam("appid", mCfg.mAppID);
-        payRequest.addParam("waresid", 1);//商户自建商品编码 以此区分是否是充值
+        payRequest.addParam("appid", mCfg.mAppKey);
+        payRequest.addParam("waresid", 0);//商户自建商品编码 以此区分是否是充值
         payRequest.addParam("exorderno", orderId);
         payRequest.addParam("price", realPayMoney);
-        payRequest.addParam("cpprivateinfo", payInfo);
+        payRequest.addParam("cpprivateinfo", productID);
+        if (mCfg.mPayUrl != null) {
+            payRequest.addParam("notifyurl", mCfg.mPayUrl);
+        }
 
         LenovoGameApi.doPay(activity,mCfg.mAppKey, payRequest, new LenovoGameApi.IPayResult() {
             @Override
@@ -171,7 +207,7 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public String getUid() {
-        return null;
+        return mUserInfo.mUserId;
     }
 
     @Override
