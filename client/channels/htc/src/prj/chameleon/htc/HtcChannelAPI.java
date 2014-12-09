@@ -254,8 +254,15 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         userInfo.mAccount = data.getStringExtra(JoloSDK.ACCOUNT);
 
         mUserInfo = userInfo;
-
-        mLoginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.mUserSession, userInfo.mUserId, mChannel));
+        JSONObject jsonOther = new JSONObject();
+        try {
+            jsonOther.put(userInfo.mUserId, "userId");
+            jsonOther.put(userInfo.mUserName, "userName");
+            jsonOther.put(userInfo.mAccountSign, "accountSign");
+            jsonOther.put(userInfo.mAccount, "account");
+        } catch (JSONException e) {
+        }
+        mLoginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.mUserSession, jsonOther.toString(), mChannel));
     }
 
     private void onPayResult(Intent data){
