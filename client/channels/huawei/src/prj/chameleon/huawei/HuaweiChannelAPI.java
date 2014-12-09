@@ -4,22 +4,23 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.huawei.pay.plugin.IHuaweiPay;
 import com.android.huawei.pay.plugin.IPayHandler;
+import com.android.huawei.pay.plugin.MobileSecurePayHelper;
 import com.android.huawei.pay.plugin.PayParameters;
 import com.android.huawei.pay.util.HuaweiPayUtil;
 import com.android.huawei.pay.util.Rsa;
 import com.huawei.gamebox.buoy.sdk.InitParams;
+import com.huawei.gamebox.buoy.sdk.impl.BuoyOpenSDK;
 import com.huawei.gamebox.buoy.sdk.util.BuoyConstant;
 import com.huawei.gamebox.buoy.sdk.util.DebugConfig;
 import com.huawei.hwid.openapi.out.IHwIDCallBack;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +67,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private String mPayID;
     private String mCpName;
     private String mPayUrl;
+    private String mPayRsaPublic;
     private SwitchAccountReceiver mSAReceiver;
     private IAccountActionListener mAccountActionListener;
     private boolean mIsDebug;
@@ -78,6 +80,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mPayID = cfg.getString("payId");
         mCpName = cfg.getString("cpName");
         mPayUrl = cfg.getString("payUrl");
+        mPayRsaPublic = cfg.getString("payRsaPubKey");
         mIsDebug = commCfg.mIsDebug;
         mChannel = commCfg.mChannel;
     }
@@ -85,30 +88,22 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void init(android.app.Activity activity,
                      final IDispatcherCb cb) {
-        if (GameUtils.checkPayPluginLoad(activity)) {
-            DebugConfig.d(Constants.TAG, "支付服务加载成功");
-        } else { // 支付插件加载失败
-            DebugConfig.d(Constants.TAG, "支付服务加载失败");
-            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+
+        if (null == GlobalParams.hwBuoy) {
+            GlobalParams.hwBuoy = BuoyOpenSDK.getIntance();
         }
 
-        if (GameUtils.checkBuoyPluginLoad(activity)) {
-            InitParams p = new InitParams(mAppID,
-                    mCpID, mAppPrivateKey,
-                    new GameCallback(activity, cb));
-            DebugConfig.d(Constants.TAG, "浮标服务加载成功");
-            GlobalParams.hwBuoy.init(activity, p);
+        GlobalParams.hwBuoy = BuoyOpenSDK.getIntance();
 
-            // 初始化切换用户广播接收器
-            mSAReceiver = new SwitchAccountReceiver();
-            IntentFilter filter = new IntentFilter();
-            filter.addAction("com.huawei.gamebox.changeUserLogin");
-            // 注册切换用户广播
-            activity.registerReceiver(mSAReceiver, filter);
+        InitParams p = new InitParams(mAppID, mPayID,
+                mAppPrivateKey, new GameCallback(activity, cb));
 
-        } else { // 浮标插件加载失败
-            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-        }
+        // 如果游戏的引擎为cocos2d或者unity3d，将下面一句代码打开
+        // GlobalParams.hwBuoy.setShowType(2);
+
+        // 浮标初始化
+        GlobalParams.hwBuoy.init(activity, p);
+
     }
 
 
@@ -139,39 +134,38 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void login(Activity activity, final IDispatcherCb cb, IAccountActionListener accountActionListener) {
-        mAccountActionListener = accountActionListener;
-        if (GameUtils.checkAccountPluginLoad(activity)) {
-            Bundle loginBundle = new Bundle();
-            // 为登录设置代理
-            GlobalParams.hwId.setLoginProxy(activity,
-                    mAppID, new IHwIDCallBack() {
-                        @Override
-                        public void onUserInfo(HashMap hashMap) {
-                            int loginStatus = Integer.parseInt((String) hashMap.get("loginStatus"));
-                            switch (loginStatus) {
-                                case 0:
-                                    cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
-                                    break;
-                                case 1:
-                                    mUserInfo.mUid = (String) hashMap.get("userID");
-                                    mUserInfo.mToken = (String) hashMap.get("accesstoken");
-                                    mUserInfo.mIsLogined = true;
-                                    cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(mUserInfo.mToken,
-                                            mUserInfo.mUid, mChannel));
-                                    break;
-                                case 2:
-                                    Log.e(Constants.TAG, "receive 2");
-                                    break;
-                                default:
-                                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                            }
+    public void login(final Activity activity, final IDispatcherCb cb, IAccountActionListener accountActionListener) {
+    mAccountActionListener = accountActionListener;
+        Bundle loginBundle = new Bundle();
+        // 为登录设置代理
+        GlobalParams.hwId.setLoginProxy(activity,
+                mAppID, new IHwIDCallBack() {
+                    @Override
+                    public void onUserInfo(String rsp) {
+                        if(null == GlobalParams.hwBuoy) {
+                            GlobalParams.hwBuoy = BuoyOpenSDK.getIntance();
                         }
-                    }, loginBundle);
-            GlobalParams.hwId.login(new Bundle());
-        } else {
-            cb.onFinished(Constants.ErrorCode.ERR_INTERNAL, null);
-        }
+                        boolean userResult = GlobalParams.hwBuoy.onUserInfo(rsp, new com.huawei.gamebox.buoy.sdk.inter.UserInfo() {
+                            @Override
+                            public void dealUserInfo(HashMap<String, String> uinfo) {
+                                if (uinfo == null) {
+                                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                                } else {
+                                    if ("1".equals(uinfo.get("loginStatus"))) {
+                                        mUserInfo.mUid = (String) uinfo.get("userID");
+                                        mUserInfo.mToken = (String) uinfo.get("accesstoken");
+                                        mUserInfo.mIsLogined = true;
+                                        cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(mUserInfo.mToken,
+                                                mUserInfo.mUid, mChannel));
+                                    } else {
+                                        cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                                    }
+                                }
+                            }
+                        }, activity);
+                    }
+                }, loginBundle);
+        GlobalParams.hwId.login(new Bundle());
     }
 
     @Override
@@ -215,7 +209,10 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void showFloatBar(Activity activity, boolean visible) {
         if (visible) {
-            GlobalParams.hwBuoy.showSamllWindow(activity.getApplicationContext());
+            synchronized (GlobalParams.hwBuoy)
+            {
+                GlobalParams.hwBuoy.showSmallWindow(activity.getApplicationContext());
+            }
         } else {
             GlobalParams.hwBuoy.hideSmallWindow(activity.getApplicationContext());
             GlobalParams.hwBuoy.hideBigWindow(activity.getApplicationContext());
@@ -225,6 +222,27 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void destroyToolBar(Activity activity) {
         GlobalParams.hwBuoy.destroy(activity.getApplicationContext());
+    }
+
+
+    @Override
+    public void onResume(Activity activity, IDispatcherCb cb) {
+        if (isLogined() && null != GlobalParams.hwBuoy)
+        {
+            synchronized (GlobalParams.hwBuoy)
+            {
+                GlobalParams.hwBuoy.showSmallWindow(activity.getApplicationContext());
+            }
+        }
+    }
+
+    @Override
+    public void onPause(Activity activity) {
+        // 在界面暂停的时候，隐藏浮标，和onResume配合使用
+        if (null != GlobalParams.hwBuoy) {
+            GlobalParams.hwBuoy.hideSmallWindow(activity.getApplicationContext());
+            GlobalParams.hwBuoy.hideBigWindow(activity.getApplicationContext());
+        }
     }
 
     @Override
@@ -295,18 +313,46 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
         payInfo.put("accessToken", accessToken);
         // 调试期可打开日志，发布时注释掉
-        payInfo.put("showLog", true);
+        if (mIsDebug) {
+            payInfo.put("showLog", true);
+        } else {
+            payInfo.put("showLog", false);
+        }
         payInfo.put("serviceCatalog", "X6");
         DebugConfig.d("startPay", "支付请求参数 : " + payInfo.toString());
+
+        IHuaweiPay payHelper = new MobileSecurePayHelper();
         /**
          * 开始支付
          */
-        GlobalParams.hwPay.startPay(activity, payInfo, new IPayHandler() {
+        payHelper.startPay(activity, payInfo, new IPayHandler() {
             @Override
             public void onFinish(Map<String, String> payRsp) {
-                int code = Integer.parseInt(payRsp.get(PayParameters.returnCode));
-                if (code == 0) {
-                    cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                String code = payRsp.get(PayParameters.returnCode);
+                if (code.equals("0") && "success".equals(payRsp.get(PayParameters.errMsg))) {
+                    // 支付成功，验证信息的安全性；待验签字符串中如果有isCheckReturnCode参数且为yes，则去除isCheckReturnCode参数
+                    if (payRsp.containsKey("isCheckReturnCode")
+                            && "yes".equals(payRsp.get("isCheckReturnCode"))) {
+                        payRsp.remove("isCheckReturnCode");
+
+                    } else {// 支付成功，验证信息的安全性；待验签字符串中如果没有isCheckReturnCode参数活着不为yes，则去除isCheckReturnCode和returnCode参数
+                        payRsp.remove("isCheckReturnCode");
+                        payRsp.remove(PayParameters.returnCode);
+                    }
+                    // 支付成功，验证信息的安全性；待验签字符串需要去除sign参数
+                    String sign = payRsp.remove(PayParameters.sign);
+
+                    String noSigna = HuaweiPayUtil.getSignData(payRsp);
+
+                    // 使用公钥进行验签
+                    boolean s = Rsa.doCheck(noSigna, sign, mPayRsaPublic);
+
+                    if (s) {
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                    } else {
+                        cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
+                    }
+
                 } else {
                     cb.onFinished(GameUtils.mapError(code), null);
                 }
