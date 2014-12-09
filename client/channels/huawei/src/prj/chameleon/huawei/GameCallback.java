@@ -70,10 +70,6 @@ class GameCallback implements IGameCallBack {
     @Override
     public void onUpdateCheckFinished(UpdateInfo info) {
         // 根据业务需要设置，demo中只在登录界面展示更新信息
-        if (null != GlobalParams.hwId) {
-            return;
-        }
-
         if (null == info) {
             DebugConfig.d(Constants.TAG, "IGameCallBack onUpdateCheckFinished:无更新信息");
             return;

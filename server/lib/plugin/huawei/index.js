@@ -1,4 +1,4 @@
-var crypto = require('crypto');
+var ursa = require('ursa');
 var querystring = require('querystring');
 var util = require('util');
 
@@ -113,17 +113,16 @@ HuaweiChannel.prototype.pendingPay = function (channelName, params, infoFromSDK,
 };
 
 HuaweiChannel.prototype.calcSign = function (wrapper, params) {
-    if (!wrapper.cfg.payPrivateKeyPem) {
-        wrapper.cfg.payPrivateKeyPem = makePrivatePemFormat(wrapper.cfg.payPrivateKey)
+    if (!wrapper.cfg.payPrivateKeyObj) {
+        var pem = makePrivatePemFormat(wrapper.cfg.payPrivateKey);
+        wrapper.cfg.payPrivateKeyObj = ursa.createPrivateKey(pem);
     }
     var sortedKeys = Object.keys(params).sort();
     this._logger.debug(sortedKeys);
     var s = sortedKeys.map(function (k) {
         return k+'='+params[k];
     }).join('&');
-    var c = crypto.createSign("RSA-SHA1");
-    c.update(s);
-    return c.sign(wrapper.cfg.payPrivateKeyPem, 'base64');
+    return wrapper.cfg.payPrivateKeyObj.hashAndSign('sha1', new Buffer(s, 'utf8'), 'utf8', 'base64');
 };
 
 HuaweiChannel.prototype.getPayUrlInfo = function ()  {
@@ -231,8 +230,7 @@ function makePrivatePemFormat(key) {
         c.push(key.substr(start, 64));
         start += 64;
     }
-    console.log('-----BEGIN RSA PRIVATE KEY-----\n' + c.join('\n') + '-----END RSA PRIVATE KEY-----');
-    return '-----BEGIN RSA PRIVATE KEY-----\n' + c.join('\n') + '\n-----END RSA PRIVATE KEY-----';
+    return '-----BEGIN RSA PRIVATE KEY-----\n' + c.join('\n') + '\n-----END RSA PRIVATE KEY-----\n';
 }
 
 module.exports =
@@ -243,5 +241,4 @@ module.exports =
                 return new HuaweiChannel(userAction, logger, checker, debug);
             }
 };
-
 

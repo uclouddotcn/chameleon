@@ -17,6 +17,7 @@ import com.huawei.gamebox.buoy.sdk.InitParams;
 import com.huawei.gamebox.buoy.sdk.impl.BuoyOpenSDK;
 import com.huawei.gamebox.buoy.sdk.util.BuoyConstant;
 import com.huawei.gamebox.buoy.sdk.util.DebugConfig;
+import com.huawei.hwid.openapi.OpenHwID;
 import com.huawei.hwid.openapi.out.IHwIDCallBack;
 
 import org.json.JSONException;
@@ -54,7 +55,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 int value = bundle.getInt(BuoyConstant.KEY_GAMEBOX_CHANGEUSERLOGIN);
                 DebugConfig.d(Constants.TAG, "onReceive value=" + value);
                 if (BuoyConstant.VALUE_CHANGE_USER == value) {
-                    GlobalParams.hwId = null;
+                    //GlobalParams.hwId = null;
                     onLogout();
                 }
             }
@@ -68,6 +69,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private String mCpName;
     private String mPayUrl;
     private String mPayRsaPublic;
+    private int mPayOrient;
     private SwitchAccountReceiver mSAReceiver;
     private IAccountActionListener mAccountActionListener;
     private boolean mIsDebug;
@@ -83,6 +85,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mPayRsaPublic = cfg.getString("payRsaPubKey");
         mIsDebug = commCfg.mIsDebug;
         mChannel = commCfg.mChannel;
+        mPayOrient = commCfg.mIsLandscape ? 2 : 1;
     }
 
     @Override
@@ -99,7 +102,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 mAppPrivateKey, new GameCallback(activity, cb));
 
         // 如果游戏的引擎为cocos2d或者unity3d，将下面一句代码打开
-        // GlobalParams.hwBuoy.setShowType(2);
+        GlobalParams.hwBuoy.setShowType(2);
 
         // 浮标初始化
         GlobalParams.hwBuoy.init(activity, p);
@@ -138,7 +141,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     mAccountActionListener = accountActionListener;
         Bundle loginBundle = new Bundle();
         // 为登录设置代理
-        GlobalParams.hwId.setLoginProxy(activity,
+        OpenHwID.setLoginProxy(activity,
                 mAppID, new IHwIDCallBack() {
                     @Override
                     public void onUserInfo(String rsp) {
@@ -165,12 +168,12 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                         }, activity);
                     }
                 }, loginBundle);
-        GlobalParams.hwId.login(new Bundle());
+        OpenHwID.login(new Bundle());
     }
 
     @Override
     public void logout(Activity activity) {
-        GlobalParams.hwId.logout();
+        OpenHwID.logout();
         mUserInfo.logout();
         mAccountActionListener = null;
     }
@@ -249,10 +252,9 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public void onDestroy(Activity activity) {
         if (GlobalParams.hwBuoy != null) {
             GlobalParams.hwBuoy.destroy(activity.getApplicationContext());
+            GlobalParams.hwBuoy = null;
         }
-        if (GlobalParams.hwId != null) {
-            GlobalParams.hwId.releaseResouce();
-        }
+        OpenHwID.releaseResouce();
         if (mSAReceiver != null) {
             activity.unregisterReceiver(mSAReceiver);
         }
@@ -279,21 +281,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                           String productName, String productDesc, String orderId, String sign,
                           final IDispatcherCb cb) {
 
-        String priceStr = String.format("%d.%2d", price/100, price%100);
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("userID", mPayID);
-        params.put("applicationID", mAppID);
-        params.put("amount", priceStr);
-        params.put("productName", productName);
-        params.put("productDesc", productDesc);
-        params.put("requestId", orderId);
-
-        String noSign = HuaweiPayUtil.getSignData(params);
-        DebugConfig.d("startPay", "签名参数noSign：" + noSign);
-        String sign_ = Rsa.sign(noSign, GlobalParams.PAY_RSA_PRIVATE);
-        DebugConfig.d("startPay", "签名： " + sign_ + "    " + sign);
-
-
+        String priceStr = String.format("%d.%02d", price/100, price%100);
         Log.d(Constants.TAG, "price str is " + priceStr);
         Map<String, Object> payInfo = new HashMap<String, Object>();
         payInfo.put("amount", priceStr);
@@ -303,11 +291,11 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         payInfo.put("userName", mCpName);
         payInfo.put("applicationID", mAppID);
         payInfo.put("userID", mPayID);
-        payInfo.put("sign", sign_);
+        payInfo.put("sign", sign);
         payInfo.put("notifyUrl", mPayUrl);
         // payInfo.put("environment", HuaweiPayUtil.environment_live);
         String accessToken = "";
-        HashMap userInfo = GlobalParams.hwId.getDefaultUserInfo();
+        HashMap userInfo = OpenHwID.getDefaultUserInfo();
         if (userInfo != null) {
             accessToken = (String) userInfo.get("accesstoken");
         }
@@ -319,6 +307,8 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             payInfo.put("showLog", false);
         }
         payInfo.put("serviceCatalog", "X6");
+        payInfo.put("screentOrient", mPayOrient);
+
         DebugConfig.d("startPay", "支付请求参数 : " + payInfo.toString());
 
         IHuaweiPay payHelper = new MobileSecurePayHelper();
