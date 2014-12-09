@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp"
+    android:layout_marginBottom="90dp"
+    android:background="@color/cmmn_black" >
+
+    <!-- 账号 -->
+
+    <LinearLayout
+        android:id="@+id/account_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:addStatesFromChildren="true"
+        android:background="@drawable/jolo_edit_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        >
+
+        <ImageView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:background="@drawable/jolo_account" />
+        
+        <EditText
+            android:id="@+id/login_username_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.42"
+            android:background="@color/transparent"
+            android:digits="@string/jolo_register_digits"
+            android:gravity="center_vertical"
+            android:hint="@string/jolo_login_username_hint"
+            android:imeOptions="actionNext"
+            android:inputType="textVisiblePassword"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:padding="7dp"
+            android:textColor="@color/color_tv"
+            android:textColorHint="@color/hint_color"
+            android:textCursorDrawable="@null" />
+        
+        <ImageView
+            android:id="@+id/more_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="5dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="8dp"
+            android:src="@drawable/jolo_more" />
+    </LinearLayout>
+
+    
+    <!-- 密码 -->
+    <LinearLayout
+        android:id="@+id/pwd_layout"
+        android:layout_below="@id/account_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/jolo_edit_bg"
+        android:addStatesFromChildren="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:background="@drawable/jolo_pwd" />
+
+        <EditText
+            android:id="@+id/login_pwd_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:digits="@string/jolo_register_digits"
+            android:hint="@string/jolo_login_pwd_hint"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:maxLength="20"
+            android:textSize="16sp"
+            android:padding="7dp"
+            android:singleLine="true"
+            android:textColor="@color/color_tv"
+            android:textColorHint="@color/hint_color"
+            android:textCursorDrawable="@null"
+             />
+    </LinearLayout>
+    
+	<RelativeLayout
+        android:id="@+id/modifypwd_layout"
+        android:layout_below="@id/pwd_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/transparent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
+	    
+		<CheckBox
+		    android:id="@+id/savepwd_cb"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentLeft="true"
+		    android:button="@drawable/jolo_checkbox_selector"
+		    android:checked="true"
+		    android:paddingLeft="20dp"
+		    android:textSize="14sp"
+		    android:text="@string/jolo_save_pwd"
+		    android:textColor="@color/jolo_white" />
+	
+		<LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+	        android:gravity="center_vertical"
+	        >
+	
+	        <CheckBox
+	            android:id="@+id/register_agree_checkbox"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:button="@drawable/jolo_checkbox_selector"
+	            android:paddingLeft="20dp"
+	            android:text="@string/jolo_register_agree"
+	            android:textColor="@color/jolo_white"
+	            android:textSize="14sp"
+	            android:visibility="invisible" />
+	
+	        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:clickable="true"
+	        android:onClick="findPwd"
+	        android:textSize="14sp"
+	        android:text="@string/jolo_modifypwd_title"
+	        android:textColor="@color/jolo_white" />
+    	</LinearLayout>
+	    
+	</RelativeLayout>
+	
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_below="@id/modifypwd_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center_vertical"
+        >
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/jolo_trans_bg"
+            android:gravity="center"
+            android:onClick="doRegister"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/jolo_login_register_btn"
+            android:textColor="@color/jolo_white"
+            android:textSize="18sp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/jolo_orange_bg"
+            android:gravity="center"
+            android:onClick="doLogin"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/jolo_login_login_btn"
+            android:textColor="@color/jolo_white"
+            android:textSize="18sp" />
+    </LinearLayout>
+    
+    <Button
+	       android:id="@+id/jolo_fast_reg_btn"
+	       android:layout_width="match_parent"
+	       android:layout_height="wrap_content"
+	       android:layout_below="@id/button_layout"
+	       android:layout_marginTop="10dp"
+		   android:layout_marginLeft="20dp"
+		   android:layout_marginRight="20dp"
+		   android:paddingTop="8dp"
+           android:paddingBottom="8dp"
+	       android:background="@drawable/jolo_blue_bg"
+	       android:gravity="center"
+	       android:onClick="doFastRegister"
+	       android:textSize="18sp"
+	       android:text="@string/jolo_fast_register"
+	       android:textColor="@color/jolo_white" />
+    
+    <LinearLayout
+        android:id="@+id/protol_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/jolo_fast_reg_btn"
+        android:layout_marginTop="10dp"
+	    android:layout_marginLeft="20dp"
+	    android:layout_marginRight="20dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp" >
+	
+	        <CheckBox
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginRight="5dp"
+	            android:button="@drawable/jolo_checkbox_selector"
+	            android:checked="true"
+	            android:paddingLeft="20dp"
+	            android:text="@string/jolo_register_agree"
+	            android:textColor="@color/jolo_white"
+	            android:textSize="14sp" />
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:clickable="true"
+	            android:onClick="goLink"
+	            android:text="@string/jolo_register_rule"
+	            android:textColor="@color/jolo_white"
+	            android:textSize="14sp" />
+    	</LinearLayout>
+    	
+    <ListView
+        android:id="@+id/accout_lv"
+        android:layout_below="@id/account_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@color/transparent"
+        android:listSelector="@color/transparent"
+        android:background="@drawable/jolo_edit_bg"
+        android:divider="@null"
+        android:fadingEdge="none"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="20dp"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="false" 
+        android:visibility="gone">
+    </ListView>
+
+    <ImageView
+        android:id="@+id/moregames_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/jolo_platform" />
+
+</RelativeLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="80dip"
+    android:layout_height="60dip" >
+
+    <TextView
+        android:id="@+id/alipay_price_value"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="8.0dip" 
+        android:layout_marginRight="8.0dip"
+        android:layout_marginTop="3dip"
+        android:layout_marginBottom="3dip"
+        android:gravity="center"
+        android:textColor="@color/jolopay_black"
+        android:textSize="16sp"
+        android:background="@drawable/jolopay_alipay_price_bg"/>
+ 
+
+    <TextView
+        android:id="@+id/alipay_price_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/jolopay_alipay_selected_tip"
+        android:gravity="center" 
+        android:visibility="gone"/>
+
+</RelativeLayout>

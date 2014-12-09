@@ -111,8 +111,7 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         LenovoGameApi.GamePayRequest payRequest = new LenovoGameApi.GamePayRequest();
         // 请填写商品自己的参数
         payRequest.addParam("appid", mCfg.mAppID);
-        payRequest.addParam("appkey", mCfg.mAppKey);
-        payRequest.addParam("waresid", 0);//商户自建商品编码 以此区分是否是虚拟货币购买
+        payRequest.addParam("waresid", 1);//商户自建商品编码 以此区分是否是虚拟货币购买
         payRequest.addParam("exorderno", orderId);//外部订单号
         payRequest.addParam("price", realPayMoney);
         payRequest.addParam("cpprivateinfo", currencyName);
@@ -167,8 +166,7 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         LenovoGameApi.GamePayRequest payRequest = new LenovoGameApi.GamePayRequest();
         // 请填写商品自己的参数
         payRequest.addParam("appid", mCfg.mAppID);
-        payRequest.addParam("appid", mCfg.mAppKey);
-        payRequest.addParam("waresid", 0);//商户自建商品编码 以此区分是否是充值
+        payRequest.addParam("waresid", 1);//商户自建商品编码 以此区分是否是充值
         payRequest.addParam("exorderno", orderId);
         payRequest.addParam("price", realPayMoney);
         payRequest.addParam("cpprivateinfo", productID);
@@ -176,7 +174,7 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             payRequest.addParam("notifyurl", mCfg.mPayUrl);
         }
 
-        LenovoGameApi.doPay(activity,mCfg.mAppKey, payRequest, new LenovoGameApi.IPayResult() {
+        LenovoGameApi.doPay(activity, mCfg.mAppKey, payRequest, new LenovoGameApi.IPayResult() {
             @Override
             public void onPayResult(int resultCode, String signValue,
                                     String resultInfo) {// resultInfo = 应用编号&商品编号&外部订单号

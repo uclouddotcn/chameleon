@@ -70,6 +70,9 @@ android {
         gionee {
 
         }
+        htc {
+
+        }
         p_getui {
 
         }
@@ -118,6 +121,7 @@ dependencies {
     gfanCompile project(':channels:gfan')
     lenovoCompile project(':channels:lenovo')
     gioneeCompile project(':channels:gionee')
+    htcCompile project(':channels:htc')
     p_getuiCompile project(':channels:p_getui')
     p_getuiCompile project(':channels:p_jpush')
     p_getuiCompile project(':channels:p_umeng')
