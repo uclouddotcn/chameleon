@@ -2,11 +2,16 @@ package prj.chameleon.gionee;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.gionee.gamesdk.AccountInfo;
 import com.gionee.gamesdk.GamePayer;
 import com.gionee.gamesdk.GamePlatform;
 import com.gionee.gamesdk.OrderInfo;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
@@ -30,6 +35,7 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private UserInfo mUserInfo;
     private IAccountActionListener mAccountActionListener;
     private GamePayer mGamePayer;
+    private IDispatcherCb mPayCb;
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Config();
@@ -40,6 +46,9 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void init(Activity activity, IDispatcherCb cb) {
         GamePlatform.getInstance(activity).init(mCfg.mAppKey);
+        if (mGamePayer != null)
+            return;
+        mGamePayer = new GamePayer(activity);
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
@@ -90,35 +99,7 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,//总价
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        mGamePayer = new GamePayer(activity);
-
-        OrderInfo mOrderInfo = new OrderInfo();
-        mOrderInfo.setApiKey(mCfg.mAppKey);
-        mOrderInfo.setOutOrderNo(orderId);
-        mOrderInfo.setSubmitTime(payInfo);
-
-        GamePayer.GamePayCallback mGamePayCallback = mGamePayer.new GamePayCallback(){
-            @Override
-            public void onPaySuccess() {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-            }
-
-            @Override
-            public void onPayCancel() {
-                cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
-            }
-
-            @Override
-            public void onPayFail(String stateCode) {
-                cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
-            }
-        };
-
-        try {
-            mGamePayer.pay(mOrderInfo, mGamePayCallback);
-        } catch (Exception e) {
-            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-        }
+        onStartPay(orderId, payInfo, cb);
     }
 
     @Override
@@ -132,37 +113,8 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     String payInfo,
                     int productCount,//个数
                     int realPayMoney,
-                    final IDispatcherCb cb) {
-
-        GamePayer mGamePayer = new GamePayer(activity);
-
-        OrderInfo mOrderInfo = new OrderInfo();
-        mOrderInfo.setApiKey(mCfg.mAppKey);
-        mOrderInfo.setOutOrderNo(orderId);
-        mOrderInfo.setSubmitTime(payInfo);
-
-        GamePayer.GamePayCallback mGamePayCallback = mGamePayer.new GamePayCallback(){
-            @Override
-            public void onPaySuccess() {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-            }
-
-            @Override
-            public void onPayCancel() {
-                cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
-            }
-
-            @Override
-            public void onPayFail(String stateCode) {
-                cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
-            }
-        };
-
-        try {
-            mGamePayer.pay(mOrderInfo, mGamePayCallback);
-        } catch (Exception e) {
-            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-        }
+                    IDispatcherCb cb) {
+        onStartPay(orderId, payInfo, cb);
     }
 
     @Override
@@ -206,6 +158,9 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void onResume(Activity activity, IDispatcherCb cb) {
         super.onResume(activity, cb);
+        if (mPayCb != null) {
+            mPayCb = null;
+        }
         if (mGamePayer != null)
             mGamePayer.onResume();
     }
@@ -213,7 +168,59 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void onDestroy(Activity activity) {
         super.onDestroy(activity);
+        mPayCb = null;
         if (mGamePayer != null)
             mGamePayer.onDestroy();
+    }
+
+    //以下为辅助方法
+    private void onStartPay(String orderId, String payInfo, IDispatcherCb cb){
+        if (mGamePayer == null || mPayCb != null)
+            return;
+        GamePayer.GamePayCallback mGamePayCallback = mGamePayer.new GamePayCallback(){
+            @Override
+            public void onPaySuccess() {
+                if (mPayCb == null)
+                    return;
+                mPayCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                mPayCb = null;
+            }
+
+            @Override
+            public void onPayCancel() {
+                if (mPayCb == null)
+                    return;
+                mPayCb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
+                mPayCb = null;
+            }
+
+            @Override
+            public void onPayFail(String stateCode) {
+                if (mPayCb == null)
+                    return;
+                mPayCb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
+                mPayCb = null;
+            }
+        };
+        String submitTime = null;
+
+        try {
+            JSONObject jsonObject = new JSONObject(payInfo);
+            submitTime = jsonObject.getString("time");
+        } catch (JSONException e) {
+            Log.e("GioneeChannelAPI", "fail to get payinfo", e);
+            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+        }
+        OrderInfo mOrderInfo = new OrderInfo();
+        mOrderInfo.setApiKey(mCfg.mAppKey);
+        mOrderInfo.setOutOrderNo(orderId);
+        mOrderInfo.setSubmitTime(submitTime);
+
+        try {
+            mGamePayer.pay(mOrderInfo, mGamePayCallback);
+            mPayCb = cb;
+        } catch (Exception e) {
+            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+        }
     }
 }
