@@ -120,11 +120,11 @@ dependencies {
     meizuCompile project(':channels:meizu')
     gfanCompile project(':channels:gfan')
     lenovoCompile project(':channels:lenovo')
-    lenovoCompile project(':channels:gionee')
-    lenovoCompile project(':channels:htc')
+    gioneeCompile project(':channels:gionee')
+    htcCompile project(':channels:htc')
     p_getuiCompile project(':channels:p_getui')
-    p_getuiCompile project(':channels:p_jpush')
-    p_getuiCompile project(':channels:p_umeng')
+    p_jpushCompile project(':channels:p_jpush')
+    p_umengCompile project(':channels:p_umeng')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
