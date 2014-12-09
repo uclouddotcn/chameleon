@@ -211,13 +211,13 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             Log.e("GioneeChannelAPI", "fail to get payinfo", e);
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
         }
-        OrderInfo mOrderInfo = new OrderInfo();
-        mOrderInfo.setApiKey(mCfg.mAppKey);
-        mOrderInfo.setOutOrderNo(orderId);
-        mOrderInfo.setSubmitTime(submitTime);
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setApiKey(mCfg.mAppKey);
+        orderInfo.setOutOrderNo(orderId);
+        orderInfo.setSubmitTime(submitTime);
 
         try {
-            mGamePayer.pay(mOrderInfo, mGamePayCallback);
+            mGamePayer.pay(orderInfo, mGamePayCallback);
             mPayCb = cb;
         } catch (Exception e) {
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
