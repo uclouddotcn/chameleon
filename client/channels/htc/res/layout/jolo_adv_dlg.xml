@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="25dp"
+	android:layout_marginRight="25dp"
+	android:background="@drawable/jolo_dlgbg"
+    >
+    
+	    <RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+			android:background="@drawable/jolo_dlgbg">
+		    <TextView
+		        android:id="@+id/adv_title_tv"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="18sp"
+		        android:layout_marginTop="15dp"
+				android:layout_centerHorizontal="true"	        
+		        android:text="@string/jolo_game_mainpage"
+		        android:textColor="@color/jolo_yellow" />
+		    <View 
+		      android:id="@+id/diver1"
+		      android:layout_width="fill_parent"
+		      android:layout_height="1dp"
+		      android:layout_margin="8dp"
+		      android:layout_below="@id/adv_title_tv"
+		      android:background="@color/divider_color" />
+		    
+		    <TextView
+		        android:id="@+id/adv_content_tv"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@id/diver1"
+		        android:layout_marginLeft="20dp"
+		        android:layout_marginRight="20dp"
+		        android:textSize="15sp"
+		        android:text="@string/jolo_suc_fast_reg"
+		        android:textColor="@color/cmmn_black" />
+		    <View 
+		      android:id="@+id/diver2"
+		      android:layout_width="fill_parent"
+		      android:layout_height="1dp"
+		      android:layout_margin="8dp"
+		      android:layout_below="@id/adv_content_tv"
+		      android:background="@color/divider_color" />
+			<TextView
+		        android:id="@+id/adv_qq_tv"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@id/diver2"
+		        android:textSize="18sp"
+		        android:paddingBottom="10dp"
+		        android:layout_centerHorizontal="true"	  
+		        android:text="@string/jolo_game_mainpage"
+		        android:textColor="@color/cmmn_blue" />
+		
+		<ImageView 
+		    android:id="@+id/close_btn"
+	        android:layout_width="36dp"
+		    android:layout_height="36dp"  
+		    android:layout_alignParentRight="true"
+		    android:padding="8dp"
+		    android:src="@drawable/jolo_close"/>
+	</RelativeLayout>
+</RelativeLayout>

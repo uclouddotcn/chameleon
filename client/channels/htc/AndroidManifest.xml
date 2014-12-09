@@ -1,0 +1,91 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="prj.chameleon.htc">
+
+    <!-- 读取设备信息 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 往sdcard中写入数据的权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 在sdcard中创建/删除文件的权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 网络连接 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 读取验证码 -->
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <!-- 支持多屏幕 -->
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
+
+    <application>
+        <!-- 请把以下内容 copy到游戏的AndroidManifest -->
+        <!-- 登录 -->
+        <activity
+            android:name="com.jolo.account.activity.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|locale|mcc|mnc" >
+        </activity>
+        <!-- 注册选项 -->
+        <activity
+            android:name="com.jolo.account.activity.RegisterOptionActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|locale|mcc|mnc" />
+
+        <!-- 注册 -->
+        <activity
+            android:name="com.jolo.account.activity.NormalRegisterActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|locale|mcc|mnc" />
+
+        <!-- 手机注册 -->
+        <activity
+            android:name="com.jolo.account.activity.RegisterPhoneActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|locale|mcc|mnc" />
+
+        <!-- 绑定手机 -->
+        <activity
+            android:name="com.jolo.account.activity.BindPhoneActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|locale|mcc|mnc" />
+        <!-- 注册协议 -->
+        <activity
+            android:name="com.jolo.account.activity.ProtocolActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|locale|mcc|mnc" />
+
+        <!-- 修改密码 -->
+        <activity
+            android:name="com.jolo.account.activity.ModifyPwdActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|locale|mcc|mnc"
+            android:windowSoftInputMode="stateAlwaysVisible" />
+
+        <!-- 支付界面  Begin -->
+        <activity
+            android:name="com.jolo.jolopay.JoloPayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|navigation|orientation"
+            android:exported="true"
+            android:theme="@style/Theme.NoTitle"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.unionpay.uppay.PayActivityEx"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity
+            android:name="com.unionpay.uppay.PayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.UPPay" >
+        </activity>
+
+        <!-- 支付界面 End -->
+        <!-- 请把以上内容 copy到游戏的AndroidManifest.xml -->
+    </application>
+</manifest>
