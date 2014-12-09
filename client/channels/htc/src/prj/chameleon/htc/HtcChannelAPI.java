@@ -47,6 +47,8 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Config();
         mCfg.mGameCode = cfg.getString("gameCode");
+        mCfg.mGameName = cfg.getString("gameName");;
+        mCfg.mNotifyURL = cfg.getString("payUrl");
         mChannel = commCfg.mChannel;
     }
 
@@ -74,6 +76,21 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             onPayResult(data);
         }
     };
+
+    @Override
+    public JSONObject getPayInfo() {
+        if (mUserInfo == null) {
+            return null;
+        }
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("s", mUserInfo.mUserSession);
+            return obj;
+        } catch (JSONException e) {
+            Log.e(Constants.TAG, "Fail to make json obj", e);
+            return null;
+        }
+    }
 
     @Override
     public void login(Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
@@ -208,30 +225,14 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             cb.onFinished(Constants.ErrorCode.ERR_PAY_IN_PROGRESS, null);
             return;
         }
-
-        Order order = new Order();
-        String joloOrder = "";
         String joloOrderSign = "";
-
+        String joloOrder= "";
         try {
             JSONObject jsonObject = new JSONObject(payInfo);
-            joloOrderSign = jsonObject.getString("orderSign");
-            order.setProductID(jsonObject.getString("productID")); // 设置产品ID
-            order.setProductDes(jsonObject.getString("productDes")); // 设置产品描述
-            order.setProductName(jsonObject.getString("productName")); // 设置产品名称
+            joloOrderSign = jsonObject.getString("sign");
+            joloOrder = jsonObject.getString("p");
         } catch (JSONException e) {
         }
-
-        order.setAmount(String.valueOf(realPayMoney)); // 设置支付金额，单位分
-        order.setGameCode(mCfg.mGameCode); // 设置游戏唯一ID,由Jolo提供
-        order.setGameName(mCfg.mGameName); // 设置游戏名称
-        order.setGameOrderid(orderId); // 设置游戏订单号
-        order.setNotifyUrl(mCfg.mNotifyURL); // 设置支付通知
-
-        order.setSession(mUserInfo.mUserSession); // 设置用户session
-        order.setUsercode(mUserInfo.mUserId); // 设置用户ID
-
-        joloOrder = order.toJsonOrder(); // 生成Json字符串订单
 
         JoloSDK.startPay(activity, joloOrder, joloOrderSign);
         mPayCb = cb;
@@ -254,15 +255,8 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         userInfo.mAccount = data.getStringExtra(JoloSDK.ACCOUNT);
 
         mUserInfo = userInfo;
-        JSONObject jsonOther = new JSONObject();
-        try {
-            jsonOther.put(userInfo.mUserId, "userId");
-            jsonOther.put(userInfo.mUserName, "userName");
-            jsonOther.put(userInfo.mAccountSign, "accountSign");
-            jsonOther.put(userInfo.mAccount, "account");
-        } catch (JSONException e) {
-        }
-        mLoginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.mUserSession, jsonOther.toString(), mChannel));
+        mLoginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.mAccountSign, userInfo.mAccount, mChannel));
+        mLoginCb = null;
     }
 
     private void onPayResult(Intent data){
