@@ -111,7 +111,6 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         LenovoGameApi.GamePayRequest payRequest = new LenovoGameApi.GamePayRequest();
         // 请填写商品自己的参数
         payRequest.addParam("appid", mCfg.mAppID);
-        payRequest.addParam("appkey", mCfg.mAppKey);
         payRequest.addParam("waresid", 1);//商户自建商品编码 以此区分是否是虚拟货币购买
         payRequest.addParam("exorderno", orderId);//外部订单号
         payRequest.addParam("price", realPayMoney);
