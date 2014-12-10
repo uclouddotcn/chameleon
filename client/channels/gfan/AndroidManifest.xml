@@ -20,6 +20,12 @@
 
     <application>
         <!-- start for gfan sdk -->
+
+        <meta-data
+            android:name="gfan_pay_appkey" android:value="330543028" chameleon:replace="android:value=%appKey%" />
+        <meta-data
+            android:name="gfan_cpid" android:value="渠道1" chameleon:replace="android:value=%appCpid%"/>
+
         <activity
             android:name="com.mappn.sdk.uc.activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -157,11 +163,6 @@
         </service>
 
         <!--alipay sdk end -->
-
-        <meta-data
-            android:name="gfan_pay_appkey" android:value="330543028" chameleon:replace="android:value=%appKey%" />
-        <meta-data
-            android:name="gfan_cpid" android:value="渠道1" chameleon:replace="android:value=%appCpid%"/>
         <!-- end for gfan sdk -->
     </application>
 </manifest>
