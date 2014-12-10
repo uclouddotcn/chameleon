@@ -237,6 +237,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 GlobalParams.hwBuoy.showSmallWindow(activity.getApplicationContext());
             }
         }
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override

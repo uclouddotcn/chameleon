@@ -137,6 +137,7 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             mPayCb = null;
         }
         super.onResume(activity, cb);
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override

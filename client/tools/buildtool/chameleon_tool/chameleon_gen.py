@@ -29,7 +29,7 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, global
         orientation = 'landscape'
     else:
         orientation = 'portrait'
-    if sc is not None:
+    if sc is not None or channel == "lenovo":
         manifestInst.replaceEntryActivity(orientation, channel)
     if icons is not None:
         manifestInst.setIcon('chameleon_icon')
