@@ -220,12 +220,6 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void logout(Activity activity) {
-        MiCommplatform.getInstance().miLogout(new OnLoginProcessListener() {
-            @Override
-            public void finishLoginProcess(int i, MiAccountInfo miAccountInfo) {
-
-            }
-        });
         mUserInfo = null;
     }
 
