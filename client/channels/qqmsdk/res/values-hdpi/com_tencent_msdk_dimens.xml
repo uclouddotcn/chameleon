@@ -5,6 +5,15 @@
     <dimen name="title">15dp</dimen> <!-- 30 -->
     <dimen name="notice_title">15dp</dimen> <!-- 30 -->
     <dimen name="confirm_textsize">15dp</dimen> <!-- 30 --> 
+    
+     <!-- 2.454545454545455  -->
+    <dimen name="image_height_h">170dp</dimen>
+    <dimen name="image_width_h">417dp</dimen>
+    
+    <!-- 1.47557003257329  -->
+    <dimen name="image_height_v">398dp</dimen>
+    <dimen name="image_width_v">270dp</dimen>
+    
     <dimen name="roll_dialog_height">30dp</dimen> <!-- 30 -->
     <dimen name="roll_textsize">14dp</dimen> <!-- 28 -->
     <dimen name="roll_height">30dp</dimen> <!-- 30 -->
@@ -17,4 +26,6 @@
     <dimen name="share_dialog_icon_height">28dp</dimen>
     <dimen name="search_engine_dialog_item_height">48dp</dimen>
     <dimen name="share_to_item_margin">10dp</dimen>
+    
+    
 </resources>

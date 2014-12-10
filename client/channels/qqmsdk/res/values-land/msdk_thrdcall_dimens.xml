@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+     <dimen name="thrdcall_toolbar_height">42dp</dimen>
+     <dimen name="thrdcall_more_cancel_margin">40dp</dimen>
+</resources>

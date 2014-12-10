@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    android:background="@drawable/msdk_thrdcall_action_sheet_base_9">
+        
+    <GridView
+        android:id="@+id/dlg_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:numColumns="@integer/thrdcall_more_gridview_num"
+        android:verticalSpacing="10dp" >
+    </GridView>
+<!--             android:layout_marginLeft="10dp" -->
+<!--         android:layout_marginRight="10dp" -->
+    <com.tencent.msdk.webview.MarginButton
+        android:id="@+id/dlg_btn_cancel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/thrdcall_more_cancel_margin"
+        android:layout_marginRight="@dimen/thrdcall_more_cancel_margin"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/msdk_thrdcall_browser_dialog_btn_cancel_bkg"
+        android:textColor="@color/thrdcall_white"
+        android:text="@android:string/cancel" />
+</LinearLayout>

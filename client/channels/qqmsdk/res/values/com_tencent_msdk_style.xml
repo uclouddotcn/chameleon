@@ -59,47 +59,18 @@
     </style>
     
     <!-- 浏览器 style S-->
-    <style name="shareInputAnimationStyle" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/thrdcall_more_dialog_enter</item>
-        <item name="android:windowExitAnimation">@anim/thrdcall_more_dialog_exit</item>
+    <style name="SheetDialogTheme" parent="@android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item> 
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
-
-    <style name="thrdcall_more_text" parent="@android:style/Widget.TextView">
-        <item name="android:clickable">true</item>
-        <item name="android:textColor">@color/thrdcall_white</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:shadowColor">@color/thrdcall_more_text_shadow_color</item>
-        <item name="android:shadowDx">0</item>
-        <item name="android:shadowDy">2</item>
-        <item name="android:shadowRadius">2</item>
-        <item name="android:textSize">@dimen/thrdcall_more_text_size</item>
-        <item name="android:drawablePadding">@dimen/thrdcall_more_text_leftmargin</item>
-        <item name="android:background">@drawable/thrdcall_more_item_bkg</item>
-        <item name="android:paddingLeft">@dimen/thrdcall_more_text_leftmargin</item>
-        <item name="android:paddingRight">@dimen/thrdcall_more_text_leftmargin</item>
+    
+    <style name="SheetDialogAnimation" parent="android:Animation">          
+        <item name="@android:windowEnterAnimation">@anim/thrdcall_more_dialog_enter</item>  //进入时的动画   
+        <item name="@android:windowExitAnimation">@anim/thrdcall_more_dialog_exit</item>    //退出时的动画   
     </style>
-
-    <style name="ThrdCallActivityAnimationNone" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@null</item>
-        <item name="android:windowExitAnimation">@null</item>
-    </style>
-
-    <style name="ThrdCallActivityAnimationOut" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@null</item>
-        <item name="android:windowExitAnimation">@anim/thrdcall_activity_push_out</item>
-    </style>
-
-    <style name="ThrdCallActivity" parent="@android:style/Theme.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@drawable/thrdcall_transparent</item>
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowShowWallpaper">false</item>
-        <item name="android:windowAnimationStyle">@style/ThrdCallActivityAnimationIn</item>
-    </style>
-
-    <style name="ThrdCallActivityAnimationIn" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/thrdcall_activity_push_in</item>
-        <item name="android:windowExitAnimation">@null</item>
-    </style>
+    
     <!-- 浏览器 style E-->
 </resources>
