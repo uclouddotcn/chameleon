@@ -4,11 +4,11 @@
     "chamversion": "1.3.0",
     "version": "V2.2.1",
     "cfgitem": {
-        "appid" : {
+        "appId" : {
             "type": "string",
             "desc": "app id"
-        }
-        "appkey" : {
+        },
+        "appKey" : {
             "type": "string",
             "desc": "app key"
         }

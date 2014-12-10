@@ -53,6 +53,11 @@
         "splashscreen": 1,
         "icon": "1"
     },
+    "huawei": {
+        "name": "华为",
+        "sdk": "huawei",
+        "pkgsuffix": ".huawei$"
+    },
     "meizu": {
         "name": "魅族",
         "sdk": "meizu",
@@ -68,6 +73,13 @@
         "name": "联想",
         "sdk": "lenovo",
         "pkgsuffix": ".lenovo$",
+        "icon": "1"
+    },
+    "htc": {
+        "name": "HTC",
+        "sdk": "htc",
+        "pkgsuffix": ".htc$",
+        "splashscreen": 1,
         "icon": "1"
     }
 }

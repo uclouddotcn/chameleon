@@ -34,7 +34,6 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private static class Config {
         public String mAppID;
         public String mAppKey;
-        public String mAppSecret;
     }
 
     private Config mCfg;
@@ -45,7 +44,6 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfg = new Config();
         mCfg.mAppID = cfg.getString("appId");
         mCfg.mAppKey = cfg.getString("appKey");
-        mCfg.mAppSecret = cfg.getString("appSecret");
         mChannel = commCfg.mChannel;
     }
 
