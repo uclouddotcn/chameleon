@@ -114,33 +114,28 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,//总价
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        if (realPayMoney > 99999) {
+        if (realPayMoney > 9999900) {
             Log.e(Constants.TAG, "meizu: excceeds money limit");
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
             return;
         }
 
-        MzBuyInfo mzBuyInfo = new MzBuyInfo().setOrderId(orderId).setUserUid(uidInGame).setProductId(serverId).setAppid(mCfg.mAppID)
-                .setPerPrice(String.valueOf(rate)).setBuyCount(realPayMoney / rate);
-        if (allowUserChange){
-            mzBuyInfo.setOrderAmount(String.valueOf(realPayMoney / 100));
-        }else {
-            mzBuyInfo.setOrderAmount("0");
-        }
-
+        MzBuyInfo buyInfo = new MzBuyInfo();
         try {
-            JSONObject mPayInfo = new JSONObject(payInfo);
-            if (mPayInfo != null){
-                mzBuyInfo.setPayType(mPayInfo.getInt("payType")).setCreateTime(mPayInfo.getLong("createTime"))
-                        .setCpUserInfo(mPayInfo.getString("cpUserInfo")).setSignType(mPayInfo.getString("signType"))
-                        .setProductSubject(mPayInfo.getString("productSubject")).setProductBody(mPayInfo.getString("productBody"))
-                        .setProductUnit(mPayInfo.getString("productUnit")).setSign(mPayInfo.getString("sign"));
-            }
+            JSONObject payInfoObj = new JSONObject(payInfo);
+            buyInfo.setPayType(payInfoObj.getInt("pay_type")).setCreateTime(payInfoObj.getLong("create_time"))
+                    .setCpUserInfo(payInfoObj.optString("user_info")).setSignType(payInfoObj.getString("sign_type"))
+                    .setProductSubject(payInfoObj.optString("product_subject")).setProductBody(payInfoObj.optString("product_body"))
+                    .setProductUnit(payInfoObj.optString("product_unit")).setSign(payInfoObj.getString("sign"))
+                    .setOrderId(payInfoObj.getString("cp_order_id")).setUserUid(payInfoObj.getString("uid"))
+                    .setProductId(payInfoObj.getString("product_id")).setOrderAmount(payInfoObj.getString("total_price"))
+                    .setPerPrice(payInfoObj.getString("product_per_price")).setBuyCount(payInfoObj.getInt("buy_amount"))
+                    .setAppid(payInfoObj.getString("app_id"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(Constants.TAG, "Fail to get pay info", e);
         }
 
-        MzGameCenterPlatform.payOnline(activity, mzBuyInfo, new MzPayListener(){
+        MzGameCenterPlatform.payOnline(activity, buyInfo, new MzPayListener(){
             @Override
             public void onPayResult(int code, MzBuyInfo mzBuyInfo, String errorMsg) {
                 switch(code){
@@ -172,27 +167,28 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int realPayMoney,
                     final IDispatcherCb cb) {
 
-        if (realPayMoney > 99999) {
+        if (realPayMoney > 9999900) {
             Log.e(Constants.TAG, "meizu: excceeds money limit");
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
             return;
         }
 
-        MzBuyInfo mzBuyInfo = new MzBuyInfo().setOrderId(orderId).setUserUid(uidInGame).setProductId(serverId).setAppid(mCfg.mAppID)
-                .setOrderAmount(String.valueOf(realPayMoney)).setPerPrice(String.valueOf(realPayMoney / productCount)).setBuyCount(productCount);
+        MzBuyInfo buyInfo = new MzBuyInfo();
         try {
-            JSONObject mPayInfo = new JSONObject(payInfo);
-            if (mPayInfo != null){
-                mzBuyInfo.setPayType(mPayInfo.getInt("payType")).setCreateTime(mPayInfo.getLong("createTime"))
-                        .setCpUserInfo(mPayInfo.getString("cpUserInfo")).setSignType(mPayInfo.getString("signType"))
-                        .setProductSubject(mPayInfo.getString("productSubject")).setProductBody(mPayInfo.getString("productBody"))
-                        .setProductUnit(mPayInfo.getString("productUnit")).setSign(mPayInfo.getString("sign"));
-            }
+            JSONObject payInfoObj = new JSONObject(payInfo);
+            buyInfo.setPayType(payInfoObj.getInt("pay_type")).setCreateTime(payInfoObj.getLong("create_time"))
+                    .setCpUserInfo(payInfoObj.optString("user_info")).setSignType(payInfoObj.getString("sign_type"))
+                    .setProductSubject(payInfoObj.optString("product_subject")).setProductBody(payInfoObj.optString("product_body"))
+                    .setProductUnit(payInfoObj.optString("product_unit")).setSign(payInfoObj.getString("sign"))
+                    .setOrderId(payInfoObj.getString("cp_order_id")).setUserUid(payInfoObj.getString("uid"))
+                    .setProductId(payInfoObj.getString("product_id")).setOrderAmount(payInfoObj.getString("total_price"))
+                    .setPerPrice(payInfoObj.getString("product_per_price")).setBuyCount(payInfoObj.getInt("buy_amount"))
+                    .setAppid(payInfoObj.getString("app_id"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(Constants.TAG, "Fail to get pay info", e);
         }
 
-        MzGameCenterPlatform.payOnline(activity, mzBuyInfo, new MzPayListener(){
+        MzGameCenterPlatform.payOnline(activity, buyInfo, new MzPayListener(){
             @Override
             public void onPayResult(int code, MzBuyInfo mzBuyInfo, String errorMsg) {
                 switch(code){
