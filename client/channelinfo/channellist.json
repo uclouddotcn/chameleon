@@ -74,6 +74,7 @@
         "name": "HTC",
         "sdk": "htc",
         "pkgsuffix": ".htc$",
+        "splashscreen": 1,
         "icon": "1"
     }
 }
