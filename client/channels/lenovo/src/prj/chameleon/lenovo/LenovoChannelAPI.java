@@ -46,6 +46,7 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void init(Activity activity, IDispatcherCb cb) {
         LenovoGameApi.doInit(activity, mCfg.mAppID);
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
