@@ -45,6 +45,7 @@
                 android:id="@+id/dcn_name"
                 android:textColorHint="@color/dcn_login_edit_hint"
                 android:textColor="@color/dcn_light_black"
+                android:textCursorDrawable="@null"
                 android:background="@null"
                 android:layout_weight="1"
                 android:singleLine="true" />
@@ -115,6 +116,7 @@
                 android:background="@null"
                 android:textColorHint="@color/dcn_login_edit_hint"
                 android:textColor="@color/dcn_light_black"
+                android:textCursorDrawable="@null"
                 android:layout_weight="1"
                 android:singleLine="true" />
 
