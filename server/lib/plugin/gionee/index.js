@@ -9,11 +9,13 @@ var restify = require('restify');
 var ErrorCode = require('../common/error-code').ErrorCode;
 var SDKPluginBase = require('../../SDKPluginBase');
 var makePrivatePemFormat = require('../common').makePrivatePemFormat;
+var makePublicPemFormat = require('../common').makePublicPemFormat;
 
 var cfgDesc = {
     appKey: 'string',
     secretKey: 'string',
     privateKey: 'string',
+    publicKey: 'string',
     payUrl: '?string'
 };
 
@@ -166,6 +168,16 @@ function formatTime(d) {
     return s;
 }
 
+GioneeChannel.prototype.checkSign = function (wrapper, params, sign) {
+    var s = Object.keys(params).sort().map(function (k) {
+        return k+'='+params[k];
+    }).join('&');
+    if (!wrapper.cfg.publicKeyObj) {
+        wrapper.cfg.publicKeyObj = ursa.createPublicKey(makePublicPemFormat(wrapper.cfg.publicKey));
+    }
+    return wrapper.cfg.publicKeyObj.hashAndVerify('sha1', new Buffer(s, 'utf8'), new Buffer(sign, 'base64'));
+}
+
 GioneeChannel.prototype.calcSign = function (wrapper, params, includeKey, sep) {
     includeKey = includeKey || false;
     sep = sep || '';
@@ -204,8 +216,7 @@ GioneeChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
         }
         var expectSign = params.sign;
         delete params.sign;
-        var sign = this.calcSign(wrapper, params, true, '&');
-        if (sign === expectSign) {
+        if (!this.checkSign(wrapper, params, expectSign)) {
             this.send(res, "unmatched sign");
             return next();
         }

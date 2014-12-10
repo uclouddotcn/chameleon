@@ -411,14 +411,14 @@ function validatePayOrder(self, pendingOrderInfo, orderInfo) {
         }
     }
 
-    if (orderInfo.uid != orderInfo.uid) {
+    if (pendingOrderInfo.uid !== orderInfo.uid) {
         return {
             message: 'uid not matched',
             code: errorCode.ERR_CHAMELEON_PAY_UID
         };
     }
 
-    if (orderInfo.appUid != orderInfo.appUid) {
+    if (pendingOrderInfo.appUid != orderInfo.appUid) {
         return {
             message: 'app uid not matched',
             code: errorCode.ERR_CHAMELEON_PAY_APPUID
@@ -447,8 +447,10 @@ function checkPayCallback(self, orderInfo, pendingOrderInfo, callback) {
     if (pendingOrderInfo && !orderInfo.appUid) {
         orderInfo.appUid = pendingOrderInfo.appUid;
     }
+    if (pendingOrderInfo && !orderInfo.uid) {
+        orderInfo.uid = pendingOrderInfo.uid;
+    }
     var err = validatePayOrder(self, pendingOrderInfo, orderInfo);
-    self.logger.error({err: err}, 'Fail to verify order');
     if (err) {
     // if the checking failed, the pending order may be already payed,
     // or there is some internal problem occured, either way we can't help

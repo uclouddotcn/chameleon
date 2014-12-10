@@ -144,7 +144,7 @@ HuaweiChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
         var expectSign = params.sign;
         delete params.sign;
         var sign = this.calcSign(wrapper, params);
-        if (sign === expectSign) {
+        if (sign !== expectSign) {
             this.send(res, 1);
             return next();
         }
