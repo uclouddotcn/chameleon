@@ -651,6 +651,10 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public void onResume(Activity activity, final IDispatcherCb cb) {
         WGPlatform.onResume();
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        if (mPayEnv != null) {
+            mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+            mPayEnv = null;
+        }
     }
 
     @Override
@@ -674,7 +678,9 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void onStop(Activity activity) {
-        mUniPay.unbindUnipayService();
+        if (mUniPay != null) {
+            mUniPay.unbindUnipayService();
+        }
         mUniPay = null;
     }
 

@@ -11,6 +11,24 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="appkey">Secret Key</label>
+                <div class="controls">
+                    <input id="appkey" name="Secret Key" type="text" style="width:60%" ng-model="selectedsdk.cfg.secretKey"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="appkey">Private Key</label>
+                <div class="controls">
+                    <input id="appkey" name="Private Key" type="text" style="width:60%" ng-model="selectedsdk.cfg.privateKey"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="appkey">支付通知地址</label>
+                <div class="controls">
+                    <input id="appkey" name="支付通知地址" type="text" style="width:60%" ng-model="selectedsdk.cfg.payUrl"/>
+                </div>
+            </div>
+            <div class="control-group">
                 <div class="controls">
                     <button type="submit" class="btn" ng-disabled="!channelCfgForm.$dirty || channelCfgForm.$invalid">保存</button>
                 </div>

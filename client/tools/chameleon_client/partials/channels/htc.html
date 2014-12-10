@@ -11,15 +11,27 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="gameName">Game Name</label>
+                <label class="control-label" for="gameName">游戏名称</label>
                 <div class="controls">
                     <input id="gamename" name="gamename" type="text" style="width:60%" ng-model="selectedsdk.cfg.gameName"/>
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="notifyURL">NotifyURL</label>
+                <label class="control-label" for="notifyURL">支付回调地址</label>
                 <div class="controls">
-                    <input id="notifyurl" name="notifyurl" type="text" style="width:60%" ng-model="selectedsdk.cfg.notifyURL"/>
+                    <input id="notifyurl" name="notifyurl" type="text" style="width:60%" ng-model="selectedsdk.cfg.payUrl"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="notifyURL">公钥</label>
+                <div class="controls">
+                    <input id="notifyurl" name="notifyurl" type="text" style="width:60%" ng-model="selectedsdk.cfg.pubkey"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="notifyURL">支付私钥</label>
+                <div class="controls">
+                    <input id="notifyurl" name="notifyurl" type="text" style="width:60%" ng-model="selectedsdk.cfg.cpPrivateKey"/>
                 </div>
             </div>
             <div class="control-group">

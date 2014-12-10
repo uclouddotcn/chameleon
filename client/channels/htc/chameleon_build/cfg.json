@@ -12,9 +12,19 @@
             "type" : "string",
             "desc" : "game name"
         },
-        "notifyURL" : {
+        "payUrl" : {
             "type" : "string",
             "desc" : "notify url"
+        },
+        "pubkey": {
+            "type" : "string",
+            "desc" : "notify url",
+            "ignoreInA" : 1
+        },
+        "cpPrivateKey": {
+            "type" : "string",
+            "desc" : "notify url",
+            "ignoreInA" : 1
         }
 
     }
