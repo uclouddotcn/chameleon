@@ -6,18 +6,12 @@
     "cfgitem": {
         "appId" : {
             "type" : "string",
-            "desc" : "1954374"
+            "desc" : "app id"
         },
 
         "appKey" : {
             "type" : "string",
-            "desc" : "8c4e77886b2c445790b9b9ca164c7657"
-        },
-
-        "appSecret" : {
-            "type" : "string",
-            "desc" : "R5E48l9HinpTQ1xNFgEUajxCVPQIQelC",
-            "ignoreInA" : 1
+            "desc" : "app key"
         }
 
     }

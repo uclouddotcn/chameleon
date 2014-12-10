@@ -1,0 +1,21 @@
+<div ng-controller="canctrl">
+    <div class="row-fluid">
+        <h4>{{selectedsdk.name}}</h4>
+    </div>
+    <div class="row-fluid">
+        <form novalidate name="channelCfgForm" class="form-horizontal" ng-submit="updateCurrentCfg()">
+            <div class="control-group">
+                <label class="control-label" for="appkey">APP KEY</label>
+                <div class="controls">
+                    <input id="appkey" name="appkey" type="text" style="width:60%" ng-model="selectedsdk.cfg.appKey"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn" ng-disabled="!channelCfgForm.$dirty || channelCfgForm.$invalid">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

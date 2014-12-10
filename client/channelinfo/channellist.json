@@ -69,6 +69,12 @@
         "sdk": "lenovo",
         "pkgsuffix": ".lenovo$",
         "icon": "1"
+    },
+    "htc": {
+        "name": "HTC",
+        "sdk": "htc",
+        "pkgsuffix": ".htc$",
+        "icon": "1"
     }
 }
 
