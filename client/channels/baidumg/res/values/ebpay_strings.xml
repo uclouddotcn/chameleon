@@ -9,7 +9,7 @@
     <string name="ebpay_pay_mode_credit">信用卡</string>
     <string name="ebpay_pay_mode_debit">储蓄卡</string>
     <string name="ebpay_add_card">+添加新的银行卡</string>
-    <string name="ebpay_use_new_bankcard">使用新银行卡</string>
+    <string name="ebpay_use_new_bankcard">+使用新银行卡</string>
     <string name="ebpay_confirm">确定</string>
     <string name="ebpay_cancel">取消</string>
     <string name="ebpay_retry">重试</string>
@@ -18,7 +18,6 @@
     <string name="ebpay_logout">注销</string>
     <string name="ebpay_no_network">网络错误，请检查网络并重试。</string>
     <string name="ebpay_resolve_error">系统开小差，等一会儿再试吧</string>
-    <string name="ebpay_error_exit">系统开小差，等一会儿再试吧</string>
     <string name="ebpay_img">Image</string>
     <string name="ebpay_req_fail">请求失败</string>
     <string name="ebpay_tip">提示</string>
@@ -46,14 +45,16 @@
     <string name="ebpay_error_cer_">验证码错误，或已经过期</string>
     <string name="ebpya_password_wrong">支付密码错误，请重新输入</string>
     <string name="ebpay_payresult_huifei">预计3分钟到账，详情请查看我的交易</string>
+    <string name="ebpay_payresult_withdraw">预计2小时内到账</string>
     <string name="ebpay_payresult_transfer">预计2小时内到账，详情请查看我的交易</string>
     <string name="ebpay_choose_credit_type">信用卡信息</string>
     <string name="ebpay_choose_debit_type">储蓄卡信息</string>
     <string name="ebpay_choose_credit_tip">查看支持的银行卡</string>
     <string name="ebpay_choose_credit_tip2">支持的银行</string>
    
-    <string name="ebpay_account_safe">请绑定本人银行卡，百度钱包确保您的用卡安全，请放心填写。查看支付安全</string>
+    <string name="ebpay_account_safe">请绑定本人银行卡，百度钱包确保您的用卡安全，请放心填写。</string>
     <string name="ebpay_tip_zhuanzhuang">请添加储蓄卡以完成转账（信用卡不支持转账）</string>
+    <string name="ebpay_tip_balance_charge">请添加储蓄卡以完成余额充值（信用卡不支持余额充值）</string>
     <string name="ebpay_tip_compl">为了您的账户安全，请完善银行卡信息</string>
     <string name="ebpay_tip_find_pwd">请重新绑定本人银行卡以找回密码</string>
     
@@ -120,6 +121,13 @@
     <string name="ebpay_know">我知道了</string>
     <string name="ebpay_reg">注册</string>
     <string name="ebpay_login">登录</string>
+    
+    <string name="ebpay_wallet_banlance">钱包余额付款</string>
+    <string name="ebpay_wallet_continue_pay">继续支付</string>
+    <string name="ebpay_use_balance_pay">将使用您的余额支付%1$s元，剩余%2$s元将使用银行卡继续支付</string>
+    <string name="ebpay_wallet_banlance_tip">%1$s 需支付%2$s元，余额支付%3$s元，还需支付%4$s元</string>
+   
+    
     <string name="ebpay_title_find_pwd">找回手机支付密码</string>
     <string name="ebpay_title_complete_info">完善信息</string>
     <string name="ebpay_title_set_pwd">设置支付密码</string>
@@ -132,7 +140,7 @@
     <string name="ebpay_pay_error_huafei">充值失败！</string>
     <string name="ebpay_pay_error_zhuanzhuang">转账失败！</string>
    
-    <string name="ebpay_pwd_set_tip">仅用于手机支付的数字密码，以后凭该密码安全支付</string>
+    <string name="ebpay_pwd_set_tip">仅用于手机支付的数字密码，以后凭该密码安全支付，请勿与登录密码设置一致</string>
     <string name="ebpay_pwd_check_tip">请输入手机支付密码以验证身份</string>
     <string name="ebpay_pwd_check_tip2">请输入旧手机支付密码以验证身份</string>
     <string name="ebpay_pwd_confim_tip">请确认手机支付密码</string>
@@ -145,6 +153,7 @@
     
     <string name="ebpay_help_phone_no">400&#8211;898&#8211;8855</string>
     <string name="ebpay_valid_code_sent">为了保障您的用卡安全，绑定银行卡需要验证手机，验证码已发送至手机 %1$s</string>
+    <string name="ebpay_only_complete_top_left_tip">请绑定本人银行卡，百度钱包保障您的用卡安全，请放心填写</string>
 
     <!-- 钱包新添加的字符串资源 -->
     <string name="ebpay_valid_mobile">验证手机号码</string>
@@ -166,9 +175,15 @@
         \n2.请查看短信是否被安全软件拦截。\n3.由于运营商网络原因，可能存在短信延迟，请耐心等待或稍后重试。\n4.若银行预留手机号已停用，请联系银行客服处理。</string>
     <string name="ebpay_operation_tip_bank_service_phonenum">4.若银行预留手机号已停用，请联系银行客服处理</string>
     <string name="ebpay_operation_tip_baidu_service_phonenum">5.获取更多帮助，可联系百度客服400&#8211;898&#8211;8855</string>
+    <string name="ebpay_tobe_active_set_pwd_tips">为了您的账户安全，设置手机支付密码前请绑定本人银行卡以验证身份</string>
+    <string name="ebpay_tobe_active_set_pwd_tips2">为了您的账户安全，请重新填写银行卡以设置手机支付密码</string>
     
     <string name="ebpay_pay_success">成功付款%1$s元！</string>
+    <string name="ebpay_withdraw_success">提现申请成功！</string>
+    <string name="ebpay_withdraw_success_tips">预计2小时内到账，请耐心等待</string>
+    <string name="ebpay_balance_charge_success">成功充值%1$s元！</string>
     <string name="ebpay_pay_fail">付款失败！</string>
+    <string name="ebpay_withdraw_failed">提现失败！</string>
     <string name="ebpay_finish_pay">交易处理中</string>
     <string name="ebpay_add_bankcard">添加银行卡</string>
     <string name="ebpay_set_phone_paycode">设置手机支付密码</string>
@@ -191,5 +206,26 @@
     <string name="ebpay_set_pwd_success">新密码设置成功</string>
     <string name="ebpay_supported_cards">银行卡支持</string>
     <string name="ebpay_cancel_pay">取消付款</string>
-    <string name="ebpay_safe_tip">安全提示</string>
+    <string name="ebpay_confirm_abandon_withdraw">确定放弃提现？</string>
+    <string name="ebpay_abandon_withdraw">放弃提现</string>
+    <string name="ebpay_withdraw_beyond_amount">您的提现金额已超过限额，请调整提现金额</string>
+    <string name="ebpay_confirm_abandon_balance_charge">确定放弃充值？</string>
+    <string name="ebpay_abandon_balance_charge">放弃充值</string>
+    <string name="ebpay_still_to_pay">还需支付</string>
+    <string name="ebpay_loading">正在加载&#8230;</string>
+    
+    <string name="ebpay_complete_pass">完善百度帐号</string>
+    <string name="ebpay_verify_pass">密码验证</string>
+    
+    
+    <!-- 支付订单确认 -->
+    <string name="ebpay_order_confirm">百度钱包优惠</string>
+    <string name="ebpay_sp_name">商户名称：</string>
+    <string name="ebpay_order_no">订单编号：</string>
+    <string name="ebpay_yuan">%1$s元</string>
+    <string name="ebpay_discount_yuan">-%1$s元</string>
+    <string name="ebpay_final_price">您还需支付：%1$s元</string>
+    <string name="ebpay_to_pay">去付款</string>
+    <string name="ebpay_to_logout">注销</string>
+    
 </resources>

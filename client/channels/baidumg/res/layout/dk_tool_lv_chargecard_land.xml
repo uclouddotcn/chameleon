@@ -1,0 +1,178 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/dk_chargecard_bg" >
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/dk_prize_logo" />
+
+    <TextView
+        android:id="@+id/tv_list_chargecarddate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="6月20日"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
+    
+    <TextView
+        android:id="@+id/tv_list_chargecard_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="25dp"
+        android:text="酷币"
+        android:textColor="#ffffff"
+        android:textSize="15sp" />
+
+    <!-- <RelativeLayout -->
+    <!-- android:id="@+id/rl_title" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="match_parent" -->
+    <!-- android:layout_marginLeft="100dp" > -->
+
+
+    <!-- <TextView -->
+    <!-- android:id="@+id/tv_list_prizecard_title" -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_centerHorizontal="true" -->
+    <!-- android:layout_marginBottom="15dp" -->
+    <!-- android:layout_marginTop="30dp" -->
+    <!-- android:text="回馈VIP抽奖" -->
+    <!-- android:textColor="#ffffff" -->
+    <!-- android:textSize="22sp" /> -->
+
+
+    <!-- <LinearLayout -->
+    <!-- android:id="@+id/ll_endtime" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_below="@+id/tv_list_prizecard_title" -->
+    <!-- android:layout_centerHorizontal="true" -->
+    <!-- android:layout_marginBottom="15dp" -->
+    <!-- android:gravity="center" -->
+    <!-- android:orientation="horizontal" > -->
+
+
+    <!-- <TextView -->
+    <!-- android:layout_width="65dp" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:text="有效期:" -->
+    <!-- android:textColor="#ffffff" -->
+    <!-- android:textSize="12sp" /> -->
+
+
+    <!-- <TextView -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:text="2014.06.21-2014.07.29" -->
+    <!-- android:textColor="#ffffff" -->
+    <!-- android:textSize="12sp" /> -->
+    <!-- </LinearLayout> -->
+
+
+    <!-- <Button -->
+    <!-- android:id="@+id/btn_goprize" -->
+    <!-- android:layout_width="100dp" -->
+    <!-- android:layout_height="35dp" -->
+    <!-- android:layout_centerHorizontal="true" -->
+    <!-- android:layout_below="@+id/ll_endtime" -->
+    <!-- android:background="@drawable/bd_btn_selector_goprize" -->
+    <!-- android:textColor="#9a3d19" -->
+    <!-- android:text="去抽奖" /> -->
+
+
+    <!-- <ImageView -->
+    <!-- android:id="@+id/iv_use_state" -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_alignParentBottom="true" -->
+    <!-- android:layout_alignParentRight="true" -->
+    <!-- android:src="@drawable/bd_prizecard_used" /> -->
+    <!-- <TextView -->
+    <!-- android:id="@+id/tv_use_state" -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_alignParentBottom="true" -->
+    <!-- android:layout_alignParentRight="true" -->
+    <!-- android:textColor="#ffffff" -->
+    <!-- android:visibility="gone" -->
+    <!-- android:textSize="20sp" -->
+    <!-- android:text="未使用" /> -->
+
+
+    <!-- </RelativeLayout> -->
+
+    <TextView
+        android:id="@+id/textView_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_list_chargecard_unit"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/tv_list_chargecard_unit"
+        android:text="100"
+        android:paddingBottom="-10dp"
+        android:textColor="#ffffff"
+        android:textSize="35sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#2f5b1f"
+        android:textSize="14sp"
+        android:text="密码：" />
+
+    <TextView
+        android:id="@+id/tv_chargecard_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_chargecardpassword"
+        android:layout_alignLeft="@+id/tv_chargecardpassword"
+        android:textColor="#2f5b1f"
+        android:textSize="14sp"
+        android:text="7898585962623562" />
+
+    <TextView
+        android:id="@+id/tv_chargecardpassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_marginLeft="14dp"
+        android:textColor="#2f5b1f"
+        android:textSize="14sp"
+        android:text="7859565265263562" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_chargecard_number"
+        android:layout_alignBottom="@+id/tv_chargecard_number"
+        android:layout_alignLeft="@+id/textView2"
+        android:textColor="#2f5b1f"
+        android:textSize="14sp"
+        android:text="序列号：" />
+
+</RelativeLayout>

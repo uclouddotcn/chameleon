@@ -93,7 +93,31 @@
 		        android:textColor="@color/dk_suspension_text_color_selector" />
     	</LinearLayout>
     	
-
+		<LinearLayout 
+    	    android:id="@+id/layout_suspension_bar"
+    	    android:layout_width="42dp"
+    	    android:layout_height="fill_parent"
+    	    android:orientation="vertical"
+    	    android:gravity="center"
+    	    android:visibility="gone"
+    	    android:layout_marginRight="0dp">
+    	    
+    	    <ImageView
+    	        android:id="@+id/dk_iv_sus_bar"
+		        android:layout_width="30dp"
+		        android:layout_height="16dp"
+		        android:src="@drawable/dk_suspension_bar_selector" />
+    
+    		<TextView
+    		    android:id="@+id/dk_tv_sus_bar"
+        		android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dp"
+		        android:textSize="@dimen/text_size_12_sp"
+		        android:text="@string/dk_bar_title"
+		        android:textColor="@color/dk_suspension_text_color_selector" />
+    	</LinearLayout>
+    	
     	<LinearLayout 
     	    android:id="@+id/layout_suspension_prefecture"
     	    android:layout_width="42dp"

@@ -33,7 +33,7 @@
 
     <style name="EbpayThemeActivit" parent="EbpayThemeActivityBase">
         <item name="android:windowBackground">@color/ebpay_gray</item>
-        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsTranslucent">false</item>
     </style>
 
     <style name="EbpayThemeActivitTranslucent" parent="EbpayThemeActivityWelcome">

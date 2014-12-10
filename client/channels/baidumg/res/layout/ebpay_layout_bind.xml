@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:text="@string/ebpay_choose_credit_tip"
             android:textColor="#666666"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:visibility="gone" />
 
         <TextView
@@ -35,8 +35,8 @@
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.3"
             android:text="@string/ebpay_valid_code_sent"
-            android:textColor="@color/ebpay_text_normal"
-            android:textSize="12sp" />
+            android:textColor="@color/ebpay_text_normal2"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout

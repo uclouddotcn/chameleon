@@ -5,4 +5,7 @@
     <dimen name="ebpay_dialog_img_height">161dp</dimen>
     <dimen name="bd_wallet_contact_name_width">120dp</dimen>
 
+    <dimen name="ebpay_order_padding_top">27dp</dimen>
+    <dimen name="ebpay_order_padding_bottom">23dp</dimen>
+    <dimen name="ebpay_order_text_pitch">25dp</dimen>
 </resources>

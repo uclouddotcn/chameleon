@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="bd_wallet_black2">#333333</color>
     <color name="ebpay_black_transparent">#80000000</color>
     <color name="ebpay_white">#ffffff</color>
     <color name="ebpay_black">#ff000000</color>
@@ -9,6 +8,7 @@
     <color name="ebpay_gray">#f2f2f2</color>
     <color name="ebpay_gray2">#8e8e8e</color>
     <color name="ebpay_gray3">#757575</color>
+    <color name="ebpay_gray4">#dee1e5</color>
     <color name="ebpay_gray_pressed">#e3e3e3</color>
     <color name="ebpay_window_bg">#ededed</color>
     <color name="ebpay_title_bg">#383838</color>
@@ -28,19 +28,23 @@
     <color name="ebpay_scroll_bar">#bbbbbb</color>
     <color name="ebpay_color_333333">#333</color>
     <color name="ebpay_bg_blue">#3DA1F6</color>
+    <color name="ebpay_link_blue">#666666</color>
+       
 
     <!-- 字体颜色 -->
     <color name="ebpay_text_red">#d60000</color>
     <color name="ebpay_text_blue">#3593dc</color>
     <color name="ebpay_text_blue2">#37a6fb</color>
     <color name="ebpay_text_normal">#555</color>
+    <color name="ebpay_text_normal2">#555555</color>
     <color name="ebpay_text_hint">#ccc</color>
     <color name="ebpay_text_333333">#333</color>
     <color name="ebpay_text_6992d7">#6992d7</color>
     <color name="ebpay_text_link_nomal">#3da1f6</color>
     <color name="ebpay_text_link_hover">#73bff9</color>
-    <color name="ebpay_text_black1">#555555</color>
+    <color name="ebpay_text_black1">#222222</color>
     <color name="aipay_text_orange">#ea8b46</color>
     
     <color name="ebpay_fp_text_gray">#aaa</color>
+    <color name="ebpay_text_orange">#ff7800</color>
 </resources>

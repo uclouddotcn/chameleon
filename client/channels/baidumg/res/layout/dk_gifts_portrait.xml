@@ -76,8 +76,7 @@
                 android:id="@+id/dk_gifts_not_exist_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="60dp"
+                android:layout_centerInParent="true"
                 android:background="@drawable/dk_gifts_not_exist" />
 
             <TextView
