@@ -214,14 +214,14 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
     public void onApplicationEvent(int event, Object... arguments) {
 
         switch (event) {
+            case Constants.ApplicationEvent.ON_BIND_CONTEXT:
+                Context base = (Context) arguments[1];
+                WandouGamesApi.initPlugin(base, mAppId, mAppKey);
+                break;
             case Constants.ApplicationEvent.BEFORE_ON_CREATE:
                 Application app = (Application) arguments[0];
                 mWandouGamesApi = new WandouGamesApi.Builder(app, mAppId, mAppKey).create();
                 mWandouGamesApi.setLogEnabled(true);
-                break;
-            case Constants.ApplicationEvent.ON_BIND_CONTEXT:
-                Context base = (Context) arguments[1];
-                WandouGamesApi.initPlugin(base, mAppId, mAppKey);
                 break;
         }
     }

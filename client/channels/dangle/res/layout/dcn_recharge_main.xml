@@ -14,9 +14,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dcn_title_height" >
-
             <LinearLayout
-                android:id="@+id/dcn_recharge_back"
+                android:id="@+id/dcn_recharge_help"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_alignParentLeft="true"
@@ -27,7 +26,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/dcn_back_ic" />
+                    android:src="@drawable/dcn_action_bar_help" />
             </LinearLayout>
 
             <TextView
@@ -39,20 +38,17 @@
                 android:textColor="@color/dcn_ucenter_navi_text_color_pressed"
                 android:textSize="22sp" />
 
-            <LinearLayout
-                android:id="@+id/dcn_recharge_help"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+            <Button
+                android:id="@+id/dcn_recharge_back"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/dcn_back_btn_selector"
-                android:gravity="center"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/dcn_action_bar_help" />
-            </LinearLayout>
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/dcn_ucenter_btn_selector"
+                android:text="@string/dcn_enter_game"
+                android:textColor="@color/dcn_ucenter_btn_text"
+                android:textSize="12sp" />
         </RelativeLayout>
 
         <View

@@ -30,7 +30,7 @@
         <!-- 登录配置开始 -->
         <meta-data
             android:name="lenovo.open.appid"
-            android:value="1406040827749.app.ln"  chameleon:replace="android:value=%appId%S"  />
+            android:value="1406040827749.app.ln"  chameleon:replace="android:value=%appId%"  />
 
         <meta-data
             android:name="lenovo.gamesdk.new"
