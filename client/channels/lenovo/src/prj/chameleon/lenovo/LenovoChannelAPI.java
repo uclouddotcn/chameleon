@@ -106,47 +106,7 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        /***********
-         *  支付LenovoGameApi.doPay（） 接口 调用
-         */
-        LenovoGameApi.GamePayRequest payRequest = new LenovoGameApi.GamePayRequest();
-        // 请填写商品自己的参数
-        payRequest.addParam("appid", mCfg.mAppID);
-        payRequest.addParam("waresid", 1);//商户自建商品编码 以此区分是否是虚拟货币购买
-        payRequest.addParam("exorderno", orderId);//外部订单号
-        payRequest.addParam("price", realPayMoney);
-        payRequest.addParam("cpprivateinfo", currencyName);
-        if (mCfg.mPayUrl != null) {
-            payRequest.addParam("notifyurl", mCfg.mPayUrl);
-        }
-
-        LenovoGameApi.doPay(activity,mCfg.mAppKey, payRequest, new LenovoGameApi.IPayResult() {
-            @Override
-            public void onPayResult(int resultCode, String signValue,
-                                    String resultInfo) {// resultInfo = 应用编号&商品编号&外部订单号
-                if (LenovoGameApi.PAY_SUCCESS == resultCode) {
-                    if (null == signValue) {
-                        // 没有签名值，默认采用finish()，请根据需要修改
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
-                    }
-                    boolean flag = LenovoGameApi.GamePayRequest.isLegalSign(signValue,
-                            mCfg.mAppKey);
-                    if (flag) {
-                        // 合法签名值，支付成功，请添加支付成功后的业务逻辑
-                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                    } else {
-                        // 非法签名值，默认采用finish()，请根据需要修改
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
-                    }
-                } else if (LenovoGameApi.PAY_CANCEL == resultCode) {
-                    // 取消支付处理，默认采用finish()，请根据需要修改
-                    cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
-                } else {
-                    // 计费失败处理，默认采用finish()，请根据需要修改
-                    cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
-                }
-            }
-        });
+        startPay(activity, 1, orderId, realPayMoney, payInfo, cb);
     }
 
     @Override
@@ -161,16 +121,51 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,
                     int realPayMoney,
                     final IDispatcherCb cb) {
-        /***********
-         *  支付LenovoGameApi.doPay（） 接口 调用
-         */
+        int waresid = Integer.valueOf(productID) + 1;
+        startPay(activity, waresid, orderId, realPayMoney, payInfo, cb);
+    }
+
+    @Override
+    public String getUid() {
+        return mUserInfo.mUserId;
+    }
+
+    @Override
+    public String getToken() {
+        if (mUserInfo == null) {
+            return "";
+        } else {
+            return mUserInfo.mUserToken;
+        }
+    }
+
+    @Override
+    public boolean isLogined() {
+        return mUserInfo != null;
+    }
+
+    @Override
+    public String getId() {
+        return "lenovo";
+    }
+
+    @Override
+    public void exit(Activity activity, IDispatcherCb cb) {
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+    }
+
+
+    /***********
+     *  支付LenovoGameApi.doPay（） 接口 调用
+     */
+    private void startPay(Activity activity, int waresid, String orderId, int realPayMoney, String payInfo, final IDispatcherCb cb){
         LenovoGameApi.GamePayRequest payRequest = new LenovoGameApi.GamePayRequest();
         // 请填写商品自己的参数
         payRequest.addParam("appid", mCfg.mAppID);
-        payRequest.addParam("waresid", 1);//商户自建商品编码 以此区分是否是充值
+        payRequest.addParam("waresid", waresid);//商户自建商品编码
         payRequest.addParam("exorderno", orderId);
         payRequest.addParam("price", realPayMoney);
-        payRequest.addParam("cpprivateinfo", productID);
+        payRequest.addParam("cpprivateinfo", payInfo);
         if (mCfg.mPayUrl != null) {
             payRequest.addParam("notifyurl", mCfg.mPayUrl);
         }
@@ -202,34 +197,5 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 }
             }
         });
-    }
-
-    @Override
-    public String getUid() {
-        return mUserInfo.mUserId;
-    }
-
-    @Override
-    public String getToken() {
-        if (mUserInfo == null) {
-            return "";
-        } else {
-            return mUserInfo.mUserToken;
-        }
-    }
-
-    @Override
-    public boolean isLogined() {
-        return mUserInfo != null;
-    }
-
-    @Override
-    public String getId() {
-        return "lenovo";
-    }
-
-    @Override
-    public void exit(Activity activity, IDispatcherCb cb) {
-        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 }
