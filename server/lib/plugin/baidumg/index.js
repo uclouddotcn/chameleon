@@ -9,17 +9,16 @@ var ErrorCode = require('../common/error-code').ErrorCode;
 var SDKPluginBase = require('../../SDKPluginBase');
 
 var cfgDesc = {
-    appId: 'string',
+    appId: 'integer',
     appKey: 'string',
-    appSecret: 'string',
-    requestUri: '?string'
+    appSecret: 'string'
 };
 
 
 var BaidumgChannel = function(userAction, logger, cfgChecker) {
     SDKPluginBase.call(this, userAction, logger, cfgChecker);
-    this.requestUri = "http://sdk.m.duoku.com";
-    this.client = restify.createJsonClient({
+    this.requestUri = "http://querysdkapi.91.com";
+    this.client = restify.createStringClient({
         url: this.requestUri,
         retry: false,
         log: logger,
@@ -32,34 +31,39 @@ util.inherits(BaidumgChannel, SDKPluginBase);
 BaidumgChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
     var cfgItem = wrapper.cfg;
-    var q = '/openapi/sdk/checksession?' + 
-        querystring.stringify({
-            appid: cfgItem.appId,
-            appKey: cfgItem.appKey,
-            uid: others,
-            sessionid: token,
-            clientsecret: this.calcSecret([cfgItem.appId,
-                cfgItem.appKey, others, token, cfgItem.appSecret])
-        });
-    this.client.get(q, function (err, req, res, obj) {
+    var q = '/LoginStateQuery.ashx';
+    var postObj = {
+        AppID: wrapper.cfg.appId,
+        AccessToken: token,
+        Sign: this.calcSecret([wrapper.cfg.appId, token, wrapper.cfg.appSecret])
+    }
+    this.client.post(q, querystring.stringify(postObj), function (err, req, res, obj) {
         req.log.debug({req: req, err: err, obj: obj, q: q}, 'on result ');
-        if (err) {
-            req.log.warn({err: err}, 'request error');
-            return callback(err);
-        }  
-        if (obj.error_code == '0') {
+        try {
+            obj = JSON.parse(obj);
+            if (err) {
+                req.log.warn({err: err}, 'request error');
+                return callback(err);
+            }
+            if (obj.ResultCode === 1) {
+                callback(null, {
+                    code: 0,
+                    loginInfo: {
+                        uid: others,
+                        token: token,
+                        channel: wrapper.channelName
+                    }
+                });
+            } else {
+                req.log.debug({retObj: obj}, "Fail to verify login");
+                callback(null, {
+                    code: ErrorCode.ERR_FAIL
+                });
+            }
+        } catch (e) {
+            self._logger.error({err: e}, "Fail to parse response");
             callback(null, {
-                code: 0,
-                loginInfo: {
-                    uid: others,
-                    token: token,
-                    channel: wrapper.channelName
-                }
-            });
-        } else {
-            req.log.debug({code: obj.error_code}, "Fail to verify login");
-            callback(null, {
-                code: self.mapError(obj.error_code)
+                code: ErrorCode.ERR_FAIL
             });
         }
     });
@@ -89,90 +93,66 @@ BaidumgChannel.prototype.getPayUrlInfo = function ()  {
     ];
 };
 
-BaidumgChannel.prototype.respondsToPay = function (req, res, next) {
+BaidumgChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
     var self = this;
     var params = req.params;
     req.log.debug({req: req, params: params}, 'recv pay rsp');
     try {
-        var customInfos = params.aid.split('|');
-        var channel = customInfos[0]
-        var wrapper = this._channels[channel];
-        if (!wrapper) {
-            this._userAction.payFail(channel, params.orderid, ErrorCode.ERR_PAY_ILL_CHANNEL);
-            self.send(res, 'SUCCESS');
+        if (wrapper.cfg.appId !== params.AppID) {
+            self.send(res, wrapper, 0, 'ERROR_SIGN');
             return next();
         }
         var cfgItem = wrapper.cfg;
-        var expectSign = this.calcSecret([params.amount, params.cardtype,
-            params.orderid, params.result, params.timetamp,
-            cfgItem.appSecret, escape(params.aid)]);
-        if (expectSign != params.client_secret) {
+        var expectSign = this.calcSecret([params.AppID, params.OrderSerial, params.CooperatorOrderSerial,
+            params.Content, cfgItem.appSecret]);
+        if (expectSign != params.Sign) {
             self._logger.warn({req: req, params: params}, "unmatched sign");
-            self.send(res, 'ERROR_SIGN');
+            self.send(res, wrapper, 0, 'ERROR_SIGN');
             return next();
         }
+        var content = new Buffer(params.Content, 'base64').toString();
+        var obj = JSON.parse(content);
         var other = {
-            chOrderId: params.order_id
+            chOrderId: params.OrderSerial,
+            createTime: obj.StartDateTime,
+            payTime: obj.BankDateTime
         };
-        var amount = Math.round(parseFloat(params.amount) * 100);
-        var infoObj = querystring.parse(params.aid);
-        this._userAction.pay(wrapper.channelName, infoObj.uid, infoObj.appuid,
-            params.orderid, getPayStatus(params.result), 
-            infoObj.pid, null, amount, other,
+        var status = ErrorCode.ERR_OK;
+        if (obj.OrderStatus !== 1) {
+            status = ErrorCode.ERR_FAIL;
+        }
+        var amount = Math.round(parseFloat(obj.OrderMoney) * 100);
+        this._userAction.pay(wrapper.channelName, obj.UID.toString(), null,
+            params.CooperatorOrderSerial, status,
+            null, null, amount, other,
             function (err, result) {
                 if (err) {
                     self._logger.error({err: err}, "fail to pay");
-                    self.send(res, err.message);
+                    self.send(res, wrapper, 0, err.message);
                     return next();
                 }
                 self._logger.debug({result: result}, "recv result");
-                self.send(res, 'SUCCESS');
+                self.send(res, wrapper, 1, 'SUCCESS');
                 return next();
             }
         );
     } catch (e) {
-        req.log({err: e}, 'Fail to parse pay notification');
-        self.send(res, 'ERROR_FAIL');
+        req.log.error({err: e}, 'Fail to parse pay notification');
+        self.send(res, wrapper, 0, 'ERROR_FAIL');
         return next();
     }
 
 };
 
-BaidumgChannel.prototype.send = function (res, body) {
-    res.writeHead(200, {
-        'Content-Length': Buffer.byteLength(body),
-        'Content-Type': 'text/plain'
+BaidumgChannel.prototype.send = function (res, wrapper, code, body) {
+    res.send({
+        AppID: wrapper.cfg.appId,
+        ResultCode: code,
+        ResultMsg: body,
+        Sign: this.calcSecret([wrapper.cfg.appId, code, body])
     });
-    res.write(body);
 };
 
-
-function getPayStatus(flag) {
-    if (flag == '1') {
-        return ErrorCode.ERR_OK;
-    } else {
-        return ErrorCode.ERR_PAY_FAIL;
-    }
-}
-
-
-BaidumgChannel.prototype.mapError = function(errorCode) {
-    if (errorCode == '101') {
-        return 5;
-    } else if (errorCode == '103') {
-        return 2;
-    } else if (errorCode == '11') {
-        return 13;
-    } else if (errorCode == '1' ||
-               errorCode == '2' ||
-               errorCode == '3' ||
-               errorCode == '4' ||
-               errorCode == '7') {
-        return 4;
-    } else {
-        return 1;
-    }
-};
 
 function escape(c) {
     var cc = encodeURIComponent(c);
