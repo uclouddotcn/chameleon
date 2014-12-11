@@ -73,6 +73,9 @@ android {
         htc {
 
         }
+        coolpad {
+
+        }
         p_getui {
 
         }
@@ -122,6 +125,7 @@ dependencies {
     lenovoCompile project(':channels:lenovo')
     gioneeCompile project(':channels:gionee')
     htcCompile project(':channels:htc')
+    coolpadCompile project(':channels:coolpad')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')
