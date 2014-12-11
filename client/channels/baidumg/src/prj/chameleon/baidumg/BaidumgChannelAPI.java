@@ -278,11 +278,15 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void onPause(Activity activity) {
-        if (mAdPage != null) {
-            mAdPage.onStop();
-        }
         if (mActivityAnalytics != null) {
             mActivityAnalytics.onPause();
+        }
+    }
+
+    @Override
+    public void onStop(Activity activity) {
+        if (mAdPage != null) {
+            mAdPage.onStop();
         }
     }
 
