@@ -52,7 +52,7 @@ class BuildInfo(object):
         self._loadChannelCfg(prjpath, channel) 
         self._loadAssets(prjpath)
         self._loadProject(prjpath)
-        self.buildpath = os.path.join('chameleon_build', 'intermediate', channel)
+        self.buildpath = os.path.join('_chameleonb', 'i', channel)
         self._getSignCfg()
 
     @property
@@ -257,7 +257,7 @@ class CleanCmd(object):
         return "clean the app with channel"
 
     def cleanChannel(self, prjpath, channel):
-        p = os.path.join(prjpath, 'chameleon_build', 'intermediate', channel)
+        p = os.path.join(prjpath, '_chameleonb', 'i', channel)
         if os.path.exists(p):
             shutil.rmtree(p)
 

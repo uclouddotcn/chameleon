@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.baidu.gamesdk.ActivityAdPage;
+import com.baidu.gamesdk.ActivityAnalytics;
 import com.baidu.gamesdk.BDGameSDK;
 import com.baidu.gamesdk.BDGameSDKSetting;
 import com.baidu.gamesdk.IResponse;
@@ -43,6 +44,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
     private ActivityAdPage mAdPage = null;
     private AdPageListener mAdPageListener = new AdPageListener();
+    private ActivityAnalytics mActivityAnalytics = null;
     @Override
     public void charge(Activity activity,
                        String orderId,
@@ -148,6 +150,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         BDGameSDKSetting appInfo = new BDGameSDKSetting();
         appInfo.setAppID(mCfg.mAppID);
         appInfo.setAppKey(mCfg.mAppKey);
+        mActivityAnalytics = new ActivityAnalytics(activity);
         if (mIsDebug) {
             appInfo.setDomain(BDGameSDKSetting.Domain.DEBUG);
         } else {
@@ -262,13 +265,29 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void onResume(Activity activity, final IDispatcherCb cb) {
-        mAdPageListener.mCb = cb;
-        mAdPage.onResume();
+        if (mActivityAnalytics != null) {
+            mActivityAnalytics.onResume();
+        }
+        if (mAdPage != null) {
+            mAdPageListener.mCb = cb;
+            mAdPage.onResume();
+        } else {
+            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        }
     }
 
     @Override
     public void onPause(Activity activity) {
-        mAdPage.onStop();
+        if (mActivityAnalytics != null) {
+            mActivityAnalytics.onPause();
+        }
+    }
+
+    @Override
+    public void onStop(Activity activity) {
+        if (mAdPage != null) {
+            mAdPage.onStop();
+        }
     }
 
     @Override

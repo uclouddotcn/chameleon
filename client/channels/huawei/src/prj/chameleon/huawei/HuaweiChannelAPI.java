@@ -106,7 +106,6 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
         // 浮标初始化
         GlobalParams.hwBuoy.init(activity, p);
-
     }
 
 

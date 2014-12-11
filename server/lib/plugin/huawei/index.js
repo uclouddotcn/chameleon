@@ -138,7 +138,7 @@ HuaweiChannel.prototype.getPayUrlInfo = function ()  {
 
 HuaweiChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
     var self = this;
-    var params = req.body;
+    var params = req.params;
     req.log.debug({req: req, params: params}, 'recv pay rsp');
     try {
         var expectSign = params.sign;
@@ -148,7 +148,7 @@ HuaweiChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
             this.send(res, 1);
             return next();
         }
-        var orderId = params.requested;
+        var orderId = params.requestId;
         var amountStrs = params.amount.split('.');
         var y = parseInt(amountStrs[0]);
         var x = parseInt(amountStrs[1]);
@@ -163,18 +163,13 @@ HuaweiChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
             return next();
         }
         var other = {
-            notifyTime: params.notifyTime,
-            chOrderId: params.orderId,
-            payType: params.payType,
-            bankId: params.bankId,
-            orderTime: params.orderTime,
-            tradeTime: params.tradeTime,
-            accessMode: params.accessMode
+            payTime: params.notifyTime,
+            chOrderId: params.orderId
         };
-        var status = obj.code === '0' ? ErrorCode.ERR_OK : ErrorCode.ERR_FAIL;
-        this._userAction.pay(wrapper.channelName, obj.uid, null,
+        var status = params.result === '0' ? ErrorCode.ERR_OK : ErrorCode.ERR_FAIL;
+        this._userAction.pay(wrapper.channelName, null, null,
             orderId, status,
-            null, null, amount, other, {keep: obj.orderId},
+            null, null, amount, other, null,
             function (err, result) {
                 if (err) {
                     self._logger.error({err: err}, "fail to pay");
