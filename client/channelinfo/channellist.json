@@ -20,7 +20,6 @@
     "baidumg": {
         "name": "百度移动游戏",
         "sdk": "baidumg",
-        "splashscreen": 1,
         "icon": 1
     }, 
     "uc": {
