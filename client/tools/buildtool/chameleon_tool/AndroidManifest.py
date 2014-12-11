@@ -40,6 +40,9 @@ class AndroidManifestInst(object):
         AndroidManifestInst._walkElementNode(self._rootNode, 
                 lambda node: replaceNodeAttr(node, cfg))
 
+    def replaceApplication(self, newApp):
+        self._applicationNode.setAttribute('android:name', newApp)        
+
     def replaceEntryActivity(self, orientation, channel):
         entryActivityNode = self._findEntryActivity()
         if entryActivityNode is None:
