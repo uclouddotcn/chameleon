@@ -82,6 +82,10 @@
         "splashscreen": 1,
         "icon": "1"
     },
+    "coolpad": {
+        "name": "酷派",
+        "sdk": "coolpad",
+    },
     "gfan": {
         "name": "机锋",
         "sdk": "gfan",
