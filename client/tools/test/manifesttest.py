@@ -45,6 +45,10 @@ class TestAndroidManifest(unittest.TestCase):
         permission = self.libManifestInst.getPermissions()
         self.assertEqual(len(permission), 3)
 
+    def testReplaceApplication(self):
+        newApp = 'prj.test.app'
+        self.manifestInst.replaceApplication(newApp)
+        self.assertEqual(self.manifestInst._applicationNode.getAttribute('android:name'), newApp)
 
     def testMergePermission(self):
         self.manifestInst.merge(self.libManifestInst)
