@@ -35,6 +35,7 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, global
         manifestInst.setIcon('chameleon_icon')
     if channel == 'baidumg':
         manifestInst.replaceApplication('prj.chameleon.channelapi.baidumg.Application')
+        manifestInst.replaceTargetSDK('15')
     manifestInst.safeDump(manifestFilePath)
 
 def loadManifest(path):

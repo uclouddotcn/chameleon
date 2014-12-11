@@ -40,6 +40,15 @@ class AndroidManifestInst(object):
         AndroidManifestInst._walkElementNode(self._rootNode, 
                 lambda node: replaceNodeAttr(node, cfg))
 
+    def replaceTargetSDK(self, target):
+        children = AndroidManifestInst._getChildrenNS(self._rootNode, 'uses-sdk')
+        if len(children) == 0:
+            targetNode = self._rootNode.createElement('use-sdk')
+            targetNode.setAttribute('android:minSdkVersion', '7')
+        else:
+            targetNode = children[0] 
+        targetNode.setAttribute('android:targetSdkVersion', target)
+
     def replaceApplication(self, newApp):
         self._applicationNode.setAttribute('android:name', newApp)        
 
