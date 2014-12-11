@@ -3,6 +3,7 @@ package prj.chameleon.huawei;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 
 import com.huawei.gamebox.buoy.sdk.IGameCallBack;
 import com.huawei.gamebox.buoy.sdk.UpdateInfo;
@@ -50,6 +51,7 @@ class GameCallback implements IGameCallBack {
 
     @Override
     public void onShowFailed(int errorCode) {
+        Log.e(Constants.TAG, "Fail to show window " + errorCode);
     }
 
     @Override
@@ -58,6 +60,7 @@ class GameCallback implements IGameCallBack {
 
     @Override
     public void onHidenFailed(int errorCode) {
+        Log.e(Constants.TAG, "Fail to hide window " + errorCode);
     }
 
     @Override
