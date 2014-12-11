@@ -81,6 +81,11 @@
         "pkgsuffix": ".htc$",
         "splashscreen": 1,
         "icon": "1"
+    },
+    "gfan": {
+        "name": "机锋",
+        "sdk": "gfan",
+        "icon": "1"
     }
 }
 

@@ -18,12 +18,12 @@
         },
         "pubkey": {
             "type" : "string",
-            "desc" : "notify url",
+            "desc" : "pubkey",
             "ignoreInA" : 1
         },
         "cpPrivateKey": {
             "type" : "string",
-            "desc" : "notify url",
+            "desc" : "cpPrivateKey",
             "ignoreInA" : 1
         }
 
