@@ -13,6 +13,11 @@
             "desc" : "secret Key",
             "ignoreInA" : 1
         },
+        "publicKey" : {
+            "type" : "string",
+            "desc" : "public Key",
+            "ignoreInA" : 1
+        },
         "privateKey" : {
             "type" : "string",
             "desc" : "secret Key",
