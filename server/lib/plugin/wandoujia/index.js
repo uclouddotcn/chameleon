@@ -109,7 +109,7 @@ WandoujiaChannel.prototype.respondsToPay = function (req, res, next) {
             chargeType: rspObj.chargeType,
             cardNo: rspObj.cardNo
         };
-        self._userAction.pay(self.name, rspObj.buyerId, null,
+        self._userAction.pay(self.name, rspObj.buyerId.toString(), null,
             rspObj.out_trade_no, 0, 
             null, null, rspObj.money, other,
             function (err, result) {
