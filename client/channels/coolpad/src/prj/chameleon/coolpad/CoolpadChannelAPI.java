@@ -68,12 +68,14 @@ public final class CoolpadChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void init(Activity activity, IDispatcherCb cb) {
+        //支付sdk初始化
         CoolPadPay.init(activity, mCfg.mScapeType, mCfg.mPayAppId);
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
     public void login(Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
+        //账户sdk初始化
         mCoolcloud = Coolcloud.createInstance(activity, mCfg.mLoginAppId, mCfg.mLoginAppKey);
         mCoolcloud.getAuthCode(activity, "", null, new OAuth2.OnAuthListener() {
             @Override
