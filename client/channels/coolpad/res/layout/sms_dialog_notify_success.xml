@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+   	android:paddingLeft="40dp"
+   	android:paddingRight="40dp"
+   	android:paddingTop="20dp"
+   	android:paddingBottom="20dp"
+    android:gravity="center"
+    android:background="@drawable/sms_loading_bg">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="下单成功，\n5分钟内确认结果并获得权益"
+        android:textColor="#FFFFFF" 
+        android:textSize="15sp"/>
+</LinearLayout>

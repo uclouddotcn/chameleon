@@ -83,7 +83,7 @@
     },
     "coolpad": {
         "name": "酷派",
-        "sdk": "coolpad",
+        "sdk": "coolpad"
     },
     "gfan": {
         "name": "机锋",
