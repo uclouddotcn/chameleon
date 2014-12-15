@@ -1,7 +1,7 @@
 {
     "desc": "金立",
     "name": "gionee",
-    "chamversion": "1.3.0",
+    "chamversion": "1.3.1",
     "version": "2.1.7.k",
     "cfgitem": {
         "appKey" : {
@@ -11,6 +11,11 @@
         "secretKey" : {
             "type" : "string",
             "desc" : "secret Key",
+            "ignoreInA" : 1
+        },
+        "publicKey" : {
+            "type" : "string",
+            "desc" : "public Key",
             "ignoreInA" : 1
         },
         "privateKey" : {
