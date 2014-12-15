@@ -1,7 +1,7 @@
 {
     "desc": "小米",
     "name": "xiaomi",
-    "chamversion": "1.3.0",
+    "chamversion": "1.3.1",
     "version": "4.0.11",
     "cfgitem": {
         "appId" : {

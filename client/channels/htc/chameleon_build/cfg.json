@@ -1,7 +1,7 @@
 {
     "desc": "HTC",
     "name": "htc",
-    "chamversion": "1.3.0",
+    "chamversion": "1.3.1",
     "version": "V3.1",
     "cfgitem": {
         "gameCode" : {

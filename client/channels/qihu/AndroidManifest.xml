@@ -94,7 +94,7 @@
         </service>
         <service
             android:name="com.qihoo.psdk.local.QLocalService"
-            android:exported="false"
+            android:exported="true"
             android:process=":QLocal" >
         </service>
 

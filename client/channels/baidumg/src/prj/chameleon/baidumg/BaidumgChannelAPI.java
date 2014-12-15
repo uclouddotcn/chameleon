@@ -301,7 +301,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
             }
         });
     }

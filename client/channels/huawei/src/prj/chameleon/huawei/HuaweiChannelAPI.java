@@ -199,7 +199,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void exit(Activity activity, IDispatcherCb cb) {
-        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
     }
 
     /** tool bar **/
