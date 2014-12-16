@@ -10,11 +10,11 @@ import prj.chameleon.channelapi.IDispatcherCb;
 
 public class BuyCallBack implements IDispatcherCb{
 
-	private static String TAG = BuyCallBack.class.getSimpleName();
-	
+    private static String TAG = BuyCallBack.class.getSimpleName();
+
     private MainActivity mActivity;
 
-	public BuyCallBack(MainActivity activity) {
+    public BuyCallBack(MainActivity activity) {
         mActivity = activity;
     }
 
@@ -23,5 +23,5 @@ public class BuyCallBack implements IDispatcherCb{
         Log.i(TAG, "mbuy reCode is: " + retCode + " data is:" + data);
         mActivity.setUserInfo("finish buy. Return code is "+retCode+", mbuy data is: " + data);
     }
-	
+
 }
