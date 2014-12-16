@@ -275,14 +275,11 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void showFloatBar(Activity activity, boolean visible) {
         if(mMzGameBarPlatform != null){
-            mMzGameBarPlatform.showGameBar();
-        }
-    }
-
-    @Override
-    public void destroyToolBar(Activity activity) {
-        if(mMzGameBarPlatform != null) {
-            mMzGameBarPlatform.hideGameBar();
+            if (visible){
+                mMzGameBarPlatform.showGameBar();
+            }else {
+                mMzGameBarPlatform.hideGameBar();
+            }
         }
     }
 }
