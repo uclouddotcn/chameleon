@@ -536,4 +536,25 @@
     <string name="parameter_error">参数异常</string>
     <string name="dk_pay_session_invalid">您的登录状态已失效！</string>
 
+    <!--  -->
+    <string name="dk_welcom_join">欢迎加入百度移动游戏！</string>
+    <string name="dk_score_explanation">积分说明</string>
+    <string name="dk_goto_baidu_start">去星玩家看看</string>
+    <string name="dk_voucher_explanation">代金券说明</string>
+    <string name="dk_recharge_card">充值卡</string>
+    <string name="dk_prize_card">抽奖卡</string>
+    <string name="dk_voucher">代金券</string>
+    <string name="dk_stop_time">截止日期：</string>
+    <string name="dk_number">号码：</string>
+    <string name="dk_copy">复制</string>
+    <string name="dk_value">价值</string>
+    <string name="dk_only_show_three_mounth">仅显示最后三个月记录</string>
+    <string name="dk_not_use">未使用</string>
+    <string name="dk_yuan">元</string>
+    <string name="dk_secret_number">密码：</string>
+    <string name="dk_serial_number">序列号：</string>
+    <string name="dk_repayment_vip">回馈VIP抽奖</string>
+    <string name="dk_go_prize">去抽奖</string>
+    <string name="dk_effect_time">有效期：</string>
+
 </resources>

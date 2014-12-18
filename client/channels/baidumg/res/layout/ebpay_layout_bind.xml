@@ -542,6 +542,18 @@
         android:textColor="@color/ebpay_white"
         android:textSize="@dimen/ebpay_text_size_18" />
 
+    <TextView
+        android:id="@+id/ebpay_score_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="14dp"
+        android:textColor="@color/ebpay_fp_text_gray"
+        android:textSize="@dimen/ebpay_text_size_15"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

@@ -23,7 +23,7 @@
                 style="@style/sidebar_title"
                 android:layout_width="fill_parent"
                 android:layout_height="28dip"
-                android:text="@string/content" />
+                android:text="@string/tieba_content" />
 
             <LinearLayout
                 android:id="@+id/show_all"
@@ -37,7 +37,7 @@
                     style="@style/sidebar_content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/show_all" >
+                    android:text="@string/tieba_show_all" >
                 </TextView>
             </LinearLayout>
 
@@ -55,7 +55,7 @@
                     style="@style/sidebar_content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/show_good" >
+                    android:text="@string/tieba_show_good" >
                 </TextView>
             </LinearLayout>
 
@@ -73,7 +73,7 @@
                     style="@style/sidebar_content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/show_image" >
+                    android:text="@string/tieba_show_image" >
                 </TextView>
             </LinearLayout>
 
@@ -84,7 +84,7 @@
                 style="@style/sidebar_title"
                 android:layout_width="fill_parent"
                 android:layout_height="28dip"
-                android:text="@string/setup" />
+                android:text="@string/tieba_setup" />
 
             <!-- 摘要模式 -->
 
@@ -101,7 +101,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/abstract_state" >
+                    android:text="@string/tieba_abstract_state" >
                 </TextView>
 
                 <com.baidu.adp.widget.BdSwitchView.BdSwitchView
@@ -126,7 +126,7 @@
                     style="@style/sidebar_content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/account_manager">
+                    android:text="@string/tieba_account_manager">
                 </TextView>
             </LinearLayout>
             
@@ -143,7 +143,7 @@
                     style="@style/sidebar_title"
                     android:layout_width="fill_parent"
                     android:layout_height="28dip"
-                    android:text="@string/inform" />
+                    android:text="@string/tieba_inform" />
 
                 <!-- 我的消息 -->
 
@@ -161,7 +161,7 @@
                         style="@style/sidebar_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/my_mention" />
+                        android:text="@string/tieba_my_mention" />
 
                     <RelativeLayout
                         android:id="@+id/message_info"

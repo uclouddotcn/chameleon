@@ -18,7 +18,7 @@
         android:gravity="center_vertical"
         android:textColor="#ff333333"
         android:textSize="16sp"
-  		android:text="@string/redirect_to" />
+  		android:text="@string/tieba_redirect_to" />
  	<EditText android:layout_height="wrap_content"
   		android:layout_width="100dip" 
 		android:singleLine="true"
@@ -36,7 +36,7 @@
         android:gravity="center_vertical"
         android:textColor="#ff333333"
         android:textSize="16sp"
-  		android:text="@string/text_page" />
+  		android:text="@string/tieba_text_page" />
   	</LinearLayout>
   	
   	<TextView 
@@ -66,7 +66,7 @@
         	android:textColor="#ff232323"
         	android:background="@drawable/tieba_alert_dialog_btn_cancel"
         	android:gravity="center"
-            android:text="@string/dialog_cancel"/>
+            android:text="@string/tieba_dialog_cancel"/>
         <Button 
             android:id="@+id/dialog_button_ok"
             android:layout_width="fill_parent"
@@ -78,7 +78,7 @@
         	android:textColor="#ff232323"
         	android:background="@drawable/tieba_alert_dialog_btn_ok"
         	android:gravity="center"
-            android:text="@string/dialog_ok"/>
+            android:text="@string/tieba_dialog_ok"/>
     </LinearLayout>
     
 </LinearLayout>

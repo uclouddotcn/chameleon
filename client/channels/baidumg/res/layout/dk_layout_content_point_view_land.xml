@@ -3,9 +3,8 @@
     android:id="@+id/dk_ll_point"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone"
     android:orientation="vertical"
-     >
+    android:visibility="visible" >
 
     <RelativeLayout
         android:id="@+id/dk_rl_point_top"
@@ -32,7 +31,6 @@
             android:layout_alignParentRight="true"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="20dp"
-            android:text="380"
             android:textColor="#ffffff"
             android:textSize="35sp" />
     </RelativeLayout>
@@ -43,8 +41,8 @@
         android:layout_height="wrap_content"
         android:cacheColorHint="#00000000"
         android:divider="@null" />
-    
-     <LinearLayout
+
+    <LinearLayout
         android:id="@+id/dk_layout_point_no_history"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"

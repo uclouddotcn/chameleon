@@ -125,7 +125,7 @@
 
             <Button
                 android:id="@+id/reply"
-                android:text="@string/comment"
+                android:text="@string/tieba_comment"
                 style="@style/common_image_btn_style"
                 android:layout_gravity="top|right"
                 android:layout_marginLeft="16dip"

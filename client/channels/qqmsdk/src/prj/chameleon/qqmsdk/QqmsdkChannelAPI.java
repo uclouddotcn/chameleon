@@ -296,6 +296,18 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         WGPlatform.WGSetObserver(mObserver);
         WGPlatform.handleCallback(activity.getIntent()); // 接收平台回调
 
+        if (mUniPay == null) {
+            mUniPay = new UnipayPlugAPI(activity);
+            mUniPay.setCallBack(mUnipayStubCallBack);
+            mUniPay.bindUnipayService();
+            mUniPay.setOfferId(mCfg.mQQAppId);
+            if (mCfg.mIsTest) {
+                mUniPay.setEnv("test");
+            } else {
+                mUniPay.setEnv("release");
+            }
+        }
+
         try {
             InputStream is = activity.getAssets().open(mCfg.mMoneyIconFile);
             mMoneyIcon = new byte[is.available()];
@@ -665,15 +677,6 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void onStart(Activity activity) {
-        mUniPay = new UnipayPlugAPI(activity);
-        mUniPay.setCallBack(mUnipayStubCallBack);
-        mUniPay.bindUnipayService();
-        mUniPay.setOfferId(mCfg.mQQAppId);
-        if (mCfg.mIsTest) {
-            mUniPay.setEnv("test");
-        } else {
-            mUniPay.setEnv("release");
-        }
     }
 
     @Override
@@ -684,5 +687,36 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mUniPay = null;
     }
 
+
+    @Override
+    public boolean runProtocol(Activity activity, String protocol, String message, IDispatcherCb cb) {
+        if (protocol.equals("qqmsdk_setplat")) {
+            int ret = Constants.ErrorCode.ERR_OK;
+            if (message.equals("wx")) {
+                mPlatform = WeGame.WXPLATID;
+            } else if (message.equals("qq")) {
+                mPlatform = WeGame.QQPLATID;
+            } else {
+                ret = Constants.ErrorCode.ERR_FAIL;
+            }
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("proto", "qqmsdk_setplat");
+                cb.onFinished(Constants.ErrorCode.ERR_OK, obj);
+            } catch (JSONException e) {
+                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isSupportProtocol(String protocol) {
+        if (protocol.equals("qqmsdk_setplat")) {
+            return true;
+        }
+        return false;
+    }
 }
 

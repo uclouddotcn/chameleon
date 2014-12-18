@@ -47,14 +47,14 @@
 		    		android:paddingBottom="12dip"
 					android:textColor="@color/tieba_reg_font_color"
 					android:textSize="16sp"
-					android:text="@string/user"
+					android:text="@string/tieba_user"
 					android:layout_gravity="center_vertical">
 				</TextView>
 			    <EditText 
 			        android:id="@+id/edit_user_name"
 			        android:layout_gravity="center_vertical"
 					android:singleLine="true"
-					android:hint="@string/user_name_rule"
+					android:hint="@string/tieba_user_name_rule"
 					android:textColor="@color/tieba_reg_font_color"
 					android:textSize="14sp"
 					android:background="@null"
@@ -93,7 +93,7 @@
 					android:textColor="@color/tieba_reg_font_color"
 					android:textSize="14sp"
 					android:paddingTop="12dip"
-					android:text="@string/choose_user_name"
+					android:text="@string/tieba_choose_user_name"
 					android:layout_gravity="center_vertical">
 				</TextView>
 				<RadioGroup 
@@ -153,14 +153,14 @@
 					android:paddingTop="12dip"
 		    		android:paddingBottom="12dip"
 					android:layout_marginRight="16dip"
-					android:text="@string/psw_tip">
+					android:text="@string/tieba_psw_tip">
 				</TextView>
 			    <EditText 
 			        android:id="@+id/edit_psw"
 			        android:layout_marginRight="16dip"
 					android:singleLine="true"
 					android:textColor="@color/tieba_reg_font_color"
-					android:hint="@string/user_psw_rule"
+					android:hint="@string/tieba_user_psw_rule"
 					android:textSize="14sp"
 					android:maxLength="14"
 					android:background="@null"
@@ -172,7 +172,7 @@
 				</EditText>
 				<Button 
 				    android:id="@+id/show"
-				    android:text="@string/hide"
+				    android:text="@string/tieba_hide"
 				    android:background="@drawable/tieba_show_psw"
 				    android:textColor="@color/tieba_reg_font_color"
 				    android:layout_height="wrap_content"
@@ -196,7 +196,7 @@
 					android:textSize="16sp"
 					android:paddingTop="12dip"
 		    		android:paddingBottom="12dip"
-					android:text="@string/account_mobile"
+					android:text="@string/tieba_account_mobile"
 					android:layout_gravity="center_vertical">
 				</TextView>
 			    <EditText 
@@ -241,7 +241,7 @@
 					android:textSize="16sp"
 					android:paddingTop="12dip"
 		    		android:paddingBottom="12dip"
-					android:text="@string/title_vcode"
+					android:text="@string/tieba_title_vcode"
 					android:layout_gravity="center_vertical">
 				</TextView>
 			    <EditText 
@@ -277,7 +277,7 @@
 				</FrameLayout>
 				<Button 
 				    android:id="@+id/change_vcode"
-				    android:text="@string/change_vcode"
+				    android:text="@string/tieba_change_vcode"
 				    android:layout_gravity="center_vertical"
 					android:layout_height="wrap_content"
 					android:layout_width="wrap_content"
@@ -309,7 +309,7 @@
 					android:textSize="16sp"
 					android:layout_centerInParent="true"
 				    android:textColor="@android:color/white"
-				    android:text="@string/account_regedit"
+				    android:text="@string/tieba_account_regedit"
 					android:layout_height="wrap_content"
 					android:layout_width="wrap_content"/>
 			</RelativeLayout>
@@ -322,7 +322,7 @@
 		        android:textSize="14sp"
 		        android:textColorLink="#FF63A2D2"
                 android:visibility="gone"
-		        android:text="@string/reg_info"
+		        android:text="@string/tieba_reg_info"
 		        android:layout_width="fill_parent"
 		    	android:layout_height="wrap_content"/>
 		    
@@ -344,7 +344,7 @@
 		</ImageView>
 		<TextView 
 	        android:id="@+id/title_text"
-			android:text="@string/account_regedit_baidu" 
+			android:text="@string/tieba_account_regedit_baidu" 
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"  
 			android:layout_weight="1"
@@ -355,7 +355,7 @@
 		</TextView>
 		<Button 
 			android:id="@+id/login"
-			android:text="@string/account_login"
+			android:text="@string/tieba_account_login"
 			style="@style/title_comm"
 			android:layout_gravity="center_vertical">
 		</Button>

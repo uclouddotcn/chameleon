@@ -8,7 +8,7 @@
     
 	<RelativeLayout
 	    android:layout_width="match_parent"
-	    android:layout_height="320dip"
+	    android:layout_height="300dip"
 	    android:orientation="vertical" >
     
 	    <!-- 用于获取焦点的输入框 -->
@@ -228,6 +228,7 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_below="@id/lin_account_pass"
+	        android:layout_marginBottom="18dip"
 	        android:orientation="vertical" >
 	
 	        <Button
@@ -284,8 +285,6 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_below="@id/lin_buttons"
-	        android:layout_marginTop="18dip"
-	        android:layout_marginBottom="26dip"
 	        android:orientation="vertical">
 	        <TextView 
 	            android:layout_width="wrap_content"
@@ -324,6 +323,43 @@
 	                android:textColor="@color/bdp_deep_gray"
 	                android:textSize="13sp" />
 	        </LinearLayout>
+	    </LinearLayout>
+	    
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@id/lin_other_account"
+	        android:paddingTop="18dip"
+	        android:paddingBottom="5dip"
+	        android:orientation="horizontal"
+	        android:gravity="center_horizontal|bottom">
+	        
+	        <ImageView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingRight="10dip"
+	            android:src="@drawable/bdp_paycenter_logo_baidu"
+	            android:contentDescription="@string/bdp_image"
+	            />
+	        
+	        <TextView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/bdp_customer_support"
+	            android:textColor="@color/bdp_dark_gray"
+	            android:textSize="13sp"
+	            />
+	        
+	        <!-- 客服电话 -->
+	        <TextView 
+	            android:id="@+id/txt_customer_support"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingTop="10dip"
+	            android:text="@string/bdp_customer_support_phone"
+	            android:textColor="@color/bdp_blue"
+	            android:textSize="13sp"
+	            />
 	    </LinearLayout>
 	    
 	    <!-- 历史账号列表 -->

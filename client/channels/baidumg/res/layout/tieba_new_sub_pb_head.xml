@@ -116,7 +116,7 @@
             android:layout_marginLeft="16dip"
             android:background="@drawable/tieba_common_image_btn_selector"
             android:drawableLeft="@drawable/tieba_btn_discuss_dl_selector"
-            android:text="@string/comment" />
+            android:text="@string/tieba_comment" />
 
     </LinearLayout>
 

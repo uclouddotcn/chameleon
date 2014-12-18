@@ -34,7 +34,7 @@
 		</ImageView>
 		<TextView 
 			android:id="@+id/title_text" 
-			android:text="@string/account_manager"
+			android:text="@string/tieba_account_manager"
 			android:layout_width="wrap_content" 
 			android:gravity="center_horizontal"
 			style="@style/title_info_shadow"
@@ -48,7 +48,7 @@
 		
 		<Button 
 		    android:id="@+id/edit" 
-		    android:text="@string/edit"
+		    android:text="@string/tieba_edit"
             android:layout_gravity="center_vertical"
 			style="@style/title_comm">
 		</Button>

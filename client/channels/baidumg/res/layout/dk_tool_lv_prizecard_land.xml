@@ -27,7 +27,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
             android:layout_marginTop="30dp"
-            android:text="回馈VIP抽奖"
+            android:text="@string/dk_repayment_vip"
             android:textColor="#ffffff"
             android:textSize="22sp" />
 
@@ -44,7 +44,7 @@
             <TextView
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
-                android:text="有效期:"
+                android:text="@string/dk_effect_time"
                 android:textColor="#ffffff"
                 android:textSize="12sp" />
 
@@ -52,7 +52,6 @@
                 android:id="@+id/tv_valuetime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2014.06.21-2014.07.29"
                 android:textColor="#ffffff"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -61,11 +60,11 @@
             android:id="@+id/btn_goprize"
             android:layout_width="100dp"
             android:layout_height="35dp"
-            android:layout_centerHorizontal="true"
             android:layout_below="@+id/ll_endtime"
+            android:layout_centerHorizontal="true"
             android:background="@drawable/dk_btn_selector_goprize"
-            android:textColor="#9a3d19"
-            android:text="去抽奖" />
+            android:text="@string/dk_go_prize"
+            android:textColor="#9a3d19" />
 
         <ImageView
             android:id="@+id/iv_use_state"
@@ -74,18 +73,17 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:src="@drawable/dk_prizecard_used" />
+
         <TextView
             android:id="@+id/tv_use_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:text="@string/dk_not_use"
             android:textColor="#ffffff"
-            android:visibility="gone"
             android:textSize="20sp"
-            android:text="未使用" />
-
+            android:visibility="gone" />
     </RelativeLayout>
-
 
 </RelativeLayout>

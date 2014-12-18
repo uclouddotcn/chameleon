@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:richText="http://schemas.android.com/apk/res/com.baidu.tiebasdk"
+    xmlns:richText="http://schemas.android.com/apk/res-auto/com.baidu.tiebasdk"
     android:id="@+id/sub_pb_item"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -45,7 +45,6 @@
                 android:textColor="#ffb2b6ba"
                 android:textSize="10sp" />
         </LinearLayout>
-
     </LinearLayout>
 
     <View
@@ -53,9 +52,9 @@
         android:layout_width="fill_parent"
         android:layout_height="2dip"
         android:layout_marginBottom="0dip"
-        android:layout_marginTop="0dip"
         android:layout_marginLeft="1dip"
         android:layout_marginRight="1dip"
+        android:layout_marginTop="0dip"
         android:visibility="visible" >
     </View>
 

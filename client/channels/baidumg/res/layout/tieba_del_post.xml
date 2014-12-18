@@ -13,7 +13,7 @@
         android:textSize="16sp"
         android:paddingTop="15dip"
         android:paddingBottom="18dip"
-  		android:text="@string/del_post_tip" />
+  		android:text="@string/tieba_del_post_tip" />
   	<TextView
   	    android:id="@+id/confirm_text"
   	    android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:textSize="16sp"
         android:paddingBottom="34dip"
         android:paddingLeft="20dip"
-  		android:text="@string/del_post_confirm" />  	  	
+  		android:text="@string/tieba_del_post_confirm" />  	  	
   	<LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         	android:textColor="#ff232323"
         	android:background="@drawable/tieba_alert_dialog_btn_cancel"
         	android:gravity="center"
-            android:text="@string/dialog_cancel"/>
+            android:text="@string/tieba_dialog_cancel"/>
         <Button 
             android:id="@+id/dialog_button_ok"
             android:layout_width="fill_parent"
@@ -52,7 +52,7 @@
         	android:textColor="#ff232323"
         	android:background="@drawable/tieba_alert_dialog_btn_ok"
         	android:gravity="center"
-            android:text="@string/dialog_ok"/>
+            android:text="@string/tieba_dialog_ok"/>
     </LinearLayout>
     
 </LinearLayout>

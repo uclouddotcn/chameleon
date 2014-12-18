@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -56,7 +57,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 DebugConfig.d(Constants.TAG, "onReceive value=" + value);
                 if (BuoyConstant.VALUE_CHANGE_USER == value) {
                     //GlobalParams.hwId = null;
-                    onLogout();
+                    onSwitchAccount();
                 }
             }
         }
@@ -102,10 +103,17 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 mAppPrivateKey, new GameCallback(activity, cb));
 
         // 如果游戏的引擎为cocos2d或者unity3d，将下面一句代码打开
-        GlobalParams.hwBuoy.setShowType(2);
+        GlobalParams.hwBuoy.setShowType(1);
 
         // 浮标初始化
         GlobalParams.hwBuoy.init(activity, p);
+
+        mSAReceiver = new SwitchAccountReceiver();
+        // 初始化切换用户广播接收器
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.huawei.gamebox.changeUserLogin");
+        // 注册切换用户广播
+        activity.registerReceiver(mSAReceiver, filter);
     }
 
 
@@ -157,6 +165,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                                         mUserInfo.mUid = (String) uinfo.get("userID");
                                         mUserInfo.mToken = (String) uinfo.get("accesstoken");
                                         mUserInfo.mIsLogined = true;
+                                        showFloatBar(activity, true);
                                         cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(mUserInfo.mToken,
                                                 mUserInfo.mUid, mChannel));
                                     } else {
@@ -213,6 +222,8 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         if (visible) {
             synchronized (GlobalParams.hwBuoy)
             {
+                GlobalParams.hwBuoy.hideSmallWindow(activity.getApplicationContext());
+                GlobalParams.hwBuoy.hideBigWindow(activity.getApplicationContext());
                 GlobalParams.hwBuoy.showSmallWindow(activity.getApplicationContext());
             }
         } else {
@@ -260,7 +271,7 @@ public class HuaweiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
     }
 
-    private void onLogout() {
+    private void onSwitchAccount() {
         if (mAccountActionListener != null) {
             mAccountActionListener.onAccountLogout();
         }

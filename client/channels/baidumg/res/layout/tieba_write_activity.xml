@@ -11,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="37dip"
         android:layout_below="@id/title"
-        android:hint="@string/write_title_hint"
+        android:hint="@string/tieba_write_title_hint"
         android:maxLength="31"
         android:paddingLeft="7dip"
         android:paddingRight="7dip"
@@ -29,7 +29,7 @@
         android:layout_below="@id/post_title"
         android:background="#FFF7F7F7"
         android:gravity="fill_horizontal|top"
-        android:hint="@string/content"
+        android:hint="@string/tieba_content"
         android:maxLength="5000"
         android:paddingLeft="7dip"
         android:paddingRight="7dip"
@@ -146,7 +146,7 @@
                 android:ellipsize="end"
                 android:gravity="left"
                 android:singleLine="true"
-                android:text="@string/def_pos"
+                android:text="@string/tieba_def_pos"
                 android:textColor="#ff262626"
                 android:textSize="14sp" >
             </TextView>
@@ -183,7 +183,7 @@
             style="@style/button_comm"
             android:id="@+id/post"
             android:layout_gravity="center_vertical"
-            android:text="@string/send" >
+            android:text="@string/tieba_send" >
         </Button>
     </LinearLayout>
 

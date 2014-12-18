@@ -12,7 +12,7 @@
         android:gravity="center"
         android:textSize="16dip"
         android:textColor="#ff262626"
-        android:text="@string/forum_manage"/>
+        android:text="@string/tieba_forum_manage"/>
     
     <Button 
         android:id="@+id/del_post_btn"
@@ -25,7 +25,7 @@
         android:textSize="18dip"
         android:textColor="@color/tieba_text_black_white_color"
         android:gravity="center"
-        android:text="@string/delete_thread"
+        android:text="@string/tieba_delete_thread"
         android:background="@drawable/tieba_btn_wb_square"
         />
     
@@ -39,7 +39,7 @@
         android:textSize="18dip"
         android:textColor="@color/tieba_text_black_white_color"
         android:gravity="center"
-        android:text="@string/ban_user"
+        android:text="@string/tieba_ban_user"
         android:background="@drawable/tieba_btn_wb_square"
         />
 </LinearLayout>

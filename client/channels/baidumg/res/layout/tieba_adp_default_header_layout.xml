@@ -16,13 +16,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="12sp"
-                android:text="@string/pull_to_refresh"/>
+                android:text="@string/tieba_pull_to_refresh"/>
 
         <TextView
                 android:id="@+id/head_layout_refresh_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/last_update_time"
+                android:text="@string/tieba_last_update_time"
                 android:textSize="12sp"/>
     </LinearLayout>
 

@@ -3,8 +3,7 @@
     android:id="@+id/dk_ll_mytools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-     >
+    android:orientation="vertical" >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -36,21 +35,18 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="30dp"
-                    android:text="代金券"
+                    android:text="@string/dk_voucher"
                     android:textColor="#ffffff"
                     android:textSize="32sp" />
-
-
 
                 <TextView
                     android:id="@+id/tv_cashcardnum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                     android:layout_alignParentBottom="true"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="20dp"
                     android:layout_marginRight="20dp"
-                    android:text="1000"
                     android:textColor="#ffffff"
                     android:textSize="20sp" />
             </RelativeLayout>
@@ -76,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="30dp"
-                    android:text="充值卡"
+                    android:text="@string/dk_recharge_card"
                     android:textColor="#ffffff"
                     android:textSize="32sp" />
 
@@ -84,11 +80,10 @@
                     android:id="@+id/tv_chargecardnum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                     android:layout_alignParentBottom="true"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="20dp"
                     android:layout_marginRight="20dp"
-                    android:text="1000"
                     android:textColor="#ffffff"
                     android:textSize="20sp" />
             </RelativeLayout>
@@ -114,25 +109,20 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="30dp"
-                    android:text="抽奖卡"
+                    android:text="@string/dk_prize_card"
                     android:textColor="#ffffff"
                     android:textSize="32sp" />
 
-                
-
                 <TextView
                     android:id="@+id/tv_prizecardnum"
-                     android:layout_width="wrap_content"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                     android:layout_alignParentBottom="true"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="20dp"
                     android:layout_marginRight="20dp"
-                    android:text="1000"
                     android:textColor="#ffffff"
                     android:textSize="20sp" />
-
-                
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
@@ -157,8 +147,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/dk_btn_selector_intent"
-            android:textColor="@drawable/dk_btn_textcolor_selector"
-            android:text="去星玩家看看" />
+            android:text="@string/dk_goto_baidu_start"
+            android:textColor="@drawable/dk_btn_textcolor_selector" />
     </LinearLayout>
 
 </LinearLayout>

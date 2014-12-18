@@ -8,7 +8,7 @@
     
 	<RelativeLayout 
 	    android:layout_width="match_parent"
-	    android:layout_height="320dip"
+	    android:layout_height="260dip"
 	    android:orientation="vertical" >
     
 	    <!-- 用于获取焦点的输入框 -->
@@ -142,6 +142,42 @@
 	        android:textColor="@color/bdp_white"
             android:textSize="15sp"
 	        android:background="@drawable/bdp_btn_blue_selector" />
+	    
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:paddingBottom="5dip"
+	        android:orientation="horizontal"
+	        android:gravity="center_horizontal|bottom">
+	        
+	        <ImageView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingRight="10dip"
+	            android:src="@drawable/bdp_paycenter_logo_baidu"
+	            android:contentDescription="@string/bdp_image"
+	            />
+	        
+	        <TextView 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/bdp_customer_support"
+	            android:textColor="@color/bdp_dark_gray"
+	            android:textSize="13sp"
+	            />
+	        
+	        <!-- 客服电话 -->
+	        <TextView 
+	            android:id="@+id/txt_customer_support"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingTop="10dip"
+	            android:text="@string/bdp_customer_support_phone"
+	            android:textColor="@color/bdp_blue"
+	            android:textSize="13sp"
+	            />
+	    </LinearLayout>
 	    
 	    <!-- 历史账号列表 -->
 	    <LinearLayout

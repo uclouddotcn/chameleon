@@ -39,7 +39,7 @@
                 android:drawableTop="@drawable/tieba_filter_rotate_left"
                 android:gravity="center"
                 android:paddingTop="19dip"
-                android:text="@string/rotate_left"
+                android:text="@string/tieba_rotate_left"
                 android:textColor="@color/tieba_text_blue_selector_color"
                 android:textSize="11sp" >
             </Button>
@@ -54,7 +54,7 @@
                 android:drawableTop="@drawable/tieba_filter_rotate_right"
                 android:gravity="center"
                 android:paddingTop="19dip"
-                android:text="@string/rotate_right"
+                android:text="@string/tieba_rotate_right"
                 android:textColor="@color/tieba_text_blue_selector_color"
                 android:textSize="11sp" >
             </Button>
@@ -69,7 +69,7 @@
                 android:drawableTop="@drawable/tieba_filter_flip_left_right"
                 android:gravity="center"
                 android:paddingTop="19dip"
-                android:text="@string/rotate_left_right"
+                android:text="@string/tieba_rotate_left_right"
                 android:textColor="@color/tieba_text_blue_selector_color"
                 android:textSize="11sp" >
             </Button>
@@ -84,7 +84,7 @@
                 android:drawableTop="@drawable/tieba_filter_flip_up_down"
                 android:gravity="center"
                 android:paddingTop="19dip"
-                android:text="@string/rotate_up_down"
+                android:text="@string/tieba_rotate_up_down"
                 android:textColor="@color/tieba_text_blue_selector_color"
                 android:textSize="11sp" >
             </Button>

@@ -19,6 +19,7 @@
     <string name="ebpay_no_network">网络错误，请检查网络并重试。</string>
     <string name="ebpay_resolve_error">系统开小差，等一会儿再试吧</string>
     <string name="ebpay_img">Image</string>
+    <string name="ebpay_digits">0123456789</string>
     <string name="ebpay_req_fail">请求失败</string>
     <string name="ebpay_tip">提示</string>
     <string name="ebpay_confirm_exit">确定放弃支付？</string>
@@ -47,12 +48,13 @@
     <string name="ebpay_payresult_huifei">预计3分钟到账，详情请查看我的交易</string>
     <string name="ebpay_payresult_withdraw">预计2小时内到账</string>
     <string name="ebpay_payresult_transfer">预计2小时内到账，详情请查看我的交易</string>
+    <string name="ebpay_payresult_baizhuanfen">恭喜您本次获得%1$s点百赚分，以后消费可抵扣现金，多用多返，优惠不停</string>
     <string name="ebpay_choose_credit_type">信用卡信息</string>
     <string name="ebpay_choose_debit_type">储蓄卡信息</string>
     <string name="ebpay_choose_credit_tip">查看支持的银行卡</string>
     <string name="ebpay_choose_credit_tip2">支持的银行</string>
    
-    <string name="ebpay_account_safe">请绑定本人银行卡，百度钱包确保您的用卡安全，请放心填写。</string>
+    <string name="ebpay_account_safe">请绑定本人银行卡，百度钱包确保您的用卡安全，请放心填写</string>
     <string name="ebpay_tip_zhuanzhuang">请添加储蓄卡以完成转账（信用卡不支持转账）</string>
     <string name="ebpay_tip_balance_charge">请添加储蓄卡以完成余额充值（信用卡不支持余额充值）</string>
     <string name="ebpay_tip_compl">为了您的账户安全，请完善银行卡信息</string>
@@ -226,6 +228,13 @@
     <string name="ebpay_discount_yuan">-%1$s元</string>
     <string name="ebpay_final_price">您还需支付：%1$s元</string>
     <string name="ebpay_to_pay">去付款</string>
+    <string name="ebpay_overdue_tip">有效期至 %1$s</string>
+    <string name="ebpay_coupon">优惠券</string>
     <string name="ebpay_to_logout">注销</string>
-    
+    <string name="ebpay_checkbox_lable">开启小额免密(下次%1$s元以下无需输入密码)</string>
+    <string name="ebpay_select_otherpaytype">选择其他支付方式</string>
+    <string name="ebpay_nopass_desc">您已开启小额免密，请直接支付！</string>
+    <string name="ebpay_setnopass_tip">您已成功开启小额免密，下次%1$s元以内的订单无需输入支付密码直接支付。如需关闭，请登录百度钱包网站进行关闭</string>
+    <string name="ebpay_nopass_title">免密支付无需密码</string>
+    <string name="ebpay_one_key_pay_amount">__.__元</string>
 </resources>

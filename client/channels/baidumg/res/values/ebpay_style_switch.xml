@@ -27,10 +27,10 @@
     </declare-styleable>
     <declare-styleable name="TextAppearance">
 
-        <!-- Text color. --><!-- 2014-10-30 张海云确认此处可注释掉，以避免与贴吧冲突 -->
-        <!-- <attr name="textColor" format="reference|color" /> -->
+        <!-- Text color. -->
+       <!--  <attr name="textColor" format="reference|color" /> -->
         <!-- Size of the text. Recommended dimension type for text is "sp" for scaled-pixels (example: 15sp). -->
-        <!-- <attr name="textSize" format="dimension" /> -->
+       <!--  <attr name="textSize" format="dimension" /> -->
         <!-- Style (bold, italic, bolditalic) for the text. -->
         <attr name="textStyle">
             <flag name="normal" value="0" />
