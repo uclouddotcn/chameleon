@@ -26,6 +26,8 @@ public class GUIInit : MonoBehaviour {
 
 		public override void onLoginFail(int code) {
 			logList += string.Format("登陆失败： {0}\n", code);
+			if (code == ChameleonConstants.ERR_LOGIN_QQ_NO_PLAT_SPEC)
+				ChameleonSDK.login ();
 		}
 
 		public override void onRegistGuest(int code, string loginInfo) {

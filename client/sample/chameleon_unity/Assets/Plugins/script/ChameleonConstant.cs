@@ -40,7 +40,8 @@ namespace chameleon
                                 ERR_LOGIN_IN_PROGRESS = 21,
                                 ERR_LOGIN_IN_QQ_NON_INSTALLED = 22,
                                 ERR_LOGIN_IN_WX_NON_INSTALLED = 23,
-                                ERR_LOGIN_GAME_EXIT_NOCARE = 24 // 渠道不关心退出游戏的事件
+                                ERR_LOGIN_GAME_EXIT_NOCARE = 24, // 渠道不关心退出游戏的事件
+                                ERR_LOGIN_MSDK_PLAT_NO_SPEC = 25 // 渠道不关心退出游戏的事件
 			}
 		}
 }

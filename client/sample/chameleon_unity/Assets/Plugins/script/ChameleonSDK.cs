@@ -75,6 +75,8 @@ public class ChameleonSDK : MonoBehaviour  {
 			 * @param loginInfo, login info string which can send to chameleon server directly
 			 */
 			public virtual void onGuestBind(string loginInfo){}
+
+			public virtual void onRunProtocol(int code, string method, string result){}
 		}
 
 		private static ChameleonBridge mBridge;
@@ -297,10 +299,19 @@ public class ChameleonSDK : MonoBehaviour  {
 		}
 
 		public void Awake() {
+		        GameObject.name = "ChameleonBridge";
 			Debug.Log (gameObject.name);
 			mBridge = gameObject.AddComponent ("ChameleonBridge") as ChameleonBridge;
 			mBridge.init ();
 			GameObject.DontDestroyOnLoad (gameObject);
+		}
+
+		public static bool isSupportProtocol(string protocol) {
+			return mBridge.callFunc<bool> ("isSupportProtocol", protocol);
+		}
+
+		public static void runProtocol(string protocol, string ps) {
+			mBridge.callFunc ("runProtocol", protocol, ps);
 		}
 
 	}
