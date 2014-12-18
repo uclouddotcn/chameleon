@@ -34,15 +34,15 @@
 
         <meta-data
             android:name="lenovo.gamesdk.new"
-            android:value="2.1.4" />
+            android:value="2.2.2" />
 
         <!-- 闪屏界面，默认横屏，通过screenOrientation可以进行修改-->
         <activity
             android:name="com.lenovo.lsf.gamesdk.ui.WelcomeActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape"
-            chameleon:replace="android:screenOrientation=%orientation%"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            chameleon:replace="android:screenOrientation=%orientation%"
             android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,7 +63,7 @@
         </activity>
         <!-- 登录成功欢迎条界面结束 -->
 
-        <!-- 登录过程界面，默认横屏，通过screenOrientation可以进行修改 -->
+        <!-- 登录过程界面，默认横屏，通过screenOrientation可以进行修改 注意必须8个activity同时修改 -->
         <activity
             android:name="com.lenovo.lsf.lenovoid.ui.PsLoginActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -141,7 +141,6 @@
             android:excludeFromRecents="true"
             android:label=""
             android:screenOrientation="portrait"
-            chameleon:replace="android:screenOrientation=%orientation%"
             android:theme="@style/com_lenovo_lsf_ui" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -154,11 +153,11 @@
         </service>
         <!-- 登录配置结束 -->
 
+
+
         <!-- 支付配置开始 -->
 
-        <!-- 收银台界面，默认横屏，通过screenOrientation可以进行修改-->
-
-
+        <!-- 收银台界面，默认横屏，通过screenOrientation可以进行修改  注意必须6个activity同时修改-->
         <!-- new ui start -->
         <activity
             android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.PayHubActivity"
