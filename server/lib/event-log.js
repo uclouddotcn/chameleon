@@ -53,6 +53,29 @@ module.exports.listen = function (eventCenter, storageEngine) {
         storageEngine.record(obj);
     });
 
+    eventCenter.on('pay-maybe', function (orderInfo) {
+        var obj = {
+            action: 'pay-maybe',
+            time: Date.now()
+        };
+        for (var i in orderInfo) {
+            obj[i] = orderInfo[i];
+        }
+        storageEngine.record(obj);
+    });
+
+    eventCenter.on('pay-ignore', function (orderInfo, err) {
+        var obj = {
+            action: 'pay-ignore',
+            time: Date.now(),
+            code: err.code
+        };
+        for (var i in orderInfo) {
+            obj[i] = orderInfo[i];
+        }
+        storageEngine.record(obj);
+    });
+
     eventCenter.on('pay-fail', function (orderInfo, code) {
         var obj = {
             action: 'pay-fail',

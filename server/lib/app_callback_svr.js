@@ -19,7 +19,10 @@ AppCallbackSvr.prototype.updateCfg = function (cfg) {
     if (this.host !== cfg.host) {
         this.client = restify.createJsonClient( {
             url: cfg.host,
-            version: '*'
+            version: '*',
+            retry: false,
+            requestTimeout: 20000,
+            connectTimeout: 10000
         });
     }
     this.payCbUrl = cfg.payCbUrl;

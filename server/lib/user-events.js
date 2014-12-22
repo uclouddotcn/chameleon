@@ -180,9 +180,15 @@ function(channel, uid, appUid, cpOrderId, payStatus,
     ], function (err, result) {
         // if emit error somewhere, we just post the error to callback
         if (err instanceof Error) {
-            callback(err);
-            if (err instanceof SdkError) {
-                self._eventCenter.emit('pay-fail', orderInfo, err.code);
+            if (err.name === 'RequestTimeoutError') {
+                // request timeout from remote, for safety we just assume it's done
+                self._eventCenter.emit('pay-maybe', orderInfo);
+                callback(null, err);
+            } else {
+                if (err instanceof SdkError) {
+                    self._eventCenter.emit('pay-fail', orderInfo, err.code);
+                }
+                callback(err);
             }
             return;
         }
@@ -190,6 +196,7 @@ function(channel, uid, appUid, cpOrderId, payStatus,
         // some function may want to break the process and post a result
         // to the callback, err will be an object
         if (err instanceof Object) {
+            self._eventCenter.emit('pay-ignore', orderInfo, err);
             callback(null, err);
         } else {
             // after pay succeeded

@@ -37,7 +37,7 @@ FileBillLogger.prototype.close = function (callback) {
 };
 
 FileBillLogger.prototype.getFileName = function (d) {
-    return pathLib.join(this.path, ['bill', d.getFullYear(), d.getMonth(), d.getDate()].join('_')+'.log');
+    return pathLib.join(this.path, ['bill', d.getFullYear(), d.getMonth()+1, d.getDate()].join('_')+'.log');
 };
 
 FileBillLogger.prototype.alive = function () {
