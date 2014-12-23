@@ -17,7 +17,7 @@ public class GUIInit : MonoBehaviour {
 		}
 		public override void onLogin(string loginInfo) {
 			logList += string.Format("登陆成功: {0}. 开始服务器验证\n", loginInfo);
-			this.owner.StartCoroutine (requestLogin (loginInfo)); 
+			//this.owner.StartCoroutine (requestLogin (loginInfo)); 
 		}
 
 		public override void onLoginGuest () {
@@ -26,14 +26,18 @@ public class GUIInit : MonoBehaviour {
 
 		public override void onLoginFail(int code) {
 			logList += string.Format("登陆失败： {0}\n", code);
-			if (code == ChameleonConstants.ERR_LOGIN_QQ_NO_PLAT_SPEC)
+
+			if (code == 25) {
+				ChameleonSDK.runProtocol("qqmsdk_setplat", "wx");
+				logList += string.Format("try login wx");
 				ChameleonSDK.login ();
+			}
 		}
 
 		public override void onRegistGuest(int code, string loginInfo) {
 			logList += string.Format("注册游客结果： {0} {1}\n", code, loginInfo);
 			if (code == (int)ChamConstant.ErrorCode.ERR_OK) {
-				this.owner.StartCoroutine (requestLogin (loginInfo)); 
+				//this.owner.StartCoroutine (requestLogin (loginInfo)); 
 			}
 		}
 		public override void onPay(int code) {
@@ -53,7 +57,7 @@ public class GUIInit : MonoBehaviour {
 		public override void onSwitchAccount(int code, string loginInfo) {
 			logList += string.Format("切换用户结果: {0}\n", code, loginInfo);
 			if (code == (int)ChamConstant.ErrorCode.ERR_OK) {
-				this.owner.StartCoroutine (requestLogin (loginInfo)); 
+				//this.owner.StartCoroutine (requestLogin (loginInfo)); 
 			} 
 		}
 		public override void onLogout(){
@@ -65,10 +69,11 @@ public class GUIInit : MonoBehaviour {
 		}
 		public override void onGuestBind(string loginInfo){
 			logList += string.Format ("游客绑定: {0}", loginInfo);
-			this.owner.StartCoroutine (requestLogin (loginInfo)); 
+			//this.owner.StartCoroutine (requestLogin (loginInfo)); 
 		}
-
+		/*
 		private static IEnumerator requestLogin(string loginInfo) {
+
 			Hashtable data = (Hashtable)JSON.JsonDecode (loginInfo);
 			Debug.Log (string.Format("receive login info: {0} {1}", loginInfo, data));
 			HTTP.Request req = new HTTP.Request("post", "http://118.192.73.182:8080/sdkapi/login", data);
@@ -85,6 +90,7 @@ public class GUIInit : MonoBehaviour {
 			}
 
 		}
+		*/
 	}
 
 
@@ -98,7 +104,7 @@ public class GUIInit : MonoBehaviour {
 	void Update () {
 
 	}
-
+	/*
 	private IEnumerator requestLogin(string loginInfo) {
 		Hashtable data = (Hashtable)JSON.JsonDecode (loginInfo);
 		HTTP.Request req = new HTTP.Request("post", "http://118.192.73.182:8080", data);
@@ -118,6 +124,7 @@ public class GUIInit : MonoBehaviour {
 			logList += string.Format("登陆失败\n");
 		}
 	}
+	*/
 
 
 	void OnGUI () {
@@ -150,12 +157,12 @@ public class GUIInit : MonoBehaviour {
 
 		if (GUI.Button (new Rect (410, 10, 100, 50), "充值")) {
 			logList += "开始充值\n";
-			this.StartCoroutine(startCharge());
+			//this.StartCoroutine(startCharge());
 		}
 		
 		if (GUI.Button (new Rect (10, 60, 100, 50), "购买")) {
 			logList += "开始购买\n";
-			this.StartCoroutine(startBuy());
+			//this.StartCoroutine(startBuy());
 		}
 
 		if (GUI.Button (new Rect (110, 60, 100, 50), "展示工具条")) {
@@ -182,6 +189,8 @@ public class GUIInit : MonoBehaviour {
 		GUILayout.EndScrollView ();
 		GUILayout.EndArea ();
 	}
+
+	/*
 
 	private IEnumerator startBuy() {
 		var postData = new Hashtable ();
@@ -267,4 +276,5 @@ public class GUIInit : MonoBehaviour {
 		}
 		
 	}
+	*/
 }

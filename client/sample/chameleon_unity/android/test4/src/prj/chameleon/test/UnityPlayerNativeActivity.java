@@ -1,6 +1,7 @@
 package prj.chameleon.test;
 
 import com.unity3d.player.*;
+import android.util.Log;
 import android.app.NativeActivity;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
@@ -27,11 +28,13 @@ public class UnityPlayerNativeActivity extends NativeActivity
 		setTheme(android.R.style.Theme_NoTitleBar_Fullscreen);
 		getWindow().setFormat(PixelFormat.RGB_565);
 
-		mUnityPlayer = new UnityPlayer(this);
-		if (mUnityPlayer.getSettings ().getBoolean ("hide_status_bar", true))
-			getWindow ().setFlags (WindowManager.LayoutParams.FLAG_FULLSCREEN,
-			                       WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+                if (mUnityPlayer == null) {
+                    Log.e("chameleon", "start unity player: " + this.toString());
+                    mUnityPlayer = new UnityPlayer(this);
+                    if (mUnityPlayer.getSettings ().getBoolean ("hide_status_bar", true))
+                            getWindow ().setFlags (WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                                   WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                }
 		setContentView(mUnityPlayer);
 		mUnityPlayer.requestFocus();
 	}
@@ -39,6 +42,7 @@ public class UnityPlayerNativeActivity extends NativeActivity
 	// Quit Unity
 	@Override protected void onDestroy ()
 	{
+                    Log.e("chameleon", "stop unity player: " + this.toString());
 		mUnityPlayer.quit();
 		super.onDestroy();
 		UnityChannelInterface.onDestroy();
@@ -95,13 +99,9 @@ public class UnityPlayerNativeActivity extends NativeActivity
 	@Override public boolean dispatchKeyEvent(KeyEvent event)
 	{
 		if (event.getAction() == KeyEvent.ACTION_MULTIPLE)
-			return mUnityPlayer.injectEvent(event);
+			return mUnityPlayer.onKeyMultiple(event.getKeyCode(), event.getRepeatCount(), event);
 		return super.dispatchKeyEvent(event);
 	}
 
 	// Pass any events not handled by (unfocused) views straight to UnityPlayer
-	@Override public boolean onKeyUp(int keyCode, KeyEvent event)     { return mUnityPlayer.injectEvent(event); }
-	@Override public boolean onKeyDown(int keyCode, KeyEvent event)   { return mUnityPlayer.injectEvent(event); }
-	@Override public boolean onTouchEvent(MotionEvent event)          { return mUnityPlayer.injectEvent(event); }
-	/*API12*/ public boolean onGenericMotionEvent(MotionEvent event)  { return mUnityPlayer.injectEvent(event); }
 }

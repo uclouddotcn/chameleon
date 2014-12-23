@@ -299,7 +299,7 @@ public class ChameleonSDK : MonoBehaviour  {
 		}
 
 		public void Awake() {
-		        GameObject.name = "ChameleonBridge";
+		        gameObject.name = "ChameleonBridge";
 			Debug.Log (gameObject.name);
 			mBridge = gameObject.AddComponent ("ChameleonBridge") as ChameleonBridge;
 			mBridge.init ();

@@ -24,7 +24,7 @@ public class UnityChannelInterface {
         private boolean mIsInited = false;
 
         // run on UI thread only
-        public void setInitDone () {
+        public synchronized void setInitDone () {
             setInited();
             for (Runnable runnable : mPendingQueue) {
                 runnable.run();
@@ -138,7 +138,6 @@ public class UnityChannelInterface {
                 prj.chameleon.channelapi.ChannelInterface.login(UnityPlayer.currentActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(final int retCode, final JSONObject data) {
-                        UnityPlayer.
                         if (retCode != Constants.ErrorCode.ERR_OK) {
                             U3DHelper.SendMessage("onLoginFail", retCode, null);
                             return;
@@ -367,7 +366,7 @@ public class UnityChannelInterface {
     }
 
     public static void onNewIntent(Activity activity, Intent intent) {
-        prj.chameleon.channelapi.ChannelInterface.onStop(activity);
+        prj.chameleon.channelapi.ChannelInterface.onNewIntent(activity, intent);
     }
 
 
