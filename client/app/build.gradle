@@ -7,7 +7,7 @@ android {
     buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 18
+        targetSdkVersion 14
     }
     buildTypes {
         release {
@@ -51,12 +51,20 @@ android {
         }
         qqmsdk {
             applicationId "com.tencent.tmgp.sanguofire"
+            signingConfigs {
+                debug {
+                    storeFile file("../mykeystore")
+                    storePassword "a1988106"
+                    keyPassword "1988106"
+                    keyAlias "com.xianyugame.hxsg"
+                }
+            }
         }
         anzhi {
 
         }
         huawei {
-
+            applicationId "com.xianyugame.sanguofire.huawei"
         }
         meizu {
 
@@ -65,7 +73,7 @@ android {
 
         }
         lenovo {
-
+            applicationId "com.xianyugame.sanguofire.lenovo"
         }
         gionee {
 
@@ -74,10 +82,6 @@ android {
 
         }
         coolpad {
-
-        }
-        vivo {
-
         }
         p_getui {
 
@@ -128,11 +132,10 @@ dependencies {
     lenovoCompile project(':channels:lenovo')
     gioneeCompile project(':channels:gionee')
     htcCompile project(':channels:htc')
-    coolpadCompile project(':channels:coolpad')
-    vivoCompile project(':channels:vivo')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')
+    coolpadCompile project(':channels:coolpad')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
