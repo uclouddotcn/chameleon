@@ -238,7 +238,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 return;
             }
             Log.d(Constants.TAG, "receive code: " + code + " msg: " + resultMsg);
-            Activity activity = mPayEnv.mActivity.get();
+            final Activity activity = mPayEnv.mActivity.get();
             if (activity == null) {
                 Log.e(Constants.TAG, "callback activity is gone");
                 mPayEnv = null;
@@ -250,6 +250,9 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     switch (code) {
                         case 0:
                             if (payState == 0) {
+                                CharSequence text = "游戏币充值成功，请重新购买";
+                                Toast toast = Toast.makeText(activity.getApplicationContext(), text, Toast.LENGTH_SHORT);
+                                toast.show();
                                 mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_PAY_RETRY, null);
                             } else if (payState == 1) {
                                 mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
@@ -446,7 +449,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     sessiontype = "wc_actoken";
                 }
                 mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId, mUserInfo.mPayToken,
-                       sessionid, sessiontype, serverId, mUserInfo.mPf,
+                        sessionid, sessiontype, serverId, mUserInfo.mPf,
                         mUserInfo.mPfKey, UnipayPlugAPI.ACCOUNT_TYPE_COMMON,
                         String.valueOf(rest), allowUserChange,
                         mMoneyIcon);
