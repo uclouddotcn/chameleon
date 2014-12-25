@@ -759,8 +759,5 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         return false;
     }
 
-    static {
-        System.loadLibrary("NativeRQD");
-    }
 }
 
