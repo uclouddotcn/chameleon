@@ -2,9 +2,9 @@ package prj.chameleon.qqmsdk;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
@@ -100,16 +100,31 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private static final String WX_PLATFORM = "w";
     private static final String QQ_PLATFORM = "q";
     private static final int INVALID_PLAT = -99999;
+    private static final int LOGIN_TIMEOUT = 10;
+    private static final int LOGIN_TIMEOUT_EVT_ID = 0;
     private IAccountActionListener mAccountActionListener;
     private final Config mCfg = new Config();
-    private boolean mCfgLandScape;
-    private boolean mIsDebug;
     private int mPlatform = INVALID_PLAT;
     private final UserInfo mUserInfo = new UserInfo();
     private UnipayPlugAPI mUniPay = null;
     private IDispatcherCb mLoginCb = null;
     private PaymentEnv mPayEnv = null;
     private byte[] mMoneyIcon = null;
+    private int mCmdSeq = 0;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case LOGIN_TIMEOUT_EVT_ID:
+                    if (mLoginCb != null && msg.arg1 == mCmdSeq) {
+                        mLoginCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
     private class PlatformObserver implements WGPlatformObserver {
 
         @Override
@@ -189,7 +204,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         public String OnCrashExtMessageNotify() {
             return null;
         }
-    };
+    }
 
     //回调接口
     IUnipayServiceCallBack.Stub mUnipayStubCallBack = new IUnipayServiceCallBack.Stub() {
@@ -264,9 +279,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
-        mCfgLandScape = commCfg.mIsLandscape;
         mChannel = commCfg.mChannel;
-        mIsDebug = commCfg.mIsDebug;
         mCfg.mQQAppId = cfg.getString("qqAppId");
         mCfg.mQQAppKey = cfg.getString("qqAppKey");
         mCfg.mWXAppId = cfg.getString("wxAppId");
@@ -378,6 +391,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         } else if (mPlatform == WeGame.WXPLATID) {
             WGPlatform.WGLogin(EPlatform.ePlatform_Weixin);
             mLoginCb = cb;
+            startLoginTimer();
         } else {
             cb.onFinished(Constants.ErrorCode.ERR_LOGIN_MSDK_PLAT_NO_SPEC, null);
         }
@@ -597,15 +611,6 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     /**
-     * map qq code to sdk erros
-     * @param code nd91 error code
-     * @return the error code
-     */
-    private int mapError(int code) {
-        return Constants.ErrorCode.ERR_UNKNOWN;
-    }
-
-    /**
      * set account action listener, add global nd91 listener
      * @param accountActionListener account action
      */
@@ -676,7 +681,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean onLoginRsp(String loginRsp) {
-        JSONObject obj = null;
+        JSONObject obj;
         try {
             obj = new JSONObject(loginRsp);
             int code = obj.getInt("code");
@@ -757,6 +762,13 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             return true;
         }
         return false;
+    }
+
+    private void startLoginTimer () {
+        mCmdSeq += 1;
+        Message msg = new Message();
+        msg.arg1 = mCmdSeq;
+        mHandler.sendMessageAtTime(msg, LOGIN_TIMEOUT*1000);
     }
 
 }

@@ -39,7 +39,7 @@
             android:exported="true"
             android:label="WXEntryActivity"
             android:launchMode="singleTop"
-            android:taskAffinity="com.tencent.tmgp.sanguofire" >
+            >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
