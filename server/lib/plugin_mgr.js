@@ -6,6 +6,7 @@ var constants = require('./constants');
 var fs = require('fs');
 var childProcess = require('child_process');
 var pathLib = require('path');
+var cluster = require('./cluster/master');
 
 module.exports.createPluginMgr = function (logger) {
     return new PluginMgr(logger);
@@ -137,18 +138,6 @@ function loadPluginModule(self, fileName) {
             'invalid plugin module');
         return err;
     }
-}
-/**
- *  load plugin modules under the folder synchronously, 
- *  only called when init the system
- * @name loadPluginModuleSync
- * @function
- * @param {PluginMgr} self
- * @param {string} folder
- */
-function loadPluginModuleSync(self, folder) {
-    fs.readdirSync(folder).forEach( 
-        loadPluginModule.bind(undefined, self));
 }
 
 
