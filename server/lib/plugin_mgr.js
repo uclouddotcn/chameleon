@@ -1,15 +1,17 @@
-var restify = require('restify');
+var constants = require('./constants');
 var paramChecker = require('./param-checker');
+var SDKPluginPool = require('./sdk_plugin_pool');
+var fs = require('fs');
+var EventEmitter = require('events').EventEmitter;
+var restify = require('restify');
 var url = require('url');
 var util = require('util');
-var constants = require('./constants');
-var fs = require('fs');
-var childProcess = require('child_process');
-var pathLib = require('path');
-var cluster = require('./cluster/master');
 
-module.exports.createPluginMgr = function (logger) {
-    return new PluginMgr(logger);
+var SDK_PLUGIN_POOL_DIR = constants.sdkPluginPoolDir;
+
+module.exports.createPluginMgr = function (localsettings, logger, pluginPath) {
+    pluginPath = pluginPath || SDK_PLUGIN_POOL_DIR;
+    return new PluginMgr(localsettings, pluginPath, logger);
 };
 
 
@@ -19,12 +21,68 @@ module.exports.createPluginMgr = function (logger) {
  * @constructor
  *
  */
-function PluginMgr(logger) {
-    var self = this;
+function PluginMgr(localsettings, pluginPath, logger) {
+    this.lsetting = localsettings;
+    this.pluginPool = new SDKPluginPool(pluginPath, logger);
     this.pluginModules = {};
     this.logger = logger;
-    loadPluginModuleSync(self, constants.pluginDir);
+    EventEmitter.call(this);
 }
+
+util.inherits(PluginMgr, EventEmitter);
+
+PluginMgr.prototype.loadAllPlugins = function (callback) {
+    var self = this;
+    this.lsetting.get('setting', 'sdkplugins', function (err, ret) {
+        self.sdkPluginSetting = null;
+        if (err) {
+            self.logger.error({err: err}, 'Fail to load previous sdkplugins setting, using newest');
+            self.sdkPluginSetting = {};
+        } else {
+            try {
+                self.sdkPluginSetting = JSON.parse(ret);
+                if (!self.sdkPluginSetting) {
+                    self.sdkPluginSetting={};
+                }
+            } catch (e) {
+                self.logger.error({err: e}, 'Fail to load settings of sdkplugins');
+                self.sdkPluginSetting = {};
+            }
+        }
+        var availPluginNames = self.pluginPool.getAllPluginNames();
+        var needUpdateLocalSetting = false;
+        for (var i = 0; i < availPluginNames.length; ++i) {
+            var name = availPluginNames[i];
+            var pluginPath = null;
+            var ver = self.sdkPluginSetting[name];
+            if (ver) {
+                pluginPath = self.pluginPool.getPluginPath(name, ver);
+            }
+            if (!pluginPath) {
+                // the last loading plugin is missing, use newest as default
+                var pluginInfo = self.pluginPool.getNewestPluginPath(name);
+                self.logger.info({ver: pluginInfo.ver}, 'loading newest plugin for ' + name);
+                pluginPath = pluginInfo.p;
+                ver = pluginInfo.ver;
+            }
+            self.logger.info({ver: ver}, 'loading plugin for ' + name);
+            try {
+                doLoadPluginModule(self, ver, pluginPath);
+                if (ver !== self.sdkPluginSetting[name]) {
+                    self.sdkPluginSetting[name] = ver;
+                    needUpdateLocalSetting = true;
+                }
+                self.logger.info({ver: self.sdkPluginSetting[name]}, 'successfully loaded plugin for ' + name);
+            } catch (e) {
+                self.logger.error( {err: e, name: pluginPath}, 'invalid plugin module');
+            }
+        }
+        if (needUpdateLocalSetting) {
+            self.lsetting.set('setting', 'sdkplugins', JSON.stringify(self.sdkPluginSetting));
+        }
+        callback();
+    });
+};
 
 
 /**
@@ -35,8 +93,9 @@ function PluginMgr(logger) {
  */
 PluginMgr.prototype.getAllPluginInfos = function() {
     var ret = [];
-    for (var i in this.pluginModules) {
-        ret.push(makePluginInfo(this.pluginModules[i]));
+    var self = this;
+    for (var i = 0; i < self.pluginModules.length; ++i) {
+        ret.push(makePluginInfo(self.pluginModules[i]));
     }
     return ret;
 };
@@ -44,48 +103,33 @@ PluginMgr.prototype.getAllPluginInfos = function() {
 
 /**
  * Add a plugin, plugin module must be placed under $ROOT/lib/plugin
- * @name PluginMgr.prototype.addPlugin
+ * @name PluginMgr.prototype.upgradePlugin
  * @function
- * @param {string} name name of the plugin
- * @param {object} fileurl the url of the plugin file
+ * @param {string} fileurl the url of the plugin file
+ * @param {string} md5value md5sum
  * @param {function} callback
  */
-PluginMgr.prototype.addPlugin = function(name, fileurl, callback) {
+PluginMgr.prototype.upgradePlugin = function(fileurl, md5value, callback) {
     var self = this;
-    var pluginModule = self.pluginModules[name];
-    if (pluginModule) {
-        return setImmediate(callback(Error("plugin " + name + " is already loaded")));
-    }
-    self.loadPlugin(name, fileurl, function (err) {
+    self.pluginPool.loadUpgradePlugin(fileurl, md5value, function (err, name, ver, path) {
         if (err) {
             return callback(err);
         }
-        pluginModule = loadPluginModule(self, name);
-        if (pluginModule instanceof Error) {
-            callback(pluginModule);
-        } else {
-            callback(null, makePluginInfo(pluginModule));
-        }
+        callback(null, name, ver, path);
     })
 };
 
-PluginMgr.prototype.loadPlugin = function(name, fileurl, callback) {
-    var self = this;
-    var cp = childProcess.execFile('node', [pathLib.join(__dirname, '..', 'upgrade.js'), name, fileurl],
-        {timeout: 10000}, function (err, stdin, stdout) {
-            if (!err) {
-                callback(null);
-            } else {
-                var code = err.code;
-                self.logger.error({err: err}, 'Fail to load plugin');
-                if (code === 1) {
-                    callback(new Error('exists plugin module'));
-                } else {
-                    callback(new Error('unknown error'));
-                }
-            }
-        });
-}
+PluginMgr.prototype.usePluginAtVersion = function (name, version) {
+    var p= this.pluginPool.getPluginPath(name, version);
+    var pluginModule = doLoadPluginModule(this, version, p);
+    if (pluginModule instanceof Error) {
+    } else {
+        this.sdkPluginSetting[name] = version;
+        this.pluginModules[name] = pluginModule;
+        this.emit('plugin-upgrade', name, pluginModule);
+    }
+    return pluginModule;
+};
 
 function makePluginInfo(pluginModule) {
     if (pluginModule) {
@@ -96,7 +140,7 @@ function makePluginInfo(pluginModule) {
     }
 }
 
-function doLoadPluginModule(self, path) {
+function doLoadPluginModule(self, ver, path) {
     var pluginModule = require(path);
     if (!pluginModule.name ) {
         throw new Error('plugin ' + path + 
@@ -110,34 +154,17 @@ function doLoadPluginModule(self, path) {
         throw new Error('plugin ' + path + 
             ' miss required function cfgDesc');
     }
+    var checker = paramChecker.createChecker(pluginModule.cfgDesc);
     var pluginModuleInfo = {
         name: pluginModule.name,
         m: pluginModule,
         path: path,
-        checker: paramChecker.createChecker(pluginModule.cfgDesc)
-    }; 
+        version: ver,
+        plugin: pluginModule.createSDK(self.logger, checker, constants.debug)
+    };
     self.pluginModules[pluginModule.name] = pluginModuleInfo;
     self.logger.info({name: pluginModuleInfo.name}, 'load plugin module');
     return pluginModuleInfo;
-}
-
-
-function loadPluginModule(self, fileName) {
-    var path = constants.pluginDir + '/' + fileName;
-    if (fileName == 'common') {
-        return;
-    }
-    try {
-        if (!fs.statSync(path).isDirectory()) {
-            return;
-        }
-        return doLoadPluginModule(self, path);
-    } catch (err) {
-        self.logger.error(
-            {err: err, name: path}, 
-            'invalid plugin module');
-        return err;
-    }
 }
 
 

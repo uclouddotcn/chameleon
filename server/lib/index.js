@@ -8,6 +8,7 @@ var eventLog = require('./event-log');
 var ChannelCbSvr = require('./channel-callbacksvr');
 var ProductMgr = require('./productmgr');
 var Logger = require('./svrlog');
+var LocalSettings = require('./localsettings');
 var createPendingOrderStore = 
     require('./pending-order').createPendingOrderStore;
 var async = require('async');
@@ -33,17 +34,18 @@ function start(cfg, debug) {
     // create logger first
     var logger = startLogger(cfg.debug, cfg.logger);
 
+    var localSettings = new LocalSettings(cfg._path, logger);
+
     // create pending order store
 
     var pendingOrderStore = createPendingOrderStore(
         cfg.pendingOrderStoreCfg, logger.svrLogger);
 
     // create plugin mgr
-    var pluginMgr = createPluginMgr(logger.svrLogger);
+    var pluginMgr = createPluginMgr(localSettings, logger.svrLogger);
 
     // create product mgr
-    var productMgr = new ProductMgr(pluginMgr, pendingOrderStore, 
-        logger.svrLogger);
+    var productMgr = new ProductMgr(pluginMgr, pendingOrderStore, logger.svrLogger);
 
     // create sdk svr 
     var sdkSvr = createSDKSvr(

@@ -39,7 +39,7 @@ function Product(productName, cfgPath, cfg, eventCenter, pendingOrderStore, plug
 
 Product.prototype.getChannel = function (name) {
     return this.channelMgr.getChannel(name);
-}
+};
 
 Product.prototype.updateCfg = function (cfg, cb) {
     try {
@@ -216,6 +216,10 @@ function checkAppCallbackSvrCfg(cfgObj) {
 
 function SDKPluginManager (pluginMgr, userAction, logger) {
     this.pluginMgr = pluginMgr;
+    var self = this;
+    this.pluginMgr.on('plugin-upgrade', function (name) {
+        self.replacePlugin(name);
+    });
     this._userAction = userAction;
     this._logger = logger;
     this._plugins = {};
@@ -233,26 +237,52 @@ SDKPluginManager.prototype.getPlugin = function (channelName, sdkname, cfg) {
     if (pluginModule == null) {
         throw new Error("Fail to create plugin " + sdkname);
     }
-    var plugin= this._plugins[sdkname];
-    if (!plugin) {
-        plugin = pluginModule.m.createSDK(this._userAction, this._logger, pluginModule.checker, Constants.debug);
+    var pluginInsts = this._plugins[sdkname];
+    var plugin = null;
+    if (!pluginInsts) {
+        plugin = pluginModule.plugin;
+        pluginInsts = {
+            plugin: plugin,
+            insts: []
+        };
+        this._plugins[sdkname] = pluginInsts;
+    } else {
+        plugin = pluginInsts.plugin;
     }
-    var inst = plugin.createPluginWrapper(channelName, cfg);
+    var inst = plugin.createPluginWrapper(this._userAction, channelName, cfg);
     if (inst == null) {
         throw new Error("Fail to create plugin wrapper" + channelName);
     }
-
-    if (plugin != this._plugins[sdkname]) {
-        this._plugins[sdkname] = plugin;
-    }
+    pluginInsts.insts.push(inst);
     return inst;
 };
 
+SDKPluginManager.prototype.replacePlugin = function (sdkname) {
+    var pluginModule = this.pluginMgr.pluginModules[sdkname];
+    if (pluginModule == null) {
+        self._logger.error("Fail to find plugin info " + sdkname);
+        return;
+    }
+    var pluginInsts = this._plugins[sdkname];
+    if (!pluginInsts) {
+        return;
+    }
+    pluginInsts.plugin = pluginModule.plugin;
+    for (var i = 0; i < pluginInsts.insts.length; ++i) {
+        pluginInsts.insts[i].replacePlugin(pluginInsts.plugin);
+    }
+};
+
 SDKPluginManager.prototype.uninstallChannel = function (channelName) {
-    var self = this;
-    Object.keys(this._plugins).forEach(function (x) {
-        self._plugins[x].uninstallChannel(channelName);
-    });
+    for (var sdkname in this._plugins) {
+        var pluginInsts = this._plugins[sdkname];
+        for (var i = 0; i < pluginInsts.insts.length; ++i) {
+            if (pluginInsts.insts[i].channelName === channelName) {
+                pluginInsts.insts.splice(i, 1);
+                return;
+            }
+        }
+    }
 };
 
 

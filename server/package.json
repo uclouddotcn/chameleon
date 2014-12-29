@@ -15,6 +15,8 @@
         "xml2js": "~0.4.4",
         "ursa": "~0.8.1",
         "node-bignumber": "~1.2.1",
+        "levelup": "~0.18.2",
+        "leveldown": "~0.10.2",
         "forever": "*"
     }
 }

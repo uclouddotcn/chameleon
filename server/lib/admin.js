@@ -82,18 +82,7 @@ var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
 
     // path for adding a plugin 
     self.server.post('/plugin', function(req, res, next) {
-        var fileurl = req.params.fileurl;
-        var index = fileurl.lastIndexOf('/');
-        if (index < 0 || index == fileurl.length) {
-            return next(new restify.InvalidArgumentError('illegal file name'));
-        }
-        var filename = fileurl.substr(index+1);
-        index = filename.lastIndexOf('.');
-        if (index < 0) {
-            return next(new restify.InvalidArgumentError('illegal file name'));
-        }
-        var pluginName = filename.substr(0, index);
-        self.pluginMgr.addPlugin(pluginName, req.params.fileurl, function(err, info) {
+        self.pluginMgr.upgradePlugin(req.params.fileurl, req.params.md5value, function(err, info) {
             if (err) {
                 req.log.info({err:err}, 'fail to add plugin');
                 return next(new restify.InvalidArgumentError(err.message));
@@ -102,6 +91,16 @@ var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
             res.send({code: 0, channel: showChannelInfo});
             return next();
         });
+    });
+
+    self.server.put('/plugin/:name', function(req, res, next) {
+        var newInst = self.pluginMgr.usePluginAtVersion(name, req.params.version);
+        if (newInst instanceof Error) {
+            return next(new restify.InvalidArgumentError(newInst.message));
+        } else {
+            res.send({code: 0});
+            return next();
+        }
     });
 
     // path for getting all product instance

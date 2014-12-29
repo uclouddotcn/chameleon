@@ -16,6 +16,7 @@ function loadConfig(cfgFile, debug) {
         var cfgObj = JSON.parse(content);
         checkSDKSvrCfg(cfgObj);
         checkAdminCfg(cfgObj);
+        cfgObj._path = svrCfgPath;
         return cfgObj;
     } catch (err) {
         console.log(cfgFile + " is not a valid json config");
