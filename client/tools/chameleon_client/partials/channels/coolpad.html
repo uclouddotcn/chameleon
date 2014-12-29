@@ -41,6 +41,12 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="notifyurl">Notify Url</label>
+                <div class="controls">
+                    <input id="notifyurl" name="notifyurl" type="text" style="width:60%" ng-model="selectedsdk.cfg.notifyurl"/>
+                </div>
+            </div>
+            <div class="control-group">
                 <div class="controls">
                     <button type="submit" class="btn" ng-disabled="!channelCfgForm.$dirty || channelCfgForm.$invalid">保存</button>
                 </div>
