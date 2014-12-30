@@ -12,6 +12,8 @@
     <string name="bdp_cancel">取消</string>
     <string name="bdp_pay">支付</string>
     <string name="bdp_tips">提示</string>
+    <string name="bdp_customer_support">客服：</string>
+    <string name="bdp_customer_support_phone">10101866</string>
     
     <string name="bdp_dialog_loading">加载中…</string>
     <string name="bdp_dialog_loading_login">登录中…</string>

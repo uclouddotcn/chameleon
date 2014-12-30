@@ -19,28 +19,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="6月20日"
+        android:background="@drawable/dk_chargecard_date_bg"
+        android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="20dp"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp"
         android:textColor="#ffffff"
-        android:background="@drawable/dk_chargecard_date_bg"
         android:textSize="16sp" />
-    
+
     <TextView
         android:id="@+id/tv_list_chargecard_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:paddingBottom="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="25dp"
-        android:text="元"
+        android:paddingBottom="5dp"
+        android:text="@string/dk_yuan"
         android:textColor="#ffffff"
         android:textSize="15sp" />
-
 
     <TextView
         android:id="@+id/textView_value"
@@ -49,7 +47,6 @@
         android:layout_alignBottom="@+id/tv_list_chargecard_unit"
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@+id/tv_list_chargecard_unit"
-        android:text="100"
         android:paddingBottom="-10dp"
         android:textColor="#ffffff"
         android:textSize="35sp" />
@@ -61,7 +58,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="100dp"
-        android:text="序列号："
+        android:text="@string/dk_serial_number"
         android:textColor="#2f5b1f"
         android:textSize="14sp" />
 
@@ -72,7 +69,6 @@
         android:layout_alignBaseline="@+id/textView4"
         android:layout_alignBottom="@+id/textView4"
         android:layout_toRightOf="@+id/textView4"
-        android:text="7898585962623562"
         android:textColor="#2f5b1f"
         android:textSize="14sp" />
 
@@ -82,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView4"
         android:layout_below="@+id/textView4"
-        android:text="密码："
+        android:text="@string/dk_secret_number"
         android:textColor="#2f5b1f"
         android:textSize="14sp" />
 
@@ -93,7 +89,6 @@
         android:layout_alignBaseline="@+id/textView2"
         android:layout_alignBottom="@+id/textView2"
         android:layout_toRightOf="@+id/textView2"
-        android:text="7859565265263562"
         android:textColor="#2f5b1f"
         android:textSize="14sp" />
 
@@ -104,7 +99,6 @@
         android:layout_above="@+id/tv_chargecard_number"
         android:layout_alignLeft="@+id/textView4"
         android:layout_marginBottom="16dp"
-        android:text="中国移动"
         android:textColor="#2f5b1f"
         android:textSize="17sp" />
 

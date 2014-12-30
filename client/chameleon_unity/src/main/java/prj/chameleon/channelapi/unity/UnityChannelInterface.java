@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.unity3d.player.UnityPlayer;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -137,6 +138,7 @@ public class UnityChannelInterface {
                 prj.chameleon.channelapi.ChannelInterface.login(UnityPlayer.currentActivity, new IDispatcherCb() {
                     @Override
                     public void onFinished(final int retCode, final JSONObject data) {
+                        UnityPlayer.
                         if (retCode != Constants.ErrorCode.ERR_OK) {
                             U3DHelper.SendMessage("onLoginFail", retCode, null);
                             return;
@@ -482,6 +484,35 @@ public class UnityChannelInterface {
                         roleLevel,
                         zoneId,
                         zoneName);
+            }
+        });
+    }
+
+    public static boolean isSupportProtocol (final String protocol) {
+        return ChannelInterface.isSupportProtocol(protocol);
+    }
+
+    public static void runProtocol (final String protocol, final String params) {
+        mRequestProxy.request(new Runnable() {
+            @Override
+            public void run() {
+                ChannelInterface.runProtocol(UnityPlayer.currentActivity,
+                        protocol, params, new IDispatcherCb() {
+                            @Override
+                            public void onFinished(int retCode, JSONObject data) {
+                                JSONObject res = new JSONObject();
+                                try{
+                                    res.put("method", protocol);
+                                    if (data != null) {
+                                        res.put("res", data.toString());
+                                    }
+                                    Log.d(Constants.TAG, String.format("run protocol", retCode));
+                                    U3DHelper.SendMessage("onRunProtocol", retCode, res);
+                                } catch (JSONException e) {
+                                    U3DHelper.SendMessage("onRunProtocol", Constants.ErrorCode.ERR_INTERNAL, null);
+                                }
+                            }
+                        });
             }
         });
     }

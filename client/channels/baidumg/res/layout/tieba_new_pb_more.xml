@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dip"
-            android:text="@string/skip_page"
+            android:text="@string/tieba_skip_page"
             android:textSize="14sp" 
             android:textColor="@color/tieba_pb_more_text_color" />
     </LinearLayout>
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dip"
-            android:text="@string/view_reverse"
+            android:text="@string/tieba_view_reverse"
             android:textSize="14sp" 
             android:textColor="@color/tieba_pb_more_text_color" />
     </LinearLayout>

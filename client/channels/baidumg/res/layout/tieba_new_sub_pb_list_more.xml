@@ -13,7 +13,7 @@
         style="@style/text_shadow_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/load_more"
+        android:text="@string/tieba_load_more"
         android:textColor="#FF666666" />
 
     <ImageView

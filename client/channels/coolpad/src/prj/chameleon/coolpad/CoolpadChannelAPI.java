@@ -170,7 +170,7 @@ public final class CoolpadChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,//总价
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        startPayhub(activity, 1, realPayMoney, orderId, uidInGame, cb);
+        startPayhub(activity, 1, ((double)realPayMoney)/100, orderId, uidInGame, cb);
     }
 
     @Override
@@ -185,8 +185,8 @@ public final class CoolpadChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,//个数
                     int realPayMoney,
                     final IDispatcherCb cb) {
-        int waresid = Integer.valueOf(productID) + 1;
-        startPayhub(activity, waresid, 1, orderId, uidInGame, cb);
+        int waresid = Integer.valueOf(productID);
+        startPayhub(activity, waresid, ((double)realPayMoney)/100, orderId, uidInGame, cb);
     }
 
     @Override
@@ -235,7 +235,7 @@ public final class CoolpadChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     public void startPayhub(Activity activity, int waresid, double price, String cporderid, String uidInGame, final IDispatcherCb cb) {
 
-        if(price > 500000){
+        if(price > 5000){
             Log.e(Constants.TAG, "coolpad: excceeds money limit");
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
             return;
@@ -335,7 +335,6 @@ public final class CoolpadChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
             json = obj.toString();
         } catch (Exception e) {
-            e.printStackTrace();
         }
         String sign = "";
         try {

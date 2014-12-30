@@ -15,6 +15,8 @@ import com.baidu.platformsdk.PayOrderInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
+
 import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
@@ -157,12 +159,12 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             appInfo.setDomain(BDGameSDKSetting.Domain.RELEASE);
         }
         appInfo.setOrientation(mCfg.mScreenOrientation);
+        mAdPage = new ActivityAdPage(activity, mAdPageListener);
         BDGameSDK.init(activity, appInfo, new IResponse<Void>() {
             @Override
             public void onResponse(int i, String s, Void aVoid) {
                 switch (i) {
                     case ResultCode.INIT_SUCCESS:
-                        mAdPage = new ActivityAdPage(activity, mAdPageListener);
                         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                         break;
                     default:
@@ -281,6 +283,9 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         if (mActivityAnalytics != null) {
             mActivityAnalytics.onPause();
         }
+        if (mAdPage != null) {
+            mAdPage.onPause();
+        }
     }
 
     @Override
@@ -293,6 +298,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void onDestroy(Activity activity) {
         BDGameSDK.destroy();
+        mAdPage.onDestroy();
         mAdPage = null;
     }
 

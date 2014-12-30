@@ -22,7 +22,6 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/bdp_paycenter_cb_select"
-            android:text=""
             android:textColor="@color/bdp_color_999999" />
 
         <CheckBox

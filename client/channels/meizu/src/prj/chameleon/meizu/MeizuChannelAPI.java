@@ -8,6 +8,7 @@ import android.util.Log;
 import com.meizu.gamecenter.sdk.LoginResultCode;
 import com.meizu.gamecenter.sdk.MzAccountInfo;
 import com.meizu.gamecenter.sdk.MzBuyInfo;
+import com.meizu.gamecenter.sdk.MzGameBarPlatform;
 import com.meizu.gamecenter.sdk.MzGameCenterPlatform;
 import com.meizu.gamecenter.sdk.MzLoginListener;
 import com.meizu.gamecenter.sdk.MzPayListener;
@@ -40,6 +41,8 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private UserInfo mUserInfo;
     private IAccountActionListener mAccountActionListener;
 
+    private MzGameBarPlatform mMzGameBarPlatform;
+
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Config();
         mCfg.mAppID = cfg.getString("appId");
@@ -59,6 +62,8 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void init(Activity activity, IDispatcherCb cb) {
+        mMzGameBarPlatform = new MzGameBarPlatform(activity, MzGameBarPlatform.GRAVITY_RIGHT_BOTTOM);
+        mMzGameBarPlatform.onActivityCreate();
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
@@ -241,5 +246,40 @@ public final class MeizuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
             }
         });
+    }
+
+    @Override
+    public void onDestroy(Activity activity) {
+        super.onDestroy(activity);
+        if(mMzGameBarPlatform != null){
+            mMzGameBarPlatform.onActivityDestroy();
+        }
+    }
+
+    @Override
+    public void onResume(Activity activity, IDispatcherCb cb) {
+        super.onResume(activity, cb);
+        if(mMzGameBarPlatform != null){
+            mMzGameBarPlatform.onActivityResume();
+        }
+    }
+
+    @Override
+    public void onPause(Activity activity) {
+        super.onPause(activity);
+        if(mMzGameBarPlatform != null){
+            mMzGameBarPlatform.onActivityPause();
+        }
+    }
+
+    @Override
+    public void showFloatBar(Activity activity, boolean visible) {
+        if(mMzGameBarPlatform != null){
+            if (visible){
+                mMzGameBarPlatform.showGameBar();
+            }else {
+                mMzGameBarPlatform.hideGameBar();
+            }
+        }
     }
 }

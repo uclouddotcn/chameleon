@@ -23,7 +23,7 @@
 	    	android:singleLine="true"
 	    	android:layout_marginLeft="10dip"
 	    	android:layout_marginBottom="15dip"
-	    	android:text="@string/add_account" 
+	    	android:text="@string/tieba_add_account" 
 	    	android:layout_width="wrap_content" 
 	    	android:layout_height="wrap_content">
 	    </TextView>    

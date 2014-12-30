@@ -31,7 +31,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@+id/imgbtn_close"
                     android:background="@color/dk_transparent"
                     android:gravity="center_vertical"
                     android:paddingLeft="3dip" >
@@ -119,7 +118,7 @@
                     android:ellipsize="end"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:text="欢迎加入百度移动游戏！"
+                    android:text="@string/dk_welcom_join"
                     android:textColor="@color/dk_color_fbc000"
                     android:textSize="16sp" />
             </LinearLayout>

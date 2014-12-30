@@ -121,13 +121,17 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,
                     int realPayMoney,
                     final IDispatcherCb cb) {
-        int waresid = Integer.valueOf(productID) + 1;
+        int waresid = Integer.valueOf(productID);
         startPay(activity, waresid, orderId, realPayMoney, payInfo, cb);
     }
 
     @Override
     public String getUid() {
-        return mUserInfo.mUserId;
+        if (mUserInfo == null) {
+            return "";
+        } else {
+            return mUserInfo.mUserId;
+        }
     }
 
     @Override
@@ -165,7 +169,6 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         payRequest.addParam("waresid", waresid);//商户自建商品编码
         payRequest.addParam("exorderno", orderId);
         payRequest.addParam("price", realPayMoney);
-        payRequest.addParam("cpprivateinfo", payInfo);
         if (mCfg.mPayUrl != null) {
             payRequest.addParam("notifyurl", mCfg.mPayUrl);
         }

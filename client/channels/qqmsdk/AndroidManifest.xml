@@ -31,6 +31,41 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.tencent.tmgp.sanguofire.push.ForwardActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="ForwardActivity"
+            android:launchMode="singleTop"
+             >
+        </activity>
+
+        <activity
+            android:name="com.tencent.tmgp.sanguofire.wxapi.WXEntryActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="WXEntryActivity"
+            android:launchMode="singleTop"
+            android:taskAffinity="com.tencent.tmgp.sanguofire" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="wx7036e91070e73dea" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="com.tencent.msdk.push.HttpPushService"
+            android:exported="true"
+            android:process=".msdk_push_v_1" >
+        </service>
+
+        <receiver
+            android:name="com.tencent.msdk.push.AlarmReveiver"
+            android:process=".msdk_push_v_1" >
+        </receiver>
 
     </application>
 </manifest>

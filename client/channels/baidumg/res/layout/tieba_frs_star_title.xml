@@ -150,7 +150,7 @@
 	                android:layout_height="wrap_content"
 	                android:layout_below="@id/open_timer"
 	                android:layout_centerHorizontal="true"
-	                android:text="@string/fan_count_down"
+	                android:text="@string/tieba_fan_count_down"
 	                android:textColor="#93a6b8"
 	                android:textSize="10dip" />
 	        </RelativeLayout>
@@ -161,7 +161,7 @@
 	            android:layout_height="30dip"
 	            android:layout_centerInParent="true"
 	            android:background="@drawable/tieba_frs_star_add_fan"
-	            android:text="@string/add_fan"
+	            android:text="@string/tieba_add_fan"
 	            android:textColor="#3c85e0"
 	            android:textSize="12sp" />
 

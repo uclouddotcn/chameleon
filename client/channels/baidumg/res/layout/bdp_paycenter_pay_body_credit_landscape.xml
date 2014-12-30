@@ -24,7 +24,6 @@
             <!-- The game card area -->
 
             <LinearLayout
-                android:id="@+id/bdp_paycenter_layout_list_parent"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_above="@+id/bdp_paycenter_layout_baidu_logo_parent"

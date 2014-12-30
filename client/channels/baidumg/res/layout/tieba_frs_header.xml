@@ -185,7 +185,7 @@
 	        android:textSize="10sp"
 	        android:maxLength="4"
 	        android:textColor="#ffffff"
-	        android:text="@string/tag" />
+	        android:text="@string/tieba_tag" />
 
 	</RelativeLayout>
 </RelativeLayout>

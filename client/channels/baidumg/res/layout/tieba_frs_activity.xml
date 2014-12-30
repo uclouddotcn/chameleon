@@ -127,7 +127,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/frs_remind_noforum"
+                android:text="@string/tieba_frs_remind_noforum"
                 android:textColor="#000000"
                 android:textSize="24sp" >
             </TextView>
@@ -137,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dip"
                 android:gravity="center"
-                android:text="@string/frs_remind_refresh"
+                android:text="@string/tieba_frs_remind_refresh"
                 android:textColor="#a0a0a0"
                 android:textSize="18sp" >
             </TextView>
@@ -149,7 +149,7 @@
                 android:layout_marginTop="30dip"
                 android:background="@drawable/tieba_common_botton"
                 android:gravity="center"
-                android:text="@string/frs_i_refresh"
+                android:text="@string/tieba_frs_i_refresh"
                 android:visibility="gone"
                 android:textColor="#FFFFFFFF"
                 android:textSize="17sp" >

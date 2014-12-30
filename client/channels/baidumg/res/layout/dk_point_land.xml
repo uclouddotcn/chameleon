@@ -57,7 +57,7 @@
                     android:textSize="@dimen/text_size_16_sp" />
             </LinearLayout>
         </FrameLayout>
-        
+
         <LinearLayout
             android:id="@+id/dk_ll_point"
             android:layout_width="match_parent"
@@ -69,30 +69,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:background="@drawable/dk_rl_point_top" >
-                <TextView 
+
+                <TextView
                     android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:layout_alignParentLeft="true"
-                	android:layout_alignParentBottom="true"
-                	android:textSize="24sp"
-                	android:textColor="#ffffff"
-                	android:layout_marginLeft="20dp"
-                	android:layout_marginBottom="10dp"
-                	android:text="@string/dk_mypoint"
-                	/>
-                <TextView 
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/dk_mypoint"
+                    android:textColor="#ffffff"
+                    android:textSize="24sp" />
+
+                <TextView
                     android:id="@+id/dk_tv_mypoint"
                     android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:layout_alignParentRight="true"
-                	android:layout_alignParentBottom="true"
-                	android:textSize="35sp"
-                	android:textColor="#ffffff"
-                	android:layout_marginRight="20dp"
-                	android:layout_marginBottom="10dp"
-                	android:text="380"
-                	/>
-                
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="20dp"
+                    android:textColor="#ffffff"
+                    android:textSize="35sp" />
             </RelativeLayout>
 
             <ListView

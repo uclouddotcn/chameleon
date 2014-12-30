@@ -18,7 +18,7 @@
 	</TextView> 
 	<TextView 
 	    android:id="@+id/hour_text" 
-	    android:text="@string/hour"
+	    android:text="@string/tieba_hour"
 	    android:layout_width="wrap_content" 
 	    android:layout_height="wrap_content" > 
 	</TextView> 
@@ -30,7 +30,7 @@
 	</TextView> 
 	<TextView 
 	    android:id="@+id/min_text"
-	    android:text="@string/minute"
+	    android:text="@string/tieba_minute"
 	    android:layout_width="wrap_content" 
 	    android:layout_height="wrap_content" > 
 	</TextView> 
@@ -42,7 +42,7 @@
 	</TextView> 
 	<TextView 
 	    android:id="@+id/sec_text" 
-	    android:text="@string/second"
+	    android:text="@string/tieba_second"
 	    android:layout_width="wrap_content" 
 	    android:layout_height="wrap_content" > 
 	</TextView> 

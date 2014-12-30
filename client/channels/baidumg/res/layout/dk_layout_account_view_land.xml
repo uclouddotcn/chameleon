@@ -457,7 +457,6 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:text="史莱克解放军的功夫精神食粮神经法给大家是两个fjslgjslfjs的高科技老实的类风湿发神经了 啥铃铛封建时代率较高路公交"
                     android:textColor="@color/dk_color_fd711d" />
             </LinearLayout>
 

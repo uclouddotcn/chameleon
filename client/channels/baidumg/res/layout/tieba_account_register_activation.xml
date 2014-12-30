@@ -43,13 +43,13 @@
 					android:layout_width="wrap_content"
 					android:textColor="@color/tieba_reg_font_color"
 					android:textSize="16sp"
-					android:text="@string/activation_code"
+					android:text="@string/tieba_activation_code"
 					android:layout_gravity="center_vertical">
 				</TextView>
 			    <EditText 
 			        android:id="@+id/edit_code"
 			        android:layout_marginLeft="13dip"
-			        android:hint="@string/input_active_code"
+			        android:hint="@string/tieba_input_active_code"
 			        android:textColorHint="#FFDDDDDD"
 			        android:layout_gravity="center_vertical"
 					android:singleLine="true"
@@ -97,7 +97,7 @@
 					android:textSize="16sp"
 					android:layout_centerInParent="true"
 				    android:textColor="@android:color/white"
-				    android:text="@string/done"
+				    android:text="@string/tieba_done"
 					android:layout_height="wrap_content"
 					android:layout_width="wrap_content"/>
 			</RelativeLayout>
@@ -108,7 +108,7 @@
 			    android:textColor="@color/tieba_reg_font_color"
 				android:textSize="14sp"
 				android:layout_marginLeft="13dip"
-			    android:text="@string/no_receive_code"
+			    android:text="@string/tieba_no_receive_code"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content">
 			</TextView>
@@ -136,7 +136,7 @@
 					android:textSize="16sp"
 					android:layout_centerInParent="true"
 				    android:textColor="@android:color/white"
-				    android:text="@string/resend_code"
+				    android:text="@string/tieba_resend_code"
 					android:layout_height="wrap_content"
 					android:layout_width="wrap_content"/>
 			</RelativeLayout>
@@ -159,7 +159,7 @@
 		</ImageView>
 		<TextView 
 			android:id="@+id/title_text" 
-			android:text="@string/account_regedit_baidu" 
+			android:text="@string/tieba_account_regedit_baidu" 
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"  
 			android:layout_centerInParent="true"

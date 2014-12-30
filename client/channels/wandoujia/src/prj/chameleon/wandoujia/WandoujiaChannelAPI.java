@@ -44,7 +44,7 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
                        int realPayMoney,
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        mWandouGamesApi.pay(activity, String.format("%s*%d", currencyName, realPayMoney*rate/100), realPayMoney,
+        mWandouGamesApi.pay(activity, String.format("%s", currencyName), realPayMoney,
                 orderId, new OnPayFinishedListener() {
             @Override
             public void onPaySuccess(PayResult payResult) {

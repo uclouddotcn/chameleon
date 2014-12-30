@@ -16,8 +16,7 @@
     <RelativeLayout
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
-        android:layout_height="165dp"
-         >
+        android:layout_height="165dp" >
 
         <TextView
             android:id="@+id/tv_list_prizecard_title"
@@ -26,7 +25,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
             android:layout_marginTop="30dp"
-            android:text="回馈VIP抽奖"
+            android:text="@string/dk_repayment_vip"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
@@ -43,7 +42,7 @@
             <TextView
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="有效期:"
+                android:text="@string/dk_effect_time"
                 android:textColor="#ffffff"
                 android:textSize="12sp" />
 
@@ -51,7 +50,6 @@
                 android:id="@+id/tv_valuetime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2014.06.21-2014.07.29"
                 android:singleLine="true"
                 android:textColor="#ffffff"
                 android:textSize="12sp" />
@@ -65,7 +63,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
             android:background="@drawable/dk_btn_selector_goprize"
-            android:text="去抽奖"
+            android:text="@string/dk_go_prize"
             android:textColor="@drawable/dk_btn_text_prize_selector" />
 
         <ImageView
@@ -74,22 +72,20 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-             />
+            android:layout_marginRight="10dp" />
+
         <TextView
             android:id="@+id/tv_use_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:text="@string/dk_not_use"
             android:textColor="#ffffff"
-            android:visibility="gone"
             android:textSize="18sp"
-            android:text="未使用" />
-
+            android:visibility="gone" />
     </RelativeLayout>
-
 
 </RelativeLayout>

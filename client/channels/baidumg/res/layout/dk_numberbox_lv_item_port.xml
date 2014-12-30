@@ -43,7 +43,7 @@
                 android:layout_alignLeft="@+id/tv_game_title"
                 android:layout_below="@+id/tv_game_title"
                 android:layout_marginTop="5dp"
-                android:text="截止日期："
+                android:text="@string/dk_stop_time"
                 android:textColor="#666666"
                 android:textSize="13sp" />
 
@@ -71,7 +71,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
-                android:text="号码："
+                android:text="@string/dk_number"
                 android:textColor="#333333"
                 android:textSize="15sp" />
 
@@ -81,9 +81,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/textView4"
                 android:layout_marginLeft="2dp"
+                android:layout_toLeftOf="@+id/btn_gamenumberbox_copy"
                 android:layout_toRightOf="@+id/textView4"
                 android:singleLine="true"
-                android:layout_toLeftOf="@+id/btn_gamenumberbox_copy"
                 android:textColor="#333333"
                 android:textSize="15sp" />
 
@@ -96,9 +96,8 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/dk_selector_btn_copy"
-                android:textColor="@drawable/dk_btn_text_copy_selector"
-                android:text="复制"
-                 />
+                android:text="@string/dk_copy"
+                android:textColor="@drawable/dk_btn_text_copy_selector" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -111,15 +110,16 @@
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+
         <ImageView
-                android:id="@+id/iv_numberbox_value"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="7dp"
-                android:background="@drawable/dk_numberbox_value_bg" />
+            android:id="@+id/iv_numberbox_value"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/dk_numberbox_value_bg" />
 
         <TextView
             android:id="@+id/textView6"
@@ -129,20 +129,20 @@
             android:layout_alignTop="@+id/iv_numberbox_value"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="价值"
+            android:text="@string/dk_value"
             android:textColor="#ffffff"
             android:textSize="14sp" />
 
         <TextView
-                android:id="@+id/tv_gamebox_value"
-                android:layout_width="60dp"
-                android:layout_height="20dp"
-                android:gravity="center"
-                android:layout_alignLeft="@+id/textView6"
-                android:layout_below="@+id/textView6"
-                android:textColor="#ffffff"
-                android:textSize="15sp" />
-        
+            android:id="@+id/tv_gamebox_value"
+            android:layout_width="60dp"
+            android:layout_height="20dp"
+            android:layout_alignLeft="@+id/textView6"
+            android:layout_below="@+id/textView6"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="15sp" />
+
         <ImageView
             android:id="@+id/iv_numberbox_more"
             android:layout_width="17dp"
@@ -160,25 +160,20 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:textColor="#666666"
             android:layout_toRightOf="@+id/iv_numberbox_value"
-             />
+            android:textColor="#666666" />
 
         <TextView
             android:id="@+id/tv_numberbox_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/textView8"
             android:layout_centerVertical="true"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:layout_marginRight="8dp"
-            android:textColor="#666666"
+            android:layout_marginTop="8dp"
             android:layout_toLeftOf="@+id/iv_numberbox_more"
-             />
-        
-
-
+            android:layout_toRightOf="@+id/textView8"
+            android:textColor="#666666" />
     </RelativeLayout>
 
 </LinearLayout>

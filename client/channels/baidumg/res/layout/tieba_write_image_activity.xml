@@ -32,7 +32,7 @@
             android:background="@drawable/tieba_editimage_back"
             android:gravity="center_vertical|right"
             android:paddingRight="8dip"
-            android:text="@string/back"
+            android:text="@string/tieba_back"
             android:textColor="#ffffffff" >
         </Button>
 
@@ -42,7 +42,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/editimage"
+            android:text="@string/tieba_editimage"
             android:textColor="#ffffffff"
             android:textSize="20sp" >
         </TextView>
@@ -54,7 +54,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="9dip"
             android:background="@drawable/tieba_editimage_done"
-            android:text="@string/delete"
+            android:text="@string/tieba_delete"
             android:textColor="#ffffffff" >
         </Button>
     </LinearLayout>

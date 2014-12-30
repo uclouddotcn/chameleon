@@ -456,7 +456,6 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="史莱克解放军的功夫精神食粮神经法给大家是两个fjslgjslfjs的高科技老实的类风湿发神经了 啥铃铛封建时代率较高路公交"
                 android:textColor="@color/dk_color_fd711d" />
         </LinearLayout>
 
@@ -495,7 +494,7 @@
                 android:layout_below="@+id/dk_completeuserinfo"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/dk_btn_completeuserinfo_land_selector"
-                android:text="积分说明"
+                android:text="@string/dk_score_explanation"
                 android:textColor="@drawable/dk_btn_tvcolor_completeuserinfo_selector"
                 android:textSize="13sp" />
 
@@ -609,15 +608,6 @@
                         android:gravity="left"
                         android:textColor="@color/dk_color_666666"
                         android:textSize="14sp" />
-
-                    <!-- <TextView -->
-                    <!-- android:id="@+id/dk_tv_account_history" -->
-                    <!-- android:layout_width="wrap_content" -->
-                    <!-- android:layout_height="wrap_content" -->
-                    <!-- android:layout_alignParentRight="true" -->
-                    <!-- android:text="@string/dk_tv_string_account_history" -->
-                    <!-- android:textColor="@color/dk_color_0066cc" -->
-                    <!-- android:textSize="14sp" /> -->
                 </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>

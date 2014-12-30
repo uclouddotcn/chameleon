@@ -132,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dip"
                 android:layout_centerVertical="true"
-                android:text="@string/mush_more"
+                android:text="@string/tieba_mush_more"
                 android:textColor="#ffb2b6ba"
                 android:textSize="10sp" />
 

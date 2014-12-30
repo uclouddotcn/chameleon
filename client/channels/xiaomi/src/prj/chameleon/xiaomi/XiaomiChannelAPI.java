@@ -96,7 +96,6 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         MiBuyInfo miBuyInfo= new MiBuyInfo();
         miBuyInfo.setCpOrderId(orderId);//订单号唯一（不为空）
         miBuyInfo.setCpUserInfo(mChannel); //此参数在用户支付成功后会透传给CP的服务器
-        miBuyInfo.setCount(realPayMoney/rate);
         miBuyInfo.setAmount(realPayMoney/100); //必须是大于1的整数，10代表10米币，即10元人民币（不为空）
 
 //用户信息，网游必须设置、单机游戏或应用可选

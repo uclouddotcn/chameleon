@@ -35,7 +35,7 @@
             android:gravity="center_vertical"
             android:layout_weight="1"
             android:background="@drawable/tieba_foot_bar_input"
-            android:hint="@string/pb_reply_hint"
+            android:hint="@string/tieba_pb_reply_hint"
             android:maxLines="4"
             android:paddingLeft="9dip"
             android:paddingRight="9dip"
@@ -45,7 +45,7 @@
 
         <TextView
             android:id="@+id/pb_reply_post"
-            android:text="@string/send_post"
+            android:text="@string/tieba_send_post"
             android:layout_width="52dp"
             android:layout_height="42dp"
             android:layout_gravity="center_vertical"

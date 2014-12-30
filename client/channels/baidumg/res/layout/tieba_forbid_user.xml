@@ -13,7 +13,7 @@
         android:textSize="16sp"
         android:paddingTop="15dip"
         android:paddingBottom="18dip"
-  		android:text="@string/forbid_operation" />
+  		android:text="@string/tieba_forbid_operation" />
 	<LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
 	        android:layout_gravity="left"
 	        android:textColor="@color/tieba_black"
 	        android:textSize="16sp"
-	  		android:text="@string/user_with_colon" /> 
+	  		android:text="@string/tieba_user_with_colon" /> 
 	  	<TextView
 	  	    android:id="@+id/user_name"
 	  	    android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         android:gravity="left"
         android:textColor="@color/tieba_black"
         android:textSize="16sp"
-  		android:text="@string/forbid_duration" />   	
+  		android:text="@string/tieba_forbid_duration" />   	
   	
 	<RadioGroup 
        	android:id="@+id/radio_group" 
@@ -55,7 +55,7 @@
            <RadioButton 
            	android:id="@+id/radio_button_1day"
            	android:button="@null"
-           	android:text="@string/day_one"
+           	android:text="@string/tieba_day_one"
            	android:textColor="@color/tieba_text_white_selector_color"
            	android:layout_width="fill_parent"
            	android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
           	<RadioButton 
            	android:id="@+id/radio_button_3day"
            	android:button="@null"
-           	android:text="@string/day_three"
+           	android:text="@string/tieba_day_three"
            	android:textColor="@color/tieba_text_white_selector_color"
            	android:layout_width="fill_parent"
            	android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
            <RadioButton 
            	android:id="@+id/radio_button_10day" 
            	android:button="@null"
-           	android:text="@string/day_ten" 
+           	android:text="@string/tieba_day_ten" 
            	android:textColor="@color/tieba_text_white_selector_color"
            	android:layout_width="fill_parent"
            	android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
         	android:textColor="#ff232323"
         	android:background="@drawable/tieba_alert_dialog_btn_cancel"
         	android:gravity="center"
-            android:text="@string/dialog_cancel"/>
+            android:text="@string/tieba_dialog_cancel"/>
         <Button 
             android:id="@+id/dialog_button_ok"
             android:layout_width="fill_parent"
@@ -129,7 +129,7 @@
         	android:textColor="#ff232323"
         	android:background="@drawable/tieba_alert_dialog_btn_ok"
         	android:gravity="center"
-            android:text="@string/forbid_id"/>
+            android:text="@string/tieba_forbid_id"/>
     </LinearLayout>
     
 </LinearLayout>

@@ -30,7 +30,7 @@
 		android:focusable="false"
 		android:layout_marginRight="15dip"
     	android:layout_gravity="center_vertical"
-    	android:text="@string/delete"
+    	android:text="@string/tieba_delete"
     	android:textSize="13sp"
     	android:textColor="@color/tieba_white"
     	android:background="@drawable/tieba_attention_cancel"

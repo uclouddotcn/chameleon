@@ -16,6 +16,10 @@ public class ChamListener : MonoBehaviour {
 		}
 		public override void onLoginFail(int code) {
 			Debug.Log (string.Format("on login %d", code));
+			if (code == 25) {
+			    ChameleonSDK.runProtocol("qqmsdk_setplat", "wx");
+			    ChameleonSDK.login();
+                        }
 		}
 		public override void onRegistGuest(int code, string loginInfo) {
 			Debug.Log (string.Format ("on regist guest %d", code));

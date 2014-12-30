@@ -15,7 +15,7 @@
         android:textSize="16sp"
         android:paddingTop="13dip"
         android:paddingBottom="13dip"
-  		android:text="@string/commit_good_to" />
+  		android:text="@string/tieba_commit_good_to" />
     
     <ScrollView
         android:layout_height="220dip"
@@ -46,7 +46,7 @@
         	android:textColor="#ff262626"
         	android:background="@drawable/tieba_alert_dialog_btn_cancel"
         	android:gravity="center"
-            android:text="@string/dialog_cancel"/>
+            android:text="@string/tieba_dialog_cancel"/>
         <Button 
             android:id="@+id/dialog_button_ok"
             android:layout_width="fill_parent"
@@ -58,7 +58,7 @@
         	android:textColor="#ff262626"
         	android:background="@drawable/tieba_alert_dialog_btn_ok"
         	android:gravity="center"
-            android:text="@string/dialog_ok"/>
+            android:text="@string/tieba_dialog_ok"/>
     </LinearLayout>
 </LinearLayout>
     
