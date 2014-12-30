@@ -9,8 +9,8 @@
 
 
 .pre-scrollable-channelinfo {
-  max-height: 450px;
-  overflow-y: scroll;
+  /*max-height: 450px;
+  overflow-y: scroll;*/
   overflow-x: hidden;
 }
 

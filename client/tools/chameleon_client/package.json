@@ -1,7 +1,7 @@
 {
   "name": "chameleon",
   "version": "1.0.0",
-  "main": "initupgrade.html",
+  "main": "index.html",
   "window": {
     "toolbar": false,
     "frame": false,

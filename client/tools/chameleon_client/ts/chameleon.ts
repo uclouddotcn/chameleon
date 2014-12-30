@@ -1667,7 +1667,7 @@ export class Project {
             },
             copyfile: []
         };
-
+/*
         if (!paySDK) {
             setImmediate(cb, new ChameleonError(ErrorCode.OP_FAIL, '渠道依赖的SDK未配置'));
             return;
@@ -1693,7 +1693,7 @@ export class Project {
             setImmediate(cb,  new ChameleonError(ErrorCode.OP_FAIL, e.message));
             return;
         }
-
+*/
         if (splashscreen && cfg['splashscreenToCp']) {
             var sc = cfg['splashscreenToCp'];
             var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/');
