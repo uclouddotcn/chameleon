@@ -343,7 +343,6 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
-        mUserInfo = null;
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -480,7 +479,7 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     @Override
                     public void run() {
                         JSONObject obj = JsonMaker.makeLoginResponse(mUserInfo.mToken,
-                                null, mChannel);
+                                mUserInfo.mUid, mChannel);
                         if (obj != null) {
                             cb.onFinished(Constants.ErrorCode.ERR_OK, obj);
                         } else {

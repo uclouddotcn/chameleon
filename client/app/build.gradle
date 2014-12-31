@@ -7,13 +7,25 @@ android {
     buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 18
+        targetSdkVersion 14
     }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+    }
+    packagingOptions {
+            exclude 'META-INF/DEPENDENCIES.txt'
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE.txt'
+            exclude 'META-INF/NOTICE'
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/DEPENDENCIES'
+            exclude 'META-INF/notice.txt'
+            exclude 'META-INF/license.txt'
+            exclude 'META-INF/dependencies.txt'
+            exclude 'META-INF/LGPL2.1'
     }
 
     productFlavors {
@@ -51,12 +63,20 @@ android {
         }
         qqmsdk {
             applicationId "com.tencent.tmgp.sanguofire"
+            signingConfigs {
+                debug {
+                    storeFile file("../mykeystore")
+                    storePassword "a1988106"
+                    keyPassword "1988106"
+                    keyAlias "com.xianyugame.hxsg"
+                }
+            }
         }
         anzhi {
 
         }
         huawei {
-
+            applicationId "com.xianyugame.sanguofire.huawei"
         }
         meizu {
 
@@ -65,7 +85,7 @@ android {
 
         }
         lenovo {
-
+            applicationId "com.xianyugame.sanguofire.lenovo"
         }
         gionee {
 
@@ -74,10 +94,9 @@ android {
 
         }
         coolpad {
-
         }
         vivo {
-
+            applicationId "com.xianyugame.sanguofire.vivo"
         }
         p_getui {
 
@@ -128,11 +147,11 @@ dependencies {
     lenovoCompile project(':channels:lenovo')
     gioneeCompile project(':channels:gionee')
     htcCompile project(':channels:htc')
-    coolpadCompile project(':channels:coolpad')
-    vivoCompile project(':channels:vivo')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')
+    coolpadCompile project(':channels:coolpad')
+    vivoCompile project(':channels:vivo')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
