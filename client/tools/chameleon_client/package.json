@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "main": "index.html",
   "window": {
+    "title": "chameleon",
     "toolbar": false,
-    "frame": false,
+    "frame": true,
     "width": 1024,
-    "height": 800
+    "height": 800,
+    "position": "center",
+    "resizable": false
   },
+  "single-intance": true,
   "dependencies": {
     "tmp": "~0.0.24",
     "adm-zip": "~0.4.4",
