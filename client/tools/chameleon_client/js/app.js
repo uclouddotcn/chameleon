@@ -1,7 +1,8 @@
 'use strict';
 
 /* App Module */
-var chameleonApp = angular.module('chameleonApp', [
+var chameleonApp;
+chameleonApp = angular.module('chameleonApp', [
     'ngGrid',
     'ngRoute',
     'chameleonControllers',
@@ -18,20 +19,20 @@ var chameleonApp = angular.module('chameleonApp', [
             $rootScope.$stateParams = $stateParams;
             $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, errors) {
                 $log.log('Fail to change state ' + event + ' ' + toState +
-                    ' ' + toParams + ' ' + fromState + ' ' + fromParams);
+                ' ' + toParams + ' ' + fromState + ' ' + fromParams);
 
             });
             createMenu($modal);
         }
     ])
-    .factory('globalCache',[function(){
+    .factory('globalCache', [function () {
         var globalCache;
 
         globalCache = {
-            projectId : '',
-            rowIndex  : '',
-            project   : '',
-            allsdks   : ''
+            projectId: '',
+            rowIndex: '',
+            project: '',
+            allsdks: ''
         }
 
         return globalCache;
@@ -66,8 +67,8 @@ var chameleonApp = angular.module('chameleonApp', [
                 url: '/playmanage/:projectId',
                 templateUrl: 'partials/play_manage.html',
                 resolve: {
-                    project: ['$stateParams', 'ProjectMgr', '$modal', 'WaitingDlg','globalCache', '$q',
-                        function ($stateParams, ProjectMgr, $modal, WaitingDlg,globalCache, $q) {
+                    project: ['$stateParams', 'ProjectMgr', '$modal', 'WaitingDlg', 'globalCache', '$q',
+                        function ($stateParams, ProjectMgr, $modal, WaitingDlg, globalCache, $q) {
 
                             var defered = $q.defer();
                             // 全部数据
@@ -88,8 +89,8 @@ var chameleonApp = angular.module('chameleonApp', [
                                                 }
                                             }
                                         });
-                                        instance.result.then(function(data){
-                                        },function(reason){
+                                        instance.result.then(function (data) {
+                                        }, function (reason) {
                                         });
                                         defered.resolve(project);
                                     } else {
@@ -102,7 +103,7 @@ var chameleonApp = angular.module('chameleonApp', [
                             return defered.promise;
                         }]
                 },
-                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg','globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg,globalCache) {
+                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, globalCache) {
                     $scope.show.index = true;
                     $scope.show.header = 'loadPlayManage';
                     $scope.project = project;
@@ -123,7 +124,7 @@ var chameleonApp = angular.module('chameleonApp', [
                     var sdkset = project.getAllSDKs();
 
 
-                    $scope.$watch('selectedsdk.cfg.landscape',function(nw,ow){
+                    $scope.$watch('selectedsdk.cfg.landscape', function (nw, ow) {
                         $scope.hasChangedLandscape = nw == ow ? false : true;
 
                     })
@@ -131,7 +132,7 @@ var chameleonApp = angular.module('chameleonApp', [
                         cfg: cfg,
                         signcfg: signcfg,
                         desc: '全局配置',
-                        sdkset:sdkset,
+                        sdkset: sdkset,
                         isnew: false,
                         outdated: false,
                         updateFunc: function () {
@@ -226,7 +227,7 @@ var chameleonApp = angular.module('chameleonApp', [
                             return promise;
                         }]
                 },
-                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg','globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg,globalCache) {
+                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, globalCache) {
                     console.log(project);
                     $scope.show.index = true;
 
@@ -244,7 +245,7 @@ var chameleonApp = angular.module('chameleonApp', [
                         cfg: cfg,
                         signcfg: signcfg,
                         desc: '全局配置',
-                        sdkset:sdkset,
+                        sdkset: sdkset,
                         isnew: false,
                         outdated: false,
                         updateFunc: function () {
@@ -254,17 +255,12 @@ var chameleonApp = angular.module('chameleonApp', [
                     };
 
 
-
-
-
                     if (project) {
                         $scope.show.index = false;
                         $scope.show.header = 'loadSdk';
                         $state.go('project.globalsdk', {projectId: globalCache.projectId});
 
                     }
-
-
 
 
                     //测试数据
@@ -340,7 +336,7 @@ var chameleonApp = angular.module('chameleonApp', [
             })
             .state('loadmethod', {
                 url: '/loadmethod/:projectId',
-                templateUrl: 'partials/load_method.html',
+                templateUrl: 'partials/loadMethod.html',
                 resolve: {
                     project: ['$stateParams', 'ProjectMgr', 'WaitingDlg',
                         function ($stateParams, ProjectMgr, WaitingDlg) {
@@ -418,7 +414,7 @@ var chameleonApp = angular.module('chameleonApp', [
                                 }
                             });
                             instance.result.then(function () {
-                                $state.go($state.$current, null, { reload: true });
+                                $state.go($state.$current, null, {reload: true});
                             })
                         };
 
@@ -542,7 +538,6 @@ var chameleonApp = angular.module('chameleonApp', [
                             console.log('dialog dismissed');
                         });
                     };
-
 
 
                     $scope.selectSDKPanel = function () {
@@ -816,7 +811,6 @@ var chameleonApp = angular.module('chameleonApp', [
                         $scope.needShow = Boolean(sdkset.length);
 
 
-
                         $scope.sdks = [];
                         for (var i in sdkset) {
                             $scope.sdks.push(sdkset[i]);
@@ -952,7 +946,7 @@ var chameleonApp = angular.module('chameleonApp', [
                         return 'partials/sdkdefault.xml';
                     }
                 },
-                controller : ['$scope',function($scope){
+                controller: ['$scope', function ($scope) {
                     console.log($scope)
 
                 }]
@@ -964,20 +958,20 @@ var chameleonApp = angular.module('chameleonApp', [
             })
             .state('loadmethod.channel', {
                 url: '/channel/:channelname',
-                controller : 'loadMethod'
+                controller: 'loadMethod'
             })
             .state('loadmethod.channel.sdkconfig', {
                 url: '/sdkconfig',
-                views : {
-                    'sdkconfig' : {
+                views: {
+                    'sdkconfig': {
                         templateUrl: 'partials/selectsdkconfig.html'
                     }
                 },
                 controller: 'SelectChannelController'
             })
-            .state('versionManage',{
-                url : '/versionManage/:projectId',
-                templateUrl : 'partials/version_manage.html',
+            .state('versionManage', {
+                url: '/versionManage/:projectId',
+                templateUrl: 'partials/version_manage.html',
                 resolve: {
                     project: ['$stateParams', 'ProjectMgr', 'WaitingDlg',
                         function ($stateParams, ProjectMgr, WaitingDlg) {
@@ -986,17 +980,30 @@ var chameleonApp = angular.module('chameleonApp', [
                             return WaitingDlg.wait(promise, "加载工程中");
 //                            return promise;
                         }],
-                    versionManages : ['$http',function($http){
+                    versionManages: ['$http', function ($http) {
                         return $http({
-                            method : 'GET',
-                            url : 'js/versionManage.json'
+                            method: 'GET',
+                            url: 'js/versionManage.json'
                         })
                     }]
                 },
-                controller : 'versionCtrl'
+                controller: 'versionCtrl'
 
             })
     }])
+    .directive('dynamicHtml', ['$compile', function($compile){
+            return {
+                restrict: 'A',
+                replace: true,
+                link: function(scope, element, attrs) {
+                    scope.$watch(attrs.dynamicHtml, function (html) {
+                        element.html(html);
+                        $compile(element.contents())(scope);
+                    });
+                }
+            }
+
+    }]);
 
 function createMenu ($modal) {
     // Load native UI library

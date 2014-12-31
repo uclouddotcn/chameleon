@@ -1667,32 +1667,6 @@ var Project = (function () {
             copyfile: []
         };
 
-        if (!paySDK) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '渠道依赖的SDK未配置'));
-            return;
-        }
-
-        if (!userSDK) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '渠道依赖的SDK未配置'));
-            return;
-        }
-
-        if (chcfg.hasIcon && !icons) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '这个渠道需要定制化icon，请设置'));
-            return;
-        }
-        if (chcfg.hasSplashScreen && !splashscreen) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '这个渠道需要定制化闪屏，请设置'));
-            return;
-        }
-
-        try  {
-            chcfg.validatePkgName(pkg);
-        } catch (e) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, e.message));
-            return;
-        }
-
         if (splashscreen && cfg['splashscreenToCp']) {
             var sc = cfg['splashscreenToCp'];
             var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/');

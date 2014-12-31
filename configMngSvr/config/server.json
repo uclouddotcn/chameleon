@@ -1,0 +1,12 @@
+{
+  "productConfigStore" : {
+    "type" : "redis",
+    "instance" : [
+      {
+        "port": 6379,
+        "host": "192.168.8.134"
+      }
+    ],
+    "ttl": -1
+  }
+}
