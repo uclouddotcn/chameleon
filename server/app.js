@@ -53,11 +53,15 @@ function checkAdminCfg(cfgObj) {
 function main() {
     program
         .option('-d, --debug', 'use debug mode')
+        .option('--sdkplugin <pluginpath>', 'use sdk plugin path')
         .parse(process.argv);
     var cfg = loadConfig('svr.json', program.debug);
     checkSDKSvrCfg(cfg);
     checkAdminCfg(cfg);
-    chameleon.start(cfg, program.debug);
+    chameleon.start(cfg, {
+        debug: program.debug,
+        sdkPluginPath: program.sdkplugin
+    });
 }
 
 var d = require('domain').create();

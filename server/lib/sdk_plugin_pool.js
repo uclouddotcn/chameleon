@@ -41,12 +41,12 @@ SDKPluginInfo.prototype.getNewestVersion = function () {
 function SDKPluginPool(chPluginPoolDir, logger) {
     this.chdir = chPluginPoolDir;
     this.plugins = {};
-    this.collectAvailPlugin();
     this._logger = logger;
+    this.collectAvailPlugin();
 }
 
 function extractPluginInfo (name) {
-    var r = /([a-z_]+)(-(\d+))?$/;
+    var r = /([a-z0-9_]+)(-(\d+))?$/;
     var p = r.exec(name);
     if (!p) {
         return null;

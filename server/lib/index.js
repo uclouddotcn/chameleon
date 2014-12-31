@@ -16,8 +16,14 @@ var Constants = require('./constants');
 var http = require('http');
 http.globalAgent.maxSockets = 100;
 
-function start(cfg, debug) {
-    Constants.debug = debug;
+function start(cfg, options) {
+    if (options.debug) {
+        Constants.debug = options.debug;
+    }
+
+    if (options.sdkPluginPath) {
+        Constants.sdkPluginPoolDir = path.resolve(process.cwd(), options.sdkPluginPath);
+    }
 
     if (!fs.existsSync(Constants.productDir)) {
         fs.mkdirSync(Constants.productDir);
@@ -34,7 +40,7 @@ function start(cfg, debug) {
     // create logger first
     var logger = startLogger(cfg.debug, cfg.logger);
 
-    var localSettings = new LocalSettings(cfg._path, logger);
+    var localSettings = new LocalSettings(path.dirname(cfg._path), logger);
 
     // create pending order store
 
@@ -61,7 +67,6 @@ function start(cfg, debug) {
     var channelCbSvr = createChannelCbSvr(cfg.channelCbSvr, productMgr, logger.svrLogger);
 
     // loading all product configs
-    productMgr.loadProductsSync();
 
     // create admin server
     var adminSvr = createAdmin(pluginMgr, productMgr, 
@@ -111,6 +116,16 @@ function start(cfg, debug) {
 
     // init the internal modules sequentially
     async.series([
+        function (cb) {
+            pluginMgr.loadAllPlugins(function (err) {
+                if (err) {
+                    cb(err);
+                    return;
+                }
+                productMgr.loadProductsSync();
+                cb();
+            })
+        },
         // init admin svr
         adminSvr.listen.bind(
             adminSvr, cfg.admin.port, cfg.admin.host),

@@ -7,10 +7,9 @@ var restify = require('restify');
 var url = require('url');
 var util = require('util');
 
-var SDK_PLUGIN_POOL_DIR = constants.sdkPluginPoolDir;
 
 module.exports.createPluginMgr = function (localsettings, logger, pluginPath) {
-    pluginPath = pluginPath || SDK_PLUGIN_POOL_DIR;
+    pluginPath = pluginPath || constants.sdkPluginPoolDir;
     return new PluginMgr(localsettings, pluginPath, logger);
 };
 
