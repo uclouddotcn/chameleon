@@ -185,8 +185,8 @@ Server这边API设计的主要想法是方便CP去使用，所以信息尽量精
 	|token|String|必须|平台的pay token|
 	|appUid|String|必须|游戏内的UID|
 	|serverId|String|必须|发起时候填入的server id|
-	|productId|String|可选|道具的ID，如果游戏仅使用充值二级货币功能，那么这个可以忽略|
-	|productName|String|可选|道具的名称，如果接入腾讯支付，这个必选|
+	|productId|String|必须|道具的ID，如果游戏仅使用充值二级货币功能，那么这个可以忽略|
+	|productName|String|必须|道具的名称，如果接入腾讯支付，这个必选|
 	|productUrl|String|可选|道具图片的url，如果接入腾讯支付，那么这个必选|
 	|productDesc|String|可选|道具的描述，如果接入腾讯支付，那么这个必选|
 	|productCount|int|必须|道具的数量|
