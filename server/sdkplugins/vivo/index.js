@@ -1,6 +1,3 @@
-/**
- * Created by Administrator on 2014/12/18.
- */
 var crypto = require('crypto');
 var querystring = require('querystring');
 var util = require('util');
@@ -8,8 +5,9 @@ var util = require('util');
 var async = require('async');
 var restify = require('restify');
 
-var ErrorCode = require('../common/error-code').ErrorCode;
-var SDKPluginBase = require('../../SDKPluginBase');
+var commonLib = require('../_common');
+var ErrorCode = commonLib.ErrorCode;
+var SDKPluginBase = commonLib.SDKPluginBase;
 
 var cfgDesc = {
     appId: 'string',
@@ -18,8 +16,8 @@ var cfgDesc = {
     payUrl:'string'
 };
 
-var VivoChannel = function(userAction, logger, cfgChecker) {
-    SDKPluginBase.call(this, userAction, logger, cfgChecker);
+var VivoChannel = function(logger, cfgChecker) {
+    SDKPluginBase.call(this, logger, cfgChecker);
     this.client = {
         login:restify.createStringClient({
             url: 'https://usrsys.inner.bbk.com',
@@ -111,17 +109,12 @@ VivoChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     });
 };
 
-VivoChannel.prototype.pendingPay=function(channelName, params, infoFromSDK, callback){
+VivoChannel.prototype.pendingPay=function(wrapper, channelName, params, infoFromSDK, callback){
     var self = this;
 
     try {
-        var wrapper = this._channels[channelName];
-        if (!wrapper) {
-            return setImmediate(callback, new Error("Fail to find channel " + channelName));
-        }
-
         var time=formatTime(new Date());
-        var orderID = self._userAction.genOrderId();
+        var orderID = wrapper.userAction.genOrderId();
         var rest = params.realPayMoney % 100;
         rest = rest<10 ? ('0'+rest) : rest.toString();
         var money = (params.realPayMoney / 100).toString() + '.' + rest;
@@ -197,13 +190,11 @@ VivoChannel.prototype.getPayUrlInfo=function(){
     return[
         {
             method: 'post',
-            path:'/pay',
-            callback: this.respondsToPay.bind(self)
+            path:'/pay'
         },
         {
             method: 'get',
-            path: '/pay',
-            callback: this.respondsToPay.bind(self)
+            path: '/pay'
         }
     ]
 };
@@ -234,7 +225,7 @@ VivoChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
         var status = params.respCode == '0000' ? 0 : 1;
 
         var amount = Math.round(parseFloat(params.orderAmount) * 100);
-        this._userAction.pay(wrapper.channelName, null, null,
+        wrapper.userAction.pay(wrapper.channelName, null, null,
             params.storeOrder, status,
             null, null, amount, other,
             function (err, result) {
@@ -266,7 +257,7 @@ module.exports =
 {
     name: 'vivo',
     cfgDesc: cfgDesc,
-    createSDK: function (userAction, logger, cfgChecker, debug) {
-        return new VivoChannel(userAction, logger, cfgChecker, debug);
+    createSDK: function (logger, cfgChecker, debug) {
+        return new VivoChannel(logger, cfgChecker, debug);
     }
 };

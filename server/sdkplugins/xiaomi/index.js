@@ -5,7 +5,7 @@ var util = require('util');
 var restify = require('restify');
 var async = require('async');
 
-var commonLib = require('./common');
+var commonLib = require('../_common');
 var ErrorCode = commonLib.ErrorCode;
 var SDKPluginBase = commonLib.SDKPluginBase;
 

@@ -7,7 +7,7 @@ var parseString = require('xml2js').parseString;
 var async = require('async');
 var restify = require('restify');
 
-var commonLib = require('./common');
+var commonLib = require('../_common');
 var ErrorCode = commonLib.ErrorCode;
 var SDKPluginBase = commonLib.SDKPluginBase;
 

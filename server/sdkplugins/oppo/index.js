@@ -5,9 +5,7 @@ var util = require('util');
 var async = require('async');
 var restify = require('restify');
 
-var createSDKError = require('../../sdk-error').codeToSdkError;
-
-var commonLib = require('./common');
+var commonLib = require('../_common');
 var _errorcode = commonLib.ErrorCode;
 var SDKPluginBase = commonLib.SDKPluginBase;
 
@@ -64,7 +62,7 @@ OppoChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
         self._logger.debug({rsp: data}, 'recv from oppo');
         if (err) {
             req.log.warn({err: err}, 'fail to get rsp from remote');
-            callback(createSDKError(_errorcode.ERR_FAIL, req, 'Fail to verify login'));
+            callback(err);
             return;
         }
         try {
@@ -86,7 +84,7 @@ OppoChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
             callback(null, result);
         } catch (e) {
             req.log.debug({err: e}, 'unexpect exception from verfiy login rsp');
-            callback(createSDKError(_errorcode.ERR_FAIL, req, 'Fail to verify login'));
+            callback(e);
         }
     });
 };

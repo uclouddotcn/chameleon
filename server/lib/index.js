@@ -40,7 +40,7 @@ function start(cfg, options) {
     // create logger first
     var logger = startLogger(cfg.debug, cfg.logger);
 
-    var localSettings = new LocalSettings(path.dirname(cfg._path), logger);
+    var localSettings = new LocalSettings(path.dirname(cfg._path), logger.svrLogger);
 
     // create pending order store
 

@@ -62,7 +62,7 @@ SDKPluginPool.prototype.collectAvailPlugin = function () {
     var pfs = fs.readdirSync(this.chdir);
     for (var i = 0; i < pfs.length; ++i) {
         var p = path.join(this.chdir, pfs[i]);
-        if (!fs.statSync(p).isDirectory()) {
+        if (!fs.statSync(p).isDirectory() || pfs[i][0] === '_') {
             continue;
         }
         var nameInfo = extractPluginInfo(pfs[i]);

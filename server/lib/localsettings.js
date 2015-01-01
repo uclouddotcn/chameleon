@@ -22,7 +22,9 @@ LevelDBClient.prototype.set = function (key, value, callback) {
         if (err) {
             return callback(err);
         }
-        callback();
+        if (callback) {
+            callback();
+        }
         self.logger.trace({key: key}, 'level db set finished');
     });
 };

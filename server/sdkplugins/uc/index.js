@@ -6,7 +6,7 @@ var restify = require('restify');
 var querystring = require('querystring');
 var util = require('util');
 
-var commonLib = require('./common');
+var commonLib = require('../_common');
 var _errorcode = commonLib.ErrorCode;
 var SDKPluginBase = commonLib.SDKPluginBase;
 

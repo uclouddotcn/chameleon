@@ -4,9 +4,9 @@ var util = require('util');
 var crypto = require('crypto');
 var restify = require('restify');
 
-var plugincommon = require('../common/plugin-common');
+var plugincommon = require('../_common/plugin-common');
 
-var commonLib = require('./common');
+var commonLib = require('../_common');
 var ErrorCode = commonLib.ErrorCode;
 var SDKPluginBase = commonLib.SDKPluginBase;
 
