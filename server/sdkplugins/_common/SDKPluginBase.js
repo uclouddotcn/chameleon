@@ -19,11 +19,11 @@ SDKPluginBase.prototype.getPayUrlInfo = function() {
 };
 
 
-function Wrapper (channelName, cfg, plugin) {
+function Wrapper (userAction, channelName, cfg, plugin) {
     this.cfg = cfg;
     this.plugin = plugin;
     this.channelName = channelName;
-    this.userAction = null;
+    this.userAction = userAction;
     if (this.plugin.pendingPay) {
         var self = this;
         this.pendingPay = function (channelName, params, infoFromSDK, callback) {
