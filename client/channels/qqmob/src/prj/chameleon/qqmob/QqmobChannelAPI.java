@@ -263,7 +263,6 @@ public class QqmobChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
-        mTencent = null;
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {

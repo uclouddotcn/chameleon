@@ -29,6 +29,10 @@
             "type" : "string",
             "desc" : "loginRedirctUrl",
             "ignoreInA" : 1
+        },
+        "notifyurl" : {
+            "type" : "string",
+            "desc" : "notify url"
         }
 
     }

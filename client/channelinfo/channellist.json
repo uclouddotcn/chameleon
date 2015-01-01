@@ -87,6 +87,10 @@
         "name": "机锋",
         "sdk": "gfan",
         "icon": "1"
+    },
+    "vivo": {
+        "name": "VIVO",
+        "sdk": "vivo"
     }
 }
 
