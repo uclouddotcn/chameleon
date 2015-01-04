@@ -36,6 +36,7 @@ LenovoChannel.prototype.verifyLogin = function(wrapper, token, others, callback)
         realm: wrapper.cfg.appId
     };
     var self = this;
+    this._logger.debug({qs: u+querystring.stringify(obj)}, 'query string');
     this.client.get(u+querystring.stringify(obj), function (err, req, res) {
         req.log.debug({req: req, err: err, res: res}, 'on result ');
         if (!res.body) {
@@ -173,7 +174,7 @@ LenovoChannel.prototype.getPayUrlInfo = function ()  {
 
 LenovoChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
     var self = this;
-    req.log.debug({req: req}, 'recv pay rsp');
+    req.log.debug({req: req, params: req.params, body: req.body}, 'recv pay rsp');
     try {
         var inputData = querystring.parse(req.body);
         var params = JSON.parse(inputData.transdata)
@@ -189,7 +190,7 @@ LenovoChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
         var orderId = params.exorderno;
         var amount = params.money;
         var status = ErrorCode.ERR_OK;
-        if (params.result === 0) {
+        if (params.result !== 0) {
             status = ErrorCode.ERR_FAIL;
         }
         var other = {

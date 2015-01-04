@@ -88,6 +88,19 @@ namespace chameleon
 			}
 		}
 
+		public void onRunProtocol(string message) {
+			if (mEvtListener != null) {
+				var obj = JSON.Parse(message);
+				int code = obj["code"].AsInt;
+                                var data = obj["data"];
+                                var method = data["method"];
+                                var res = data["res"];
+                                JSONNode dataObj = obj["data"];
+				mEvtListener.onRunProtocol(code, method, res);
+			}
+		}
+
+
 		public void onSwitchAccount(string message) {
 			if (mEvtListener != null) {
 				var obj = JSON.Parse(message);

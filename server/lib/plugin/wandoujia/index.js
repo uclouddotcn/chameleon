@@ -92,7 +92,7 @@ WandoujiaChannel.prototype.send = function (res, body) {
 };
 
 
-WandoujiaChannel.prototype.respondsToPay = function (req, res, next) {
+WandoujiaChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
     var self = this;
     var params = req.params;
     self._logger.debug({req: req, params: params}, "on rsp for pay");
@@ -109,7 +109,7 @@ WandoujiaChannel.prototype.respondsToPay = function (req, res, next) {
             chargeType: rspObj.chargeType,
             cardNo: rspObj.cardNo
         };
-        self._userAction.pay(self.name, rspObj.buyerId.toString(), null,
+        self._userAction.pay(wrapper.channelName, rspObj.buyerId.toString(), null,
             rspObj.out_trade_no, 0, 
             null, null, rspObj.money, other,
             function (err, result) {

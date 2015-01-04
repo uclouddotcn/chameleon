@@ -495,10 +495,6 @@ public class ChannelInterface {
         private boolean mInited = false;
 
         public void onResume(final Activity activity, final IDispatcherCb cb) {
-            if (!mInited) {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                return;
-            }
             final Iterator<APIGroup> iterator = mApiGroups.iterator();
             final Runnable initProc = new Runnable() {
                 @Override
@@ -524,9 +520,6 @@ public class ChannelInterface {
         }
 
         public void onPause(Activity activity) {
-            if (!mInited) {
-                return;
-            }
             for (APIGroup group : mApiGroups) {
                 group.onPause(activity);
             }
@@ -566,9 +559,6 @@ public class ChannelInterface {
         }
 
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-            if (!mInited) {
-                return;
-            }
             for (APIGroup group : mApiGroups) {
                 group.onActivityResult(activity, requestCode, resultCode, data);
             }
@@ -649,27 +639,18 @@ public class ChannelInterface {
         }
 
         public void onStart(Activity activity) {
-            if (!mInited) {
-                return;
-            }
             for (APIGroup group : mApiGroups) {
                 group.onStart(activity);
             }
         }
 
         public void onStop(Activity activity) {
-            if (!mInited) {
-                return;
-            }
             for (APIGroup group : mApiGroups) {
                 group.onStop(activity);
             }
         }
 
         public void onNewIntent(Activity activity, Intent intent) {
-            if (!mInited) {
-                return;
-            }
             for (APIGroup group : mApiGroups) {
                 group.onNewIntent(activity, intent);
             }

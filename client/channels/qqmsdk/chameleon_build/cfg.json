@@ -16,6 +16,16 @@
             "desc": "app key"
         },
 
+        "wxAppId" : {
+            "type": "string",
+            "desc": "app id"
+        },
+
+        "wxAppKey" : {
+            "type": "string",
+            "desc": "app key"
+        },
+
         "moneyIcon" : {
             "type": "string",
             "desc": "qq支付时候所需要的支付图标，必须是48*48的"

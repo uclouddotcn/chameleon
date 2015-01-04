@@ -28,9 +28,27 @@
         </activity>
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity
+            android:name="com.tencent.tmgp.sanguofire.wxapi.WXEntryActivity"
+            android:screenOrientation="landscape"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="WXEntryActivity"
+            android:launchMode="singleTop"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="wx7036e91070e73dea" />
+            </intent-filter>
+        </activity>
+
 
     </application>
 </manifest>

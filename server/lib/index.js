@@ -12,6 +12,8 @@ var createPendingOrderStore =
     require('./pending-order').createPendingOrderStore;
 var async = require('async');
 var Constants = require('./constants');
+var http = require('http');
+http.globalAgent.maxSockets = 100;
 
 function start(cfg, debug) {
     Constants.debug = debug;
