@@ -3,6 +3,7 @@ package prj.chameleon.huawei;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 
 import com.huawei.gamebox.buoy.sdk.IGameCallBack;
 import com.huawei.gamebox.buoy.sdk.UpdateInfo;
@@ -23,12 +24,12 @@ class GameCallback implements IGameCallBack {
 
     @Override
     public void onInitStarted() {
-        mCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        //mCb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
     public void onInitFailed(int errorCode) {
-        mCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        mCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
     }
 
     /**
@@ -36,6 +37,12 @@ class GameCallback implements IGameCallBack {
      */
     @Override
     public void onInitSuccessed() {
+        mCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+    }
+
+    @Override
+    public void onValidFail() {
+
     }
 
     @Override
@@ -44,6 +51,7 @@ class GameCallback implements IGameCallBack {
 
     @Override
     public void onShowFailed(int errorCode) {
+        Log.e(Constants.TAG, "Fail to show window " + errorCode);
     }
 
     @Override
@@ -52,6 +60,7 @@ class GameCallback implements IGameCallBack {
 
     @Override
     public void onHidenFailed(int errorCode) {
+        Log.e(Constants.TAG, "Fail to hide window " + errorCode);
     }
 
     @Override
@@ -64,10 +73,6 @@ class GameCallback implements IGameCallBack {
     @Override
     public void onUpdateCheckFinished(UpdateInfo info) {
         // 根据业务需要设置，demo中只在登录界面展示更新信息
-        if (null != GlobalParams.hwId) {
-            return;
-        }
-
         if (null == info) {
             DebugConfig.d(Constants.TAG, "IGameCallBack onUpdateCheckFinished:无更新信息");
             return;
@@ -100,6 +105,7 @@ class GameCallback implements IGameCallBack {
                     }
                 }).create().show();
 
+        dialog.show();
     }
 
     @Override

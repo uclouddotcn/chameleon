@@ -1,21 +1,21 @@
 package prj.chameleon.baidumg;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.duoku.platform.DkErrorCode;
-import com.duoku.platform.DkPlatform;
-import com.duoku.platform.DkPlatformSettings;
-import com.duoku.platform.DkProtocolConfig;
-import com.duoku.platform.DkProtocolKeys;
-import com.duoku.platform.IDKSDKCallBack;
-import com.duoku.platform.ui.DKContainerActivity;
-import com.duoku.platform.ui.DKPaycenterActivity;
+import com.baidu.gamesdk.ActivityAdPage;
+import com.baidu.gamesdk.ActivityAnalytics;
+import com.baidu.gamesdk.BDGameSDK;
+import com.baidu.gamesdk.BDGameSDKSetting;
+import com.baidu.gamesdk.IResponse;
+import com.baidu.gamesdk.ResultCode;
+import com.baidu.platformsdk.PayOrderInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Field;
 
 import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
@@ -26,18 +26,27 @@ import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
 public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private IAccountActionListener mAccountListener;
-    private static class UserInfo {
-        public String mUserId;
-        public String mUserSession;
-    }
     private static class Cfg {
-        public String mAppID;
+        public int mAppID;
         public String mAppKey;
-        public int mScreenOrientation;
+        public BDGameSDKSetting.Orientation mScreenOrientation;
     }
 
-    private UserInfo mUserInfo;
     private Cfg mCfg;
+    private boolean mIsDebug = false;
+    private static class AdPageListener implements ActivityAdPage.Listener {
+        public IDispatcherCb mCb;
+        @Override
+        public void onClose() {
+            if (mCb != null) {
+                mCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+            }
+            mCb = null;
+        }
+    }
+    private ActivityAdPage mAdPage = null;
+    private AdPageListener mAdPageListener = new AdPageListener();
+    private ActivityAnalytics mActivityAnalytics = null;
     @Override
     public void charge(Activity activity,
                        String orderId,
@@ -50,38 +59,34 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        if (realPayMoney > 99999) {
+        if (realPayMoney > 9999900) {
             Log.e(Constants.TAG, "baidumg: excceeds money limit");
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putInt(DkProtocolKeys.FUNCTION_CODE, DkProtocolConfig.FUNCTION_Pay);
+        PayOrderInfo payOrderInfo = new PayOrderInfo();
+        payOrderInfo.setCooperatorOrderSerial(orderId);
+        payOrderInfo.setProductName(currencyName);
         if (allowUserChange) {
-            bundle.putString(DkProtocolKeys.FUNCTION_AMOUNT, String.valueOf(realPayMoney/100));
+            payOrderInfo.setTotalPriceCent(0);
+            payOrderInfo.setRatio(rate);
         } else {
-            bundle.putString(DkProtocolKeys.FUNCTION_AMOUNT, "0");
+            payOrderInfo.setTotalPriceCent(realPayMoney);
         }
-        bundle.putString(DkProtocolKeys.FUNCTION_EXCHANGE_RATIO, String.valueOf(rate));
-        bundle.putString(DkProtocolKeys.FUNCTION_ORDER_ID, orderId);
-        bundle.putString(DkProtocolKeys.FUNCTION_GAMEBI_NAME, currencyName);
-        bundle.putString(DkProtocolKeys.FUNCTION_PAY_DESC, composePayExt(null));
-
-        Intent intent = new Intent(activity, DKPaycenterActivity.class);
-        intent.putExtras(bundle);
-        DkPlatform.invokeActivity(activity, intent, new IDKSDKCallBack() {
+        payOrderInfo.setExtInfo(composePayExt(null));
+        BDGameSDK.pay(payOrderInfo, null, new IResponse<PayOrderInfo>() {
             @Override
-            public void onResponse(String s) {
-                try {
-                    JSONObject jsonObj = new JSONObject(s);
-                    int stateCode = jsonObj.getInt(DkProtocolKeys.FUNCTION_STATE_CODE);
-                    if (stateCode == DkErrorCode.DK_ORDER_NEED_CHECK) {
+            public void onResponse(int i, String s, PayOrderInfo payOrderInfo) {
+                switch (i) {
+                    case ResultCode.PAY_SUCCESS:
+                    case ResultCode.PAY_SUBMIT_ORDER://订单已经提交,
                         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                    } else {
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
-                    }
-                } catch (JSONException e) {
-                    Log.e(Constants.TAG, "Fail to parse pay result", e);
+                    case ResultCode.PAY_CANCEL://订单支付取消
+                        cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                        break;
+                    default:
+                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                        break;
                 }
             }
         });
@@ -99,33 +104,29 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,
                     int realPayMoney,
                     final IDispatcherCb cb) {
-        if (realPayMoney > 99999) {
+        if (realPayMoney > 9999900) {
             Log.e(Constants.TAG, "baidumg: excceeds money limit");
             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putInt(DkProtocolKeys.FUNCTION_CODE, DkProtocolConfig.FUNCTION_Pay);
-        bundle.putString(DkProtocolKeys.FUNCTION_AMOUNT, String.valueOf(realPayMoney/100));
-        bundle.putString(DkProtocolKeys.FUNCTION_EXCHANGE_RATIO, String.valueOf(realPayMoney/productCount));
-        bundle.putString(DkProtocolKeys.FUNCTION_ORDER_ID, orderId);
-        bundle.putString(DkProtocolKeys.FUNCTION_GAMEBI_NAME, productName);
-        bundle.putString(DkProtocolKeys.FUNCTION_PAY_DESC, composePayExt(productID));
-        Intent intent = new Intent(activity, DKPaycenterActivity.class);
-        intent.putExtras(bundle);
-        DkPlatform.invokeActivity(activity, intent, new IDKSDKCallBack() {
+        PayOrderInfo payOrderInfo = new PayOrderInfo();
+        payOrderInfo.setCooperatorOrderSerial(orderId);
+        payOrderInfo.setProductName(productName);
+        payOrderInfo.setTotalPriceCent(realPayMoney);
+        payOrderInfo.setExtInfo(composePayExt(productID));
+        BDGameSDK.pay(payOrderInfo, null, new IResponse<PayOrderInfo>() {
             @Override
-            public void onResponse(String s) {
-                try {
-                    JSONObject jsonObj = new JSONObject(s);
-                    int stateCode = jsonObj.getInt(DkProtocolKeys.FUNCTION_STATE_CODE);
-                    if (stateCode == DkErrorCode.DK_ORDER_NEED_CHECK) {
+            public void onResponse(int i, String s, PayOrderInfo payOrderInfo) {
+                switch (i) {
+                    case ResultCode.PAY_SUCCESS:
+                    case ResultCode.PAY_SUBMIT_ORDER://订单已经提交,
                         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                    } else {
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
-                    }
-                } catch (JSONException e) {
-                    Log.e(Constants.TAG, "Fail to parse pay result", e);
+                    case ResultCode.PAY_CANCEL://订单支付取消
+                        cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                        break;
+                    default:
+                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                        break;
                 }
             }
         });
@@ -138,32 +139,65 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Cfg();
-        mCfg.mAppID = cfg.getString("appId");
+        mCfg.mAppID = (int) cfg.getLong("appId");
         mCfg.mAppKey = cfg.getString("appKey");
-        mCfg.mScreenOrientation = commCfg.mIsLandscape ? DkPlatformSettings.SCREEN_ORIENTATION_LANDSCAPE:
-                DkPlatformSettings.SCREEN_ORIENTATION_PORTRAIT;
+        mCfg.mScreenOrientation = commCfg.mIsLandscape ? BDGameSDKSetting.Orientation.LANDSCAPE:
+                BDGameSDKSetting.Orientation.PORTRAIT;
         mChannel = commCfg.mChannel;
+        mIsDebug = commCfg.mIsDebug;
     }
 
     @Override
-    public void init(Activity activity, IDispatcherCb cb) {
-        DkPlatformSettings appInfo = new DkPlatformSettings();
-        appInfo.setAppid(mCfg.mAppID);
-        appInfo.setAppkey(mCfg.mAppKey);
-        appInfo.setOrient(mCfg.mScreenOrientation);
-        appInfo.setGameCategory(DkPlatformSettings.GameCategory.ONLINE_Game);
-        DkPlatform.init(activity, appInfo);
-        DkPlatform.setDKSuspendWindowCallBack(new IDKSDKCallBack() {
+    public void init(final Activity activity, final IDispatcherCb cb) {
+        BDGameSDKSetting appInfo = new BDGameSDKSetting();
+        appInfo.setAppID(mCfg.mAppID);
+        appInfo.setAppKey(mCfg.mAppKey);
+        mActivityAnalytics = new ActivityAnalytics(activity);
+        if (mIsDebug) {
+            appInfo.setDomain(BDGameSDKSetting.Domain.DEBUG);
+        } else {
+            appInfo.setDomain(BDGameSDKSetting.Domain.RELEASE);
+        }
+        appInfo.setOrientation(mCfg.mScreenOrientation);
+        mAdPage = new ActivityAdPage(activity, mAdPageListener);
+        BDGameSDK.init(activity, appInfo, new IResponse<Void>() {
             @Override
-            public void onResponse(String s) {
-                int _statuscode = 0;
-                try {
-                    JSONObject _jsonObj = new JSONObject(s);
-                    _statuscode = _jsonObj.getInt(DkProtocolKeys.FUNCTION_STATE_CODE);
-                } catch (JSONException e) {
-                    Log.e(Constants.TAG, "Fail to parse the message", e);
+            public void onResponse(int i, String s, Void aVoid) {
+                switch (i) {
+                    case ResultCode.INIT_SUCCESS:
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                        break;
+                    default:
+                        Log.e(Constants.TAG, "Fail to start SDK");
+                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                        break;
                 }
-                if (_statuscode == DkErrorCode.DK_CHANGE_USER) {
+            }
+        });
+        BDGameSDK.setSuspendWindowChangeAccountListener(new IResponse<Void>() {
+            @Override
+            public void onResponse(int i, String s, Void aVoid) {
+                if (mAccountListener == null) {
+                    return;
+                }
+                switch (i) {
+                    case ResultCode.LOGIN_SUCCESS:
+                        mAccountListener.preAccountSwitch();
+                        mAccountListener.afterAccountSwitch(Constants.ErrorCode.ERR_OK,
+                                JsonMaker.makeLoginResponse(BDGameSDK.getLoginAccessToken(), BDGameSDK.getLoginUid(),
+                                        mChannel));
+                    case ResultCode.LOGIN_FAIL:
+                        mAccountListener.onAccountLogout();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        BDGameSDK.setSessionInvalidListener(new IResponse<Void>() {
+            @Override
+            public void onResponse(int i, String s, Void aVoid) {
+                if(i == ResultCode.SESSION_INVALID) {
                     if (mAccountListener != null) {
                         mAccountListener.onAccountLogout();
                     }
@@ -175,38 +209,19 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void login(Activity activity, final IDispatcherCb cb, IAccountActionListener accountActionListener) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(DkProtocolKeys.FUNCTION_CODE, DkProtocolConfig.FUNCTION_LOGIN);
-        Intent intent = new Intent(activity, DKContainerActivity.class);
-        intent.putExtras(bundle);
         mAccountListener = accountActionListener;
-        DkPlatform.invokeActivity(activity, intent, new IDKSDKCallBack() {
+        BDGameSDK.login(new IResponse<Void>() {
             @Override
-            public void onResponse(String s) {
-                int _loginState;
-                Log.d(Constants.TAG, "recv login rsp " + s);
-                UserInfo userInfo = new UserInfo();
-                JSONObject jsonObj;
-                try {
-                    jsonObj = new JSONObject(s);
-                    _loginState = jsonObj.getInt(DkProtocolKeys.FUNCTION_STATE_CODE);
-                    if (DkErrorCode.DK_LOGIN_SUCCESS == _loginState) {
-                        userInfo.mUserId = jsonObj.getString(DkProtocolKeys.USER_ID);
-                        userInfo.mUserSession = jsonObj.getString(DkProtocolKeys.USER_SESSIONID);
-                        mUserInfo = userInfo;
+            public void onResponse(int i, String s, Void aVoid) {
+                switch (i) {
+                    case ResultCode.LOGIN_SUCCESS:
                         cb.onFinished(Constants.ErrorCode.ERR_OK,
-                                JsonMaker.makeLoginResponse(userInfo.mUserSession, userInfo.mUserId,
+                                JsonMaker.makeLoginResponse(BDGameSDK.getLoginAccessToken(), BDGameSDK.getLoginUid(),
                                         mChannel));
-                    } else if (DkErrorCode.DK_LOGIN_CANCELED == _loginState) {
-                        cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
-                    } else {
-                        Log.e(Constants.TAG, String.format("unknown login rsp state from baidumg: %d", _loginState));
+                        break;
+                    default:
+                        Log.e(Constants.TAG, String.format("unknown login rsp state from baidumg: %d", i));
                         cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                    }
-
-                } catch (JSONException e) {
-                    Log.e(Constants.TAG, "Fail to parse login info", e);
-                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
                 }
             }
         });
@@ -214,8 +229,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void logout(Activity activity) {
-        DkPlatform.doDKUserLogout();
-        mUserInfo = null;
+        BDGameSDK.logout();
     }
 
 
@@ -238,30 +252,54 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public String getUid() {
-        if (mUserInfo == null) {
-            return "";
-        } else {
-            return mUserInfo.mUserId;
-        }
+        return BDGameSDK.getLoginUid();
     }
 
     @Override
     public String getToken() {
-        if (mUserInfo == null) {
-            return "";
-        } else {
-            return mUserInfo.mUserSession;
-        }
+        return BDGameSDK.getLoginAccessToken();
     }
 
     @Override
     public boolean isLogined() {
-        return mUserInfo == null;
+        return BDGameSDK.isLogined();
+    }
+
+    @Override
+    public void onResume(Activity activity, final IDispatcherCb cb) {
+        if (mActivityAnalytics != null) {
+            mActivityAnalytics.onResume();
+        }
+        if (mAdPage != null) {
+            mAdPageListener.mCb = cb;
+            mAdPage.onResume();
+        } else {
+            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        }
+    }
+
+    @Override
+    public void onPause(Activity activity) {
+        if (mActivityAnalytics != null) {
+            mActivityAnalytics.onPause();
+        }
+        if (mAdPage != null) {
+            mAdPage.onPause();
+        }
+    }
+
+    @Override
+    public void onStop(Activity activity) {
+        if (mAdPage != null) {
+            mAdPage.onStop();
+        }
     }
 
     @Override
     public void onDestroy(Activity activity) {
-        DkPlatform.destroy(activity);
+        BDGameSDK.destroy();
+        mAdPage.onDestroy();
+        mAdPage = null;
     }
 
     @Override
@@ -269,7 +307,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
             }
         });
     }

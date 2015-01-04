@@ -14,6 +14,8 @@ var codeToSdkError = require('../../sdk-error.js').codeToSdkError;
 var cfgDesc = {
     qqAppId: 'string',
     qqAppKey: 'string',
+    wxAppId: 'string',
+    wxAppKey: 'string',
     timeout: '?integer'
 };
 
@@ -28,13 +30,8 @@ var QQMsdkChannel = function(userAction, logger, cfgChecker, debug) {
     if (debug) {
         qqurl = QQ_MSDK_DEBUG_URL;
     }
-    /*
-    var qqpayUrl = QQ_PAY_URL;
-    if (debug) {
-        qqpayUrl = QQ_PAY_URL_DEV;
-    }
-    */
     SDKPluginBase.call(this, userAction, logger, cfgChecker);
+    /*
     this.productionClient = restify.createJsonClient({
         url: qqurl,
         retry: false,
@@ -42,7 +39,6 @@ var QQMsdkChannel = function(userAction, logger, cfgChecker, debug) {
         requestTimeout: 10000,
         connectTimeout: 20000
     });
-    /*
     this.payClient = restify.createJsonClient({
         url: qqpayUrl,
         retry: false,
@@ -51,60 +47,6 @@ var QQMsdkChannel = function(userAction, logger, cfgChecker, debug) {
         connectTimeout: 20000
     });
     */
-    var pendingPayCookie = {
-        session_id: querystring.escape('openid'),
-        session_type: querystring.escape('kp_actoken'),
-        org_loc: querystring.escape('/mpay/get_balance_m')
-    };
-    this.pendingPayClient = restify.createJsonClient({
-        url: qqurl,
-        retry: false,
-        log: logger,
-        requestTimeout: 10000,
-        connectTimeout: 20000,
-        headers: {
-            'Cookie': Object.keys(pendingPayCookie).map(function (k) {
-                        return k + '=' + pendingPayCookie[k];
-                      }).join(';')
-        }
-    });
-
-    var consumeMoneyCookie = {
-        session_id: querystring.escape('openid'),
-        session_type: querystring.escape('kp_actoken'),
-        org_loc: querystring.escape('/mpay/pay_m')
-    };
-    this.consumeMoneyClient = restify.createJsonClient({
-        url: qqurl,
-        retry: false,
-        log: logger,
-        requestTimeout: 10000,
-        connectTimeout: 20000,
-        headers: {
-            'Cookie': Object.keys(consumeMoneyCookie).map(function (k) {
-                        return k + '=' + consumeMoneyCookie[k];
-                      }).join(';')
-        }
-    });
-
-    var cancelPayCookie = {
-        session_id: querystring.escape('openid'),
-        session_type: querystring.escape('kp_actoken'),
-        org_loc: querystring.escape('/mpay/cancel_pay_m')
-    };
-    this.cancelPayClient = restify.createJsonClient({
-        url: qqurl,
-        retry: false,
-        log: logger,
-        requestTimeout: 10000,
-        connectTimeout: 20000,
-        headers: {
-            'Cookie': Object.keys(cancelPayCookie).map(function (k) {
-                return k + '=' + cancelPayCookie[k];
-            }).join(';')
-        }
-    });
-
 };
 util.inherits(QQMsdkChannel, SDKPluginBase);
 
@@ -128,9 +70,9 @@ function getNowTimestamp() {
     return Math.round(Date.now()/1000);
 }
 
-function getUrl(p, wrapper, openid) {
-    var appId = wrapper.cfg.qqAppId;
-    var appKey = wrapper.cfg.qqAppKey;
+function getUrl(p, wrapper, openid, appCfg) {
+    var appId = appCfg.appId;
+    var appKey = appCfg.appKey;
     var timestamp = getNowTimestamp();
     return p + '/?' + querystring.stringify({
         timestamp: timestamp,
@@ -141,45 +83,222 @@ function getUrl(p, wrapper, openid) {
     });
 }
 
+QQMsdkChannel.prototype.getClient = function (wrapper) {
+    if (wrapper.cfg._client) {
+        return wrapper.cfg._client;
+    }
+    var qqurl = QQ_MSDK_URL;
+    if (wrapper.cfg.test) {
+        qqurl = QQ_MSDK_DEBUG_URL;
+    }
+    var pendingPayCookie = {
+        session_id: querystring.escape('openid'),
+        session_type: querystring.escape('kp_actoken'),
+        org_loc: querystring.escape('/mpay/get_balance_m')
+    };
+    var wxPendingPayCookie = {
+        session_id: querystring.escape('hy_gameid'),
+        session_type: querystring.escape('wc_actoken'),
+        org_loc: querystring.escape('/mpay/get_balance_m')
+    };
+    var consumeMoneyCookie = {
+        session_id: querystring.escape('openid'),
+        session_type: querystring.escape('kp_actoken'),
+        org_loc: querystring.escape('/mpay/pay_m')
+    };
+    var wxConsumeMoneyCookie = {
+        session_id: querystring.escape('hy_gameid'),
+        session_type: querystring.escape('wc_actoken'),
+        org_loc: querystring.escape('/mpay/pay_m')
+    };
+    var cancelPayCookie = {
+        session_id: querystring.escape('openid'),
+        session_type: querystring.escape('kp_actoken'),
+        org_loc: querystring.escape('/mpay/cancel_pay_m')
+    };
+    var wxCancelPayCookie = {
+        session_id: querystring.escape('hy_gameid'),
+        session_type: querystring.escape('wc_actoken'),
+        org_loc: querystring.escape('/mpay/cancel_pay_m')
+    };
+
+    wrapper.cfg._client = {
+        loginClient: restify.createJsonClient({
+                url: qqurl,
+                retry: false,
+                log: this._logger,
+                requestTimeout: 10000,
+                connectTimeout: 20000
+            }),
+        cancelPayClient: restify.createJsonClient({
+                url: qqurl,
+                retry: false,
+                log: this._logger,
+                requestTimeout: 10000,
+                connectTimeout: 20000,
+                headers: {
+                    'Cookie': Object.keys(cancelPayCookie).map(function (k) {
+                        return k + '=' + cancelPayCookie[k];
+                    }).join(';')
+                }
+            }),
+        consumeMoneyClient: restify.createJsonClient({
+                url: qqurl,
+                retry: false,
+                log: this._logger,
+                requestTimeout: 10000,
+                connectTimeout: 20000,
+                headers: {
+                    'Cookie': Object.keys(consumeMoneyCookie).map(function (k) {
+                        return k + '=' + consumeMoneyCookie[k];
+                    }).join(';')
+                }
+            }),
+        pendingPayClient: restify.createJsonClient({
+                url: qqurl,
+                retry: false,
+                log: this._logger,
+                requestTimeout: 10000,
+                connectTimeout: 20000,
+                headers: {
+                    'Cookie': Object.keys(pendingPayCookie).map(function (k) {
+                        return k + '=' + pendingPayCookie[k];
+                    }).join(';')
+                }
+            }),
+        wxCancelPayClient: restify.createJsonClient({
+            url: qqurl,
+            retry: false,
+            log: this._logger,
+            requestTimeout: 10000,
+            connectTimeout: 20000,
+            headers: {
+                'Cookie': Object.keys(wxCancelPayCookie).map(function (k) {
+                    return k + '=' + wxCancelPayCookie[k];
+                }).join(';')
+            }
+        }),
+        wxConsumeMoneyClient: restify.createJsonClient({
+            url: qqurl,
+            retry: false,
+            log: this._logger,
+            requestTimeout: 10000,
+            connectTimeout: 20000,
+            headers: {
+                'Cookie': Object.keys(wxConsumeMoneyCookie).map(function (k) {
+                    return k + '=' + wxConsumeMoneyCookie[k];
+                }).join(';')
+            }
+        }),
+        wxPendingPayClient: restify.createJsonClient({
+            url: qqurl,
+            retry: false,
+            log: this._logger,
+            requestTimeout: 10000,
+            connectTimeout: 20000,
+            headers: {
+                'Cookie': Object.keys(wxPendingPayCookie).map(function (k) {
+                    return k + '=' + wxPendingPayCookie[k];
+                }).join(';')
+            }
+        })
+    };
+    return wrapper.cfg._client;
+}
+
+QQMsdkChannel.prototype.verifyQQLogin = function(wrapper, token, openid, callback) {
+    var self = this;
+    var client = this.getClient(wrapper);
+    var appCfg = {
+        appId: wrapper.cfg.qqAppId,
+        appKey: wrapper.cfg.qqAppKey
+    };
+    var u = getUrl('/auth/verify_login', wrapper, openid, appCfg);
+    var queryObj = {
+        appid: appCfg.appId,
+        openid: openid,
+        openkey: token,
+        userip: '127.0.0.1'
+    };
+    var result = null;
+    client.loginClient.post(u, queryObj, function (err, req, res, obj) {
+        if (err) {
+            self._logger.debug({err: err}, 'return from channel');
+            return callback(err);
+        }
+        self._logger.debug({obj: obj, req: req}, 'return from channel');
+        if (obj.ret !== 0) {
+            var e = mapError(obj, 'verify_login');
+            result = {
+                code: e.code,
+                errmsg: e.message
+            };
+            callback(null, result);
+        } else {
+            result = {
+                code: 0,
+                loginInfo: {
+                    uid: openid,
+                    token: token,
+                    channel: wrapper.channelName
+                }
+            };
+            callback(0, result);
+        }
+    });
+};
+
+QQMsdkChannel.prototype.verifyWXLogin = function(wrapper, token, openid, callback) {
+    var self = this;
+    var client = this.getClient(wrapper);
+    var appCfg = {
+        appId: wrapper.cfg.wxAppId,
+        appKey: wrapper.cfg.wxAppKey
+    };
+    var u = getUrl('/auth/check_token', wrapper, openid, appCfg);
+    var queryObj = {
+        accessToken: token,
+        openid: openid
+    };
+    var result = null;
+    client.loginClient.post(u, queryObj, function (err, req, res, obj) {
+        if (err) {
+            self._logger.debug({err: err}, 'return from channel');
+            return callback(err);
+        }
+        self._logger.debug({obj: obj, req: req}, 'return from channel');
+        if (obj.ret !== 0) {
+            var e = mapError(obj, 'check_token');
+            result = {
+                code: e.code,
+                errmsg: e.message
+            };
+            callback(null, result);
+        } else {
+            result = {
+                code: 0,
+                loginInfo: {
+                    uid: openid,
+                    token: token,
+                    channel: wrapper.channelName
+                }
+            };
+            callback(0, result);
+        }
+    });
+};
+
 QQMsdkChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
     try {
         var otherObj = JSON.parse(others);
+        var pl = otherObj.pl;
         var openid = otherObj.uid;
-        var u = getUrl('/auth/verify_login', wrapper, openid);
-        var timestamp = getNowTimestamp();
-        var queryObj = {
-            appid: wrapper.cfg.qqAppId,
-            openid: openid,
-            openkey: token,
-            userip: '127.0.0.1'
-        };
-        var result = null;
-        this.productionClient.post(u, queryObj, function (err, req, res, obj) {
-            if (err) {
-                self._logger.debug({err: err}, 'return from channel');
-                return callback(err);
-            }
-            self._logger.debug({obj: obj, req: req}, 'return from channel');
-            if (obj.ret !== 0) {
-                var e = mapError(obj, 'verify_login');
-                result = {
-                    code: e.code,
-                    errmsg: e.message
-                };
-                callback(null, result);
-            } else {
-                result = {
-                    code: 0,
-                    loginInfo: {
-                        uid: openid,
-                        token: token,
-                        channel: wrapper.channelName
-                    }
-                };
-                callback(0, result);
-            }
-        });
+        if (pl === 'w') {
+            self.verifyWXLogin(wrapper, token, openid, callback);
+        } else {
+            self.verifyQQLogin(wrapper, token, openid, callback);
+        }
     } catch (e) {
         this._logger.error({err: e}, 'Fail to parse input');
         callback(new restify.InvalidArgumentError());
@@ -238,12 +357,13 @@ QQMsdkChannel.prototype.pendingPay = function (channelName, params, infoFromSDK,
         var pfKey = infoFromSDK.pk;
         var accessToken = infoFromSDK.t;
         var payToken = infoFromSDK.pt;
+        var platform = infoFromSDK.pl;
         var wrapper = self._channels[channelName];
         if (!wrapper) {
             setImmediate(callback, codeToSdkError(_errorcode.ERR_CHANNLE_NOT_EXIST, 'channel ' + channelName + ' not exits'));
             return;
         }
-        self.requestSaving(wrapper, params.uid, accessToken, payToken, pf, pfKey, params.serverId, function (err, obj) {
+        self.requestSaving(wrapper, params.uid, accessToken, payToken, pf, pfKey, params.serverId, platform, function (err, obj) {
             if (err) {
                 self._logger.debug({err: err}, 'return from channel');
                 callback(err);
@@ -257,7 +377,7 @@ QQMsdkChannel.prototype.pendingPay = function (channelName, params, infoFromSDK,
                 if (obj.balance >= params.realPayMoney) {
                     // 二级货币的存款多于所需要付款的数额，直接开始调用扣款
                     self.requestPay(wrapper, params.uid, accessToken, payToken, pf, pfKey, params.serverId,
-                        params.realPayMoney, params.productId, function (err, obj) {
+                        params.realPayMoney, params.productId, platform, function (err, obj) {
                             if (err) {
                                 callback(err);
                                 return;
@@ -270,7 +390,7 @@ QQMsdkChannel.prototype.pendingPay = function (channelName, params, infoFromSDK,
                                 callback(null, orderId, params, {ignorePending: true}, payInfo);
                                 // 扣款成功，发起异步的推送支付成功的流程
                                 self.pay(wrapper, orderId, params.uid, accessToken, payToken, pf, pfKey, params.appUid,
-                                params.serverId, params.productId, params.productCount, params.ext, params.realPayMoney, obj.billno);
+                                params.serverId, params.productId, params.productCount, params.ext, params.realPayMoney, obj.billno, platform);
                                 // 提示CP服务器，这里已经成功扣款了，只需等待发货推送即可
                             } else if (obj.ret == 1004) {
                                 // 之间一定是有另外一个扣款已经运行过了，所以这里直接报错
@@ -298,7 +418,7 @@ QQMsdkChannel.prototype.pendingPay = function (channelName, params, infoFromSDK,
 };
 
 QQMsdkChannel.prototype.pay = function (wrapper, orderId, openid, openKey, payToken, pf, pfKey,
-                                        appUid, zoneid, productId, productCount, ext, amount, billno) {
+                                        appUid, zoneid, productId, productCount, ext, amount, billno, platform) {
     var self = this;
     var other = {
         chOrderId: billno
@@ -308,7 +428,7 @@ QQMsdkChannel.prototype.pay = function (wrapper, orderId, openid, openKey, payTo
             zoneid, orderId, 0, productId, productCount, amount, other, ext,
             function (err, result) {
                 if (err) {
-                    self.cancelPay(wrapper, openid, openKey, payToken, pf, pfKey, zoneid, amount, billno, function (err, res) {
+                    self.cancelPay(wrapper, openid, openKey, payToken, pf, pfKey, zoneid, amount, billno, platform, function (err, res) {
                         if (err) {
                             self._userAction.emitPayCancelFail(wrapper.channelName, orderId, billno, amount,
                                 -1);
@@ -326,7 +446,7 @@ QQMsdkChannel.prototype.pay = function (wrapper, orderId, openid, openKey, payTo
     }, 1000);
 };
 
-QQMsdkChannel.prototype.cancelPay = function (wrapper, openid, openkey, payToken, pf, pfkey, zoneid, amt, billno, callback) {
+QQMsdkChannel.prototype.cancelPay = function (wrapper, openid, openkey, payToken, pf, pfkey, zoneid, amt, billno, platform, callback) {
     var self = this;
     try {
         var req = {
@@ -344,7 +464,8 @@ QQMsdkChannel.prototype.cancelPay = function (wrapper, openid, openkey, payToken
         var u = '/mpay/cancel_pay_m';
         req.sig = calcPaySign(wrapper.cfg.qqAppKey+'&', 'GET', u, req);
         var q =  u + '?' + querystring.stringify(req);
-        self.cancelPayClient.get(q, function (err, req, res, obj) {
+        var client = (platform ==='w') ? self.getClient(wrapper).wxCancelPayClient : self.getClient(wrapper).cancelPayClient
+        .get(q, function (err, req, res, obj) {
             if (err) {
                 self._logger.debug({err: err}, 'return from channel');
                 return callback(err);
@@ -358,7 +479,7 @@ QQMsdkChannel.prototype.cancelPay = function (wrapper, openid, openkey, payToken
     }
 };
 
-QQMsdkChannel.prototype.requestSaving = function (wrapper, openid, openkey, payToken, pf, pfkey, zoneid, callback) {
+QQMsdkChannel.prototype.requestSaving = function (wrapper, openid, openkey, payToken, pf, pfkey, zoneid, platform, callback) {
     var self = this;
     try {
         var req = {
@@ -374,7 +495,8 @@ QQMsdkChannel.prototype.requestSaving = function (wrapper, openid, openkey, payT
         var u = '/mpay/get_balance_m';
         req.sig = calcPaySign(wrapper.cfg.qqAppKey+'&', 'GET', u, req);
         var q =  u + '?' + querystring.stringify(req);
-        self.pendingPayClient.get(q, function (err, req, res, obj) {
+        var client = platform === 'w' ? self.getClient(wrapper).wxPendingPayClient : self.getClient(wrapper).pendingPayClient;
+        client.get(q, function (err, req, res, obj) {
             if (err) {
                 self._logger.debug({err: err}, 'return from channel');
                 return callback(err);
@@ -388,7 +510,7 @@ QQMsdkChannel.prototype.requestSaving = function (wrapper, openid, openkey, payT
     }
 };
 
-QQMsdkChannel.prototype.requestPay = function (wrapper, openid, openkey, payToken, pf, pfkey, zoneid, amt, payItem, cb) {
+QQMsdkChannel.prototype.requestPay = function (wrapper, openid, openkey, payToken, pf, pfkey, zoneid, amt, payItem, platform, cb) {
     var self = this;
     if (payItem instanceof Function) {
         cb = payItem;
@@ -412,7 +534,8 @@ QQMsdkChannel.prototype.requestPay = function (wrapper, openid, openkey, payToke
         var u = '/mpay/pay_m';
         req.sig = calcPaySign(wrapper.cfg.qqAppKey+'&', 'GET', u, req);
         var q =  u + '?' + querystring.stringify(req);
-        self.consumeMoneyClient.get(q, function (err, req, res, obj) {
+        var client = (platform === 'w') ? self.getClient(wrapper).wxConsumeMoneyClient : self.getClient(wrapper).consumeMoneyClient
+        client.get(q, function (err, req, res, obj) {
             if (err) {
                 self._logger.debug({err: err}, 'return from channel');
                 return callback(err);

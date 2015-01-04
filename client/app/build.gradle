@@ -6,14 +6,26 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
     defaultConfig {
-        minSdkVersion 7
-        targetSdkVersion 18
+        minSdkVersion 9
+        targetSdkVersion 14
     }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+    }
+    packagingOptions {
+            exclude 'META-INF/DEPENDENCIES.txt'
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE.txt'
+            exclude 'META-INF/NOTICE'
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/DEPENDENCIES'
+            exclude 'META-INF/notice.txt'
+            exclude 'META-INF/license.txt'
+            exclude 'META-INF/dependencies.txt'
+            exclude 'META-INF/LGPL2.1'
     }
 
     productFlavors {
@@ -50,10 +62,52 @@ android {
 
         }
         qqmsdk {
+            applicationId "com.tencent.tmgp.sanguofire"
+            signingConfigs {
+                debug {
+                    storeFile file("../mykeystore")
+                    storePassword "a1988106"
+                    keyPassword "1988106"
+                    keyAlias "com.xianyugame.hxsg"
+                }
+            }
         }
         anzhi {
 
         }
+        huawei {
+            applicationId "com.xianyugame.sanguofire.huawei"
+        }
+        meizu {
+
+        }
+        gfan {
+
+        }
+        lenovo {
+            applicationId "com.xianyugame.sanguofire.lenovo"
+        }
+        gionee {
+
+        }
+        htc {
+
+        }
+        coolpad {
+        }
+        vivo {
+            applicationId "com.xianyugame.sanguofire.vivo"
+        }
+        p_getui {
+
+        }
+        p_jpush {
+
+        }
+        p_umeng {
+
+        }
+
     }
 
     // generate productFlavors according to the setting of productFlavor.json
@@ -87,6 +141,17 @@ dependencies {
     oppoCompile project(':channels:oppo')
     dangleCompile project(':channels:dangle')
     anzhiCompile project(':channels:anzhi')
+    huaweiCompile project(':channels:huawei')
+    meizuCompile project(':channels:meizu')
+    gfanCompile project(':channels:gfan')
+    lenovoCompile project(':channels:lenovo')
+    gioneeCompile project(':channels:gionee')
+    htcCompile project(':channels:htc')
+    p_getuiCompile project(':channels:p_getui')
+    p_jpushCompile project(':channels:p_jpush')
+    p_umengCompile project(':channels:p_umeng')
+    coolpadCompile project(':channels:coolpad')
+    vivoCompile project(':channels:vivo')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->

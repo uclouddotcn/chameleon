@@ -12,6 +12,9 @@
         "bunyan": "0.22.1",
         "adm-zip": "0.4.4",
         "commander": "2.3.0",
+        "xml2js": "~0.4.4",
+        "ursa": "~0.8.1",
+        "node-bignumber": "~1.2.1",
         "forever": "*"
     }
 }

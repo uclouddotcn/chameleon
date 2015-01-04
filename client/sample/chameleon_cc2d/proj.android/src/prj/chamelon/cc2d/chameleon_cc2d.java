@@ -27,6 +27,7 @@ import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 import prj.chameleon.channelapi.cbinding.NativeChannelInterface;
 import android.content.Intent;
+import android.util.Log;
 
 import android.os.Bundle;
 
@@ -34,6 +35,7 @@ public class chameleon_cc2d extends Cocos2dxActivity{
 	
     protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		int d = R.drawable.icon;
 	}
 
     @Override
@@ -44,14 +46,14 @@ public class chameleon_cc2d extends Cocos2dxActivity{
 
     @Override
     public void onPause() {
-        super.onResume();
+        super.onPause();
         NativeChannelInterface.onPause();
     }
 
     @Override
     public void onDestroy() {
-        NativeChannelInterface.onDestroy();
         super.onDestroy();
+        NativeChannelInterface.onDestroy();
     }
 
     @Override
@@ -79,7 +81,7 @@ public class chameleon_cc2d extends Cocos2dxActivity{
     	glSurfaceView.setEGLConfigChooser(5, 6, 5, 0, 16, 8);
     	//glSurfaceView.setEGLConfigChooser(8 , 8, 8, 8, 16, 0);
 
-        NativeChannelInterface.init(this, true, glSurfaceView);
+        NativeChannelInterface.setRunningEnv(this, glSurfaceView);
     	
     	return glSurfaceView;
     }

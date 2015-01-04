@@ -38,8 +38,8 @@ public class MainActivity extends Activity implements IAccountActionListener {
                 return;
             }
             Log.d("TEST", "mlogin data is: " + data);
-            RequestParams req = new RequestParams();
 
+            RequestParams req = new RequestParams();
             try {
                 if (data.has("others")) {
                     req.put("others", (String) data.get("others"));
@@ -112,7 +112,6 @@ public class MainActivity extends Activity implements IAccountActionListener {
         public void onFinished(int retCode, final JSONObject data) {
             Log.d("TEST", "mlogin data is: " + data);
             RequestParams req = new RequestParams();
-
             try {
                 int guest = data.getInt("guest");
                 if (guest != 0) {
@@ -121,7 +120,6 @@ public class MainActivity extends Activity implements IAccountActionListener {
                     JSONObject loginInfo =  data.getJSONObject("loginInfo");
                     req.put("others", (String) loginInfo.get("others"));
                     req.put("token", (String) loginInfo.get("token"));
-                    req.put("platform", (String) loginInfo.get("platform"));
                     PlatformAPIRestClient.get("/sdkapi/login",
                             req,
                             new JsonHttpResponseHandler() {
@@ -331,7 +329,6 @@ public class MainActivity extends Activity implements IAccountActionListener {
 
     public void onClickBuy(View view) {
         RequestParams params = new RequestParams();
-        params.put("channel", ChannelInterface.getChannelName());
         params.put("token", ChannelInterface.getPayToken());
         params.put("productId", "xxxx");
         params.put("uid", ChannelInterface.getUin());
@@ -374,7 +371,6 @@ public class MainActivity extends Activity implements IAccountActionListener {
 
     public void onClickCharge(View view) {
         RequestParams params = new RequestParams();
-        params.put("channel", ChannelInterface.getChannelName());
         params.put("uid", ChannelInterface.getUin());
         params.put("count", "10");
         params.put("token", ChannelInterface.getPayToken());

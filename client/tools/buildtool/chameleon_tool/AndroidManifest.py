@@ -1,6 +1,5 @@
 import xml.dom.minidom as xml
-from string import Template
-import tempfile, os, codecs, sys
+import tempfile, os, codecs, sys, re
 
 class TempFile(object):
     def __init__(self, finalTargetFilePath):
@@ -41,7 +40,19 @@ class AndroidManifestInst(object):
         AndroidManifestInst._walkElementNode(self._rootNode, 
                 lambda node: replaceNodeAttr(node, cfg))
 
-    def replaceEntryActivity(self):
+    def replaceTargetSDK(self, target):
+        children = AndroidManifestInst._getChildrenNS(self._rootNode, 'uses-sdk')
+        if len(children) == 0:
+            targetNode = self._rootNode.createElement('use-sdk')
+            targetNode.setAttribute('android:minSdkVersion', '7')
+        else:
+            targetNode = children[0] 
+        targetNode.setAttribute('android:targetSdkVersion', target)
+
+    def replaceApplication(self, newApp):
+        self._applicationNode.setAttribute('android:name', newApp)        
+
+    def replaceEntryActivity(self, orientation, channel):
         entryActivityNode = self._findEntryActivity()
         if entryActivityNode is None:
             raise RuntimeError('Fail to find the start entry')
@@ -60,10 +71,14 @@ class AndroidManifestInst(object):
 
         intentNode.removeChild(mainActionNode)
         intentNode.removeChild(launchCatNode)
-        splashActivity = self.doc.createElement('activity')
-        _fillSplashScreenActivity(self.doc, splashActivity, 
-                oldEntry, entryActivityNode.getAttribute('android:screenOrientation'))
-        self._applicationNode.appendChild(splashActivity)
+        
+        if channel == 'lenovo':
+            _addLenovoSplashScreenActivity(self.doc, intentNode, orientation)
+        else:
+            splashActivity = self.doc.createElement('activity')
+            _fillSplashScreenActivity(self.doc, splashActivity, 
+                oldEntry, orientation)
+            self._applicationNode.appendChild(splashActivity)        
 
     def merge(self, that):
         self._mergePermissions(that)
@@ -245,14 +260,20 @@ def parseReplaceVal(val):
     ts = val.split(';;')
     return [t.split('=') for t in ts]
 
+REPLACE_RE = re.compile('%(.+?)%')
+
 def replaceNodeAttr(node, cfg):
     replaceVal = node.getAttribute("chameleon:replace")
+    def repl(o):
+        c = o.group(1)
+        if cfg.get(c) is None:
+            return c
+        return unicode(cfg.get(c))
     if len(replaceVal) != 0:
         replaceVal = parseReplaceVal(replaceVal)
         for name, val in replaceVal:
-            valTemplate = Template(val)
-            t = valTemplate.safe_substitute(cfg)
-            node.setAttribute(name, t)
+            realv = REPLACE_RE.sub(repl, unicode(val))
+            node.setAttribute(name, realv)
         node.removeAttribute("chameleon:replace")
 
 def _fillSplashScreenActivity(doc, splashActivity, oldEntryActivity, orientation):
@@ -279,3 +300,10 @@ def _fillSplashScreenActivity(doc, splashActivity, oldEntryActivity, orientation
     intentNode.appendChild(categoryNode)
     categoryNode.setAttribute('android:name', "android.intent.category.LAUNCHER")
 
+def _addLenovoSplashScreenActivity(doc, intentNode, orientation):
+    mainActionNode = doc.createElement('action')
+    intentNode.appendChild(mainActionNode)
+    mainActionNode.setAttribute('android:name', "lenovoid.MAIN")
+    categoryNode = doc.createElement('category')
+    intentNode.appendChild(categoryNode)
+    categoryNode.setAttribute('android:name', "android.intent.category.DEFAULT")

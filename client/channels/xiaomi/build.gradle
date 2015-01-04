@@ -3,7 +3,7 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
     defaultConfig {
-        minSdkVersion 7
+        minSdkVersion 9
         targetSdkVersion 16
         versionCode 1
         versionName "1.0"
@@ -35,6 +35,7 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
-    compile fileTree(dir: "libs", includes: ["*.jar"])
+    compile fileTree(dir: 'libs', includes: ['*.jar'])
     compile project(':chameleon')
+    compile files('libs/SDK_TY_4.0.11.jar')
 }

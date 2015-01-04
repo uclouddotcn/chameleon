@@ -6,6 +6,7 @@ var fs = require('fs');
 var pathLib = require('path');
 var globalenv = require('./js/globalenv')
 var chameleon = require('./ts/chameleon');
+var Downloader = require('./ts/upgrader').Downloader;
 
 var ChameleonTool = chameleon.ChameleonTool;
 var Project = chameleon.Project;
@@ -43,6 +44,24 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         xxxhigh: 'drawable-xxxhdpi'
     };
 
+    function restartApp() {
+        var child_process = require("child_process");
+        var gui = require('nw.gui');
+        gui.Window.get().hide(); // hide window to prevent black display
+        if (process.platform === 'mac') {
+            var child = child_process.spawn('sh', [
+                    pathLib.join(globalenv.APP_FOLDER, 'restart_mac.sh'),
+                    pathLib.normalize(process.execPath+'/../../../../../../'),
+                    '--args' ,
+                    globalenv.APP_FOLDER],
+                {detached: true});
+        } else {
+            var child = child_process.spawn(pathLib.join(globalenv.APP_FOLDER, '..', 'chameleon.bat'), {detached: true});
+        }
+        child.unref();
+        gui.App.quit();  // quit node-webkit app
+    }
+
     var ProjectMgr = function() {
         $log.log('init the env');
         this.exec = require('child_process').execFile;
@@ -68,6 +87,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             self.homeDir = ChameleonTool.getChameleonHomePath();
             self.sdkdb = new Database({filename: pathLib.join(self.homeDir, 'sdkdb.nedb'), autoload: true});
             self.db = new Database({filename: pathLib.join(self.homeDir, 'productdb.nedb'), autoload: true});
+            self.tooldb = new Database({filename: pathLib.join(self.homeDir, 'tools.nedb'), autoload: true});
             chameleon.ChameleonTool.initTool(new PouchDBWrapper(self.sdkdb), function (err, chtool) {
                 if (err) {
                     defered.reject(err);
@@ -75,10 +95,38 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 }
                 self.chtool = chtool;
                 defered.resolve(chtool);
+                self.tryUpgrade();
             });
         });
         return defered.promise;
     }
+
+    ProjectMgr.prototype.tryUpgrade = function () {
+        var self = this;
+        self.tooldb.findOne({_id: 'lastUpgradeTimestamp'}, function (err, doc) {
+            var timestamp = 0;
+            if (!err) {
+                timestamp = (doc && doc.timestamp) ?  doc.timestamp : 0;
+            }
+            var downloader = new Downloader(self.chtool.updateSvr, self.chtool.version.toString(), globalenv.TEMP_FOLDER);
+            downloader.downloadUpdate(timestamp, function (err, updateInfo) {
+                if (err)  {
+                    return;
+                }
+                if (updateInfo && updateInfo.hasUpgrade) {
+                    fs.writeFile(pathLib.join(pathLib.join(self.homeDir, 'upgrade.txt')), JSON.stringify(updateInfo), function (err) {
+                        if (err)  {
+                            return;
+                        }
+                        var ok = window.confirm("已经准备好更新，是否重启客户端？");
+                        if (ok) {
+                            restartApp();
+                        }
+                    });
+                }
+            });
+        });
+    };
 
     ProjectMgr.prototype.removeProject = function(project) {
         this.db.remove({_id: project._id});
@@ -98,12 +146,21 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         }
     };
 
+    ProjectMgr.prototype.guessAntHome = function (p) {
+        return this.chtool.guessAntHome(p);
+    }
+
     ProjectMgr.prototype.doRunCmd = function (cmd, params, logfile, timeout, callback) {
         if (typeof timeof === 'function') {
             callback = timeout;
             timeout = 60; //default one minute
         }
-        var proc = this.spawn(cmd, params);
+        var env = process.env;
+        env['ANDROID_HOME'] = this.chtool.sdkPath;
+        env['ANT_HOME'] = this.chtool.antHome;
+        var proc = this.spawn(cmd, params, {
+            env: env
+        });
         if (logfile) {
             var logstream = fs.createWriteStream(logfile);
             proc.stdout.pipe(logstream);
@@ -131,7 +188,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
                 proc.stderr.unpipe(logstream);
                 logstream.end();
             }
-        })
+        });
+        proc.on('error', function (e) {
+            callback(e);
+        });
     };
 
     ProjectMgr.prototype.compileProject = function(project, target) {
@@ -139,7 +199,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         var buildscript = this.pathLib.join(this.chtool.chameleonPath, 'tools', 'buildtool', 'chameleon_build.py');
         var inputParams = [buildscript, 'build', project.__doc.path, 'release', target];
         var logfile = this.getTempFile(project, "compile_"+target);
-        this.doRunCmd('python', inputParams, logfile, 20*60, function (error) {
+        this.doRunCmd('python', inputParams, logfile, 40*60, function (error) {
                 var compileResult = null;
                 if (error) {
                     compileResult = {
@@ -249,7 +309,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             }
         });
         return defered.promise;
-    }
+    };
 
     ProjectMgr.prototype.updateGlobalCfg = function (project, cfg) {
         var defered = $q.defer();
@@ -263,7 +323,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         });
 
         return defered.promise;
-    }
+    };
 
     ProjectMgr.prototype.bindProject = function (name, path) {
         var defered = $q.defer();
@@ -356,15 +416,14 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
         return defered.promise;
     };
 
-    ProjectMgr.prototype.setAndroidPath = function (path) {
+    ProjectMgr.prototype.setAndroidPath = function (initEnv) {
         var defered = $q.defer();
         var self = this;
-        this.chtool.androidEnv.verifySDKPath(path, function (err) {
+        this.chtool.setAndroidPath(initEnv, function (err) {
             if (err) {
                 defered.reject(err);
                 return;
             }
-            self.chtool.androidEnv.sdkPath = path;
             defered.resolve();
         });
         return defered.promise;

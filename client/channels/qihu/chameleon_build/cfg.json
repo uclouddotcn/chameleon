@@ -1,7 +1,7 @@
 {
     "desc": "奇虎360",
     "name": "qihu",
-    "chamversion": "1.2.3",
+    "chamversion": "1.3.1",
     "version": "1.0.4",
     "cfgitem": {
         "appId" : {

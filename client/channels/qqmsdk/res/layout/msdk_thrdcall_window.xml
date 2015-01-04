@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/playout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/thrdcall_black"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thrdcall_toolbar_height"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/msdk_thrdcall_titlebar_bkg"
+        android:gravity="center_vertical" >
+
+        <Button
+            android:id="@+id/return_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/msdk_thrdcall_titlebar_btn_back_bkg"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxWidth="92dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp"
+            android:singleLine="true"
+            android:text="@string/thrdcall_back"
+            android:textColor="@color/thrdcall_white"
+            android:textSize="@dimen/thrdcall_back_text_size" />
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/right_widget"
+            android:layout_toRightOf="@+id/return_app"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp" >
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/thrdcall_white"
+                android:textSize="@dimen/thrdcall_textsize_20" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/right_widget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:gravity="center_vertical" >
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="@android:style/Widget.ProgressBar.Small.Inverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/thrdcall_titlebar_btn_margine" />
+
+            <Button
+                android:id="@+id/more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/msdk_thrdcall_titlebar_btn_more_bkg"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:singleLine="true"
+                android:textColor="@color/thrdcall_white"
+                android:textSize="@dimen/thrdcall_back_text_size" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/webview_framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/toolbar_holder"
+        android:layout_below="@+id/titlebar"
+        android:background="@color/thrdcall_white" >
+         
+         <com.tencent.smtt.sdk.WebView
+             android:id="@+id/webview"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             android:paddingLeft="0dp"
+             android:paddingRight="0dp" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@id/toolbar_holder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thrdcall_toolbar_height"
+        android:layout_alignParentBottom="true" >
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thrdcall_toolbar_height"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/msdk_thrdcall_toolbar_back_bkg"
+        android:baselineAligned="false"
+        android:orientation="horizontal" >
+
+       <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:layout_weight="1" >
+	        <ImageButton
+	            android:id="@+id/back"
+	            android:layout_width="@dimen/thrdcall_toolbar_btn_width"
+	            android:layout_height="fill_parent"
+	            android:background="@drawable/msdk_thrdcall_toolbar_btn_fg"
+	            android:src="@drawable/msdk_thrdcall_toolbar_btn_back_bkg_normal" />
+       </LinearLayout>
+
+       <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:layout_weight="1" >
+	        <ImageButton
+	            android:id="@+id/forward"
+	            android:layout_width="@dimen/thrdcall_toolbar_btn_width"
+	            android:layout_height="fill_parent"
+	            android:background="@drawable/msdk_thrdcall_toolbar_btn_fg"
+	            android:src="@drawable/msdk_thrdcall_toolbar_btn_forward_bkg_normal" />
+       </LinearLayout>
+       
+       <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:layout_weight="1" >
+	        <ImageButton
+	            android:id="@+id/open_by_qq_browser"
+	            android:layout_width="@dimen/thrdcall_toolbar_btn_width"
+	            android:layout_height="fill_parent"
+	            android:background="@drawable/msdk_thrdcall_toolbar_btn_fg"
+	            android:src="@drawable/msdk_thrdcall_toolbar_qqbrowser" />
+       </LinearLayout>
+        
+       <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:layout_weight="1" >
+
+            <ImageButton
+                android:id="@+id/stop"
+                android:layout_width="@dimen/thrdcall_toolbar_btn_width"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/msdk_thrdcall_toolbar_btn_fg"
+                android:src="@drawable/msdk_thrdcall_btn_stop_bkg_normal" />
+
+            <ImageButton
+                android:id="@+id/refresh"
+                android:layout_width="@dimen/thrdcall_toolbar_btn_width"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/msdk_thrdcall_toolbar_btn_fg"
+                android:src="@drawable/msdk_thrdcall_btn_refresh_bkg_normal"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>

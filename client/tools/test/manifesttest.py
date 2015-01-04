@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../buildscript/Resource/chameleon/tools')
+sys.path.append('../buildtool/chameleon_tool')
 #sys.path.append('../buildscript/ChameleonTool/')
 
 import xml.dom.minidom as xml
@@ -45,6 +45,10 @@ class TestAndroidManifest(unittest.TestCase):
         permission = self.libManifestInst.getPermissions()
         self.assertEqual(len(permission), 3)
 
+    def testReplaceApplication(self):
+        newApp = 'prj.test.app'
+        self.manifestInst.replaceApplication(newApp)
+        self.assertEqual(self.manifestInst._applicationNode.getAttribute('android:name'), newApp)
 
     def testMergePermission(self):
         self.manifestInst.merge(self.libManifestInst)
@@ -89,7 +93,7 @@ class TestAndroidManifest(unittest.TestCase):
                     self.assertEqual(1, len(ts))
                     t = ts[0]
                     self.assertEqual(t.getAttribute('android:scheme'), 
-                            'Wandoujia-PaySdk-replaceAppId')
+                            'Wandoujia-PaySdk-replaceAppId-landscape')
                     result[1] = True
                 if n.getAttribute('android:name') == 'MarioAccountActivity':
                     self.assertEqual(n.getAttribute('android:configChanges'),
@@ -103,7 +107,7 @@ class TestAndroidManifest(unittest.TestCase):
         self.assertEqual(result, [True, True, True])
 
     def testReplaceEntryActivity(self):
-        self.manifestInst.replaceEntryActivity()
+        self.manifestInst.replaceEntryActivity('portrait', 'other')
         originMainActivity = AndroidManifestInst._getChildNS(
                 self.manifestInst._applicationNode, 'activity', [('android:name', 
                     'com.example.testwrapper.MainActivity')])
@@ -115,7 +119,7 @@ class TestAndroidManifest(unittest.TestCase):
                 self.assertNotEqual(n.getAttribute('android:name'), 
                         'android.intent.action.MAIN')
             categoryNodes = intentFilterNode.getElementsByTagName('category')
-            for n in actionNodes:
+            for n in categoryNodes:
                 self.assertNotEqual(n.getAttribute('android:name'), 
                         'android.intent.category.LAUNCHER')
         splashActivity = AndroidManifestInst._getChildNS(
@@ -139,6 +143,23 @@ class TestAndroidManifest(unittest.TestCase):
                 'com.example.testwrapper.MainActivity')
 
 
+
+    def testLenovoReplaceEntryActivity(self):
+        self.manifestInst.replaceEntryActivity('portrait', 'lenovo')
+        originMainActivity = AndroidManifestInst._getChildNS(
+                self.manifestInst._applicationNode, 'activity', [('android:name', 
+                    'com.example.testwrapper.MainActivity')])
+        intentFilterNode = AndroidManifestInst._getChildNS(originMainActivity,
+                'intent-filter')
+        if intentFilterNode is not None:
+            actionNodes = intentFilterNode.getElementsByTagName('action')
+            for n in actionNodes:
+                self.assertEqual(n.getAttribute('android:name'), 
+                        'lenovoid.MAIN')
+            categoryNodes = intentFilterNode.getElementsByTagName('category')
+            for n in categoryNodes:
+                self.assertEqual(n.getAttribute('android:name'), 
+                        'android.intent.category.DEFAULT')
 
 unittest.main()
 

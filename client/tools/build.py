@@ -20,6 +20,9 @@ def copyFileInList(srcroot, targetroot, filelist):
 
 ChannelInfo = namedtuple('ChannelInfo', 'name path cfg script')
 
+def archive(p, rootdir, basedir):
+    shutil.make_archive(p, 'zip', rootdir, os.path.relpath(basedir, rootdir))
+
 def loadJsonFile(channelPath):
     cfgJsonFile = os.path.join(channelPath, 'chameleon_build', 'cfg.json')
     with codecs.open(cfgJsonFile, 'r', 'utf8') as f:
@@ -74,6 +77,7 @@ def copyChannel(channel, channelPath, targetPath, versionInfo):
         '*.template', #ignore the template files
         'chameleon_build', # ignore the tool directory
         'build',
+        'android-support-v4.jar',
         '*.iml')
     copyfilelist = []
     for root, dirs, files in os.walk(channelPath):
@@ -94,6 +98,8 @@ def copyChannel(channel, channelPath, targetPath, versionInfo):
         f.write('\n'.join(relfilelist))
     with codecs.open(os.path.join(targetPath, 'version.json'), 'w', 'utf8') as f:
         json.dump(versionInfo, f, indent=4)
+    archive(targetPath, os.path.join(targetPath, '..'), targetPath)
+    shutil.rmtree(targetPath)
 
 def initTargetScriptFolder(targetScriptFolder):
     if not os.path.exists(targetScriptFolder):
@@ -101,15 +107,15 @@ def initTargetScriptFolder(targetScriptFolder):
 
 def copyChameleonCpp(targetFolder):
     cppTargetFolder = os.path.join(targetFolder, 'Resource', 'chameleon', 'chameleoncb')
-    shutil.copytree(CPP_SRC_ROOT, cppTargetFolder)
+    archive(os.path.join(targetFolder, 'Resource', 'chameleoncb'), os.path.join(CPP_SRC_ROOT, '..'), CPP_SRC_ROOT)
 
 
 # copy channel folders and channel resources, generate build info json
 def initProjectFolder(targetFolder, version):
-    targetChannelPath = os.path.join(targetFolder, 'channels')
-    targetScriptPath = os.path.join(targetFolder, 'ChannelScript')
+    targetSDKPath = os.path.join(targetFolder, 'sdk')
+    targetChannelPath = os.path.join(targetSDKPath, 'libs')
+    targetScriptPath = os.path.join(targetFolder, 'script')
     toolPath = os.path.join(targetFolder, 'tools')
-    chameleonCbPath = os.path.join(targetFolder, 'chameleoncb')
     infoJsonFile = os.path.join(targetFolder, 'info.json')
     channelListFile = os.path.join(CHANNELINFO_DIR, 'channellist.json')
     shutil.copytree(BUILD_SCRIPT_DIR, targetFolder)
@@ -224,6 +230,14 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
     if place is not None:
         place(os.path.join(targetFolder, 'nw'))
 
+def buildChameleonClientMacOS(zf, chameleonFolder, targetFolder, place):
+    os.mkdir(targetFolder)
+    unzipFiles(zf, targetFolder)
+    shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
+    downloadDependency(targetFolder)
+    if place is not None:
+        place(targetFolder)
+
 def placePlatformStartScript(targetFolder):
     if sys.platform == 'win32':
         with open(os.path.join(targetFolder, 'chameleon.bat'), 'w') as f:
@@ -261,7 +275,7 @@ def mergeToNodewebkit(targetFolder):
     if sys.platform == 'win32':
         buildChameleonClient(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_win'), placeNodeWebkitWin)
     else:
-        buildChameleonClient(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
+        buildChameleonClientMacOS(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
 
 
 def build():

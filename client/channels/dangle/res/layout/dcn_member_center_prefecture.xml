@@ -47,10 +47,18 @@
                     android:textSize="22sp"
                     android:textColor="@color/dcn_ucenter_navi_text_color_pressed"
                     android:text="@string/dcn_game_prefecture" />
-
-
             </LinearLayout>
-
+            <Button
+                android:id="@+id/dcn_channel_refresh_button"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:background="@drawable/dcn_ucenter_btn_selector"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/dcn_ucenter_btn_text"
+                android:textSize="14sp"
+                android:text="@string/dcn_forum_channel_refresh" />
         </RelativeLayout>
 
         <View

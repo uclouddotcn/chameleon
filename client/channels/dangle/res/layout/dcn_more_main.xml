@@ -185,7 +185,7 @@
                         android:textSize="16sp"
                         android:ems="10"
                         android:background="@null"
-                        android:id="@+id/password"
+                        android:id="@+id/password1"
                         android:textColor="@color/dcn_light_black"
                         android:layout_weight="1"
                         android:singleLine="true" />
@@ -196,7 +196,7 @@
                         android:src="@drawable/dcn_right_arrow"
                         android:gravity="center"
                         android:layout_marginRight="20dp"
-                        android:id="@+id/imageView" />
+                        android:id="@+id/imageView1" />
 
                 </LinearLayout>
             </LinearLayout>

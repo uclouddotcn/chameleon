@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 收银台-->
+    <string name="payhub_goods_name">商品名称 : </string>
+    <string name="payhub_order_price">订单售价 : </string>
+    <string name="payhub_order_price_discount">订单折扣 : </string>
+    <string name="payhub_bank_card">银行卡支付</string>
+    <string name="payhub_alipay">支付宝</string>
+    <string name="payhub_ten_pay">财付通</string>
+    <string name="payhub_recharge_card">充值卡</string>
+    <string name="payhub_game_card">游戏点卡</string>
+    <string name="payhub_V_Bi">V币</string>
+    <string name="payhub_right_bracket">(</string>
+    <string name="payhub_yuan_bracket">元)</string>
+    <string name="payhub_left_bracket">(</string>
+    <string name="payhub_use_balance_pay">使用余额支付</string>
+    <string name="payhub_use_remain_pay">您还需要支付</string>
+    <string name="payhub_V_Bi_pay">V币支付</string>
+    <string name="payhub_charge">充值</string>
+    <string name="payhub_balance">余额 :</string>
+    <string name="payhub_service_tel">客服电话: 010  88680000</string>
+</resources>

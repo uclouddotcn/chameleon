@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <dimen name="thrdcall_textsize_10">10sp</dimen>
+    <dimen name="thrdcall_textsize_16">16sp</dimen>
+    <dimen name="thrdcall_textsize_17">17sp</dimen>
+    <dimen name="thrdcall_textsize_18">18sp</dimen>
+    <dimen name="thrdcall_textsize_20">20sp</dimen>
+    <dimen name="thrdcall_folder_chooser_title_height">50dp</dimen>
+    <dimen name="thrdcall_folder_chooser_title_image_margin_left">7dp</dimen>
+    <dimen name="thrdcall_folder_chooser_title_image_margin_right">7dp</dimen>
+    <dimen name="thrdcall_dialog_content_margin">6dp</dimen>
+    <dimen name="thrdcall_share_dialog_icon_width">28dp</dimen>
+    <dimen name="thrdcall_share_dialog_icon_height">28dp</dimen>
+    <dimen name="thrdcall_search_engine_dialog_item_height">48dp</dimen>
+    <dimen name="thrdcall_share_to_item_margin">10dp</dimen>
+    <!-- 特殊调用窗口 -->
+    <dimen name="thrdcall_titlebar_btn_margine">5dp</dimen>
+    <dimen name="thrdcall_toolbar_plusbtn_size">34dp</dimen>
+    <dimen name="thrdcall_toolbar_height">52dp</dimen>
+    <dimen name="thrdcall_toolbar_land_height">42dp</dimen>
+    <dimen name="thrdcall_toolbar_btn_width">67dp</dimen>
+    <dimen name="thrdcall_toolbar_btn_height">42dp</dimen>
+    <dimen name="thrdcall_toolbar_btn_margin">17dp</dimen>
+    <dimen name="thrdcall_more_item_widht">180dp</dimen>
+    <dimen name="thrdcall_more_item_height">47dp</dimen>
+    <dimen name="thrdcall_more_icon_size">24dp</dimen>
+    <dimen name="thrdcall_more_icon_margin">6dp</dimen>
+    <dimen name="thrdcall_more_icon_leftpadding">8dp</dimen>
+    <dimen name="thrdcall_more_text_leftmargin">11dp</dimen>
+    <dimen name="thrdcall_more_text_size">16sp</dimen>
+    <dimen name="thrdcall_back_text_size">14sp</dimen>
+    <dimen name="thrdcall_list_header_height">126dp</dimen>
+    <dimen name="thrdcall_list_header_item_size">52dp</dimen>
+    <dimen name="thrdcall_list_divider_height">20dp</dimen>
+    <dimen name="thrdcall_list_header_item_padding">10dp</dimen>
+    <dimen name="thrdcall_list_header_item_margine">20dp</dimen>
+    <dimen name="thrdcall_more_header_text_size">14sp</dimen>
+    <dimen name="thrdcall_more_divider_text_size">13sp</dimen>
+    <dimen name="thrdcall_more_window_height">420dp</dimen>
+    <dimen name="thrdcall_menu_padding_top">26dp</dimen>
+    <dimen name="thrdcall_menu_padding_lr">24dp</dimen>
+    <dimen name="thrdcall_menu_padding_bottom">20dp</dimen>
+    <dimen name="thrdcall_menu_btn_height">48dp</dimen>
+    <dimen name="thrdcall_menu_btn_inner_margin">9dp</dimen>
+    <dimen name="thrdcall_menu_btn_inner_cancel_margin">17dp</dimen>
+    <dimen name="thrdcall_titlebar_btn_padding">8dp</dimen>
+    <dimen name="thrdcall_back_btn_height">35dp</dimen>
+    <dimen name="thrdcall_grid_item_height">90dp</dimen>
+    <dimen name="thrdcall_grid_item_icon_height">65dp</dimen>
+    <dimen name="thrdcall_menu_window_width">209dp</dimen>
+    <dimen name="thrdcall_menu_item_icon_top_padding">5dp</dimen>
+    <dimen name="thrdcall_menu_item_icon_left_padding">16dp</dimen>
+    <dimen name="thrdcall_menu_item_text_left_padding">8.5dp</dimen>
+    <dimen name="thrdcall_menu_item_height_base">44dp</dimen>
+    
+    
+     <dimen name="thrdcall_cus_height">10dp</dimen>
+     <dimen name="thrdcall_more_cancel_margin_land">40dp</dimen>
+     <dimen name="thrdcall_more_cancel_margin">20dp</dimen>
+</resources>

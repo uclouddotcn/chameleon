@@ -17,6 +17,18 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="appid">微信 APP ID</label>
+                <div class="controls">
+                    <input id="appid" type="text" style="width:60%" ng-model="selectedsdk.cfg.wxAppId"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="appkey">微信 APP KEY</label>
+                <div class="controls">
+                    <input id="appkey" type="text" style="width:60%" ng-model="selectedsdk.cfg.wxAppKey"/>
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="uri">货币图标的路径<span style="font-size: 10px;">(必须在assets目录之下的48*48的png, 填写相对于assets的相对路径)</span></label>
                 <div class="controls">
                     <input id="uri" type="text" style="width:60%" ng-model="selectedsdk.cfg.moneyIcon"/>

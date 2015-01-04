@@ -180,9 +180,16 @@ function(channel, uid, appUid, cpOrderId, payStatus,
     ], function (err, result) {
         // if emit error somewhere, we just post the error to callback
         if (err instanceof Error) {
-            callback(err);
-            if (err instanceof SdkError) {
-                self._eventCenter.emit('pay-fail', orderInfo, err.code);
+            if (err.name === 'RequestTimeoutError') {
+                // request timeout from remote, for safety we just assume it's done
+                self._eventCenter.emit('pay-maybe', orderInfo);
+                self._afterPayDone(cpOrderId, savedOrderInfo);
+                callback(null, err);
+            } else {
+                if (err instanceof SdkError) {
+                    self._eventCenter.emit('pay-fail', orderInfo, err.code);
+                }
+                callback(err);
             }
             return;
         }
@@ -190,6 +197,7 @@ function(channel, uid, appUid, cpOrderId, payStatus,
         // some function may want to break the process and post a result
         // to the callback, err will be an object
         if (err instanceof Object) {
+            self._eventCenter.emit('pay-ignore', orderInfo, err);
             callback(null, err);
         } else {
             // after pay succeeded
@@ -411,14 +419,14 @@ function validatePayOrder(self, pendingOrderInfo, orderInfo) {
         }
     }
 
-    if (orderInfo.uid != orderInfo.uid) {
+    if (pendingOrderInfo.uid !== orderInfo.uid) {
         return {
             message: 'uid not matched',
             code: errorCode.ERR_CHAMELEON_PAY_UID
         };
     }
 
-    if (orderInfo.appUid != orderInfo.appUid) {
+    if (pendingOrderInfo.appUid != orderInfo.appUid) {
         return {
             message: 'app uid not matched',
             code: errorCode.ERR_CHAMELEON_PAY_APPUID
@@ -447,8 +455,14 @@ function checkPayCallback(self, orderInfo, pendingOrderInfo, callback) {
     if (pendingOrderInfo && !orderInfo.appUid) {
         orderInfo.appUid = pendingOrderInfo.appUid;
     }
+    if (pendingOrderInfo && !orderInfo.uid) {
+        orderInfo.uid = pendingOrderInfo.uid;
+    }
+    // dirty hack for xiaomi bug ,TODO remove this if client bug is fixed
+    if (orderInfo.uid && !pendingOrderInfo.uid) {
+        pendingOrderInfo.uid = orderInfo.uid;
+    }
     var err = validatePayOrder(self, pendingOrderInfo, orderInfo);
-    self.logger.error({err: err}, 'Fail to verify order');
     if (err) {
     // if the checking failed, the pending order may be already payed,
     // or there is some internal problem occured, either way we can't help

@@ -1,0 +1,17 @@
+{
+    "desc": "极光推送",
+    "name": "p_jpush",
+    "chamversion": "1.3.0",
+    "version": "V1.7.0",
+    "cfgitem": {
+        "appkey" : {
+            "type": "string",
+            "desc": "app key"
+        },
+        "debug" : {
+            "type": "boolean",
+            "desc": "false"
+        }
+    }
+}
+

@@ -1,0 +1,297 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
+    package="prj.chameleon.lenovo">
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <application>
+        <!-- 登录配置开始 -->
+        <meta-data
+            android:name="lenovo.open.appid"
+            android:value="1406040827749.app.ln"  chameleon:replace="android:value=%appId%"  />
+
+        <meta-data
+            android:name="lenovo.gamesdk.new"
+            android:value="2.2.2" />
+
+        <!-- 闪屏界面，默认横屏，通过screenOrientation可以进行修改-->
+        <activity
+            android:name="com.lenovo.lsf.gamesdk.ui.WelcomeActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- 闪屏界面结束 -->
+
+        <!-- 登录成功欢迎条界面，默认横屏，通过screenOrientation可以进行修改 -->
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.KeyLoginActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@android:style/Theme.Translucent"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <!-- 登录成功欢迎条界面结束 -->
+
+        <!-- 登录过程界面，默认横屏，通过screenOrientation可以进行修改 注意必须8个activity同时修改 -->
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.PsLoginActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:label="@string/com_lenovo_lsf_ui_name"
+            android:launchMode="singleTask"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog"
+            android:windowSoftInputMode="stateHidden" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.PsLoginCommonActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateVisible" >
+            <intent-filter>
+                <action android:name="android.intent.action.USERSETTING" />
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.StartLoginingGameActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog" >
+        </activity>
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.StartGameErrorActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog" >
+        </activity>
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.FindPasswordActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog" >
+        </activity>
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.RegistByPhoneActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog" >
+        </activity>
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.RegistByPhoneConfirmActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog" >
+        </activity>
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.FindPasswordConfirmActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog" >
+        </activity>
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.WebViewActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/com_lenovo_lsf_ui" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <!-- 登录过程界面结束 -->
+
+        <service
+            android:name="com.lenovo.lsf.lenovoid.toolbar.AppCheckService" >
+        </service>
+        <!-- 登录配置结束 -->
+
+
+
+        <!-- 支付配置开始 -->
+
+        <!-- 收银台界面，默认横屏，通过screenOrientation可以进行修改  注意必须6个activity同时修改-->
+        <!-- new ui start -->
+        <activity
+            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.PayHubActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            >
+        </activity>
+        <activity
+            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.ChargeActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:launchMode="singleTask" >
+        </activity>
+        <activity
+            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.SelectCardAmountActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:launchMode="singleTask" >
+        </activity>
+        <activity
+            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.SelectAmountActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:launchMode="singleTask" >
+        </activity>
+        <activity
+            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.AccountCenterActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:launchMode="singleTask" />
+        <activity
+            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.TradingRecordsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:launchMode="singleTask" />
+
+        <!-- new ui end -->
+        <!-- 银联 -->
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.SplashActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.CardMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.PayMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.PayItActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.PayResultActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.AccountMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.ChooseBankActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.GetpassActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.ResetpassActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.EditpassActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.EditinfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.AddCardActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.AddCardFromAuthActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.UserProtocalActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.CheckCardBalanceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.CardInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.CardBalanceResultActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unionpay.upomp.bypay.activity.CardBankResultActivity"
+            android:screenOrientation="portrait" />
+        <!-- 易联 -->
+        <activity
+            android:name="com.payeco.android.plugin.PayecoPluginLoadingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.payeco.android.plugin.PayecoOrderDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.payeco.android.plugin.PayecoPayResultActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.payeco.android.plugin.PayecoWebViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="com.payeco.android.plugin.PayecoRiskControlActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <!-- 易联 -->
+        <!-- 支付配置结束 -->
+    </application>
+</manifest>

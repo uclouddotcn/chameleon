@@ -1,0 +1,40 @@
+{
+    "desc": "酷派",
+    "name": "coolpad",
+    "chamversion": "1.3.1",
+    "version": "V1.2.1",
+    "cfgitem": {
+
+        "loginAppId" : {
+            "type" : "string",
+            "desc" : "loginAppId"
+        },
+        "loginAppKey" : {
+            "type" : "string",
+            "desc" : "loginAppKey"
+        },
+        "payAppId" : {
+            "type" : "string",
+            "desc" : "payAppId"
+        },
+        "payAppKey" : {
+            "type" : "string",
+            "desc" : "payAppKey"
+        },
+        "payPlatKey" : {
+            "type" : "string",
+            "desc" : "payPlatKey"
+        },
+        "loginRedirctUrl" : {
+            "type" : "string",
+            "desc" : "loginRedirctUrl",
+            "ignoreInA" : 1
+        },
+        "notifyurl" : {
+            "type" : "string",
+            "desc" : "notify url"
+        }
+
+    }
+}
+

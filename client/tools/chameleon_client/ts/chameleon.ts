@@ -14,6 +14,12 @@ import xml2js = require('xml2js');
 import util = require('util');
 import AdmZip = require('adm-zip');
 import urlLib = require('url');
+import common = require('./utils');
+
+import Version = common.Version;
+import ChameleonError = common.ChameleonError;
+import ErrorCode = common.ErrorCode;
+import CallbackFunc = common.CallbackFunc;
 
 var DESITY_MAP = {
     medium: 'drawable-mdpi',
@@ -27,28 +33,6 @@ export interface DBCallback {
     (err: Error, result?: Object) : void;
 }
 
-export class ChameleonError implements Error {
-    name:string;
-    message:string;
-    errCode:ErrorCode;
-
-    constructor(code: ErrorCode, message = "", name = "") {
-        this.name = name;
-        this.message = message;
-        this.errCode = code;
-    }
-
-    static newFromError (err: Error, code = ErrorCode.UNKNOWN): ChameleonError {
-        var e = new ChameleonError(code);
-        e.name = err.name;
-        e.message = err.message;
-        return e;
-    }
-}
-
-export interface CallbackFunc<T> {
-    (err: ChameleonError, result?: T) : void;
-}
 
 export interface DB {
     set(table: string, key: string, value: Object, cb?: DBCallback): void;
@@ -67,14 +51,6 @@ class Logger {
     }
 }
 
-export enum ErrorCode {
-    UNKNOWN = 1,
-    SDK_PATH_ILLEGAL,
-    OP_FAIL,
-    CFG_ERROR
-}
-
-
 class Utils {
     static dumpJsonFile(obj: any, dest: string, callback?: CallbackFunc<any>) {
         fs.writeJson(dest, obj, {encodiing: 'utf-8'}, callback);
@@ -85,6 +61,7 @@ class Utils {
 export class AndroidEnv {
     _sdkPath: string;
     androidBin: string;
+    antHome: string;
     private db: DB;
 
     constructor(db: DB) {
@@ -92,21 +69,49 @@ export class AndroidEnv {
     }
 
     initFromDB (cb : CallbackFunc<any>) {
-        this.db.get('env', 'sdkpath', (err: Error, value?: Object) => {
-            if (err || !value) {
-                cb(null);
-                return;
+        var funcs = [
+            (callback) => {
+                this.db.get('env', 'anthome', (err: Error, value?: Object) => {
+                    if (err || !value) {
+                        callback(null, null);
+                        return;
+                    }
+                    var obj = value;
+                    var p = obj['value'];
+                    if (AndroidEnv.verifyAntHome(p)) {
+                        callback(null, p);
+                    } else {
+                        callback(null, null);
+                    }
+                }) ;
+            },
+            (anthome, callback) => {
+                this.db.get('env', 'sdkpath', (err: Error, value?: Object) => {
+                    if (err || !value) {
+                        callback(null);
+                        return;
+                    }
+                    var obj = value;
+                    var p = obj['value'];
+                    if (!anthome) {
+                        anthome = AndroidEnv.guessAntHome(p);
+                    }
+                    this.verifySDKPath({anthome: anthome, sdkroot: p}, (err) => {
+                        if (err) {
+                            callback(err);
+                            return;
+                        }
+                        this.sdkPath = obj['value'];
+                        this.antHome = anthome;
+                        callback(null);
+                    });
+                });
             }
-            var obj = value;
-            var p = obj['value'];
-            this.verifySDKPath(p, (err) => {
-                if (err) {
-                    cb(null);
-                    return;
-                }
-                this.sdkPath = obj['value'];
-                cb(null);
-            });
+        ];
+        async.waterfall(funcs, (err) => {
+            console.log(err);
+            // hide all error here, check the valid later
+            return cb(null);
         });
     }
 
@@ -139,6 +144,33 @@ export class AndroidEnv {
         this._sdkPath = p;
         this.androidBin = AndroidEnv.getAndroidBin(p);
         this.db.set('env', 'sdkpath', {value: p});
+        //this.antHome = AndroidEnv.guessAntHome(p);
+    }
+
+    static guessAntHome(p: string): string {
+        var pluginPath = pathLib.normalize(pathLib.join(p, '..', 'eclipse', 'plugins'));
+        var res = /org\.apache\.ant_/;
+        if (!fs.existsSync(pluginPath)) {
+            return null;
+        }
+        var antEntry = fs.readdirSync(pluginPath).filter(function (e) {
+            return !!res.exec(e);
+        });
+        if (antEntry.length == 0) {
+            return null;
+        }
+        for (var i = 0; i < antEntry.length; ++i) {
+            var antHome = pathLib.join(pluginPath, antEntry[i]);
+            if (AndroidEnv.verifyAntHome(antHome)) {
+                console.log("guess ANT_HOME: " + antHome);
+                return antHome;
+            }
+        }
+        return null;
+    }
+
+    private static verifyAntHome(p: string) {
+        return fs.existsSync(pathLib.join(p, 'bin', 'ant')) || fs.existsSync(pathLib.join(p, 'bin', 'ant.bat'));
     }
 
     private static getAndroidBin(p: string) : string{
@@ -151,8 +183,12 @@ export class AndroidEnv {
         return s;
     }
 
-    verifySDKPath(p: string, cb: CallbackFunc<any>) {
-        var androidBin = AndroidEnv.getAndroidBin(p);
+    verifySDKPath(initEnv: {sdkroot: string; anthome: string}, cb: CallbackFunc<any>) {
+        if (!initEnv.anthome || !AndroidEnv.verifyAntHome(initEnv.anthome)) {
+            setImmediate(cb, new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, '非法的ANT HOME路径'));
+            return;
+        }
+        var androidBin = AndroidEnv.getAndroidBin(initEnv.sdkroot);
         childprocess.execFile(androidBin, ['list', 'target'], {timeout: 30000}, function (err, stdout, stderr) {
             if (err) {
                 cb(new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, '非法的Android SDK路径，请确保路径在sdk路径下'));
@@ -432,53 +468,6 @@ export class SDKLibInfo {
     }
 }
 
-export class Version {
-    major: number;
-    medium: number;
-    minor: number;
-    constructor(ver: string) {
-        var t = ver.split('.');
-        this.major = parseInt(t[0]);
-        this.medium = parseInt(t[1]);
-        if (t.length == 3) {
-            this.minor = parseInt(t[2]);
-        } else {
-            this.minor = 0;
-        }
-    }
-
-    cmp (that: Version): number {
-        if (this.major > that.major) {
-            return 1;
-        } else if (this.major < that.major) {
-            return -1;
-        } else {
-            if (this.medium < that.medium) {
-                return -1;
-            } else if (this.medium > that.medium) {
-                return 1;
-            } else {
-                if (this.minor < that.minor) {
-                    return -1;
-                } else if (this.minor > that.minor){
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-
-        }
-    }
-
-    isMajorUpgrade(that: Version) {
-        return (this.major > that.major) || (this.major === that.major && this.medium > that.medium);
-    }
-
-    toString(): string {
-        return this.major+'.'+this.medium+'.'+this.minor;
-    }
-}
-
 class SDKMetaScript {
     private _path: string;
     private mod: any;
@@ -526,7 +515,7 @@ export class SDKMetaInfo {
                 itemcfg[itemname]['ignoreInA']);
         }
         if (jsonobj['script']) {
-            var p = pathLib.join(chameloenPath, 'ChannelScript', jsonobj['script']);
+            var p = pathLib.join(chameloenPath, 'script', jsonobj['script']);
             res.script = new SDKMetaScript(p);
         }
         return res;
@@ -1041,6 +1030,7 @@ export class ChameleonTool {
     chameleonPath: string;
     db: DB;
     homePath: string;
+    updateSvr: string;
     private upgradeMgr: UpgradeMgr;
 
     static initTool(db: DB, cb: CallbackFunc<ChameleonTool>) {
@@ -1054,6 +1044,7 @@ export class ChameleonTool {
         var content = fs.readFileSync(pathLib.join(workdir, 'env.json'), 'utf-8');
         var envObj = JSON.parse(content);
         res.chameleonPath = pathLib.join(workdir, envObj['pythonPath']);
+        res.updateSvr = envObj.updateSvr;
 
         function loadInfoJsonObj(callback: CallbackFunc<any>) {
             var infojsonPath = pathLib.join(res.chameleonPath, 'info.json');
@@ -1114,6 +1105,10 @@ export class ChameleonTool {
         return pathLib.join(ChameleonTool.getUserPath(), '.prj_chameleon');
     }
 
+    guessAntHome(sdkroot: string): string {
+        return AndroidEnv.guessAntHome(sdkroot);
+    }
+
     getChannelList(): ChannelMetaInfo[] {
         return this.infoObj.getChannelMetaInfos();
     }
@@ -1138,13 +1133,23 @@ export class ChameleonTool {
         return this.infoObj.getChannelMetaInfos();
     }
 
-    setAndroidPath(path: string, cb: CallbackFunc<any>) {
-        this.androidEnv.verifySDKPath(path, (err) => {
+    get sdkPath(): string {
+        return this.androidEnv._sdkPath;
+    }
+
+    get antHome(): string {
+        return this.androidEnv.antHome;
+    }
+
+    setAndroidPath(initEnv: {sdkroot: string; anthome: string}, cb: CallbackFunc<any>) {
+        this.androidEnv.verifySDKPath(initEnv, (err) => {
             if (err) {
-                cb(new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, path+"路径之下无法找到Android SDK"));
+                cb(new ChameleonError(ErrorCode.SDK_PATH_ILLEGAL, initEnv.sdkroot+"路径之下无法找到Android SDK"));
                 return;
             }
-            this.androidEnv.sdkPath = path;
+            this.androidEnv.sdkPath = initEnv.sdkroot;
+            this.androidEnv.antHome = initEnv.anthome;
+            this.db.set('env', 'anthome', initEnv.anthome);
             cb(null);
         })
     }
@@ -1172,9 +1177,8 @@ export class ChameleonTool {
         var needUpgradeLibs = this.getNeedUpgradeLibs(installedLibs);
         var upgradeFunc =  (lib, cb) => {
             var prjLibPath = pathLib.join(prj.prjPath, 'chameleon', 'libs', lib);
-            var libPath = pathLib.join(this.chameleonPath, 'channels', lib);
             fs.remove(prjLibPath, () => {
-               fs.copy(libPath, prjLibPath, null, cb) ;
+               this.initSDKLib(prj, lib, cb);
             })
         };
         var funcs = needUpgradeLibs.map((lib) => {return upgradeFunc.bind(null, lib.name)});
@@ -1210,6 +1214,7 @@ export class ChameleonTool {
     upgradePrjChameleon(prj: Project, cb: CallbackFunc<any>) {
         var chameleonPath = pathLib.join(prj.prjPath, 'chameleon');
         var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
+        var chameleonCbPath = pathLib.join(this.chameleonPath, 'Resource', 'chameleoncb.zip');
         async.series([function(callback) {
             fs.copy(chameleonRes, chameleonPath, null, function (err) {
                 if (err) {
@@ -1228,6 +1233,16 @@ export class ChameleonTool {
             if (fs.existsSync(pathLib.join(prjLibPath, 'chameleon_unity.jar'))) {
                 otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath , 'chameleon_unity.jar'),
                     pathLib.join(prjLibPath, 'chameleon_unity.jar'), null))
+            } else {
+                otherCopy.push((cb) => {
+                    try {
+                        var z = new AdmZip(chameleonCbPath);
+                        z.extractAllTo(pathLib.join(prj.prjPath, 'chameleon'), true);
+                        setImmediate(cb, null)
+                    } catch (e) {
+                        setImmediate(cb, e);
+                    }
+                });
             }
             async.parallel(otherCopy, (err) => {
                 callback(err);
@@ -1257,6 +1272,7 @@ export class ChameleonTool {
             var _id = Math.round(new Date().getTime()/1000).toString();
             var newPrj = Project.createNewProject(name, landscape, this.infoObj.version, prjPath);
             var chameleonRes = pathLib.join(this.chameleonPath, 'Resource', 'chameleon');
+            var chameleonCbPath = pathLib.join(this.chameleonPath, 'Resource', 'chameleoncb.zip');
             async.series([function (callback) {
                 newPrj.loadAndroidProjectInfo(callback);
             }, function(callback) {
@@ -1266,7 +1282,8 @@ export class ChameleonTool {
                         return;
                     }
                     fs.ensureDir(pathLib.join(chameleonPath, 'sdkcfg'));
-                    fs.ensfureDir(pathLib.join(chameleonPath, 'channels'));
+                    fs.ensureDir(pathLib.join(chameleonPath, 'channels'));
+                    fs.ensureDir(pathLib.join(chameleonPath, 'libs'));
                     callback(null);
                 });
             }, function (callback) {
@@ -1281,6 +1298,16 @@ export class ChameleonTool {
                 if (unity) {
                     otherCopy.push(fs.copy.bind(fs, pathLib.join(chamLibPath , 'chameleon_unity.jar'),
                         pathLib.join(prjLibPath, 'chameleon_unity.jar'), null))
+                } else {
+                    otherCopy.push(function (cb) {
+                        try {
+                            var z = new AdmZip(chameleonCbPath);
+                            z.extractAllTo(pathLib.join(prjPath, 'chameleon'), true);
+                            setImmediate(cb, null)
+                        } catch (e) {
+                            setImmediate(cb, e);
+                        }
+                    });
                 }
                 async.parallel(otherCopy, (err) => {
                     callback(err);
@@ -1422,17 +1449,15 @@ export class ChameleonTool {
     }
 
     initSDKLib(prj: Project, sdkname: string, cb: CallbackFunc<any>) {
-        var targetPath = pathLib.join(prj.prjPath, 'chameleon', 'libs', sdkname);
-        var src = pathLib.join(this.chameleonPath, 'channels', sdkname);
+        var targetParentPath = pathLib.join(prj.prjPath, 'chameleon', 'libs')
+        var targetPath = pathLib.join(targetParentPath , sdkname);
+        var src = pathLib.join(this.chameleonPath, 'sdk', 'libs', sdkname+'.zip');
         if (!fs.existsSync(src)) {
             throw new ChameleonError(ErrorCode.OP_FAIL, '未知的SDK: ' + sdkname);
         }
-        fs.copy(src, targetPath, null, (err) => {
-            if (err) {
-                Logger.log('Fail to copy lib tree', err);
-                cb(new ChameleonError(ErrorCode.UNKNOWN, '未知的错误'));
-                return;
-            }
+        try {
+            var zip = new AdmZip(src);
+            zip.extractAllTo(targetParentPath, true);
             this.androidEnv.updateProject(targetPath, prj.androidTarget, (err) => {
                 if (err) {
                     Logger.log('Fail to update project', err);
@@ -1441,11 +1466,14 @@ export class ChameleonTool {
                 }
                 cb(null);
             })
-        });
+        } catch (e) {
+            Logger.log('Fail to copy lib tree', e);
+            setImmediate(cb, new ChameleonError(ErrorCode.UNKNOWN, '未知的错误'));
+        }
     }
 
     static getUserPath() : string {
-        return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+        return process.platform === 'win32' ? process.env.USERPROFILE: process.env.HOME;
     }
 
     upgradeFromFile(filePath) {

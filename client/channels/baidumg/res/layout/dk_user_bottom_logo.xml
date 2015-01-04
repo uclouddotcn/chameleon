@@ -9,6 +9,7 @@
     <ImageView
     	android:layout_width="66dp"
         android:layout_height="22dp"
+        android:layout_marginTop="2dp"
         android:src="@drawable/dk_logo_baidu" 
         android:layout_gravity="center_horizontal"/>
    	
@@ -16,7 +17,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal"
-    	android:layout_marginTop="8dp">
+    	android:layout_marginTop="4dp"
+    	android:layout_marginBottom="4dp">
         
     	<TextView android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"

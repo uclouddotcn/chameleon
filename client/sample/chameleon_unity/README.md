@@ -1,0 +1,3 @@
+#Unity示例
+直接在Unity中导入本工程即可。
+另外android目录下有导出的Android工程的示例

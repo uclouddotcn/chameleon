@@ -44,7 +44,7 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
                        int realPayMoney,
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        mWandouGamesApi.pay(activity, String.format("%s*%d", currencyName, realPayMoney*rate/100), realPayMoney,
+        mWandouGamesApi.pay(activity, String.format("%s", currencyName), realPayMoney,
                 orderId, new OnPayFinishedListener() {
             @Override
             public void onPaySuccess(PayResult payResult) {
@@ -214,14 +214,14 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
     public void onApplicationEvent(int event, Object... arguments) {
 
         switch (event) {
+            case Constants.ApplicationEvent.ON_BIND_CONTEXT:
+                Context base = (Context) arguments[1];
+                WandouGamesApi.initPlugin(base, mAppId, mAppKey);
+                break;
             case Constants.ApplicationEvent.BEFORE_ON_CREATE:
                 Application app = (Application) arguments[0];
                 mWandouGamesApi = new WandouGamesApi.Builder(app, mAppId, mAppKey).create();
                 mWandouGamesApi.setLogEnabled(true);
-                break;
-            case Constants.ApplicationEvent.ON_BIND_CONTEXT:
-                Context base = (Context) arguments[1];
-                WandouGamesApi.initPlugin(base, mAppId, mAppKey);
                 break;
         }
     }
@@ -231,7 +231,7 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
             }
         });
     }

@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_toRightOf="@id/dk_gifts_item_iv"
+        android:layout_toLeftOf="@+id/dk_gifts_item_tipbutton"
         android:layout_marginLeft="10dp"
         android:layout_alignTop="@id/dk_gifts_item_iv"
         >

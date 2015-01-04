@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="buoy_validParamFail">应用ID和浮标ID校验失败</string>
+    <string name="buoy_noInit">尚未初始化</string>
+    <string name="buoy_close">关闭</string>
+</resources>

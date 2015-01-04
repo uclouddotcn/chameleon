@@ -137,6 +137,7 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         } else {
             AnzhiUserCenter.getInstance().setActivityOrientation(1);
         }
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
     /**
      * user login to platform
@@ -289,7 +290,7 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
-        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
     }
 
     @Override

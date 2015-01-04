@@ -38,7 +38,14 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         public String mSession;
         public String mNick;
     }
+    private static class UserGameInfo {
+        public String mRoleID;
+        public String mRoleName;
+        public String mRoleLevel;
+        public String mZoneName;
+    }
     private UserInfo mUserInfo;
+    private UserGameInfo mUserGameInfo;
     private class LoginProcessListener implements OnLoginProcessListener {
         private IDispatcherCb mCb;
         private WeakReference<Activity> mActivity;
@@ -75,7 +82,7 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private String mAppId;
     private String mAppKey;
     @Override
-    public void charge(Activity activity,
+    public void charge(final Activity activity,
                        String orderId,
                        String uidInGame,
                        String userNameInGame,
@@ -89,46 +96,57 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         MiBuyInfo miBuyInfo= new MiBuyInfo();
         miBuyInfo.setCpOrderId(orderId);//订单号唯一（不为空）
         miBuyInfo.setCpUserInfo(mChannel); //此参数在用户支付成功后会透传给CP的服务器
-        miBuyInfo.setCount(realPayMoney/rate);
         miBuyInfo.setAmount(realPayMoney/100); //必须是大于1的整数，10代表10米币，即10元人民币（不为空）
 
 //用户信息，网游必须设置、单机游戏或应用可选
         Bundle mBundle = new Bundle();
         mBundle.putString(GameInfoField.GAME_USER_ROLEID, uidInGame);    //角色id
         mBundle.putString(GameInfoField.GAME_USER_ROLE_NAME, userNameInGame);
+        if (mUserGameInfo != null) {
+            mBundle.putString(GameInfoField.GAME_USER_LV, mUserGameInfo.mRoleLevel);
+            mBundle.putString(GameInfoField.GAME_USER_GAMER_VIP, "vip");
+            mBundle.putString(GameInfoField.GAME_USER_PARTY_NAME, "");
+            mBundle.putString(GameInfoField.GAME_USER_BALANCE, "0");
+            mBundle.putString(GameInfoField.GAME_USER_SERVER_NAME, mUserGameInfo.mZoneName);
+        }
         miBuyInfo.setExtraInfo(mBundle); //设置用户信息
 
         MiCommplatform.getInstance().miUniPay(activity, miBuyInfo,
                 new OnPayProcessListener()
                 {
                     @Override
-                    public void finishPayProcess( int code ) {
-                        switch( code ) {
-                            case MiErrorCode.MI_XIAOMI_PAYMENT_SUCCESS:
-                                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                                break;
-                            case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_PAY_CANCEL:
-                                cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
-                                //取消购买
-                                break;
-                            case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_PAY_FAILURE:
-                                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                                //购买失败
-                                break;
-                            case  MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_ACTION_EXECUTED:
-                                cb.onFinished(Constants.ErrorCode.ERR_PAY_IN_PROGRESS, null);
-                                //操作正在进行中
-                                break;
-                            default:
-                                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                                break;
-                        }
+                    public void finishPayProcess( final int code ) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                switch( code ) {
+                                    case MiErrorCode.MI_XIAOMI_PAYMENT_SUCCESS:
+                                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                                        break;
+                                    case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_PAY_CANCEL:
+                                        cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
+                                        //取消购买
+                                        break;
+                                    case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_PAY_FAILURE:
+                                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                                        //购买失败
+                                        break;
+                                    case  MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_ACTION_EXECUTED:
+                                        cb.onFinished(Constants.ErrorCode.ERR_PAY_IN_PROGRESS, null);
+                                        //操作正在进行中
+                                        break;
+                                    default:
+                                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                                        break;
+                                }
+                            }
+                        });
                     }
                 });
     }
 
     @Override
-    public void buy(Activity activity,
+    public void buy(final Activity activity,
                     String orderId,
                     String uidInGame,
                     String userNameInGame,
@@ -139,36 +157,52 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,
                     int realPayMoney,
                     final IDispatcherCb cb) {
-        MiBuyInfo miBuyInfo = new MiBuyInfo();
+        final MiBuyInfo miBuyInfo = new MiBuyInfo();
         miBuyInfo.setCpOrderId(orderId);//订单号唯一（不为空）
         miBuyInfo.setProductCode(productID);//商品代码，开发者申请获得（不为空）
         miBuyInfo.setCount( productCount );//购买数量(商品数量最大9999，最小1)（不为空）
         miBuyInfo.setCpUserInfo(mChannel); //此参数在用户支付成功后会透传给CP的服务器
+        Bundle mBundle = new Bundle();
+        mBundle.putString(GameInfoField.GAME_USER_ROLEID, uidInGame);    //角色id
+        mBundle.putString(GameInfoField.GAME_USER_ROLE_NAME, userNameInGame);
+        if (mUserGameInfo != null) {
+            mBundle.putString(GameInfoField.GAME_USER_LV, mUserGameInfo.mRoleLevel);
+            mBundle.putString(GameInfoField.GAME_USER_GAMER_VIP, "vip");
+            mBundle.putString(GameInfoField.GAME_USER_PARTY_NAME, "");
+            mBundle.putString(GameInfoField.GAME_USER_BALANCE, "0");
+            mBundle.putString(GameInfoField.GAME_USER_SERVER_NAME, mUserGameInfo.mZoneName);
+        }
+        miBuyInfo.setExtraInfo(mBundle); //设置用户信息
 
         MiCommplatform.getInstance().miUniPay(activity, miBuyInfo,
                 new OnPayProcessListener() {
                     @Override
-                    public void finishPayProcess(int code) {
-                        switch (code) {
-                            case MiErrorCode.MI_XIAOMI_PAYMENT_SUCCESS:
-                                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                                break;
-                            case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_PAY_CANCEL:
-                                cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
-                                //取消购买
-                                break;
-                            case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_PAY_FAILURE:
-                                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                                //购买失败
-                                break;
-                            case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_ACTION_EXECUTED:
-                                cb.onFinished(Constants.ErrorCode.ERR_PAY_IN_PROGRESS, null);
-                                //操作正在进行中
-                                break;
-                            default:
-                                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                                break;
-                        }
+                    public void finishPayProcess(final int code) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                switch (code) {
+                                    case MiErrorCode.MI_XIAOMI_PAYMENT_SUCCESS:
+                                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                                        break;
+                                    case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_PAY_CANCEL:
+                                        cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
+                                        //取消购买
+                                        break;
+                                    case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_PAY_FAILURE:
+                                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                                        //购买失败
+                                        break;
+                                    case MiErrorCode.MI_XIAOMI_PAYMENT_ERROR_ACTION_EXECUTED:
+                                        cb.onFinished(Constants.ErrorCode.ERR_PAY_IN_PROGRESS, null);
+                                        //操作正在进行中
+                                        break;
+                                    default:
+                                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                                        break;
+                                }
+                            }
+                        });
                     }
                 });
     }
@@ -220,12 +254,6 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void logout(Activity activity) {
-        MiCommplatform.getInstance().miLogout(new OnLoginProcessListener() {
-            @Override
-            public void finishLoginProcess(int i, MiAccountInfo miAccountInfo) {
-
-            }
-        });
         mUserInfo = null;
     }
 
@@ -260,12 +288,28 @@ public class XiaomiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
-        mUserInfo = null;
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
             }
         });
+    }
+
+
+    @Override
+    public void submitPlayerInfo(Activity activity,
+                                 String roleId,
+                                 String roleName,
+                                 String roleLevel,
+                                 int zoneId,
+                                 String zoneName) {
+        if (mUserGameInfo == null) {
+            mUserGameInfo = new UserGameInfo();
+        }
+        mUserGameInfo.mRoleID = roleId;
+        mUserGameInfo.mRoleName = roleName;
+        mUserGameInfo.mRoleLevel = roleLevel;
+        mUserGameInfo.mZoneName = zoneName;
     }
 }

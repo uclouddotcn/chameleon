@@ -73,7 +73,7 @@
             android:layout_weight="1"
             android:visibility="gone"
             android:layout_marginLeft="12dp"
-            android:text="@string/dk_alipay_cancel"
+            android:text="@string/dk_cancel_text"
             android:textSize="@dimen/text_size_16_sp"
             android:background="@drawable/dk_payment_btn_pay_selector" />
     </LinearLayout>

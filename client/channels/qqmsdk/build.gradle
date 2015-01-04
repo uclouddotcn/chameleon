@@ -3,7 +3,7 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
     defaultConfig {
-        minSdkVersion 7
+        minSdkVersion 9
         targetSdkVersion 16
         versionCode 1
         versionName "1.0"
@@ -41,4 +41,8 @@ dependencies {
     compile project(':chameleon')
     compile files('libs/MSDK_Android_1.7.2a_svn37968.jar')
     compile files('libs/TencentUnipaySDK2.3.8.jar')
+    compile files('libs/android-support-v4.jar')
+    compile files('libs/mid-sdk-2.10.jar')
+    compile files('libs/MSDK_Android_2.0.6a_svn47545.jar')
+    compile files('libs/TencentUniPaySDK.jar')
 }

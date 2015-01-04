@@ -6,7 +6,7 @@ from AndroidManifest import AndroidManifestInst
 def error(s):
     print >> sys.stderr, s
 
-def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath):
+def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg):
     projectJsonPath = os.path.join('chameleon', 'channels', channel, 
             'project.json')
     with codecs.open(projectJsonPath, 'r') as f:
@@ -25,10 +25,17 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath):
         manifestInst.setPkgName(pkgname)
     mergeLibManifests(libs, manifestInst)
     manifestInst.replace({'channel': channel})
-    if sc is not None:
-        manifestInst.replaceEntryActivity()
+    if globalcfg['blandscape']:
+        orientation = 'landscape'
+    else:
+        orientation = 'portrait'
+    if sc is not None or channel == "lenovo":
+        manifestInst.replaceEntryActivity(orientation, channel)
     if icons is not None:
         manifestInst.setIcon('chameleon_icon')
+    if channel == 'baidumg':
+        manifestInst.replaceApplication('prj.chameleon.channelapi.baidumg.Application')
+        manifestInst.replaceTargetSDK('15')
     manifestInst.safeDump(manifestFilePath)
 
 def loadManifest(path):
@@ -82,6 +89,7 @@ public class Instantializer implements IInstantializer{
         commCfg.mIsLandscape = $landscape;
         commCfg.mIsDebug = $debug;
         ChannelInterface.setChannelName("$channel");
+        ChannelInterface.setDebug($debug);
         
         $initfuncs
     }
@@ -152,28 +160,6 @@ def genLibInstantializer(l):
 def isNewerThan(a, b):
     return os.path.getmtime(a) > os.path.getmtime(b)
 
-def genRFileForPkgName(channel, genPath, pkgName):
-    s = pkgName.split('.')
-    d = os.path.join(*([genPath] + s))
-    src = os.path.join(d, 'R.java')
-    suffix = getPkgSuffix(channel)
-    if len(suffix) == 0:
-        return
-    newPkgName = pkgName + '.' + suffix
-    targetD = os.path.join(d, suffix)
-    target = os.path.join(targetD, 'R.java')
-    if not os.path.exists(src):
-        error('Fail to locate old source %s' %src)
-    if not os.path.exists(targetD):
-        os.makedirs(targetD)
-    if not os.path.exists(target) or isNewerThan(src, target):
-        with codecs.open(src, 'r', 'utf8') as srcF, codecs.open(target, 'w', 'utf8') as targetF:
-            for l in srcF.readlines():
-                if l.startswith('package %s;' %pkgName):
-                    targetF.write('package %s;\n' %newPkgName)
-                else:
-                    targetF.write(l)
-
 def getPkgSuffix(channel):
     doc = xml.parse(os.path.join('chameleon', 'channels', channel, 'info.xml'))
     t = doc.documentElement.getAttribute('pkgsuffix')
@@ -194,7 +180,7 @@ def main():
     error(pkgName)
     globalcfg = getCommCfg()
     libs = getDependLibs(channel, globalcfg)   
-    modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath) 
+    modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg) 
     genInstantializer(channel, genPath, globalcfg, libs, debug)
 
 sys.exit(main())

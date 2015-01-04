@@ -20,7 +20,6 @@
     "baidumg": {
         "name": "百度移动游戏",
         "sdk": "baidumg",
-        "splashscreen": 1,
         "icon": 1
     }, 
     "uc": {
@@ -50,6 +49,48 @@
         "sdk": "anzhi",
         "splashscreen": 1,
         "icon": "1"
+    },
+    "huawei": {
+        "name": "华为",
+        "sdk": "huawei",
+        "pkgsuffix": ".huawei$"
+    },
+    "meizu": {
+        "name": "魅族",
+        "sdk": "meizu",
+        "pkgsuffix": ".mz$"
+    },
+    "gionee": {
+        "name": "金立",
+        "sdk": "gionee",
+        "pkgsuffix": ".am$",
+        "icon": "1"
+    },
+    "lenovo": {
+        "name": "联想",
+        "sdk": "lenovo",
+        "pkgsuffix": ".lenovo$",
+        "icon": "1"
+    },
+    "htc": {
+        "name": "HTC",
+        "sdk": "htc",
+        "pkgsuffix": ".htc$",
+        "splashscreen": 1,
+        "icon": "1"
+    },
+    "coolpad": {
+        "name": "酷派",
+        "sdk": "coolpad"
+    },
+    "gfan": {
+        "name": "机锋",
+        "sdk": "gfan",
+        "icon": "1"
+    },
+    "vivo": {
+        "name": "VIVO",
+        "sdk": "vivo"
     }
 }
 

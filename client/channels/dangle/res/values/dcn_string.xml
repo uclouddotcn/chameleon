@@ -85,7 +85,7 @@
     <string name="dcn_question_2">您的爸爸叫什么名字?</string>
     <string name="dcn_question_3">您的妈妈叫什么名字?</string>
     <string name="dcn_question_4">您的座右铭是什么?</string>
-    
+
     <string name="dcn_set_payment_ps">设置支付密码</string>
     <string name="dcn_forget_payment_password">忘记支付密码？</string>
     <string name="dcn_select_check_payment_ps">请选择帐号验证方式：</string>
@@ -255,10 +255,10 @@
     <string name="dcn_check_security_notice_label">注：验证成功后可绑定新手机号码</string>
     <string name="dcn_error_message_title">密码不正确，请重新输入</string>
     <string name="dcn_about_title">关于我们</string>
-    <string name="dcn_about_version">版本：V3.0.4</string>
+    <string name="dcn_about_version">版本：V3.0.5</string>
     <string name="dcn_about_url">当乐网 http://www.d.cn</string>
     <string name="dcn_about_company">北京当乐信息技术有限公司</string>
-    <string name="dcn_about_phone_num">客服电话：010-82872310</string>
+    <string name="dcn_about_phone_num">客服电话：028-83112436</string>
     <string name="dcn_feedback_title">用户反馈</string>
     <string name="dcn_feedback_send">确认发送</string>
     <string name="dcn_more_recommended">精品推荐</string>
@@ -281,10 +281,13 @@
     <string name="dcn_retrive_bind_phone">通过绑定手机号找回：</string>
     <string name="dcn_retrieve_by_question">通过密保问题找回：</string>
     <string name="dcn_retrieve_password_colon">找回密码：</string>
-    <string name="dcn_can_not_retrieve_warning">"抱歉！您的帐号未采取任何安全措施，暂时无法为您找回密码。如有疑问请致电：010-82872310 "</string>
+    <string name="dcn_can_not_retrieve_warning">"抱歉！您的帐号未采取任何安全措施，暂时无法为您找回密码。如有疑问请致电：028-83112436 "</string>
     <string name="dcn_back_to_login">返回登录</string>
     <string name="dcn_select_retrieve_mode">请选择找回方式：</string>
     <string name="dcn_by_phone">通过绑定的手机号</string>
     <string name="dcn_by_question">通过密保问题</string>
     <string name="dcn_recommended_install">安装</string>
+    <string name="dcn_check_oldpass_newpass">新密码不能与当前密码相同</string>
+    <string name="dcn_check_oldpass_newpass_progress">正在验证密码...</string>
+    <string name="dcn_forum_channel_refresh">刷新</string>
 </resources>

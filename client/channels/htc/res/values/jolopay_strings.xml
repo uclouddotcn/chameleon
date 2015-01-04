@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="jolopay_app_name">支付中心</string>
+	<string name="jolopay_title">支付中心</string>
+	<string name="jolopay_game">游戏:</string>
+	<string name="jolopay_goods">商品名称:</string>
+	<string name="jolopay_select_title">请选择支付方式：</string>
+	<string name="jolopay_card_tip">充值卡相关说明：</string>
+	<string name="jolopay_card_warning">请务必使用与您选择的面额相同的充值卡支付，否则会导致支付失败或金额丢失！</string>
+	<string name="jolopay_recharge_bt">立即支付</string>
+	<string name="jolopay_pay_bt">确认支付</string>
+	
+	<string name="jolopay_price">商品金额:</string>
+	<string name="jolopay_pay_price">支付金额:</string>
+	<string name="jolopay_price_value">%1$d元</string>
+	<string name="jolopay_ok">确定</string>
+	<string name="jolopay_cancel">取消</string>
+	<string name="jolopay_back">返回</string>
+	<string name="jolopay_card_type">充值卡类型:</string>
+	<string name="jolopay_card_type_value">移动充值卡</string>
+	<string name="jolopay_card_price">卡面额:</string>
+	<string name="jolopay_card_price_value">50.00元</string>
+	<string name="jolopay_card_szx">移动充值卡</string>
+	<string name="jolopay_card_unicom">联通充值卡</string>
+	<string name="jolopay_card_telecom">电信充值卡</string>
+	<string name="jolopay_card_input_no">输入充值卡号</string>
+	<string name="jolopay_card_input_sn">输入充值卡密码</string>
+	<string name="jolopay_card_input_submit">立即支付</string>
+	<string name="jolopay_amount_danwei">元</string>
+	
+	<string name="jolopay_dialog_ok">确定</string>
+	<string name="jolopay_dialog_cancel">取消</string>
+	<string name="jolopay_dialog_title">提示</string>
+	<string name="jolopay_dialog_warning1">操作未完成，确定放弃</string>
+	
+	<string name="jolopay_dialog_info1">余额不足，请充值</string>
+	<string name="jolopay_dialog_waiting0">正在获取余额&#8230;</string>
+	<string name="jolopay_dialog_waiting1">正在初始化充值插件&#8230;</string>
+	<string name="jolopay_dialog_waiting2">正在生成订单&#8230;</string>
+	<string name="jolopay_dialog_waiting3">正在等待支付结果,请耐心等待&#8230;</string>
+	
+	<string name="jolopay_toast_error0">获取订单失败，请重新试一下!</string>
+	<string name="jolopay_toast_error1">订单不存在</string>
+	<string name="jolopay_toast_error2">订单支付未完成，继续等待</string>
+	<string name="jolopay_toast_paytimeout">支付超时,请重新试一下</string>
+	<string name="jolopay_toast_payfail">支付失败,请确认输入是否正确</string>
+	<string name="jolopay_toast_paysuccess">支付成功</string>
+	<string name="jolopay_toast_no_empty">充值卡号为空</string>
+	<string name="jolopay_toast_pwd_empty">充值卡密码为空</string>
+	<string name="jolopay_toast_error3">不存在对应价格的充值卡类型，请选择其他充值方式</string>	
+	<string name="jolopay_toast_error4">该手机暂不支持该充值类型，请选择其他充值方式</string>
+	<string name="jolopay_toast_payfail1">支付失败,请重新试一下</string>
+	<string name="jolopay_toast_paysuccess1">支付成功</string>
+	<string name="jolopay_toast_net_error">网络连接失败，请检查网络</string>
+	<string name="jolopay_toast_gbao_error">您的余额不足，请选用其他支付方式</string>
+	<string name="jolopay_toast_pay_notenough">您选择的金额太小,不足支付</string>
+	
+	<string name="jolopay_channel_alipay">支付宝</string>
+	<string name="jolopay_channel_szx">神州行</string>
+	<string name="jolopay_channel_unicom">联通卡</string>
+	<string name="jolopay_channel_telecom">电信卡</string>
+	<string name="jolopay_channel_qqcard">Q币卡</string>
+	<string name="jolopay_channel_visa">银联</string>
+	<string name="jolopay_channel_gpay">G宝支付</string>
+	
+	<string name="jolopay_note_szx">
+         【支持卡种】 全国卡：卡号17位、密码18位的阿拉伯数字\n 
+	地方卡：\n 
+	浙江：卡号10位 密码8位 \n 
+	福建：卡号16位 密码17位 \n 
+	广东：卡号17位 密码18位 \n 
+	辽宁：卡号16位 密码21位 \n 
+        【支持面额】 全国卡： 10，20，30，50，100，300，500元 \n 
+	地方卡： \n 
+	浙江地方卡： 10，20，30，50，100，200，300，500元，1000元 \n 
+	福建地方卡： 50，100元 \n 
+	广东地方卡： 10，30，50，100， 300，500元 \n 
+	辽宁地方卡： 50，100元 
+	</string>
+	<string name="jolopay_note_unicom">【支持卡种】 联通全国卡，卡号15位阿拉伯数字，密码19位阿拉伯数字。\n【支持面额】 20元、30元、50元、100元、300元、500元 </string>
+	<string name="jolopay_note_telecom">【支持卡种】 中国电信充值付费卡卡号19位，密码18位的阿拉伯数字。 目前只支持电信全国卡和广东卡，充值卡序列号第四位为“1”的卡为全国卡，为“2”的则为广东卡。\n 【支持面额】20元, 50元，100元 
+	</string>
+	
+	<string name = "jolopay_select_price">选择面额</string>
+	
+	<string name="jolopay_alipay_type">支付类型:</string>
+	<string name="jolopay_alipay_type_value">支付宝</string>
+	<string name="jolopay_alipay_input_price">输入支付金额，1～9999整数</string>
+	<string name="jolopay_alipay_input_error">输入金额不能为空</string>
+	<string name="jolopay_alipay_note_title">支付宝相关说明:</string>
+	<string name="jolopay_alipay_note_value">支付宝相关说明,请参考支付宝官方网站(http://mobile.alipay.com)</string>
+	
+	
+	<string name="jolopay_visa_type">支付类型:</string>
+	<string name="jolopay_visa_type_value">中国银联</string>
+	<string name="jolopay_visa_input_price">输入支付金额，1～9999整数</string>
+	<string name="jolopay_visa_input_yuan">元</string>
+	<string name="jolopay_visa_input_error">输入金额不能为空</string>
+	<string name="jolopay_visa_note_title">银联相关说明:</string>
+	<string name="jolopay_visa_note_value">银联相关说明，请参考中国银联官方网站(http://online.unionpay.com)</string>	
+	
+	<string name="jolopay_gbao_type">支付类型:</string>
+	<string name="jolopay_gbao_type_value">G宝支付</string>
+	<string name="jolopay_gbao_price">您的余额:</string>
+	<string name="jolopay_gbao_note_title">G宝相关说明:</string>
+	<string name="jolopay_gbao_note_value">G宝为聚乐游戏中心虚拟币，1G宝等于1元，可以用户游戏币充值；系统会不定期给玩家派送G宝。</string>
+	
+	<string name="jolopay_gbao_value">%1$dG宝</string>
+</resources>

@@ -2,6 +2,7 @@ package prj.chameleon.channelapi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *  ChannelInterface is the only interface for client to use
@@ -20,7 +22,7 @@ public class ChannelInterface {
      * init the SDK
      * @param activity the activity to give the real SDK
      *
-     * @deprecated @param isDebug (deprecated) whether set sdk to debug mode
+     * @param isDebug (deprecated) whether set sdk to debug mode
      * @param cb callback function when the request is finished, the JSON object is null
      */
 	public static void init(final Activity activity,
@@ -29,6 +31,22 @@ public class ChannelInterface {
         Log.d(Constants.TAG, "on init from channel interface");
         _plugins.init(activity, cb);
 	}
+
+    /**
+     * test if in debug mode
+     * @return {boolean}, whether in debug mode
+     */
+    public static boolean isDebug() {
+        return isDebug;
+    }
+
+    /**
+     * set debug mode
+     * @param debug if debug mode
+     */
+    public static void setDebug(boolean debug) {
+        isDebug = debug;
+    }
 
     /**
      * get channel user id
@@ -241,7 +259,7 @@ public class ChannelInterface {
      * @param cb JSON object will be null
      */
     public static void onResume(Activity activity, IDispatcherCb cb) {
-        _plugins.mUserApi.onResume(activity, cb);
+        _plugins.onResume(activity, cb);
     }
 
     /**
@@ -249,7 +267,7 @@ public class ChannelInterface {
      * @param activity the activity to give the real SDK
      */
     public static void onPause(Activity activity) {
-        _plugins.mUserApi.onPause(activity);
+        _plugins.onPause(activity);
     }
 
     /**
@@ -387,6 +405,84 @@ public class ChannelInterface {
         _plugins.onActivityResult(activity, requestCode, resultCode, data);
     }
 
+
+    //push
+
+    /**
+     * enable push 开启推送服务
+     * @param activity activity
+     */
+    public static void enablePush(Activity activity){
+        _plugins.mPushApi.enablePush(activity);
+    }
+
+    /**
+     * disable push 关闭推送服务
+     * @param activity activity
+     */
+    public static void disablePush(Activity activity){
+        _plugins.mPushApi.disablePush(activity);
+    }
+
+    /**
+     * add alias 添加别名
+     * @param activity activity
+     * @param alias 别名
+     * @param cb 回调函数 是否成功
+     */
+    public static void addAlias(Activity activity, String alias, String type, IDispatcherCb cb){
+        _plugins.mPushApi.addAlias(activity, alias, type, cb);
+    }
+
+    /**
+     * remove alias 删除别名
+     * @param activity activity
+     * @param alias 要删除的别名
+     * @param cb callback 回调函数 是否成功
+     */
+    public static void removeAlias(Activity activity, String alias, String type, IDispatcherCb cb){
+        _plugins.mPushApi.removeAlias(activity, alias, type, cb);
+    }
+
+    /**
+     * set tags 设置标签 可多个
+     * @param activity activity
+     * @param tags Tags list to be set 要设置的标签list
+     * @param cb callback 回调函数 是否成功
+     */
+    public static void setTags(Activity activity, List<String> tags, IDispatcherCb cb){
+        _plugins.mPushApi.setTags(activity, tags, cb);
+    }
+
+    /**
+     * get tags 获取所有标签list
+     * @param activity activity
+     * @param cb callback 回调函数 返回的标签列表会在回调函数中以json串的方式返回
+     */
+    public static void getTags(Activity activity, IDispatcherCb cb){
+        _plugins.mPushApi.getTags(activity, cb);
+    }
+
+    /**
+     * delete tags 删除标签
+     * @param activity activity
+     * @param tags Tags list to be delete 要删除的标签列表
+     * @param cb callback 回调函数 是否成功
+     */
+    public static void delTags(Activity activity, List<String> tags, IDispatcherCb cb){
+        _plugins.mPushApi.delTags(activity, tags, cb);
+    }
+
+    /**
+     * set no disturb mode 设置免打扰时间
+     * @param startHour start hour 开始时间 单位：小时，范围：[0-23]
+     * @param endHour end hour 结束时间 单位：小时，范围：[0-23]
+     */
+    public static void setNoDisturbMode(Activity activity, int startHour, int endHour){
+        _plugins.mPushApi.setNoDisturbMode(activity, startHour, endHour);
+    }
+
+
     /**
      *  the channel implementation for current package
      */
@@ -394,7 +490,9 @@ public class ChannelInterface {
         private ArrayList<APIGroup> mApiGroups = new ArrayList<APIGroup>();
         private IChannelUserAPI mUserApi;
         private IChannelPayAPI mPayApi;
+        private IChannelPushAPI mPushApi;
         private String mChannelName;
+        private boolean mInited = false;
 
         public void onResume(final Activity activity, final IDispatcherCb cb) {
             final Iterator<APIGroup> iterator = mApiGroups.iterator();
@@ -431,6 +529,7 @@ public class ChannelInterface {
             for (APIGroup group : mApiGroups) {
                 group.onDestroy(activity);
             }
+            mInited = false;
         }
 
         public void init(final Activity activity, final IDispatcherCb cb) {
@@ -439,6 +538,7 @@ public class ChannelInterface {
                 @Override
                 public void run() {
                     if (!iterator.hasNext()) {
+                        mInited = true;
                         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                         return;
                     }
@@ -521,6 +621,12 @@ public class ChannelInterface {
                 }
                 mPayApi = (IChannelPayAPI) group.getApi();
             }
+            if (group.testType(Constants.PluginType.PUSH_API)) {
+                if (mPushApi != null) {
+                    throw new RuntimeException("push api is already registered");
+                }
+                mPushApi = (IChannelPushAPI) group.getApi();
+            }
             mApiGroups.add(group);
         }
 
@@ -552,6 +658,7 @@ public class ChannelInterface {
     }
     private static Plugins _plugins = new Plugins();
     private static boolean isToobarCreated = false;
+    private static boolean isDebug = false;
 
     public static void addApiGroup(APIGroup apiGroup) {
         _plugins.addApiGroup(apiGroup);

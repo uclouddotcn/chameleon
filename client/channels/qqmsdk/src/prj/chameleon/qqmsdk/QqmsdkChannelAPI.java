@@ -2,9 +2,9 @@ package prj.chameleon.qqmsdk;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,6 +21,7 @@ import com.tencent.msdk.api.WakeupRet;
 import com.tencent.msdk.consts.CallbackFlag;
 import com.tencent.msdk.consts.EPlatform;
 import com.tencent.msdk.consts.TokenType;
+import com.tencent.msdk.myapp.autoupdate.WGSaveUpdateObserver;
 import com.tencent.msdk.remote.api.RelationRet;
 import com.tencent.unipay.plugsdk.IUnipayServiceCallBack;
 import com.tencent.unipay.plugsdk.UnipayPlugAPI;
@@ -98,17 +99,34 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     private static final String WX_PLATFORM = "w";
     private static final String QQ_PLATFORM = "q";
+    private static final int INVALID_PLAT = -99999;
+    private static final int LOGIN_TIMEOUT = 10;
+    private static final int LOGIN_TIMEOUT_EVT_ID = 0;
     private IAccountActionListener mAccountActionListener;
     private final Config mCfg = new Config();
-    private boolean mCfgLandScape;
-    private boolean mIsDebug;
-    private int mPlatform = WeGame.QQPLATID;
+    private int mPlatform = INVALID_PLAT;
     private final UserInfo mUserInfo = new UserInfo();
     private UnipayPlugAPI mUniPay = null;
     private IDispatcherCb mLoginCb = null;
     private PaymentEnv mPayEnv = null;
     private byte[] mMoneyIcon = null;
-    private final WGPlatformObserver mObserver = new WGPlatformObserver() {
+    private int mCmdSeq = 0;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case LOGIN_TIMEOUT_EVT_ID:
+                    if (mLoginCb != null && msg.arg1 == mCmdSeq) {
+                        mLoginCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+    private class PlatformObserver implements WGPlatformObserver {
+
         @Override
         public void OnLoginNotify(LoginRet loginRet) {
             if (mLoginCb == null) {
@@ -186,7 +204,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         public String OnCrashExtMessageNotify() {
             return null;
         }
-    };
+    }
 
     //回调接口
     IUnipayServiceCallBack.Stub mUnipayStubCallBack = new IUnipayServiceCallBack.Stub() {
@@ -220,7 +238,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 return;
             }
             Log.d(Constants.TAG, "receive code: " + code + " msg: " + resultMsg);
-            Activity activity = mPayEnv.mActivity.get();
+            final Activity activity = mPayEnv.mActivity.get();
             if (activity == null) {
                 Log.e(Constants.TAG, "callback activity is gone");
                 mPayEnv = null;
@@ -232,6 +250,9 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     switch (code) {
                         case 0:
                             if (payState == 0) {
+                                CharSequence text = "游戏币充值成功，请重新购买";
+                                Toast toast = Toast.makeText(activity.getApplicationContext(), text, Toast.LENGTH_SHORT);
+                                toast.show();
                                 mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_PAY_RETRY, null);
                             } else if (payState == 1) {
                                 mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
@@ -261,9 +282,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
-        mCfgLandScape = commCfg.mIsLandscape;
         mChannel = commCfg.mChannel;
-        mIsDebug = commCfg.mIsDebug;
         mCfg.mQQAppId = cfg.getString("qqAppId");
         mCfg.mQQAppKey = cfg.getString("qqAppKey");
         mCfg.mWXAppId = cfg.getString("wxAppId");
@@ -293,7 +312,33 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         baseInfo.offerId = mCfg.mOfferId;
         WGPlatform.Initialized(activity, baseInfo);
         WGPlatform.WGSetPermission(WGQZonePermissions.eOPEN_ALL); // 设置拉起QQ时候需要用户授权的项
-        WGPlatform.WGSetObserver(mObserver);
+        WGPlatform.WGSetObserver(new PlatformObserver());
+        WGPlatform.WGSetSaveUpdateObserver(new WGSaveUpdateObserver() {
+            @Override
+            public void OnCheckNeedUpdateInfo(long l, String s, long l2, int i, String s2, int i2) {
+
+            }
+
+            @Override
+            public void OnDownloadAppProgressChanged(long l, long l2) {
+
+            }
+
+            @Override
+            public void OnDownloadAppStateChanged(int i, int i2, String s) {
+
+            }
+
+            @Override
+            public void OnDownloadYYBProgressChanged(String s, long l, long l2) {
+
+            }
+
+            @Override
+            public void OnDownloadYYBStateChanged(String s, int i, int i2, String s2) {
+
+            }
+        });
         WGPlatform.handleCallback(activity.getIntent()); // 接收平台回调
 
         try {
@@ -349,8 +394,9 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         } else if (mPlatform == WeGame.WXPLATID) {
             WGPlatform.WGLogin(EPlatform.ePlatform_Weixin);
             mLoginCb = cb;
+            startLoginTimer();
         } else {
-            throw new RuntimeException("unknown platform type " + mPlatform);
+            cb.onFinished(Constants.ErrorCode.ERR_LOGIN_MSDK_PLAT_NO_SPEC, null);
         }
     }
 
@@ -396,8 +442,14 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 CharSequence text = "游戏币余额不足，请先充值游戏币";
                 Toast toast = Toast.makeText(activity.getApplicationContext(), text, Toast.LENGTH_SHORT);
                 toast.show();
+                String sessionid = "openid";
+                String sessiontype = "kp_actoken";
+                if (mUserInfo.mPlatform == EPlatform.ePlatform_Weixin) {
+                    sessionid = "hy_gameid";
+                    sessiontype = "wc_actoken";
+                }
                 mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId, mUserInfo.mPayToken,
-                        "openid", "kp_actoken", serverId, mUserInfo.mPf,
+                        sessionid, sessiontype, serverId, mUserInfo.mPf,
                         mUserInfo.mPfKey, UnipayPlugAPI.ACCOUNT_TYPE_COMMON,
                         String.valueOf(rest), allowUserChange,
                         mMoneyIcon);
@@ -454,8 +506,14 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 CharSequence text = "游戏币余额不足，请先充值游戏币";
                 Toast toast = Toast.makeText(activity.getApplicationContext(), text, Toast.LENGTH_SHORT);
                 toast.show();
+                String sessionid = "openid";
+                String sessiontype = "kp_actoken";
+                if (mUserInfo.mPlatform == EPlatform.ePlatform_Weixin) {
+                    sessionid = "hy_gameid";
+                    sessiontype = "wc_actoken";
+                }
                 mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId, mUserInfo.mPayToken,
-                        "openid", "kp_actoken", serverId, mUserInfo.mPf,
+                        sessionid, sessiontype, serverId, mUserInfo.mPf,
                         mUserInfo.mPfKey, UnipayPlugAPI.ACCOUNT_TYPE_COMMON,
                         String.valueOf(rest), true,
                         mMoneyIcon);
@@ -481,6 +539,11 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             ret.put("pk", mUserInfo.mPfKey);
             ret.put("t", mUserInfo.mAccessToken);
             ret.put("pt", mUserInfo.mPayToken);
+            if (mUserInfo.mPlatform == EPlatform.ePlatform_QQ) {
+                ret.put("pl", QQ_PLATFORM);
+            } else {
+                ret.put("pl", WX_PLATFORM);
+            }
             return ret;
         } catch (JSONException e) {
             Log.e(Constants.TAG, "Fail to get pay info from msdk", e);
@@ -547,16 +610,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
-        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-    }
-
-    /**
-     * map qq code to sdk erros
-     * @param code nd91 error code
-     * @return the error code
-     */
-    private int mapError(int code) {
-        return Constants.ErrorCode.ERR_UNKNOWN;
+        cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
     }
 
     /**
@@ -578,7 +632,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         FillUserInfo(ret);
         mUserInfo.mAccessToken = WeGame.getInstance().getLocalTokenByType(TokenType.eToken_WX_Access);
         mUserInfo.mRefreshToken = WeGame.getInstance().getLocalTokenByType(TokenType.eToken_WX_Refresh);
-        mUserInfo.mPayToken = "";
+        mUserInfo.mPayToken = mUserInfo.mAccessToken;
         return makeLoginInfo(mUserInfo.mOpenId, mUserInfo.mAccessToken, WX_PLATFORM);
     }
 
@@ -630,7 +684,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean onLoginRsp(String loginRsp) {
-        JSONObject obj = null;
+        JSONObject obj;
         try {
             obj = new JSONObject(loginRsp);
             int code = obj.getInt("code");
@@ -651,6 +705,10 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public void onResume(Activity activity, final IDispatcherCb cb) {
         WGPlatform.onResume();
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        if (mPayEnv != null) {
+            mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+            mPayEnv = null;
+        }
     }
 
     @Override
@@ -661,21 +719,59 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void onStart(Activity activity) {
-        mUniPay = new UnipayPlugAPI(activity);
-        mUniPay.setCallBack(mUnipayStubCallBack);
-        mUniPay.bindUnipayService();
-        mUniPay.setOfferId(mCfg.mQQAppId);
-        if (mCfg.mIsTest) {
-            mUniPay.setEnv("test");
-        } else {
-            mUniPay.setEnv("release");
+        if (mUniPay == null) {
+            mUniPay = new UnipayPlugAPI(activity);
+            mUniPay.setCallBack(mUnipayStubCallBack);
+            mUniPay.bindUnipayService();
+            mUniPay.setOfferId(mCfg.mQQAppId);
+            if (mCfg.mIsTest) {
+                mUniPay.setEnv("test");
+            } else {
+                mUniPay.setEnv("release");
+            }
         }
+
     }
 
     @Override
     public void onStop(Activity activity) {
-        mUniPay.unbindUnipayService();
+        if (mUniPay != null) {
+            mUniPay.unbindUnipayService();
+        }
         mUniPay = null;
+    }
+
+
+    @Override
+    public boolean runProtocol(Activity activity, String protocol, String message, IDispatcherCb cb) {
+        if (protocol.equals("qqmsdk_setplat")) {
+            int ret = Constants.ErrorCode.ERR_OK;
+            if (message.equals("wx")) {
+                mPlatform = WeGame.WXPLATID;
+            } else if (message.equals("qq")) {
+                mPlatform = WeGame.QQPLATID;
+            } else {
+                ret = Constants.ErrorCode.ERR_FAIL;
+            }
+            cb.onFinished(ret, null);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isSupportProtocol(String protocol) {
+        if (protocol.equals("qqmsdk_setplat")) {
+            return true;
+        }
+        return false;
+    }
+
+    private void startLoginTimer () {
+        mCmdSeq += 1;
+        Message msg = new Message();
+        msg.arg1 = mCmdSeq;
+        mHandler.sendMessageAtTime(msg, LOGIN_TIMEOUT*1000);
     }
 
 }
