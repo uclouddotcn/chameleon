@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:nearme="http://com.nearme.gamecenter.open.core.view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+
+    <TextView
+        android:id="@+id/nmgc_regist_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/nmgc_regist_hint"
+        android:textColor="#8c8c8c"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:id="@+id/phone_input_and_verify_code_root"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" >
+
+        <com.nearme.gamecenter.open.core.view.InputBar
+            android:id="@+id/phone_num_input_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            nearme:input_hint="@string/nmgc_input_phone_num"
+            nearme:input_label="@string/nmgc_blank"
+            nearme:input_length="11" >
+        </com.nearme.gamecenter.open.core.view.InputBar>
+
+        <Button
+            android:id="@+id/get_verify_code"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="5"
+            android:background="@drawable/keke_get_verify_code_btn_selector"
+            android:text="@string/get_verify_code"
+            android:textColor="#494949"
+            android:textSize="@dimen/px45_text_size" />
+    </LinearLayout>
+
+    <com.nearme.gamecenter.open.core.view.InputBar
+        android:id="@+id/verify_code_input_area"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="8dp"
+        nearme:input_hint="@string/nmgc_input_verify_code"
+        nearme:input_label="@string/nmgc_blank"
+        nearme:input_length="4" >
+    </com.nearme.gamecenter.open.core.view.InputBar>
+
+    <TextView
+        android:id="@+id/account_register_phone"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/log_reg_bg_selector"
+        android:gravity="center"
+        android:text="@string/account_register_btn"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/nmgc_login_common_text_size" />
+
+</LinearLayout>

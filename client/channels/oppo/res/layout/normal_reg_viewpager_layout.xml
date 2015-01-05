@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:nearme="http://com.nearme.gamecenter.open.core.view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    
+    <TextView
+            android:id="@+id/nmgc_regist_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/nmgc_regist_hint"
+            android:textColor="#8c8c8c"
+            android:textSize="13sp" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="center_vertical"
+                android:text="@string/nmgc_usr_name"
+                android:textColor="#585858"
+                android:textSize="15sp" />
+
+            <com.nearme.gamecenter.open.core.view.InputBar
+                android:id="@+id/account_input_area"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                nearme:input_hint="@string/nick_name"
+                nearme:input_label="@string/nmgc_blank"
+                nearme:input_length="12" >
+            </com.nearme.gamecenter.open.core.view.InputBar>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="center_vertical"
+                android:text="@string/nmgc_password"
+                android:textColor="#585858"
+                android:textSize="15sp" />
+
+            <com.nearme.gamecenter.open.core.view.InputBar
+                android:id="@+id/password_input_area"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                nearme:input_hint="@string/nmgc_changepwd_pwdhint"
+                nearme:input_label="@string/nmgc_blank"
+                nearme:input_length="16" >
+            </com.nearme.gamecenter.open.core.view.InputBar>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/account_register_usr"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="27dp"
+            android:background="@drawable/log_reg_bg_selector"
+            android:gravity="center"
+            android:text="@string/account_register_btn"
+            android:textColor="#f7f7f7"
+            android:textSize="@dimen/px50_text_size" />
+
+</LinearLayout>

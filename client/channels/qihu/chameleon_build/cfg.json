@@ -2,7 +2,7 @@
     "desc": "奇虎360",
     "name": "qihu",
     "chamversion": "1.3.1",
-    "version": "1.0.4",
+    "version": "1.1.0",
     "cfgitem": {
         "appId" : {
             "type" : "string",
@@ -13,7 +13,12 @@
             "type" : "string",
             "desc" : "YOUR_APP_KEY"
         },
-        
+
+        "weixinAppid" : {
+            "type" : "string",
+            "desc" : "weixinAppid"
+        },
+
         "appSecret" : {
             "type" : "string",
             "desc" : "YOUR_APP_SECRET",

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/preference_background_color"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <include layout="@layout/bbk_payment_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/preference_background_color"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/order_type_bar"
+                style="@style/order_bar"
+                android:layout_gravity="top"
+                android:layout_marginLeft="@dimen/order_top_bar_spacing"
+                android:layout_marginRight="@dimen/order_top_bar_spacing"
+                android:layout_marginTop="18dp" >
+
+                <TextView
+                    android:id="@+id/order_by_yd"
+                    style="@style/gounp_title_layout"
+                    android:background="@drawable/bbk_title_tab_left"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/order_by_lt"
+                    style="@style/gounp_title_layout"
+                    android:background="@drawable/bbk_title_tab_center"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/order_by_dx"
+                    style="@style/gounp_title_layout"
+                    android:background="@drawable/bbk_title_tab_center"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/order_by_jw"
+                    style="@style/gounp_title_layout"
+                    android:background="@drawable/bbk_title_tab_right"
+                    android:clickable="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/game_card_support"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/order_top_bar_spacing"
+                    android:textColor="@color/card_text"
+                    android:textSize="@dimen/bbk_card_support_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical" >
+
+                <EditText
+                    android:id="@+id/sp_game_card_amount"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/order_top_bar_spacing"
+                    android:layout_marginRight="@dimen/order_top_bar_spacing"
+                    android:background="@drawable/bbk_edittext_bg"
+                    android:drawableRight="@drawable/bbk_pay_amount_bg"
+                    android:focusable="false"
+                    android:hint="@string/bbk_card_amount_tip"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/card_text"
+                    android:textSize="@dimen/bbk_card_type_size" />
+
+                <TextView
+                    android:id="@+id/card_pay_amount_tip"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/order_top_bar_spacing"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/bbk_card_tip"
+                    android:textColor="@color/card_text_tip"
+                    android:textSize="@dimen/bbk_card_support_size" />
+
+                <EditText
+                    android:id="@+id/card_number"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/order_top_bar_spacing"
+                    android:layout_marginRight="@dimen/order_top_bar_spacing"
+                    android:layout_marginTop="17dp"
+                    android:background="@drawable/bbk_edittext_line"
+                    android:hint="@string/bbk_card_num_tip"
+                    android:inputType="number"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/card_text"
+                    android:textSize="@dimen/bbk_card_type_size" />
+
+                <EditText
+                    android:id="@+id/card_passwd"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/order_top_bar_spacing"
+                    android:layout_marginRight="@dimen/order_top_bar_spacing"
+                    android:background="@drawable/bbk_edittext_noline"
+                    android:hint="@string/bbk_card_pwd_tip"
+                    android:inputType="numberPassword"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/card_text"
+                    android:textSize="@dimen/bbk_card_type_size" />
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/card_pay_submit_spacing" >
+
+                    <Button
+                        android:id="@+id/submit_game_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/order_top_bar_spacing"
+                        android:layout_marginRight="@dimen/order_top_bar_spacing"
+                        android:background="@drawable/bbk_btn_default"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="@string/bbk_card_pay_submit"
+                        android:textColor="@color/bbk_TextColorWhite"
+                        android:textSize="@dimen/bbk_card_type_size" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

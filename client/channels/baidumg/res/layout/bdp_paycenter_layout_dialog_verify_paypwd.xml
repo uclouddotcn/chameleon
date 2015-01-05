@@ -67,7 +67,7 @@
         android:imeOptions="actionDone"
         android:gravity="center_vertical"
         android:hint="@string/bdp_paycenter_hint_input_pay_pwd"
-        
+        android:textColorHint="@color/bdp_color_text_hint"
         android:textColor="#333333"
         android:textSize="@dimen/bdp_paycenter_text_size_14_sp" >
     </EditText>

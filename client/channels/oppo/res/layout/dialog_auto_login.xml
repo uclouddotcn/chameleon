@@ -6,16 +6,20 @@
     android:background="@drawable/nmgc_auto_login_dialog_bg"
     android:orientation="vertical" >
 
+    <!-- android:layout_marginTop="@dimen/nmgc_auto_login_dialog_margin_top" -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/nmgc_auto_login_dialog_margin_top"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal" >
-
+<!-- android:layout_centerInParent="true" -->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="12dp"
             android:contentDescription="@null"
             android:src="@drawable/nmgc_auto_login_logo" />
 
@@ -24,18 +28,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="10dp"
             android:layout_alignParentTop="true"
-            android:background="@drawable/switch_account_btn_selector"
+            android:background="@null"
             android:clickable="true"
             android:text="@string/switch_account"
             android:textColor="#585858" />
+        <TextView 
+            android:id="@+id/switch_bottom_line"
+            android:layout_width="wrap_content"
+            android:layout_height="0.3dp"
+            android:layout_alignLeft="@id/switch_btn"
+            android:layout_alignRight="@id/switch_btn"
+            android:layout_alignBottom="@id/switch_btn"
+            android:background="#585858"/>
 
     </RelativeLayout>
     
     <LinearLayout
         android:id="@+id/dialog_auto_login_user_layout"
-        android:layout_marginTop="@dimen/nmgc_auto_login_dialog_margin_top"
+        android:layout_marginTop="@dimen/nmgc_auto_login_dialog_temp_account_margin_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
@@ -95,7 +107,7 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:text="@string/nmgc_auto_login_tips"
-            android:textSize="20sp"/>
+            android:textSize="21sp"/>
 	    <ProgressBar 
 	        android:layout_width="@dimen/nmgc_auto_login_dialog_progress_w_h"
 	        android:layout_height="@dimen/nmgc_auto_login_dialog_progress_w_h"
