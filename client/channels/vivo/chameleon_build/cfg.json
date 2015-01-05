@@ -1,0 +1,29 @@
+{
+    "desc": "VIVO",
+    "name": "vivo",
+    "chamversion": "1.3.1",
+    "version": "V2.1.0",
+    "cfgitem": {
+        "appId" : {
+            "type": "string",
+            "desc": "app id",
+            "ignoreInA" : 1
+        },
+        "cpId" : {
+            "type": "string",
+            "desc": "cp id",
+            "ignoreInA" : 1
+        },
+        "cpKey" : {
+            "type": "string",
+            "desc": "cp key",
+            "ignoreInA" : 1
+        },
+        "payUrl" : {
+            "type": "url",
+            "desc": "支付回调地址",
+            "ignoreInA" : 1
+        }
+    }
+}
+

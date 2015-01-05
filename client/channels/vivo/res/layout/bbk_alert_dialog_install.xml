@@ -1,0 +1,74 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:background="@drawable/dialog_background_color"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bbk_dialog_title_height"
+        android:background="@drawable/bbk_dialog_title_bar"
+        android:gravity="center"
+        android:text="@string/bbk_tips"
+        android:textAppearance="?android:attr/textAppearanceMediumInverse"
+        android:textColor="@color/TextColorBlack"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="20dip"
+            android:gravity="center_vertical|center"
+            android:text="@string/bbk_install_message"
+            android:textColor="@color/black"
+            android:textSize="@dimen/bbkDailogItemTextSize" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/install_now"
+                android:layout_width="116dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="10dip"
+                android:layout_weight="1"
+                android:background="@drawable/bbk_submit_dialog_button"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/bbk_submit"
+                android:textColor="@color/bbk_TextColorWhite"
+                android:textSize="@dimen/bbkDailogItemTextSize" />
+
+            <Button
+                android:id="@+id/install_later"
+                android:layout_width="116dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
+                android:layout_weight="1"
+                android:background="@drawable/bbk_cancel_dialog_button"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/bbk_cancel"
+                android:textColor="@color/bbk_TextColorWhite"
+                android:textSize="@dimen/bbkDailogItemTextSize" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

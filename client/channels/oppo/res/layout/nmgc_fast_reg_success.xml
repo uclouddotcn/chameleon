@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:nearme="http://com.nearme.gamecenter.open.core.view"
+    android:layout_width="@dimen/nmgc_log_reg_width"
+    android:layout_height="@dimen/nmgc_log_reg_height"
+    android:layout_gravity="center"
+    android:background="@drawable/nmgc_auto_login_dialog_bg"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/nmgc_regist_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="@string/nmgc_fast_reg"
+        android:textColor="#585858"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/nmgc_update_account_success"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="@string/nmgc_update_account_success_hint"
+        android:textColor="#979797"
+        android:textSize="13sp"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/nmgc_usr_name"
+            android:textColor="#585858"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/nmgc_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="#585858"
+            android:textSize="15sp"/>
+    </LinearLayout>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/nmgc_reset_psw_hint"
+        android:textColor="#979797"
+        android:textSize="12sp" />
+  
+    <com.nearme.gamecenter.open.core.view.InputBar
+        android:id="@+id/nmgc_reset_psw"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        nearme:input_hint="@string/nmgc_changepwd_pwdhint"
+        nearme:input_label="@string/nmgc_password"
+        nearme:input_length="16" >
+    </com.nearme.gamecenter.open.core.view.InputBar>
+
+    <TextView
+        android:id="@+id/nmgc_start_game"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/log_reg_bg_selector"
+        android:text="@string/start_game"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
+
+</LinearLayout>

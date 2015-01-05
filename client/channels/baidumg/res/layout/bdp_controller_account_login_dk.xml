@@ -53,6 +53,7 @@
 	                android:textSize="15sp"
 	                android:maxLength="80"
 	                android:hint="@string/bdp_account_login_hint_account_dk"
+	                android:textColorHint="@color/bdp_color_text_hint"
 	                android:background="@null"
 	                android:textCursorDrawable="@null"
 	                android:singleLine="true" />
@@ -107,6 +108,7 @@
 	                android:textSize="15sp"
 	                android:maxLength="30"
 	                android:hint="@string/bdp_account_login_hint_pass"
+	                android:textColorHint="@color/bdp_color_text_hint"
 	                android:inputType="textPassword"
 	                android:singleLine="true" 
 	                android:textCursorDrawable="@null"

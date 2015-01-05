@@ -95,9 +95,6 @@ android {
         }
         coolpad {
         }
-        vivo {
-            applicationId "com.xianyugame.sanguofire.vivo"
-        }
         p_getui {
 
         }
@@ -109,7 +106,16 @@ android {
         }
 
     }
-
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
     // generate productFlavors according to the setting of productFlavor.json
     /*
     productFlavors {
@@ -151,7 +157,6 @@ dependencies {
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')
     coolpadCompile project(':channels:coolpad')
-    vivoCompile project(':channels:vivo')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
