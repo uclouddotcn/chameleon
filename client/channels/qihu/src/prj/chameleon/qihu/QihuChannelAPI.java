@@ -246,7 +246,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public boolean switchAccount(Activity activity, final IDispatcherCb cb) {
         Intent intent = getSwitchAccountIntent(activity, mCfgLandscape, mCfgBGTransparent);
-        Matrix.execute(activity, intent, new LoginDispatcherCallback(cb, false, mChannel));
+        Matrix.invokeActivity(activity, intent, new LoginDispatcherCallback(cb, false, mChannel));
         return true;
     }
 
@@ -429,7 +429,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                               boolean isFromGuestMethod) {
         Log.d(Constants.TAG, "qihu do login");
         Intent intent = getLoginIntent(activity, isLandScape, isBGTransparent);
-        Matrix.invokeActivity(activity, intent, new LoginDispatcherCallback(cb, isFromGuestMethod, mChannel));
+        Matrix.execute(activity, intent, new LoginDispatcherCallback(cb, isFromGuestMethod, mChannel));
     }
 
 /*
