@@ -33,6 +33,13 @@ public interface IAPIBase {
     public void init(android.app.Activity activity, IDispatcherCb cb);
 
     /**
+     * init the SDK
+     * @param commCfg the chameleon common config
+     * @param cfg the channel config
+     */
+    public void initCfg(ApiCommonCfg commCfg, Bundle cfg);
+
+    /**
      * on activity result, the parameter is the same as Activity.onActivityResult
      * @param requestCode
      * @param resultCode

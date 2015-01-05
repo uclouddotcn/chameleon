@@ -2,6 +2,7 @@ package prj.chameleon.channelapi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -15,6 +16,9 @@ public class SingleSDKChannelAPI {
 
         @Override
         public void init(Activity activity, IDispatcherCb cb) {
+        }
+
+        public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         }
 
         public void setChannel(String channelName) {
@@ -168,19 +172,23 @@ public class SingleSDKChannelAPI {
 
         /**
          * when the activity receive new intent
+         *
          * @param activity
-         * @param intent the intent
+         * @param intent   the intent
          */
         public void onNewIntent(Activity activity, Intent intent) {
 
         }
     }
 
-    public static abstract class SinglePushSDK implements IChannelPushAPI{
+    public static abstract class SinglePushSDK implements IChannelPushAPI {
 
         @Override
         public void init(Activity activity, IDispatcherCb cb) {
             cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+        }
+
+        public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         }
 
         @Override
