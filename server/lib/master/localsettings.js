@@ -1,4 +1,4 @@
-var constants = require('./constants');
+var constants = require('../constants');
 var levelup = require('levelup');
 var path = require('path');
 

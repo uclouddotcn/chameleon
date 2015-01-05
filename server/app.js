@@ -1,7 +1,7 @@
 var fs = require('fs');
 var restify = require('restify');
 var async = require('async');
-var chameleon = require('./lib');
+var chameleon = require('./lib/master');
 var program = require('commander');
 
 function loadConfig(cfgFile, debug) {
@@ -58,7 +58,7 @@ function main() {
     var cfg = loadConfig('svr.json', program.debug);
     checkSDKSvrCfg(cfg);
     checkAdminCfg(cfg);
-    chameleon.start(cfg, {
+    chameleon.main(cfg, {
         debug: program.debug,
         sdkPluginPath: program.sdkplugin
     });

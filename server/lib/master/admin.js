@@ -1,10 +1,7 @@
 var restify = require('restify');
-var constants = require('./constants');
-var pathLib = require('path');
 var fs = require('fs');
-var Constants = require('./constants');
-var EventSummarizer = require('./event-summarizer');
-var FunctionUnits = require('./functionunits');
+var EventSummarizer = require('../event-summarizer');
+var FunctionUnits = require('../functionunits');
 
 /**
  * 
