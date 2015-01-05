@@ -68,7 +68,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 JSONObject loginInfo;
                 int retCode = 0;
                 JSONObject result = new JSONObject(data);
-                int errCode = result.optInt("error_code", -1);
+                int errCode = result.optInt("errno", -1);
                 Log.e(Constants.TAG, data);
                 if (errCode == 0) {
                     JSONObject content = new JSONObject(result.getString("data"));
@@ -246,7 +246,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public boolean switchAccount(Activity activity, final IDispatcherCb cb) {
         Intent intent = getSwitchAccountIntent(activity, mCfgLandscape, mCfgBGTransparent);
-        Matrix.invokeActivity(activity, intent, new LoginDispatcherCallback(cb, false, mChannel));
+        Matrix.execute(activity, intent, new LoginDispatcherCallback(cb, false, mChannel));
         return true;
     }
 

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:nearme="http://com.nearme.gamecenter.open.core.view"
+    android:layout_width="@dimen/nmgc_log_reg_width"
+    android:layout_height="@dimen/nmgc_log_reg_height"
+    android:layout_gravity="center"
+    android:background="@drawable/nmgc_auto_login_dialog_bg" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+        	android:id="@+id/phone_reg_pager_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <TextView
+                android:id="@+id/nmgc_regist_title"
+                style="@style/nmgc_one_key_reg_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal"
+                android:text="@string/nmgc_phone_regist" />
+          
+
+            <TextView
+                android:id="@+id/nmgc_regist_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="17dp"
+                android:text="@string/nmgc_regist_hint"
+                android:textColor="#8c8c8c"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:id="@+id/phone_input_and_verify_code_root"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="@dimen/phone_num_margin_top"
+                android:orientation="horizontal" >
+
+                <com.nearme.gamecenter.open.core.view.InputBar
+                    android:id="@+id/phone_num_input_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    nearme:input_hint="@string/nmgc_input_phone_num"
+                    nearme:input_label="@string/nmgc_blank"
+                    nearme:input_length="11" >
+                </com.nearme.gamecenter.open.core.view.InputBar>
+
+                <Button
+                    android:id="@+id/get_verify_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="6"
+                    android:background="@drawable/keke_get_verify_code_btn_selector"
+                    android:text="@string/get_verify_code"
+                    android:textColor="#585858"
+                    android:textSize="@dimen/px45_text_size" />
+            </LinearLayout>
+
+            <com.nearme.gamecenter.open.core.view.InputBar
+                android:id="@+id/verify_code_input_area"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="7dp"
+                nearme:input_hint="@string/nmgc_input_verify_code"
+                nearme:input_label="@string/nmgc_blank"
+                nearme:input_length="4" >
+            </com.nearme.gamecenter.open.core.view.InputBar>
+
+            <TextView
+                android:id="@+id/nmgc_next_step"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="17dp"
+                android:background="@drawable/log_reg_bg_selector"
+                android:gravity="center"
+                android:text="@string/account_register_btn"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/nmgc_login_common_text_size" />
+
+            <RelativeLayout
+                android:id="@+id/nmgc_regist_another_way"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" >
+
+                <TextView
+                    android:id="@+id/nmgc_reg_another_way_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/nmgc_reg_another_way"
+                    android:textColor="#8c8c8c"
+                    android:textSize="13sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="0.5dp"
+                    android:layout_alignBottom="@id/nmgc_reg_another_way_tv"
+                    android:layout_alignLeft="@id/nmgc_reg_another_way_tv"
+                    android:layout_alignRight="@id/nmgc_reg_another_way_tv"
+                    android:contentDescription="@null"
+                    android:src="#585858" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <include 
+            android:id="@+id/set_psw_pager_root"
+            layout="@layout/set_psw_view_layout" />
+    </LinearLayout>
+
+</ScrollView>

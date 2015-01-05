@@ -38,10 +38,8 @@
         android:smallScreens="true" />
 
     <application>
-        <activity
-            android:name="com.nearme.gamecenter.open.core.WebActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
-        </activity>
+        <!-- activity for sdk all begin -->
+        <!-- activity for sdk core -->
         <activity
             android:name="com.nearme.gamecenter.open.core.LogoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -50,7 +48,7 @@
         <activity
             android:name="com.nearme.gamecenter.open.core.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/Theme_Dialog_Custom"  >
+            android:theme="@style/Theme_Dialog_Custom" >
         </activity>
         <activity
             android:name="com.nearme.gamecenter.open.core.WebViewBarActivity"
@@ -71,6 +69,12 @@
         </activity>
         <activity
             android:name="com.nearme.gamecenter.open.core.KebiNormalPayActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
+            android:theme="@style/nmgc_activitynotfloat" >
+        </activity>
+        <activity
+            android:name="com.nearme.gamecenter.open.core.KebiRealPayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/nmgc_activitynotfloat" >
@@ -100,6 +104,37 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/Theme_Dialog_Custom" >
         </activity>
+
+        <activity
+            android:name="com.nearme.gamecenter.open.core.FastRegActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme_Dialog_Custom"  >
+        </activity>
+
+        <activity
+            android:name="com.nearme.gamecenter.open.core.PhoneRegActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme_Dialog_Custom"  >
+        </activity>
+
+        <activity
+            android:name="com.nearme.gamecenter.open.core.OneKeyRegSuccessActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme_Dialog_Custom"  >
+        </activity>
+
+        <activity
+            android:name="com.nearme.gamecenter.open.core.NormalPhoneRegActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme_Dialog_Custom"  >
+        </activity>
+
+        <activity
+            android:name="com.nearme.gamecenter.open.core.NormalRegActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme_Dialog_Custom"  >
+        </activity>
+
 
         <!-- activity for sdk upgrade -->
         <activity
@@ -180,7 +215,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
         <activity
             android:name="com.nearme.wappay.activity.YeePayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -206,6 +240,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <!-- 支付相关的activity -->
 
         <!--alipay sdk begin -->
@@ -255,10 +290,9 @@
         <meta-data
             android:name="CHINA_UNICOM_MOBILE_CHANNEL"
             android:value="23" />
-        <!-- 彩客wo+相关的activity -->
 
         <meta-data android:name="ShieldSmsTag" android:value="Shield"/>
-
+        <!-- 彩客wo+相关的activity -->
 
         <!-- 银联配置 -->
 
@@ -304,6 +338,7 @@
         <!-- Upay 支付专用的Receiver设置 -->
         <receiver android:name="com.youge.upay_sms_sdk_demo.UpaySentReceiver" >
         </receiver>
+
         <!-- activity for sdk charge end -->
         <!-- activity for sdk all end !!! -->
     </application>
