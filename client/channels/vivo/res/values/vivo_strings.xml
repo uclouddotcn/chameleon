@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- LoginActivity begin -->
+    <string name="vivo_app_name">"vivo account"</string>
+    <string name="vivo_back">Back</string>
+    <string name="vivo_account_num_label">Account</string>
+    <string name="vivo_account_hint_label">"Email/Phone number/Name"</string>
+    <string name="vivo_account_password_label">Password</string>
+    <string name="vivo_account_login">"Login"</string>
+    <string name="vivo_account_registe">"Register"</string>
+    <string name="vivo_account_findpassword">"Retrieve password "</string>
+    <string name="vivo_get_data_network_error">"Cannot connect to server, please check your network and server settings"</string>
+    <string name="vivo_loading_string">"Loading&#8230;"</string>
+    <string name="vivo_account_loginempty_wrong">"Account or password cannot be empty"</string>
+    <string name="vivo_email_empty_wrong">"Email can’t be empty     "</string>
+    <string name="vivo_email_formatmore_wrong">Email can’t be more than 50 characters"</string>
+    <string name="vivo_email_format_wrong">"Email format error"</string>
+    <string name="vivo_account_num_empty_wrong">"Account number can’t be empty"</string>
+	<string name="vivo_account_num_formatmore_wrong">"Account number can’t be more than 50 characters"</string>
+	<string name="vivo_account_num_formatless_wrong">"Account number can’t be less than 3 characters"</string>
+	<string name="vivo_password_empty_wrong">"Password can’t be empty     "</string>
+	<string name="vivo_password_formatless_wrong">"Password can’t be less than 6 characters     "</string>
+	<string name="vivo_password_formatmore_wrong">"Password can’t be more than 16 characters     "</string>
+	<string name="vivo_password_format_wrong">"Characters or digits"</string>
+	<string name="vivo_username_empty_wrong">"Phone number or Email"</string>
+	<string name="vivo_phone_num_empty_wrong">"The phone number can not be empty     "</string>
+	<string name="vivo_phone_or_email_format_wrong">"Phone number or Email     "</string>
+	<string name="vivo_net_work_not_connect_title">"Unable connect to the network"</string>
+	<string name="vivo_net_work_not_connect_info">"Please check network or retry later"</string>
+	<string name="vivo_set_network">"Network settings&#160;"</string>
+	<string name="vivo_cancle">"Cancel"</string>
+	<string name="vivo_commit_success">"Successfully"</string>
+	<string name="vivo_open_Email">"Go to mailbox"</string>
+	<string name="vivo_use_temp_account">"Visitor login"</string>
+	<string name="vivo_msg_bind_security_email">"To prevent forgetting password"</string>
+	<string name="vivo_title_bind_security_email">"vivo account Binding email"</string>
+	<!-- LoginActivity end -->
+	
+	<!-- RegisterActivity begin -->
+	<string name="vivo_registe_title">"Register"</string>
+    <string name="vivo_name_indispensable_label">"3&#8211;15 characters or 2&#8211;7 Chinese characters"</string>
+    <string name="vivo_password_indispensable_label">"6&#8211;16 characters or digits"</string>
+    <string name="vivo_show_password">"Show password"</string>
+    <string name="vivo_read_protocol">Agree to \"User Agreement\"</string>
+    <string name="vivo_submit_label">"Submit"</string>
+    <string name="vivo_commit_success_tips">"Submitted to the success"</string>
+    <string name="vivo_commit_success_msg">"Verification Email has been sent to your mailbox, please check"</string>
+    <string name="vivo_enter_email">"Go to mailbox"</string>
+    <string name="vivo_agree_protocol_error">"Please read and agree to \"User Agreement\""</string>
+    <string name="vivo_username_format_wrong">"Name must be 3&#8211;15 characters or 2&#8211;7 Chinese characters"</string>
+    <string name="vivo_username_pure_num_wrong">"Name can’t be pure number"</string>
+    <string name="vivo_email_label">"Email     "</string>
+    <string name="vivo_email_indispensable_label">"Please input your real email     "</string>
+    <!-- RegisterActivity end -->
+    <!-- VerifyPhoneNumActivity begin -->
+    <string name="vivo_phone_num_verify">"Enter verification code"</string>
+    <string name="vivo_phone_num_verify_label">"Verification code"</string>
+    <string name="vivo_verify_num_format_wrong">"Verification code is 4 digits"</string>
+    <string name="vivo_get_verify_code">"Get verification code"</string>
+    <string name="vivo_get_verify_code_wait">"Get verification code (* secs)"</string>
+    <string name="vivo_get_verify_code_one_sec">"Get verification code (1 sec)"</string>
+    <string name="vivo_phone_num_verify_intro">"Please wait for a moment, if the message is not received for a long time, please regain it after 60 secs"</string>
+    <string name="vivo_finish_label">"Done"</string>
+    <!-- VerifyPhoneNumActivity end -->
+    <!-- FindPasswordActivity begin -->
+    <string name="vivo_find_password">"Retrieve password "</string>
+    <string name="vivo_find_password_intro">"Please enter the account which need to retrieve password"</string>
+    <string name="vivo_from_question">"Through security question"</string>
+	<string name="vivo_from_email">"Through Email"</string>
+    <string name="vivo_next_step">"Next step"</string>
+    <string name="vivo_find_password_hint_label">"Email/Phone number/Name"</string>
+	<string name="vivo_send_email_success">"Verification Email(%1$s) has been sent to your mailbox, please check"</string>
+	<string name="vivo_ok_label">"OK"</string>
+	<string name="vivo_question_next">"Next"</string>
+    <string name="vivo_question_next_end">"Is the last"</string>
+    <string name="vivo_input_answer">"Answer security question"</string>
+    <string name="vivo_answer_wrong">"Incorrect answer, please retry"</string>
+    <string name="vivo_answer_empty_wrong">"The answer can not be empty"</string>
+    <string name="vivo_question_lable">"Question"</string>
+    <string name="vivo_no_network_title">"Cannot connect to server, please check your network and server settings"</string>
+    <!-- FindPasswordActivity end -->
+    <!-- SetPassWordActivity begin -->
+	<string name="vivo_set_password_label">"Set password"</string>
+	<string name="vivo_new_password_label">"New password"</string>
+	<string name="vivo_confirm_password_label">"Confirm password"</string>   
+    <string name="vivo_passwordconfirm_empty_wrong">"Confirm password can’t be empty"</string>
+    <string name="vivo_password_confirm_wrong">"The passwords do not match"</string>
+    <string name="vivo_confirm_password_empty_wrong">"Confirm password can’t be empty "</string>
+    <!-- SetPassWordActivity end -->
+    <!-- RegisterProtocolActivity Begin -->
+	<string name="vivo_account_agreement_title">"User Agreement"</string>
+	<string name="vivo_net_error_retry">"Connection failed， click to retry"</string>
+	<string name="vivo_agree_label">"Agree"</string>
+	<!-- RegisterProtocolActivity End -->
+</resources>

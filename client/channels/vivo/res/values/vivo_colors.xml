@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    
+    <drawable name="vivo_activity_background_color">#fff4f4f4</drawable>
+    <color name="vivo_text_color_middle">#343434</color>
+    <color name="vivo_text_color_small">#818181</color>
+    <color name="vivo_windowTitleColor">#ff000000</color>
+    <color name="vivo_windowTitleShadowColor">#00494d59</color>
+    <color name="vivo_windowTitlleButtonShadowColor">#ff00aeff</color>
+    <drawable name="green">#0f0</drawable>  
+    <drawable name="blue">#4876FF</drawable>
+    
+</resources>

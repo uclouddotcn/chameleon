@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="bbkDailogItemTextSize">16sp</dimen>
+    <dimen name="order_top_bar_spacing">40dip</dimen>
+    <dimen name="bbk_pay_type_height">40dp</dimen>
+    <dimen name="bbk_pay_type_left">19dp</dimen>
+    <dimen name="bbk_product_paytype_dis">56dp</dimen>
+    <dimen name="card_sumit_left">38dip</dimen>
+    <dimen name="bbk_card_type_size">46px</dimen>
+    <dimen name="bbk_card_support_size">37px</dimen>
+    <dimen name="card_pay_submit_spacing">25dip</dimen>
+    <dimen name="card_pay_title_size">60px</dimen>
+    <dimen name="bbk_dialog_title_height">50dp</dimen>
+    <dimen name="bbk_paytype_text_size">46px</dimen>
+    <dimen name="bbk_paytype_tip_text_size">36px</dimen>
+
+</resources>
