@@ -1,5 +1,5 @@
 var cluster = require('cluster');
-var Message = require('../message');
+var Message = require('./message');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var path = require('path');
@@ -45,21 +45,22 @@ Worker.prototype.onHeartBeat = function (msg) {
 };
 
 var WorkerMgr = function (logger, options) {
-    this._logger = logger;
-    this.cmds = {};
-    this.ver = 0;
-    this.worker = null;
-    this.num = 0;
     this.status = 'done';
-    cluster.setupMaster({
-        exec: path.join(__dirname, "worker.js")
-    });
     EventEmitter.call(this);
 };
 util.inherits(WorkerMgr, EventEmitter);
 
 
-WorkerMgr.prototype.init = function (pluginInfos, callback) {
+WorkerMgr.prototype.init = function (logger, pluginInfos, cfgFile, callback) {
+    this._logger = logger;
+    this.cmds = {};
+    this.ver = 0;
+    this.worker = null;
+    this.num = 0;
+    cluster.setupMaster({
+        exec: path.join(__dirname, "worker.js"),
+        args: [cfgFile]
+    });
     this.status = 'init';
     this.pluginInfos = pluginInfos;
     this._startWorker(callback);
@@ -190,7 +191,6 @@ WorkerMgr.prototype._onMessage = function (wid, msg) {
         this._logger.info({msg: msg.header}, "Fail to create inst");
         return;
     }
-    console.log(msg)
     switch (msg.header._id) {
         case '__closed':
             worker.closed();
@@ -217,7 +217,7 @@ WorkerMgr.prototype._onReply = function (msg) {
     if (msg.err) {
         obj.callback.call(null, msg.err);
     } else {
-        obj.callback.call(null, msg.body);
+        obj.callback.call(null, null, msg.body);
         if (msg.header._id === '__start') {
             this.worker.onStarted();
             this._startHeartBeat();
@@ -241,7 +241,7 @@ WorkerMgr.prototype._doRequest = function (wid, msgid, body, callback) {
         timeout: setTimeout(function () {
             callback(new Error("timeout"));
         }, 10000),
-        cb: callback
+        callback: callback
     };
 };
 

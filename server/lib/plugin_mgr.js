@@ -1,10 +1,11 @@
-var constants = require('../constants');
-//var paramChecker = require('../param-checker');
-var SDKPluginPool = require('./sdk_plugin_pool');
-var fs = require('fs');
 var EventEmitter = require('events').EventEmitter;
+var fs = require('fs');
 var url = require('url');
 var util = require('util');
+
+var constants = require('./constants');
+var SDKPluginPool = require('./sdk_plugin_pool');
+var workerMgr = require('./worker_mgr');
 
 
 module.exports.createPluginMgr = function (localsettings, logger, pluginPath) {
@@ -22,7 +23,7 @@ module.exports.createPluginMgr = function (localsettings, logger, pluginPath) {
 function PluginMgr(localsettings, pluginPath, logger) {
     this.lsetting = localsettings;
     this.pluginPool = new SDKPluginPool(pluginPath, logger);
-    this.pluginModules = {};
+    this.pluginInfos = [];
     this.logger = logger;
     EventEmitter.call(this);
 }
@@ -66,6 +67,7 @@ PluginMgr.prototype.loadAllPlugins = function (callback) {
             self.logger.info({ver: ver}, 'loading plugin for ' + name);
             try {
                 pluginInfos.push({
+                    name: name,
                     ver: ver,
                     p: pluginPath
                 });
@@ -77,6 +79,7 @@ PluginMgr.prototype.loadAllPlugins = function (callback) {
                 self.logger.error( {err: e, name: pluginPath}, 'invalid plugin module');
             }
         }
+        self.pluginInfos = pluginInfos;
         callback(null, pluginInfos);
         //doLoadPluginModule(self, plugin)
     });
@@ -91,8 +94,8 @@ PluginMgr.prototype.loadAllPlugins = function (callback) {
 PluginMgr.prototype.getAllPluginInfos = function() {
     var ret = [];
     var self = this;
-    for (var i = 0; i < self.pluginModules.length; ++i) {
-        ret.push(makePluginInfo(self.pluginModules[i]));
+    for (var i = 0; i < self.pluginInfos.length; ++i) {
+        ret.push(makePluginInfo(self.pluginInfos[i]));
     }
     return ret;
 };
@@ -116,40 +119,42 @@ PluginMgr.prototype.upgradePlugin = function(fileurl, md5value, callback) {
     })
 };
 
-PluginMgr.prototype.usePluginAtVersion = function (name, version) {
+PluginMgr.prototype.usePluginAtVersion = function (name, version, callback) {
     var p= this.pluginPool.getPluginPath(name, version);
-    this.sdkPluginSetting[name] = version;
-    var self = this;
-    this.lsetting.get('setting', 'sdkplugins', function (err, data) {
-        if (err) {
-            self.logger.error({err: err}, "Fail to get local settings");
-            return;
-        }
-        var sdkplugins = {};
-        try {
-            sdkplugins = JSON.parse(data);
-        } catch (e) {
-            self.logger.error({err: e}, "Fail to parse local plugin data");
-        }
-        self.logger.info({name: name, version: version}, "using special plugin version");
-        sdkplugins[name] = version;
-        self.lsetting.set('setting', 'sdkplugins', JSON.stringify(sdkplugins));
-    });
-    /*
-    //var pluginModule = doLoadPluginModule(this, version, p);
-    if (pluginModule instanceof Error) {
-    } else {
-        this.pluginModules[name] = pluginModule;
-        this.emit('plugin-upgrade', name, pluginModule);
+    if (p === null) {
+        setImmediate(callback, new Error("Plugin not exists: " + name + '@' + version));
+        return;
     }
-    return pluginModule;
-    */
+    var self = this;
+    workerMgr.request('plugin.use', {name:name, ver: version, p: p}, function(err) {
+        if (err) {
+            return callback(err);
+        }
+        self.sdkPluginSetting[name] = version;
+        self.lsetting.get('setting', 'sdkplugins', function (err, data) {
+            if (err) {
+                self.logger.error({err: err}, "Fail to get local settings");
+                return;
+            }
+            var sdkplugins = {};
+            try {
+                sdkplugins = JSON.parse(data);
+            } catch (e) {
+                self.logger.error({err: e}, "Fail to parse local plugin data");
+            }
+            self.logger.info({name: name, version: version}, "using special plugin version");
+            sdkplugins[name] = version;
+            self.lsetting.set('setting', 'sdkplugins', JSON.stringify(sdkplugins));
+        });
+        callback();
+    });
 };
 
 function makePluginInfo(pluginModule) {
     if (pluginModule) {
         return {name: pluginModule.name,
-                path: pluginModule.path};
+                version: pluginModule.ver,
+                path: pluginModule.p};
     } else {
         return pluginModule;
     }

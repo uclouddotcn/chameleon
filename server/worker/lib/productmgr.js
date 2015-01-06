@@ -2,7 +2,7 @@ var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
 var pathLib =  require('path');
 var util = require('util');
-var constants = require('./constants');
+var env = require('./env');
 var Product = require('./product');
 var restify = require('restify');
 var async = require('async');
@@ -23,7 +23,7 @@ util.inherits(ProductMgr, EventEmitter);
  * @function
  */
 ProductMgr.prototype.loadProductsSync = function () {
-    var cfgpath = constants.productDir;
+    var cfgpath = env.productDir;
     var self = this;
     fs.readdirSync(cfgpath).forEach(function (fileName) {
         var p = pathLib.join(cfgpath, fileName);
@@ -41,7 +41,7 @@ ProductMgr.prototype.loadProductsSync = function () {
 };
 
 ProductMgr.prototype.addProduct = function (name, productCfg, cb) {
-    var cfgpath = constants.productDir;
+    var cfgpath = env.productDir;
     var p = pathLib.join(cfgpath, name);
     var self = this;
     try {
@@ -94,10 +94,10 @@ ProductMgr.prototype._loadProductSync = function (productName, cfgpath) {
             return;
         }
         if (fileName === '_product.json') {
-            productCfg = constants.loadJsonCfgSync(p);
+            productCfg = env.loadJsonCfgSync(p);
         } else {
             var name = pathLib.basename(fileName, '.json');
-            channelCfg[name] = constants.loadJsonCfgSync(p);
+            channelCfg[name] = env.loadJsonCfgSync(p);
         }
     });
     if (!productCfg) {

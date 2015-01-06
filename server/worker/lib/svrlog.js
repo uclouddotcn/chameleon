@@ -1,26 +1,6 @@
 var bunyan = require('bunyan');
 var path = require('path');
-var constants = require('./constants');
-
-function defaultAdminLoggerCfg(level) {
-    var infoLv = 'info';
-    if (level) {
-        infoLv = level; 
-    }
-    return {
-        name: 'admin',
-        streams: [
-            {
-                type: 'rotating-file',
-                path: path.join(constants.logDir, 'adminsvr.log'),
-                level: infoLv,
-                period: '1d',
-                count: 4
-            }
-        ],
-        serializers: bunyan.stdSerializers
-    };
-}
+var env = require('./env');
 
 function defaultStatisticsLoggerCfg() {
     var infoLv = 'info';
@@ -29,7 +9,7 @@ function defaultStatisticsLoggerCfg() {
         streams: [
             {
                 type: 'rotating-file',
-                path: path.join(constants.logDir, 'statistics.log'),
+                path: path.join(env.logDir, 'statistics.log'),
                 level: infoLv,
                 period: '1d',
                 count: 4
@@ -50,7 +30,7 @@ function defaultServerLoggerCfg(level) {
         streams: [
             {
                 type: 'rotating-file',
-                path: path.join(__dirname, '../../log/server.log'),
+                path: path.join(env.logDir, 'server.log'),
                 level: infoLv,
                 period: '1d',
                 count: 4
@@ -77,9 +57,6 @@ function Logger(debug, options) {
         options.level = 'debug';
     }
 
-    var adminCfg = options.admin || 
-        defaultAdminLoggerCfg(options.level);
-
     var svrCfg = options.server ||
         defaultServerLoggerCfg(options.level);
 
@@ -87,19 +64,12 @@ function Logger(debug, options) {
         defaultStatisticsLoggerCfg();
 
     if (debug) {
-        adminCfg.src = true;
         svrCfg.src = true;
     }
 
-    this.adminLogger = bunyan.createLogger(adminCfg);
     this.svrLogger = bunyan.createLogger(svrCfg);
     this.statLogger = bunyan.createLogger(statCfg);
 }
-
-Logger.prototype.adminLog = function() {
-    return this.adminLogger;
-};
-
 
 Logger.prototype.svrLog = function() {
     return this.svrLogger;

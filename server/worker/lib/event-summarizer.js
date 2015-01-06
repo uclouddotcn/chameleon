@@ -192,9 +192,7 @@ EventSummarizer.prototype.clear = function () {
         self._cmdSummary[key].latency = 0;
     });
 
-}
-
-
-module.exports.createEventSum = function (eventCenter, statLogger) {
-    return new EventSummarizer(eventCenter, statLogger);
 };
+
+module.exports = EventSummarizer;
+

@@ -1,12 +1,12 @@
 var restify = require('restify');
+var util = require('util');
+var pathLib = require('path');
+var fs = require('fs');
 
 var createAppCbSvr = require('./app_callback_svr').create;
 var ChannelMgr = require('./channelmgr');
+var env = require('./env');
 var UserAction = require('./user-events');
-var util = require('util');
-var Constants = require('./constants');
-var pathLib = require('path');
-var fs = require('fs');
 
 /**
  * every products will have one instance, manage
@@ -66,7 +66,7 @@ Product.prototype.loadAllChannels = function (channelCfg) {
     Object.keys(channelCfg).forEach(function (key) {
         self.startChannel(key, channelCfg[key]);
     });
-    if (Constants.debug) {
+    if (env.debug) {
         // start test channel
         this.startChannel("test", {
             sdks: [

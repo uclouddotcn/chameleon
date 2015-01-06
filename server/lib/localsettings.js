@@ -1,35 +1,30 @@
 var levelup = require('levelup');
 var path = require('path');
 
-function LevelDBClient(store, options, logger) {
+function LevelDBClient(options, logger) {
     if (!options) {
         options = {};
     }
     var dbPath = options.path || DEFAULT_LV_DB_PATH;
     var self = this;
     self.db = levelup(dbPath);
-    self.store = store;
-    self.timeoutPool = {};
     self.logger = logger;
     self.errFunc = function onError (err) {
         self.store.emit(err);
     }
 }
 
-LevelDBClient.prototype.set = function (key, value, timeout, callback) {
+LevelDBClient.prototype.set = function (key, value, callback) {
     var self = this;
-    self.store.logger.debug({key: key}, 'level db set');
+    self.logger.debug({key: key}, 'level db set');
     self.db.put(key, value, function (err) {
         if (err) {
             return callback(err);
-        } 
-        self.store.logger.debug({timeout: timeout}, 'timeout set to ' + timeout);
-        var timeoutObj = setTimeout(function () {
-            self.db.del(key);
-        }, timeout*1000);
-        self.timeoutPool[key] = timeoutObj;
-        callback();
-        self.store.logger.trace({key: key}, 'level db set finished');
+        }
+        if (callback) {
+            callback();
+        }
+        self.logger.trace({key: key}, 'level db set finished');
     });
 };
 
@@ -58,14 +53,24 @@ LevelDBClient.prototype.close = function (callback) {
     this.db.close(callback);
 };
 
-
-var DEFAULT_LV_DB_PATH = 
-    path.join(__dirname, '../../../../log/pending-order.db');
-
-module.exports = {
-    createClient: function (store, options, logger) {
-        return new LevelDBClient(store, options, logger);
-    }
+function LocalSettings (cfgfolder, logger) {
+    this.db = new LevelDBClient({
+        path: path.join(cfgfolder, 'localsetting')
+    }, logger);
 }
+
+LocalSettings.prototype.get = function (category, name, callback) {
+    this.db.get(this._name(category, name), callback);
+};
+
+LocalSettings.prototype.set = function (category, name, value) {
+    this.db.set(this._name(category, name), value);
+};
+
+LocalSettings.prototype._name = function (category, name) {
+    return category+':'+name;
+};
+
+module.exports = LocalSettings;
 
 
