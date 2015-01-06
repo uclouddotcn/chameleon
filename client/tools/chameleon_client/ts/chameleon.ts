@@ -240,24 +240,24 @@ class ConfigDesc {
         'Url' : new ConfigItemType("string", (name)=> 's'+name, 'http://localhost')
     };
 
-    private items: {name:string; item:ConfigItemType; defaultValue: any; ignore: boolean}[] = [];
+    private items: {name:string; item:ConfigItemType; desc: string; defaultValue: any; ignore: boolean}[] = [];
 
-    registerItem(name: string, type: number, defaultValue: any = null, ignore = false) {
+    registerItem(name: string, type: number, desc: string, defaultValue: any = null, ignore = false) {
         var item = ConfigDesc.gItemMaps[IT[type]];
         if (!item) {
             console.log('expect type '+ type);
             throw new ChameleonError(ErrorCode.CFG_ERROR, '无法找到类型'+type+'的配置');
         }
-        this.items.push({name: name, item: item, defaultValue: defaultValue, ignore: ignore});
+        this.items.push({name: name, item: item, defaultValue: defaultValue, ignore: ignore, desc: desc});
     }
 
-    registerItem1(name: string, type: string, defaultValue: any = null, ignore = false) {
+    registerItem1(name: string, type: string, desc: string, defaultValue: any = null, ignore = false) {
         var item = ConfigDesc.gItemMaps[type];
         if (!item) {
             console.log('expect type '+ type);
             throw new ChameleonError(ErrorCode.CFG_ERROR, '无法找到类型'+type+'的配置');
         }
-        this.items.push({name: name, item: item, defaultValue: defaultValue, ignore: ignore});
+        this.items.push({name: name, item: item, defaultValue: defaultValue, ignore: ignore, desc: desc});
     }
 
     static wrapName(cfgItem: ConfigItemType, ignore: boolean, name: string ) {
@@ -324,6 +324,18 @@ class ConfigDesc {
             }
         }
     }
+
+    getItems(): {name: string; type: string; desc: string}[] {
+        var res = [];
+        for (var i = 0; i < this.items.length; ++i) {
+            res.push({
+                name: this.items[i].name,
+                type: this.items[i].item.type,
+                desc: this.items[i].desc
+            });
+        }
+        return res;
+    }
 }
 
 class GlobalCfg {
@@ -358,8 +370,8 @@ class GlobalCfg {
     static gCfgDesc: ConfigDesc = GlobalCfg._createCfgDesc();
     static _createCfgDesc(): ConfigDesc {
         var desc = new ConfigDesc();
-        desc.registerItem('appname', IT.String);
-        desc.registerItem('landscape', IT.Boolean);
+        desc.registerItem('appname', IT.String, 'APP NAME');
+        desc.registerItem('landscape', IT.Boolean, '是否使用横屏');
         return desc;
     }
 }
@@ -508,11 +520,12 @@ export class SDKMetaInfo {
         res.chamver = new Version(jsonobj['chamversion']);
         var itemcfg = jsonobj['cfgitem'];
         res.cfgdesc = new ConfigDesc();
-        for (var itemname in itemcfg) {
-            var type: string = itemcfg[itemname]['type'];
+        for (var i = 0; i < itemcfg.length; ++i) {
+            var itemname: string = itemcfg[i]['name'];
+            var type: string = itemcfg[i]['type'];
             type = type[0].toUpperCase() + type.substr(1);
-            res.cfgdesc.registerItem1(itemname, type, itemcfg[itemname]['default'],
-                itemcfg[itemname]['ignoreInA']);
+            res.cfgdesc.registerItem1(itemname, type, itemcfg[i]['desc'], itemcfg[i]['default'],
+                itemcfg[i]['ignoreInA']);
         }
         if (jsonobj['script']) {
             var p = pathLib.join(chameloenPath, 'script', jsonobj['script']);
@@ -553,6 +566,10 @@ export class SDKMetaInfo {
         if (this.script) {
             return this.script.afterCfgSet(cfg);
         }
+    }
+
+    getSettingItemInfo(): any {
+        return this.cfgdesc.getItems();
     }
 }
 

@@ -3,16 +3,16 @@
     "name": "anzhi",
     "chamversion": "1.3.3",
     "version": "3.1.3",
-    "cfgitem": {
-        "appKey" : {
+    "cfgitem": [
+        {
+            "name": "appKey",
             "type": "string",
-            "desc": "app key"
+            "desc": "APP KEY"
         },
-
-        "appSecret" : {
+        {
+            "name": "appSecret",
             "type": "string",
-            "desc": "app secret"
+            "desc": "APP SECRET"
         }
-    }
+    ]
 }
-

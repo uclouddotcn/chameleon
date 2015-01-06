@@ -4,37 +4,37 @@
     "chamversion": "1.3.1",
     "version": "v2.0.6a",
     "enableWrapPackage": 0,
-    "cfgitem": {
-
-        "qqAppId" : {
+    "cfgitem": [
+        {
+            "name": "qqAppId",
             "type": "string",
-            "desc": "app id"
+            "desc": "手Q APP ID"
         },
-
-        "qqAppKey" : {
+        {
+            "name": "qqAppKey",
             "type": "string",
-            "desc": "app key"
+            "desc": "手Q APP KEY"
         },
-
-        "wxAppId" : {
+        {
+            "name": "wxAppId",
             "type": "string",
-            "desc": "app id"
+            "desc": "微信 APP ID"
         },
-
-        "wxAppKey" : {
+        {
+            "name": "wxAppKey",
             "type": "string",
-            "desc": "app key"
+            "desc": "微信 APP KEY"
         },
-
-        "moneyIcon" : {
+        {
+            "name": "moneyIcon",
             "type": "string",
             "desc": "qq支付时候所需要的支付图标，必须是48*48的"
         },
-        "test": {
+        {
+            "name": "test",
             "type": "boolean",
             "default": "false",
             "desc": "是否使用测试环境"
         }
-    }
+    ]
 }
-

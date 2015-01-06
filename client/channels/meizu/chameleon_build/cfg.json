@@ -3,23 +3,22 @@
     "name": "meizu",
     "chamversion": "1.3.1",
     "version": "2.0.0",
-    "cfgitem": {
-        "appId" : {
-            "type" : "string",
-            "desc" : "app id"
+    "cfgitem": [
+        {
+            "name": "appId",
+            "type": "string",
+            "desc": "APP ID"
         },
-
-        "appKey" : {
-            "type" : "string",
-            "desc" : "app key"
+        {
+            "name": "appKey",
+            "type": "string",
+            "desc": "APP KEY"
         },
-
-        "appSecret" : {
-            "type" : "string",
-            "desc" : "app secret",
-            "ignoreInA" : 1
+        {
+            "name": "appSecret",
+            "type": "string",
+            "desc": "APP SECRET",
+            "ignoreInA": 1
         }
-
-    }
+    ]
 }
-

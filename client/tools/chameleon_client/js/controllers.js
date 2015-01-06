@@ -423,9 +423,7 @@ chameleonControllers
                 var channelname = $scope.channel.data.metaInfo.name;
                 var channelTemplate = function(channelName){
                     var result = "";
-                    var channelInfo = fs.readFileSync('./channelInfo.json', 'utf-8');
-                    var channelInfo = channelInfo.replace('/\n/g', '');
-                    var context = JSON.parse(channelInfo);
+                    var sdks = ProjectMgr.getSupportedDKs();
                     var getControlNode = function(key, value){
                         var nodeText = '',
                             desc = value.desc,
@@ -471,10 +469,11 @@ chameleonControllers
                         nodeText = nodeText.replace(/@descLow/g, descLow);
                         nodeText = nodeText.replace(/@datafield/g, datafield);
                         return nodeText;
-                    }
-                    var channelConfig = _.findWhere(context.channels, {name: channelname});
-                    for(var key in channelConfig.cfgitem){
-                        result += getControlNode(key, channelConfig.cfgitem[key]);
+                    };
+                    var sdkmeta = ProjectMgr.getSDK(channelname);
+                    var items = sdkmeta.getSettingItemInfo();
+                    for (var i = 0; i < items.length; ++i) {
+                        result += getControlNode(items[i].name, items[i]);
                     }
                     result += ('<div class="control-group" style="margin: 5px;">'
                         + '<div class="controls">'
@@ -482,7 +481,7 @@ chameleonControllers
                         + '<button type="button" class="btn" ng-click="submitCancel()">取消</button>'
                         + '</div></div>');
                     return result;
-                }
+                };
                 var template = channelTemplate(channelname);
                 var instance = $modal.open({
                     templateUrl: 'partials/sdkConfig.html',
