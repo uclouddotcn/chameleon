@@ -392,7 +392,7 @@ public class ChannelInterface {
 		return _plugins.getChannelName();
 	}
 
-    static void setChannelName(String channelName) {
+    public static void setChannelName(String channelName) {
         _plugins.setChannelName(channelName);
     }
     /**
