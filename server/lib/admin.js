@@ -25,6 +25,24 @@ var Admin = function(pluginMgr, options, logger) {
     self.server.use(restify.queryParser());
     var requestPoster = options.requestPoster || workerMgr;
 
+    self.server.post('/admin', function (req, res, next) {
+        try {
+            switch (req.body.action) {
+                case 'restart':
+                    workerMgr.restartWorker(function () {
+                        res.send({code: 0});
+
+                    });
+                    break;
+                default:
+                    return next(new restify.InvalidArgumentError(''));
+            }
+        } catch (e) {
+            logger.error({err: e, req: req}, 'Fail to handle admin request');
+            return next(new restify.InvalidArgumentError(e.message));
+        }
+    });
+
     self.server.get('/monitor', function (req, res, next) {
         var action = req.params.action;
         requestPoster.request('monitor.'+action, req.params, function (err, rsp) {

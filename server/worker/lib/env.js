@@ -1,8 +1,6 @@
 var fs = require('fs');
+var path = require('path');
 module.exports.debug = false;
-module.exports.billDir = __dirname + '/../../../bill';
-module.exports.logDir = __dirname + '/../../../log';
-module.exports.productDir = __dirname + '/../../../products';
 
 /**
  * load json file from local file
@@ -14,5 +12,13 @@ module.exports.loadJsonCfgSync = function (p) {
     var data = fs.readFileSync(p, {encoding: 'utf8'});
     return JSON.parse(data);
 };
+
+module.exports.initFromBaseDir = function (baseDir) {
+    module.exports.debug = false;
+    module.exports.baseDir = baseDir;
+    module.exports.billDir = path.join(baseDir, 'bill');
+    module.exports.logDir = path.join(baseDir, 'log');
+    module.exports.productDir = path.join(baseDir, 'products');;
+}
 
 

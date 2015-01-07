@@ -1,5 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
+var path = require('path');
 
 var workerMain = require('./lib');
 
@@ -31,19 +32,19 @@ CmdEmmiter.prototype.runCmd = function (msg) {
             reply(msg, err, body);
         });
     } else {
-        console.log('func not found');
+        console.error('func not found');
         reply(msg, new Error('method not found: ' + _id));
     }
 };
 
 
-function _main() {
-    var cfgFile = process.argv[2];
+function _main(baseDir, argv) {
+    var cfgFile = path.resolve(baseDir, argv[0]);
     var cmdEmitter = new CmdEmmiter();
     process.on('message', function (msg) {
         switch (msg.header._id) {
             case '__start':
-                workerMain.init(cfgFile, msg.body, cmdEmitter, function (err) {
+                workerMain.init(cfgFile, baseDir, msg.body, cmdEmitter, function (err) {
                     reply(msg, err);
                 });
                 break;
@@ -58,13 +59,13 @@ function _main() {
     });
 }
 
-module.exports.main = function () {
+module.exports.main = function (baseDir, argv) {
     var d = require('domain').create();
     d.on('error', function(err) {
         console.error('uncaught exception: ' + err.message);
         console.error('uncaught exception: ' + err.stack);
         throw err;
     });
-    d.run(_main);
+    d.run(_main.bind(null, baseDir, argv));
 };
 

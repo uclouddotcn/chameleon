@@ -124,6 +124,9 @@ RedisClient.prototype.del = function (key, callback) {
 };
 
 RedisClient.prototype.close = function (callback) {
+    if (!this.activeClient) {
+        return setImmediate(callback);
+    }
     for (var i in this.clients) {
         this.clients[i].quit();
     }

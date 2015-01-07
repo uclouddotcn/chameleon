@@ -2,14 +2,15 @@ var EventSummarizer = require('./event-summarizer');
 var FunctionUnits = require('./functionunits');
 var restify = require('restify');
 
-function Admin(productMgr, eventCenter, statLogger) {
-    this.exitFunc = null;
+function Admin(productMgr, eventCenter, logger, statLogger) {
     this.productMgr = productMgr;
     this.eventCollector = new EventSummarizer(eventCenter, statLogger);
+    this._logger = logger;
 }
 
 Admin.prototype.init = function (emitter) {
     var self = this;
+    this._logger.info('regiser monitor.event');
     emitter.register('monitor.event', function (req, callback) {
         if (req && req.product) {
             var res = self.eventCollector.getProductSummary(req.product);
@@ -23,11 +24,13 @@ Admin.prototype.init = function (emitter) {
         }
     });
 
+    this._logger.info('regiser monitor.status');
     emitter.register('monitor.status', function (req, callback) {
         var status = FunctionUnits.getStatus();
         callback(null, status);
     });
 
+    this._logger.info('regiser products.getall');
     emitter.register('products.getall', function (req, callback) {
          var products = Object.keys(self.productMgr.products).map(function (key) {
             return self.productMgr.products[key].productName();
@@ -35,6 +38,7 @@ Admin.prototype.init = function (emitter) {
          callback(null, products);
     });
 
+    this._logger.info('regiser product.new');
     emitter.register('product.new', function (req, callback) {
         if (!req.product || !req.cfg) {
             callback(new Error("Invalid Arguments"));
@@ -50,6 +54,7 @@ Admin.prototype.init = function (emitter) {
         });
     });
 
+    this._logger.info('regiser product.update');
     emitter.register('product.update', function (req, callback) {
         var product = self.productMgr.products[req.product];
         if (!product) {
@@ -61,6 +66,7 @@ Admin.prototype.init = function (emitter) {
         });
     });
 
+    this._logger.info('regiser product.addchannel');
     emitter.register('product.addchannel', function (req, callback) {
         var product = self.productMgr.products[req.product];
         if (!product) {
@@ -80,6 +86,7 @@ Admin.prototype.init = function (emitter) {
         }
     });
 
+    this._logger.info('regiser product.updatechannel');
     emitter.register('product.updatechannel', function (req, callback) {
         var product = self.productMgr.products[req.product];
         if (!product) {
@@ -96,6 +103,7 @@ Admin.prototype.init = function (emitter) {
         }
     });
 
+    this._logger.info('regiser product.stopchannel');
     emitter.register('product.stopchannel', function (req, callback) {
         var product = self.productMgr.products[req.product];
         if (!product) {
@@ -107,8 +115,5 @@ Admin.prototype.init = function (emitter) {
     });
 };
 
-Admin.prototype.registerExitFunc = function (exitFunc) {
-    this.exitFunc = exitFunc;
-};
 
 module.exports = Admin;

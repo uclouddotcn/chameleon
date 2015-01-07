@@ -1,8 +1,10 @@
 var cluster = require('cluster');
-var Message = require('./message');
-var EventEmitter = require('events').EventEmitter;
+var constants = require('./constants')
 var util = require('util');
 var path = require('path');
+
+var Message = require('./message');
+var EventEmitter = require('events').EventEmitter;
 
 var Worker = function (version, wid, callback) {
     this.status = 'init';
@@ -51,15 +53,15 @@ var WorkerMgr = function (logger, options) {
 util.inherits(WorkerMgr, EventEmitter);
 
 
-WorkerMgr.prototype.init = function (logger, pluginInfos, cfgFile, callback) {
+WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
     this._logger = logger;
     this.cmds = {};
     this.ver = 0;
     this.worker = null;
     this.num = 0;
     cluster.setupMaster({
-        exec: path.join(__dirname, "worker.js"),
-        args: [cfgFile]
+        exec: __dirname + '/worker.js',
+        args: [path.resolve(constants.baseDir, workerCfg.script), constants.baseDir].concat(workerCfg.args)
     });
     this.status = 'init';
     this.pluginInfos = pluginInfos;
@@ -84,7 +86,7 @@ WorkerMgr.prototype.restartWorker = function (callback) {
     self.status = 'restarting';
     var workerToClose = this.worker;
     this.worker = null;
-    this._forkChild(function (err) {
+    this._startWorker(function (err) {
         if (err) {
             callback(new Error("Fail to create new server: " + err.message));
             this.worker = workerToClose;
@@ -93,6 +95,7 @@ WorkerMgr.prototype.restartWorker = function (callback) {
             return;
         }
         self._doClose(workerToClose.wid, function () {
+            self.status = 'running';
             callback();
         });
     });
@@ -103,18 +106,22 @@ WorkerMgr.prototype.close = function (callback) {
         setImmediate(callback, new Error('not in running state'));
         return;
     }
-    this._doClose(this.worker.wid, callback);
+    this.status = 'closing';
+    var self = this;
+    this._doClose(this.worker.wid, function (err) {
+        if (err) {
+            return callback(err);
+        }
+        self.status = 'closed';
+        callback();
+    });
 };
 
 WorkerMgr.prototype._doClose = function (wid, callback) {
-    this.status = 'closing';
-    var self = this;
     this._doRequest(wid, '__close', null, function (err) {
         if (err) {
             cluster.workers[wid].kill('SIGKILL');
-            self.worker = null;
         }
-        self.status = 'closed';
         callback();
     });
 };

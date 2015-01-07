@@ -53,14 +53,14 @@ exports.main = function (cfg, options) {
             if (options.singleProcess) {
                 var main = require('../worker/lib/index').init;
                 var requestPoster = new (require('./inproc_requestposter'))();
-                main(constants.configDir, data, requestPoster, function (err) {
+                main(path.join(constants.baseDir, './server/config/svr.json'), constants.baseDir, data, requestPoster, function (err) {
                     if (err) {
                         return callback(err);
                     }
                     callback(null, requestPoster);
                 });
             } else {
-                workerMgr.init(adminLogger, data, constants.configDir, function (err) {
+                workerMgr.init(adminLogger, data, cfg.worker, function (err) {
                     if (err) {
                         adminLogger.error({err: err}, "Fail to init worker");
                         callback(err);
@@ -79,6 +79,7 @@ exports.main = function (cfg, options) {
     ], function (err) {
         if (err) {
             adminLogger.error({err: err}, "Fail to start server");
+            process.exit();
         }
         adminLogger.info("init done");
     });

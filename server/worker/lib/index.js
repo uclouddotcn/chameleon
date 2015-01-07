@@ -32,12 +32,24 @@ function loadCfg(cfgFile) {
         cfgObj._path = cfgFile;
         return cfgObj;
     } catch (err) {
-        console.log(cfgFile + " is not a valid json config");
+        console.error(cfgFile + " is not a valid json config");
         throw err;
     }
 }
 
-function init(cfgFile, pluginInfos, cmdEmitter, callback) {
+var exitFuncs = null;
+
+function init(cfgFile, baseDir, pluginInfos, cmdEmitter, callback) {
+    try {
+        _init(cfgFile, baseDir, pluginInfos, cmdEmitter, callback);
+    } catch (e) {
+        console.error(e.stack);
+        setImmediate(callback, e);
+    }
+}
+
+function _init(cfgFile, baseDir, pluginInfos, cmdEmitter, callback) {
+    env.initFromBaseDir(baseDir);
     var cfg = loadCfg(cfgFile);
     env.debug = cfg.debug;
     // create logger first
@@ -62,27 +74,43 @@ function init(cfgFile, pluginInfos, cmdEmitter, callback) {
     // start channel callback svr
     var channelCbSvr = createChannelCbSvr(cfg.channelCbSvr, productMgr, logger.svrLogger);
 
-    var admin = new Admin(productMgr, productMgr, logger.statLog());
+    var admin = new Admin(productMgr, productMgr, logger.svrLog(), logger.statLog());
 
-    var exitFuncs = function () {
-        async.series([sdkSvr.close.bind(sdkSvr),
-                channelCbSvr.close.bind(channelCbSvr),
+    exitFuncs = function (callback) {
+        var closeSvr = function (cb) {
+            var svrs = [sdkSvr, channelCbSvr];
+            var aliveCount = svrs.length;
+            var closeServerCb = function (err) {
+                if (aliveCount < 0) {
+                    return;
+                }
+                if (err) {
+                    aliveCount = -1;
+                    cb(err);
+                }
+                aliveCount -=1;
+                if (aliveCount == 0) {
+                    cb();
+                }
+            };
+            for (var i = 0; i < svrs.length; ++i) {
+                svrs[i].close(closeServerCb);
+            }
+            callback();
+        };
+        async.series([closeSvr,
                 pendingOrderStore.close.bind(pendingOrderStore),
                 eventStorageEng.close.bind(eventStorageEng)],
             function (err) {
                 if (err) {
-                    logger.error({err: err}, 'Fail to termniate');
-                    return;
+                    logger.svrLog().error({err: err}, 'Fail to termniate');
+                    process.exit(-1);
                 }
+                logger.svrLog().info({err: err}, 'exit done');
                 process.exit(0);
             }
         );
     };
-
-    process.on('SIGTERM', function () {
-        logger.svrLogger.info("on SIGTERM");
-        exitFuncs();
-    });
 
     // init the internal modules sequentially
     async.series([
@@ -99,11 +127,19 @@ function init(cfgFile, pluginInfos, cmdEmitter, callback) {
             return callback(err);
         }
         admin.init(cmdEmitter);
-        admin.registerExitFunc(exitFuncs);
         return callback();
     });
 }
 
+function close(callback) {
+    if (exitFuncs) {
+        exitFuncs(callback);
+    } else {
+        process.exit(0);
+    }
+}
+
 module.exports = {
-    init: init
+    init: init,
+    close: close
 };
