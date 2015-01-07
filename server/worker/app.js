@@ -53,6 +53,9 @@ function _main(baseDir, argv) {
                     reply(msg, err);
                 });
                 break;
+            case '__hb':
+                reply(msg, null, msg.body);
+                break;
             default:
                 cmdEmitter.runCmd(msg);
         }

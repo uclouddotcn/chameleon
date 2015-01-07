@@ -27,23 +27,20 @@ Worker.prototype.onStarted = function () {
     this.status = 'running';
 };
 
-Worker.prototype.heartBeatMsg = function () {
-    return new Message('__hb', {
-        seq: this.seq
-    });
+Worker.prototype.incSeq = function () {
+    this.seq++;
 };
 
 Worker.prototype.isOffline = function () {
-    return (this.seq - this.lastack) > 4;
+    return !(this.seq - this.lastack <= 4);
 };
 
 Worker.prototype.closed = function () {
     this.status = 'closed';
 };
 
-Worker.prototype.onHeartBeat = function (msg) {
-    assert(msg.header._id === '__hb');
-    this.lastack = msg.body.seq;
+Worker.prototype.onHeartBeat = function (rsp) {
+    this.lastack = rsp.seq;
 };
 
 var WorkerMgr = function (logger, options) {
@@ -135,9 +132,22 @@ WorkerMgr.prototype._startWorker = function (callback) {
 
 WorkerMgr.prototype._startHeartBeat = function () {
     if (this.worker.isOffline()) {
+        this._logger.error('worker seems blocked, force restart');
         this._forceRestartWorker();
+        return;
     }
     var self = this;
+    self.worker.incSeq();
+    self.request('__hb', {seq: this.worker.seq, ver: this.worker.version}, function (err, rsp) {
+        if (err) {
+            self._logger.error({err: err}, 'Fail on request heart beat');
+            return;
+        }
+        if (self.worker.version === rsp.ver) {
+            self._logger.info('on heart beat ' + rsp.seq);
+            self.worker.onHeartBeat(rsp);
+        }
+    });
     setTimeout(function () {
         self._startHeartBeat();
     }, 10000)
@@ -149,7 +159,7 @@ WorkerMgr.prototype._forceRestartWorker = function () {
     this.worker = null;
     var self = this;
     self.emit('force-restart');
-    workerToClose.kill('SIGKILL');
+    cluster.workers[workerToClose.wid].kill('SIGKILL');
     this._startWorker(function (err) {
         if (err) {
             self.logger.error({err: err}, 'Fail to start worker');
@@ -202,9 +212,6 @@ WorkerMgr.prototype._onMessage = function (wid, msg) {
         case '__closed':
             worker.closed();
             break;
-        case '__heartbeat':
-            worker.onHeartBeat();
-            break;
         default:
             this._onReply(msg);
     }
@@ -227,8 +234,8 @@ WorkerMgr.prototype._onReply = function (msg) {
         obj.callback.call(null, null, msg.body);
         if (msg.header._id === '__start') {
             this.worker.onStarted();
-            this._startHeartBeat();
             this.status = 'running';
+            this._startHeartBeat();
         }
     }
     clearTimeout(obj.timeout);

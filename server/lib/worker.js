@@ -9,6 +9,5 @@ function main (argv) {
 module.exports.main = main;
 
 if (require.main === module) {
-    console.log(process.argv)
     main(process.argv.splice(2));
 }
