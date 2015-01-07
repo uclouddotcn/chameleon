@@ -3,31 +3,35 @@
     "name": "gionee",
     "chamversion": "1.3.3",
     "version": "2.1.8.d",
-    "cfgitem": {
-        "appKey" : {
-            "type" : "string",
-            "desc" : "app Key"
+    "cfgitem": [
+        {
+            "name": "appKey",
+            "type": "string",
+            "desc": "APP KEY"
         },
-        "secretKey" : {
-            "type" : "string",
-            "desc" : "secret Key",
-            "ignoreInA" : 1
+        {
+            "name": "secretKey",
+            "type": "string",
+            "desc": "SECRET KEY",
+            "ignoreInA": 1
         },
-        "publicKey" : {
-            "type" : "string",
-            "desc" : "public Key",
-            "ignoreInA" : 1
+        {
+            "name": "publicKey",
+            "type": "string",
+            "desc": "PUBLIC KEY",
+            "ignoreInA": 1
         },
-        "privateKey" : {
-            "type" : "string",
-            "desc" : "secret Key",
-            "ignoreInA" : 1
+        {
+            "name": "privateKey",
+            "type": "string",
+            "desc": "PRIVATE KEY",
+            "ignoreInA": 1
         },
-        "payUrl" : {
-            "type" : "string",
-            "desc" : "secret Key",
-            "ignoreInA" : 1
+        {
+            "name": "payUrl",
+            "type": "string",
+            "desc": "支付回调url",
+            "ignoreInA": 1
         }
-    }
+    ]
 }
-

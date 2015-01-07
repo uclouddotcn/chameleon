@@ -373,6 +373,11 @@ chameleonControllers
                         delete $scope.channel.isdirty;
                         $scope.disable = true;
                         $scope.vForm.vPackage.$dirty = false;
+                        /**var tempIcons = $scope.channel.icons.tempicons;
+                        for(var p in tempIcons){
+                            fs.unlinkSync(tempIcons[p]);
+                        }
+                        $scope.channel.icons.tempicons = {};*/
                     }, function (e) {
                         alert(e.message);
                     });
@@ -423,9 +428,6 @@ chameleonControllers
                 var channelname = $scope.channel.data.metaInfo.name;
                 var channelTemplate = function(channelName){
                     var result = "";
-                    var channelInfo = fs.readFileSync('./channelInfo.json', 'utf-8');
-                    var channelInfo = channelInfo.replace('/\n/g', '');
-                    var context = JSON.parse(channelInfo);
                     var getControlNode = function(key, value){
                         var nodeText = '',
                             desc = value.desc,
@@ -440,7 +442,7 @@ chameleonControllers
                             + '</div>'
                             + '</div>';
                         }
-                        if(type === 'int' || type === 'float'){
+                        if(type === 'integer' || type === 'float'){
                             nodeText =  '<div class="control-group">'
                             + '<label class="control-label" for="@descLow">@desc</label>'
                             + '<div class="controls">'
@@ -471,10 +473,11 @@ chameleonControllers
                         nodeText = nodeText.replace(/@descLow/g, descLow);
                         nodeText = nodeText.replace(/@datafield/g, datafield);
                         return nodeText;
-                    }
-                    var channelConfig = _.findWhere(context.channels, {name: channelname});
-                    for(var key in channelConfig.cfgitem){
-                        result += getControlNode(key, channelConfig.cfgitem[key]);
+                    };
+                    var sdkmeta = ProjectMgr.getSDK(channelname);
+                    var items = sdkmeta.getSettingItemInfo();
+                    for (var i = 0; i < items.length; ++i) {
+                        result += getControlNode(items[i].name, items[i]);
                     }
                     result += ('<div class="control-group" style="margin: 5px;">'
                         + '<div class="controls">'
@@ -482,7 +485,7 @@ chameleonControllers
                         + '<button type="button" class="btn" ng-click="submitCancel()">取消</button>'
                         + '</div></div>');
                     return result;
-                }
+                };
                 var template = channelTemplate(channelname);
                 var instance = $modal.open({
                     templateUrl: 'partials/sdkConfig.html',
@@ -1817,9 +1820,14 @@ chameleonControllers
         $scope.dump = {};
         $scope.useImage = function () {
             var tempgenIcon = {};
+            //empty the folder before create temp files.
+            var files = fs.readdirSync(ProjectMgr.getTempFile(project, ''));
+            for(var i = 0; i < files.length; i ++){
+                fs.unlinkSync(ProjectMgr.getTempFile(project, files[i]));
+            }
             for (var i in images) {
                 tempgenIcon[i] = ProjectMgr.getTempFile(project,
-                        'icon-'+i+'-'+$scope.shownimages.selected.position+'.png');
+                        Date.now()+'icon-'+i+'-'+$scope.shownimages.selected.position+'.png');
             }
             $scope.dump.func(tempgenIcon);
             $modalInstance.close({
@@ -1998,7 +2006,7 @@ chameleonControllers
             var sdk = selectedsdk;
             var promise = sdk.updateFunc();
             promise.then(function () {
-                //$scope.channelCfgForm.$setPristine();
+                $scope.channelCfgForm.$setPristine();
                 $modalInstance.close();
             }, function (e) {
                 alert(e.message);

@@ -49,25 +49,29 @@ public class UnityChannelInterface {
         }
     }
 
+    private static int mRetCode = 0;
+
     private static RequestProxy mRequestProxy = new RequestProxy();
 
+    public static void onCreate() {
+        prj.chameleon.channelapi.ChannelInterface.init(UnityPlayer.currentActivity, true, new IDispatcherCb() {
+            @Override
+            public void onFinished(int retCode, JSONObject data) {
+                Log.d(Constants.TAG, String.format("on init finished %d", retCode));
+                mRequestProxy.setInitDone();
+            }
+        });
+    }
 
     /**
      * init the Chameleon
      */
     public static void init() {
         Log.d(Constants.TAG, "on init");
-        UnityPlayer.currentActivity.runOnUiThread(new Runnable() {
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                prj.chameleon.channelapi.ChannelInterface.init(UnityPlayer.currentActivity, true, new IDispatcherCb() {
-                    @Override
-                    public void onFinished(int retCode, JSONObject data) {
-                        Log.d(Constants.TAG, String.format("on init finished %d", retCode));
-                        mRequestProxy.setInitDone();
-                        U3DHelper.SendMessage("onInited", retCode, null);
-                    }
-                });
+                U3DHelper.SendMessage("onInited", mRetCode, null);
             }
         });
     }

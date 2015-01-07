@@ -4,18 +4,17 @@
     "chamversion": "1.0",
     "version": "3.7.0",
     "enableWrapPackage": 0,
-    "cfgitem": {
-
-        "appKey" : {
+    "cfgitem": [
+        {
+            "name": "appKey",
             "type": "string",
             "desc": "app key"
         },
-
-        "appCpid": {
+        {
+            "name": "appCpid",
             "type": "string",
             "desc": "app cpid",
-            "ignoreInA" : 1
+            "ignoreInA": 1
         }
-    }
+    ]
 }
-

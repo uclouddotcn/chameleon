@@ -3,30 +3,33 @@
     "name": "htc",
     "chamversion": "1.3.1",
     "version": "V3.1",
-    "cfgitem": {
-        "gameCode" : {
-            "type" : "string",
-            "desc" : "game code"
+    "cfgitem": [
+        {
+            "name": "gameCode",
+            "type": "string",
+            "desc": "GAME CODE"
         },
-        "gameName" : {
-            "type" : "string",
-            "desc" : "game name"
+        {
+            "name": "gameName",
+            "type": "string",
+            "desc": "GAME NAME"
         },
-        "payUrl" : {
-            "type" : "string",
-            "desc" : "notify url"
+        {
+            "name": "pubkey",
+            "type": "string",
+            "desc": "公钥",
+            "ignoreInA": 1
         },
-        "pubkey": {
-            "type" : "string",
-            "desc" : "pubkey",
-            "ignoreInA" : 1
+        {
+            "name": "cpPrivateKey",
+            "type": "string",
+            "desc": "cp私钥",
+            "ignoreInA": 1
         },
-        "cpPrivateKey": {
-            "type" : "string",
-            "desc" : "cpPrivateKey",
-            "ignoreInA" : 1
+        {
+            "name": "payUrl",
+            "type": "string",
+            "desc": "支付回调URL"
         }
-
-    }
+    ]
 }
-
