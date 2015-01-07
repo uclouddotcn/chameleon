@@ -16,25 +16,25 @@ import android.util.Log;
 
 public class LoginCallBack implements IDispatcherCb{
 
-	private static String TAG = LoginCallBack.class.getSimpleName();
-	
-	private MainActivity mActivity;
-	
-	public LoginCallBack(MainActivity mainActivity){
-		this.mActivity = mainActivity;
-	}
-	@Override
-	public void onFinished(int retCode, final JSONObject data) {
-		//登录回调
-		if (retCode != Constants.ErrorCode.ERR_OK) {
-			mActivity.setUserInfo("登录异常，返回码为："+retCode);
-			return;
-		}
-		
-		Log.i(TAG, "以下是用户登录信息："+data);
-		
-		RequestParams req = new RequestParams();
-		try {
+    private static String TAG = LoginCallBack.class.getSimpleName();
+
+    private MainActivity mActivity;
+
+    public LoginCallBack(MainActivity mainActivity){
+        this.mActivity = mainActivity;
+    }
+    @Override
+    public void onFinished(int retCode, final JSONObject data) {
+        //鐧诲綍鍥炶皟
+        if (retCode != Constants.ErrorCode.ERR_OK) {
+            mActivity.setUserInfo("鐧诲綍寮傚父锛岃繑鍥炵爜涓猴細"+retCode);
+            return;
+        }
+
+        Log.i(TAG, "浠ヤ笅鏄敤鎴风櫥褰曚俊鎭細"+data);
+
+        RequestParams req = new RequestParams();
+        try {
             if (data.has("others")) {
                 req.put("others", (String) data.get("others"));
             }
@@ -56,17 +56,17 @@ public class LoginCallBack implements IDispatcherCb{
                         }
                         @Override
                         public void onFailure(java.lang.Throwable e, org.json.JSONArray errorResponse) {
-                        	Log.e(TAG, "on failure", e);
+                            Log.e(TAG, "on failure", e);
                             if (errorResponse != null) {
-                            	Log.i(TAG, errorResponse.toString(), e);
+                                Log.i(TAG, errorResponse.toString(), e);
                             }
 
                         }
                         @Override
                         public void onFailure(java.lang.Throwable e, org.json.JSONObject errorResponse) {
-                        	Log.e(TAG, "on failure", e);
+                            Log.e(TAG, "on failure", e);
                             if (errorResponse != null) {
-                            	Log.i(TAG, errorResponse.toString(), e);
+                                Log.i(TAG, errorResponse.toString(), e);
 
                             }
                         }
@@ -83,6 +83,6 @@ public class LoginCallBack implements IDispatcherCb{
         } catch (JSONException e) {
             Log.e(TAG, "fail to parse json", e);
         }
-	}
-	
+    }
+
 }
