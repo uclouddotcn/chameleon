@@ -95,6 +95,8 @@ android {
         }
         coolpad {
         }
+        vivo {
+        }
         p_getui {
 
         }
@@ -153,10 +155,11 @@ dependencies {
     lenovoCompile project(':channels:lenovo')
     gioneeCompile project(':channels:gionee')
     htcCompile project(':channels:htc')
+    coolpadCompile project(':channels:coolpad')
+    vivoCompile project(':channels:vivo')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')
-    coolpadCompile project(':channels:coolpad')
     // generate the compile dependency
     /*
     platformFlavors.each {x ->
