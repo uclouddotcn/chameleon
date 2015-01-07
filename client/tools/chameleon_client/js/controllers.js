@@ -373,6 +373,11 @@ chameleonControllers
                         delete $scope.channel.isdirty;
                         $scope.disable = true;
                         $scope.vForm.vPackage.$dirty = false;
+                        /**var tempIcons = $scope.channel.icons.tempicons;
+                        for(var p in tempIcons){
+                            fs.unlinkSync(tempIcons[p]);
+                        }
+                        $scope.channel.icons.tempicons = {};*/
                     }, function (e) {
                         alert(e.message);
                     });
@@ -1817,9 +1822,14 @@ chameleonControllers
         $scope.dump = {};
         $scope.useImage = function () {
             var tempgenIcon = {};
+            //empty the folder before create temp files.
+            var files = fs.readdirSync(ProjectMgr.getTempFile(project, ''));
+            for(var i = 0; i < files.length; i ++){
+                fs.unlinkSync(ProjectMgr.getTempFile(project, files[i]));
+            }
             for (var i in images) {
                 tempgenIcon[i] = ProjectMgr.getTempFile(project,
-                        'icon-'+i+'-'+$scope.shownimages.selected.position+'.png');
+                        Date.now()+'icon-'+i+'-'+$scope.shownimages.selected.position+'.png');
             }
             $scope.dump.func(tempgenIcon);
             $modalInstance.close({
@@ -1998,7 +2008,7 @@ chameleonControllers
             var sdk = selectedsdk;
             var promise = sdk.updateFunc();
             promise.then(function () {
-                //$scope.channelCfgForm.$setPristine();
+                $scope.channelCfgForm.$setPristine();
                 $modalInstance.close();
             }, function (e) {
                 alert(e.message);
