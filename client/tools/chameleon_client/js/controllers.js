@@ -423,7 +423,6 @@ chameleonControllers
                 var channelname = $scope.channel.data.metaInfo.name;
                 var channelTemplate = function(channelName){
                     var result = "";
-                    var sdks = ProjectMgr.getSupportedDKs();
                     var getControlNode = function(key, value){
                         var nodeText = '',
                             desc = value.desc,
@@ -438,7 +437,7 @@ chameleonControllers
                             + '</div>'
                             + '</div>';
                         }
-                        if(type === 'int' || type === 'float'){
+                        if(type === 'integer' || type === 'float'){
                             nodeText =  '<div class="control-group">'
                             + '<label class="control-label" for="@descLow">@desc</label>'
                             + '<div class="controls">'
