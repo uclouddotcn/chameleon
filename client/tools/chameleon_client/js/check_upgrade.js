@@ -22,6 +22,7 @@ function startApp() {
     })
 }
 
+
 var chameleonUpdateApp = angular.module('chameleonUpdateApp', ['ui.bootstrap']);
 chameleonUpdateApp.controller('UpdateCtrl', ['$scope', '$modal',function ($scope, $modal) {
 

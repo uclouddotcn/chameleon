@@ -50,6 +50,7 @@
 	                android:layout_weight="1"
 	                android:layout_marginLeft="5dip"
 	                android:hint="@string/bdp_account_login_hint_account_baidu"
+	                android:textColorHint="@color/bdp_color_text_hint"
 	                android:maxLength="80"
 	                android:textColor="@color/bdp_black"
 	                android:textSize="15sp"
@@ -108,6 +109,7 @@
 	                android:textColor="@color/bdp_black"
 	                android:textSize="15sp"
 	                android:hint="@string/bdp_account_login_hint_pass"
+	                android:textColorHint="@color/bdp_color_text_hint"
 	                android:inputType="textPassword"
 	                android:imeOptions="actionDone"
 	                android:singleLine="true"
@@ -168,6 +170,7 @@
 		                android:textSize="15sp"
 		                android:maxLength="30"
 		                android:hint="@string/bdp_account_login_hint_verifycode"
+		                android:textColorHint="@color/bdp_color_text_hint"
 		                android:singleLine="true"
 	                	android:textCursorDrawable="@null"
 		                android:background="@null"
@@ -192,8 +195,9 @@
 		                    android:id="@+id/img_verifycode"
 		                    android:layout_width="fill_parent"
 		                    android:layout_height="fill_parent"
+		                    android:padding="2dip"
 		                    android:contentDescription="@string/bdp_image"
-		                    android:scaleType="fitCenter"
+		                    android:scaleType="fitXY"
 		                    android:visibility="invisible" />
 		
 		                <RelativeLayout

@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/dialog_switch_account_root"
         android:layout_width="@dimen/nmgc_log_reg_width"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/nmgc_log_reg_height"
         android:layout_marginTop="@dimen/dialog_margin_left"
         android:layout_marginBottom="@dimen/dialog_margin_right"
         android:layout_gravity="center" 

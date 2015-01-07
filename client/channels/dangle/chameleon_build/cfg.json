@@ -3,27 +3,31 @@
     "name": "dangle",
     "chamversion": "1.3.0",
     "version": "3.0.5",
-    "cfgitem": {
-        "merchantId": {
+    "cfgitem": [
+        {
+            "name": "merchantId",
             "type": "string",
             "desc": "厂商ID"
         },
-        "appId": {
+        {
+            "name": "appId",
             "type": "string",
-            "desc": "app id"
+            "desc": "APP ID"
         },
-        "serverSeqNum": {
+        {
+            "name": "appKey",
             "type": "string",
-            "desc": "server seq"
+            "desc": "APP KEY"
         },
-        "appKey": {
+        {
+            "name": "serverSeqNum",
             "type": "string",
-            "desc": "app key"
-        }, 
-        "paymentKey": {
+            "desc": "服务器序号"
+        },
+        {
+            "name": "paymentKey",
             "type": "string",
-            "desc": "payment key"
+            "desc": "PAYMENT KEY"
         }
-    }
+    ]
 }
-

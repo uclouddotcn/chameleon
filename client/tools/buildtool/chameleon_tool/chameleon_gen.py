@@ -24,7 +24,7 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, global
         manifestInst.fullQualifyName(oldPkgName)
         manifestInst.setPkgName(pkgname)
     mergeLibManifests(libs, manifestInst)
-    manifestInst.replace({'channel': channel})
+    manifestInst.replace({'channel': channel, 'packageId': pkgname})
     if globalcfg['blandscape']:
         orientation = 'landscape'
     else:

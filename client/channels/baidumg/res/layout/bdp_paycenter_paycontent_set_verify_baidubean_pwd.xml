@@ -45,6 +45,7 @@
             android:focusableInTouchMode="true"
             android:gravity="center_vertical"
             android:hint="@string/bdp_paycenter_tips_set_pwd"
+            android:textColorHint="@color/bdp_color_text_hint"
             android:inputType="textPassword"
             android:imeOptions="actionDone"
             android:paddingLeft="@dimen/bdp_paycenter_input_edit_text_left_padding"

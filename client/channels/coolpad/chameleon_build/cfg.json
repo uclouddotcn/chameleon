@@ -3,38 +3,42 @@
     "name": "coolpad",
     "chamversion": "1.3.1",
     "version": "V1.2.1",
-    "cfgitem": {
-
-        "loginAppId" : {
-            "type" : "string",
-            "desc" : "loginAppId"
+    "cfgitem": [
+        {
+            "name": "loginAppId",
+            "type": "string",
+            "desc": "用户系统APP ID"
         },
-        "loginAppKey" : {
-            "type" : "string",
-            "desc" : "loginAppKey"
+        {
+            "name": "loginAppKey",
+            "type": "string",
+            "desc": "用户系统APP KEY"
         },
-        "payAppId" : {
-            "type" : "string",
-            "desc" : "payAppId"
+        {
+            "name": "loginRedirctUrl",
+            "type": "string",
+            "desc": "用户系统回调地址",
+            "ignoreInA": 1
         },
-        "payAppKey" : {
-            "type" : "string",
-            "desc" : "payAppKey"
+        {
+            "name": "payAppId",
+            "type": "string",
+            "desc": "支付系统APP ID"
         },
-        "payPlatKey" : {
-            "type" : "string",
-            "desc" : "payPlatKey"
+        {
+            "name": "payAppKey",
+            "type": "string",
+            "desc": "支付系统APP KEY"
         },
-        "loginRedirctUrl" : {
-            "type" : "string",
-            "desc" : "loginRedirctUrl",
-            "ignoreInA" : 1
+        {
+            "name": "payPlatKey",
+            "type": "string",
+            "desc": "支付系统公钥"
         },
-        "notifyurl" : {
-            "type" : "string",
-            "desc" : "notify url"
+        {
+            "name": "notifyurl",
+            "type": "string",
+            "desc": "支付回调地址"
         }
-
-    }
+    ]
 }
-

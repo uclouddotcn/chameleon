@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/titleLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/bbk_activity_title_bar" >
+
+
+    <ImageView  android:id="@+id/title_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_centerVertical="true" 
+        android:src="@drawable/bbk_next_arrow"
+        android:clickable="true"/>
+     <ImageView
+         android:layout_toRightOf="@id/title_back"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginLeft="25dp"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:src="@drawable/bbk_divider"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/bbk_paytype_title"
+        android:textSize="@dimen/card_pay_title_size" 
+        android:textColor="@color/TextColorBlack"
+        />
+
+</RelativeLayout>

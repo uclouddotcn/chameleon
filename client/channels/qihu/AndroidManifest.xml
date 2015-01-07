@@ -1,25 +1,34 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
     package="prj.chameleon.qihu">
-    <!-- CHAMELEON OVERWRITE -->
+
+    <!-- 添加360SDK必需要的权限。 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+
+    <!-- payment -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <!-- float sdk -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- CHAMELEON OVERWRITE -->
+
+    <!-- weixin -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application>
 
@@ -27,10 +36,10 @@
         <activity
             android:name="com.qihoo.gamecenter.sdk.activity.ContainerActivity"
             android:configChanges="fontScale|orientation|keyboardHidden|locale|navigation|screenSize|uiMode"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:exported="true" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
 
+        <!-- payment activities begin -->
         <!-- 添加360SDK必需的activity：com.qihoopp.qcoinpay.QcoinActivity -->
         <activity
             android:name="com.qihoopp.qcoinpay.QcoinActivity"
@@ -39,32 +48,15 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" >
         </activity>
 
-         <!-- *   如下是需要加载的360推送配置项  * -->
-        <!-- 开机自启 -->
-         <receiver
-            android:name="com.qihoo.gamecenter.sdk.suspend.local.QBootReceiver"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+        <!-- alipay sdk begin -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- alipay sdk end -->
 
-        <service
-            android:name="com.qihoo.gamecenter.sdk.suspend.remote.QRemoteService"
-            android:exported="true"
-            android:process=":QSuspendRemote" >
-            <intent-filter>
-                <action android:name="com.qihoo.gamecenter.sdk.suspend.service.action.remote" />
-            </intent-filter>
-        </service>
 
-        <service
-            android:name="com.qihoo.gamecenter.sdk.suspend.local.QLocalService"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.qihoo.gamecenter.sdk.suspend.local.QLocalService" />
-            </intent-filter>
-        </service>
+        <!-- payment activities end -->
 
         <!-- 如下是360游戏实时推送SDK必要声明，不可修改 -->
         <receiver
@@ -96,12 +88,31 @@
             android:name="com.qihoo.psdk.local.QLocalService"
             android:exported="true"
             android:process=":QLocal" >
+            <intent-filter>
+                <action android:name="com.qihoo.psdk.service.action.local" />
+            </intent-filter>
         </service>
+        <!-- 推送SDK end -->
+
+
+        <!-- 微信SDK -->
+        <!-- 微信相关的activity，如果游戏接入微信分享需要在游戏工程内实现这个activity，请直接使用demo中的代码实现，并放在游戏的工程的对应路径下。 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- 从微信开放平台申请的appid，游戏需要去申请自己的appid -->
+        <meta-data
+            android:name="QHOPENSDK_WEIXIN_APPID" android:value="wx02faa6a503e262e5" chameleon:replace="android:value=%weixinAppid%" >
+        </meta-data>
+        <!-- 微信SDK end -->
 
         <meta-data android:name="QHOPENSDK_APPID" android:value="201392056" chameleon:replace="android:value=%appId%"/>
         <meta-data android:name="QHOPENSDK_APPKEY" android:value="21e398e6d73b83aba8cb2fce1d4ca71b"  chameleon:replace="android:value=%appKey%"/>
         <meta-data android:name="QHOPENSDK_PRIVATEKEY" android:value="8aa53aaca2febbb059fccb4a1abc88a1"  chameleon:replace="android:value=%appPrivateKey%"/>
         <meta-data android:name="QHOPENSDK_CHANNEL" android:value="default" chameleon:replace="android:value=%channel%"/>
+
     </application>
 
 

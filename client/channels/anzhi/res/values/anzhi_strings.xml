@@ -203,7 +203,7 @@
     <string name="register_reader"><u>我已阅读并同意安智用户协议</u></string>
     <string name="register_treat_title">安智用户协议</string>
     <string name="anzhi_next_step">下一步</string>
-    <string name="anzhi_help_customer">客服    Q   Q：800004609 \n工作时间：周一至周日 9:30~21:00</string>
+    <string name="anzhi_help_customer">客服    Q   Q：800004609 \n工作时间：周一至周五 9:30~21:00</string>
     <string name="anzhi_help_customer_3_2">客服QQ：800004609</string>
     <string name="anzhi_no_account">暂无历史账号</string>
     <string name="anzhi_no_gift">暂无礼包，敬请期待！</string>
@@ -569,10 +569,10 @@
     <string name="mini_input_sigma">∑</string>
     <string name="mini_input_section">§</string>
     <string name="mini_input_qianfenhao">‰</string>
-    <string name="mini_input_￥ ">￥ </string>
-    <string name="mini_input_α">α</string>
-    <string name="mini_input_β">β</string>
-    <string name="mini_input_γ">γ</string>
+    <string name="mini_input_rmb">￥ </string>
+    <string name="mini_input_aaa">α</string>
+    <string name="mini_input_bbb">β</string>
+    <string name="mini_input_vvv">γ</string>
     <string name="mini_input_si">℃ </string>
     <string name="mini_input_right_mid">[</string>
     <string name="mini_input_left_mid">]</string>
