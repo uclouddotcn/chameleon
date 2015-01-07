@@ -97,6 +97,10 @@ android {
         }
         vivo {
         }
+        dianxin {
+        }
+        youku {
+        }
         p_getui {
 
         }
@@ -157,6 +161,8 @@ dependencies {
     htcCompile project(':channels:htc')
     coolpadCompile project(':channels:coolpad')
     vivoCompile project(':channels:vivo')
+    dianxinCompile project(':channels:dianxin')
+    youkuCompile project(':channels:youku')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')
