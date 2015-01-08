@@ -1,0 +1,15 @@
+{
+    "debug" : 1,
+    "admin" : {
+        "port" : 8083,
+        "host" : "0.0.0.0"
+    },
+
+    "worker" : {
+        "script": "./server/worker",
+        "args": ["./server/config/svr.json"],
+        "env": {
+            "NODE_PATH": "$CHAMELEON_WORKDIR/server/worker/node_modules"
+        }
+    }
+}

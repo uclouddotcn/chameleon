@@ -14,22 +14,12 @@ function loadConfig(cfgFile, debug) {
     try {
         var content = fs.readFileSync(svrCfgPath);
         var cfgObj = JSON.parse(content);
-        checkSDKSvrCfg(cfgObj);
         checkAdminCfg(cfgObj);
+        cfgObj._path = svrCfgPath;
         return cfgObj;
     } catch (err) {
         console.log(cfgFile + " is not a valid json config");
         throw err;
-    }
-}
-
-function checkSDKSvrCfg(cfgObj) {
-    var sdkSvrCfg = cfgObj.sdkSvr;
-    if (!sdkSvrCfg) {
-        throw new Error("config file missing 'appCallbackSvr'");
-    }
-    if (!sdkSvrCfg.port) {
-        throw new Error("invalid sdkSvr cfg, missing port");
     }
 }
 
@@ -39,9 +29,11 @@ function checkAdminCfg(cfgObj) {
         throw new Error("config file missing 'appCallbackSvr'");
     }
     if (!adminCfg.port) {
-        throw new Error("invalid sdkSvr cfg, missing port");
+        throw new Error("invalid admin cfg, missing port");
     }
-    return;
+    if (!cfgObj.worker) {
+        throw new Error("invalid config, missing worker config");
+    }
 }
 
 /**
@@ -52,11 +44,16 @@ function checkAdminCfg(cfgObj) {
 function main() {
     program
         .option('-d, --debug', 'use debug mode')
+        .option('-s, --singleProcess', 'no cluster mode')
+        .option('--sdkplugin <pluginpath>', 'use sdk plugin path')
         .parse(process.argv);
-    var cfg = loadConfig('svr.json', program.debug);
-    checkSDKSvrCfg(cfg);
+    var cfg = loadConfig('admin.json', program.debug);
     checkAdminCfg(cfg);
-    chameleon.start(cfg, program.debug);
+    chameleon.main(cfg, {
+        debug: program.debug,
+        sdkPluginPath: program.sdkplugin,
+        singleProcess: program.singleProcess
+    });
 }
 
 var d = require('domain').create();

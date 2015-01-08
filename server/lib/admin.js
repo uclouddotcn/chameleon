@@ -1,10 +1,6 @@
 var restify = require('restify');
-var constants = require('./constants');
-var pathLib = require('path');
 var fs = require('fs');
-var Constants = require('./constants');
-var EventSummarizer = require('./event-summarizer');
-var FunctionUnits = require('./functionunits');
+var workerMgr = require('./worker_mgr');
 
 /**
  * 
@@ -12,12 +8,10 @@ var FunctionUnits = require('./functionunits');
  * @classdesc Admin server module
  * @constructor
  * @param {PluginMgr} pluginMgr - plugin manager
- * @param {ProductMgr} productMgr - product manager
  * @param {Object} options - not used now...
  * @param {object} logger - logger object
- * @param {object} statLogger - statistics logger object
  */
-var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
+var Admin = function(pluginMgr, options, logger) {
     var self = this;
     self.server = restify.createServer({
         name: 'Admin',
@@ -27,50 +21,36 @@ var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
     self.logger = logger;
 
     self.pluginMgr = pluginMgr;
-    self.productMgr = productMgr;
     self.server.use(restify.bodyParser());
     self.server.use(restify.queryParser());
-    self.productSum = EventSummarizer.createEventSum(productMgr, statLogger);
+    var requestPoster = options.requestPoster || workerMgr;
 
-   self.server.get('cmd', function (req, res, next) {
-       var params = req.params;
-       if (!params) {
-           res.send({code: -1, msg: 'empty request arguments'});
-           next();
-           return;
-       }
-       if (params.cmd === 'exit') {
-           self.exit();
-           setTimeout(function () {
-               res.send({code: 0});
-               next();
-           }, 1000);
-       } else {
-           res.send({code: -1, msg: 'unknown cmd'});
-           next();
-       }
-    });
+    self.server.post('/admin', function (req, res, next) {
+        try {
+            switch (req.body.action) {
+                case 'restart':
+                    workerMgr.restartWorker(function () {
+                        res.send({code: 0});
 
-    self.server.get('/monitor/status', function (req, res, next) {
-        res.send(FunctionUnits.getStatus());
-        return next();
-    })
-
-    self.server.get('/monitor/event', function (req, res, next) {
-        var result = self.productSum.getSummary();
-        res.send(result);
-        return next();
-    });
-
-    self.server.get('/monitor/event/:productName', function (req, res, next) {
-        var productName = req.params.productName;
-        var result = self.productSum.getProductSummary(productName);
-        if (res instanceof Error) {
-            return next(new restify.InvalidArgumentError(res.message));
-        } else {
-            res.send(result);
-            return next();
+                    });
+                    break;
+                default:
+                    return next(new restify.InvalidArgumentError(''));
+            }
+        } catch (e) {
+            logger.error({err: e, req: req}, 'Fail to handle admin request');
+            return next(new restify.InvalidArgumentError(e.message));
         }
+    });
+
+    self.server.get('/monitor', function (req, res, next) {
+        var action = req.params.action;
+        requestPoster.request('monitor.'+action, req.params, function (err, rsp) {
+            if (!err) {
+                res.send(rsp);
+            }
+            return next(err);
+        });
     });
 
     // path for get all plugins
@@ -82,18 +62,7 @@ var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
 
     // path for adding a plugin 
     self.server.post('/plugin', function(req, res, next) {
-        var fileurl = req.params.fileurl;
-        var index = fileurl.lastIndexOf('/');
-        if (index < 0 || index == fileurl.length) {
-            return next(new restify.InvalidArgumentError('illegal file name'));
-        }
-        var filename = fileurl.substr(index+1);
-        index = filename.lastIndexOf('.');
-        if (index < 0) {
-            return next(new restify.InvalidArgumentError('illegal file name'));
-        }
-        var pluginName = filename.substr(0, index);
-        self.pluginMgr.addPlugin(pluginName, req.params.fileurl, function(err, info) {
+        self.pluginMgr.upgradePlugin(req.params.fileurl, req.params.md5value, function(err, info) {
             if (err) {
                 req.log.info({err:err}, 'fail to add plugin');
                 return next(new restify.InvalidArgumentError(err.message));
@@ -104,108 +73,97 @@ var Admin = function(pluginMgr, productMgr, options, logger, statLogger) {
         });
     });
 
-    // path for getting all product instance
-    self.server.get('/products', function(req, res, next) {
-        var products = Object.keys(productMgr.products).map(function (key) {
-            return productMgr.products[key].productName();
-        });
-        res.send(products);
-        return next();
-    });
-
-    // path for getting a specific plugin instance
-    /*
-    self.server.get('/product/:name', function (req, res, next) {
-        var product = productMgr.products[req.params.name];
-        if (!product) {
-            return next(new restify.ResourceNotFoundError(req.params.name));
+    self.server.put('/plugin/:name', function(req, res, next) {
+        var newInst = self.pluginMgr.usePluginAtVersion(name, req.params.version);
+        if (newInst instanceof Error) {
+            return next(new restify.InvalidArgumentError(newInst.message));
         } else {
-            var showProductInfo = doFormatProductInfo(product);
-            res.send(showProductInfo);
-            return next();
-        }
-    });
-    */
-
-    // path for add a product
-    self.server.post('/product/:name', function (req, res, next) {
-        var product = productMgr.products[req.params.name];
-        if (product) {
-            product.updateCfg(req.body, function (err) {
-                if (err) {
-                    return next(new restify.InvalidArgumentError(e.message));
-                }
-                res.send({code: 0});
-                return next();
-            });
-        } else {
-            productMgr.addProduct(req.params.name, req.body, function (err) {
-                if (err) {
-                    return next(err);
-                }
-                res.send({code: 0});
-                return next();
-            });
-        }
-    });
-
-    // path for add a plugin instance
-    self.server.post('/product/:name/:channelName', function(req, res, next) {
-        var product = productMgr.products[req.params.name];
-        if (!product) {
-            return next(new restify.ResourceNotFoundError(req.params.name));
-        } else {
-            try {
-                if (product.getChannel(req.params.channelName)) {
-                    product.modifyChannel(req.params.channelName, req.body);
-                } else {
-                    product.startChannel(req.params.channelName, req.body);
-                }
-                product.saveChannelCfg(req.params.channelName);
-                res.send({code: 0});
-                return next();
-            } catch (e) {
-                return next(new restify.InvalidArgumentError(e));
-            }
-        }
-    });
-
-
-    // path for modify a plugin instance settings
-    self.server.put('/product/:name/:channelName', function(req, res, next) {
-        var product = productMgr.products[req.params.name];
-        if (!product) {
-            return next(new restify.ResourceNotFoundError(req.params.name));
-        } else {
-            try {
-                product.modifyChannel(
-                    req.params.channelName, req.body);
-                product.saveChannelCfg(req.params.channelName);
-                res.send({code: 0});
-            } catch (e) {
-                return next(new restify.InvalidArgumentError(e.message));
-            }
-            return next();
-        }
-    });
-
-    // path for stop a plugin 
-    self.server.del('/product/:name/:channelName', function(req, res, next) {
-        var product = productMgr.products[req.params.name];
-        if (!product) {
-            return next(new restify.ResourceNotFoundError(req.params.name));
-        } else {
-            var err = product.stopChannel(req.params.channelName);
-            if (err) {
-                return next(restify.InvalidArgumentError(err.toString()));
-            }
             res.send({code: 0});
             return next();
         }
     });
 
+    // path for getting all product instance
+    self.server.get('/products', function(req, res, next) {
+        requestPoster.request('products.getall', null, function (err, rsp) {
+            if (err) {
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.send(rsp);
+            return next();
+        });
+    });
+
+    // path for add a product
+    self.server.post('/product/:name', function (req, res, next) {
+        requestPoster.request('product.new', {product: req.params.name, cfg: req.body}, function (err, rsp) {
+            console.log(err);
+            if (err) {
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.send(rsp);
+            return next();
+        });
+    });
+
+    self.server.put('/product/:name', function (req, res, next) {
+        requestPoster.request('product.update', {product: req.params.name, cfg: req.body}, function (err, rsp) {
+            if (err) {
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.send(rsp);
+            return next();
+        });
+    });
+
+
+    // path for add a plugin instance
+    self.server.post('/product/:name/:channelName', function(req, res, next) {
+        requestPoster.request('product.addchannel', {
+            product: req.params.name,
+            channel: req.params.channelName,
+            cfg: req.body
+        }, function (err, rsp) {
+            if (err) {
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.send(rsp);
+            return next();
+        });
+    });
+
+
+    // path for modify a plugin instance settings
+    self.server.put('/product/:name/:channelName', function(req, res, next) {
+        requestPoster.request('product.updatechannel', {
+            product: req.params.name,
+            channel: req.params.channelName,
+            cfg: req.body
+        }, function (err, rsp) {
+            if (err) {
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.send(rsp);
+            return next();
+        });
+    });
+
+    // path for stop a channel
+    self.server.del('/product/:name/:channelName', function(req, res, next) {
+        requestPoster.request('product.stopchannel', {
+            product: req.params.name,
+            channel: req.params.channelName
+        }, function (err, rsp) {
+            if (err) {
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.send(rsp);
+            return next();
+        });
+    });
+
     self.server.on('uncaughtException', function (req, res, route, error) {
-        req.log.error({err: error}, 'on uncaught exception');
+        req.log.error({route: route, err: error}, 'on uncaught exception');
     });
 };
 
@@ -243,8 +201,8 @@ Admin.prototype.registerExitFunc = function (func) {
     this.exitFunc = func;
 }
 
-module.exports.createAdmin = function(pluginMgr, productMgr, options, logger, statLogger) {
-    return new Admin(pluginMgr, productMgr, options, logger, statLogger);
+module.exports.createAdmin = function(pluginMgr, options, logger) {
+    return new Admin(pluginMgr, options, logger);
 };
 
 // internal functions
