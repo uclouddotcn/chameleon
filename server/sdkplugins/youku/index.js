@@ -8,16 +8,17 @@ var util = require('util');
 var async = require('async');
 var restify = require('restify');
 
-var ErrorCode = require('../common/error-code').ErrorCode;
-var SDKPluginBase = require('../../SDKPluginBase');
+var commonLib = require('../_common');
+var ErrorCode = commonLib.ErrorCode;
+var SDKPluginBase = commonLib.SDKPluginBase;
 
 var cfgDesc = {
     appKey: 'string',
     payKey: 'string'
 };
 
-var YoukuChannel = function(userAction, logger, cfgChecker) {
-    SDKPluginBase.call(this, userAction, logger, cfgChecker);
+var YoukuChannel = function(logger, cfgChecker) {
+    SDKPluginBase.call(this, logger, cfgChecker);
     this.client = restify.createStringClient({
         url: 'http://sdk.api.gamex.mobile.youku.com',
         retry: false,
@@ -77,12 +78,10 @@ YoukuChannel.prototype.calcSign = function(paramList, key){
 };
 
 YoukuChannel.prototype.getPayUrlInfo=function(){
-    var self=this;
     return[
         {
             method: 'post',
-            path:'/pay',
-            callback: this.respondsToPay.bind(self)
+            path:'/pay'
         }
     ]
 };
@@ -107,7 +106,7 @@ YoukuChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
             passthrough: params.passthrough
         };
 
-        this._userAction.pay(wrapper.channelName, params.uid, null,
+        wrapper.userAction.pay(wrapper.channelName, params.uid, null,
             params.apporderID, 0,
             null, null, null, other,
             function (err, result) {
@@ -141,7 +140,7 @@ module.exports =
 {
     name: 'youku',
     cfgDesc: cfgDesc,
-    createSDK: function (userAction, logger, cfgChecker, debug) {
-        return new YoukuChannel(userAction, logger, cfgChecker, debug);
+    createSDK: function (logger, cfgChecker, debug) {
+        return new YoukuChannel(logger, cfgChecker, debug);
     }
 };
