@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_height="300dp" 
+  android:layout_width="@dimen/yk_dlg_width"
+  android:background="@color/ykbgColor"
+   android:orientation="vertical">
+     <LinearLayout
+    android:layout_height="@dimen/yk_title_text_height"
+    android:orientation="horizontal"
+    android:layout_marginTop="@dimen/yk_title_margin_top"
+    android:layout_marginBottom="@dimen/yk_title_margin_top"
+    android:layout_width="@dimen/yk_dlg_width">
+	  <TextView
+	    android:layout_height="fill_parent"
+	    android:layout_width="fill_parent"
+	    android:background="@color/ykbgColor"
+	    android:gravity="center_vertical|center_horizontal"
+	    android:textSize="@dimen/yk_tv_title_font_size"
+	    android:textColor="@color/text_title"
+	    android:text="@string/yk_text_version_title"/>
+  </LinearLayout>
+  <LinearLayout 
+     android:layout_height="1dp"
+    android:layout_width="fill_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@color/title_line"></LinearLayout>
+   <LinearLayout 
+     android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+     android:layout_marginTop="@dimen/yk_btn_second_margintop"
+    android:layout_marginLeft="@dimen/yk_ed_margin_left"
+    android:layout_marginRight="@dimen/yk_ed_margin_right"
+    android:background="@color/bg_color_blue">
+       <ProgressBar android:id="@+id/down_pb"
+    android:layout_width="fill_parent" 	
+    android:layout_margin="1dp"
+    android:layout_height="@dimen/yk_loading_bar_height"
+    android:max="100"
+    style="@style/ProgressBar_horizontal_yk"></ProgressBar>
+   </LinearLayout>
+
+
+<RelativeLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/yk_loading_tv_progress_height"
+    android:layout_marginLeft="@dimen/yk_ed_margin_left"
+    android:layout_marginRight="@dimen/yk_ed_margin_right"
+    android:layout_marginTop="@dimen/yk_loading_tv_progress_margintop"
+    >
+    <TextView  android:id="@+id/tv_loadingsize"
+    android:layout_width="wrap_content" 
+    android:layout_height="fill_parent" 
+    android:layout_gravity="center_vertical"
+    android:textColor="@color/text_title"/>
+     <TextView  android:id="@+id/tv_allsize"
+    android:layout_width="wrap_content" 
+    android:layout_height="fill_parent" 
+    android:layout_gravity="center_vertical"
+    android:layout_toRightOf="@id/tv_loadingsize"
+    android:text="@string/yk_text_zzxz"
+    
+    />
+    <TextView  android:id="@+id/tv_progress"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent" 
+    android:layout_alignParentRight="true"
+    android:layout_gravity="center_vertical"
+    android:textColor="@color/text_title"
+    android:text="@string/yk_text_bf0"
+    />
+</RelativeLayout>
+
+
+<LinearLayout 
+     android:layout_height="1dp"
+    android:layout_width="fill_parent"
+    android:background="@color/title_line_bellow"></LinearLayout>
+<LinearLayout
+    android:layout_height="@dimen/yk_loading_btn_height"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:background="#FFFFFFFF" >
+      <Button
+       android:layout_height="fill_parent"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:background="@drawable/yk_btn_white_selector"
+      android:text="@string/yk_text_btn_qx"
+      android:textColor="@color/loading_btn_cancel"
+      android:textSize="@dimen/yk_btn_font_size"
+      android:id="@+id/btn_cancel" />
+      <LinearLayout 
+     android:layout_height="fill_parent"
+    android:layout_width="1dp"
+    android:background="@color/title_line_bellow"></LinearLayout>
+    <Button
+      android:layout_height="fill_parent"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:background="@drawable/yk_btn_light_blue_selector"
+      android:text="@string/yk_text_btn_anzhuang"
+      android:visibility="invisible"
+      android:textColor="@color/loading_btn_cancel"
+      android:textSize="@dimen/yk_btn_font_size"
+      android:id="@+id/btn_install" />
+  </LinearLayout>
+
+
+</LinearLayout>
+

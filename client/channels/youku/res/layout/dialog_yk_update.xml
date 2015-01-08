@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_height="fill_parent" 
+  android:layout_width="wrap_content"
+  android:background="@color/ykbgColor"
+   android:orientation="vertical">
+     <LinearLayout
+    android:layout_height="@dimen/yk_title_text_height"
+    android:orientation="horizontal"
+    android:layout_marginTop="@dimen/yk_title_margin_top"
+    android:layout_marginBottom="@dimen/yk_title_margin_top"
+    android:layout_marginLeft="@dimen/yk_title_icon_margin_left"
+    android:layout_marginRight="@dimen/yk_title_icon_margin_right"
+    android:layout_width="@dimen/yk_dlg_width">
+	  <TextView
+	    android:layout_height="fill_parent"
+	    android:layout_width="fill_parent"
+	    android:background="@color/ykbgColor"
+	    android:gravity="center_vertical|center_horizontal"
+	    android:textSize="@dimen/yk_tv_title_font_size"
+	    android:textColor="@color/text_title"
+	    android:text="@string/yk_text_version_title"/>
+  </LinearLayout>
+  <LinearLayout 
+     android:layout_height="1dp"
+    android:layout_width="fill_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@color/title_line"></LinearLayout>
+	<ScrollView
+        android:layout_width="fill_parent"
+        android:background="@color/ykbgColor"
+        android:layout_height="@dimen/yk_tv_update_msg_height"
+        android:layout_marginLeft="@dimen/yk_update_msg_marginleft"
+    	android:layout_marginRight="@dimen/yk_update_msg_marginleft"
+    	android:layout_marginTop="@dimen/yk_tv_update_msg_margin_top"
+    	android:layout_marginBottom="@dimen/yk_tv_update_msg_margin_top" >
+	   <TextView
+	    android:layout_height="wrap_content"
+	    android:layout_width="wrap_content"
+	    android:background="@color/ykbgColor"
+		android:gravity="center_vertical"
+	    android:textSize="@dimen/yk_update_msg_fontsize"
+	    android:textColor="@color/loading_btn_cancel"
+	    android:id="@+id/tv_update_msg"/>
+	 </ScrollView>
+  
+   
+   <LinearLayout 
+     android:layout_height="1dp"
+    android:layout_width="fill_parent"
+    android:background="@color/title_line_bellow"></LinearLayout>
+  
+  <LinearLayout
+    android:layout_height="@dimen/yk_loading_btn_height"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:background="#FFFFFFFF" >
+      <Button
+       android:layout_height="fill_parent"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:background="@drawable/yk_btn_white_selector"
+      android:text="@string/yk_text_btn_qx"
+      android:textColor="@color/loading_btn_cancel"
+      android:textSize="@dimen/yk_btn_font_size"
+      android:id="@+id/btn_cancel" />
+      <LinearLayout 
+     android:layout_height="fill_parent"
+    android:layout_width="1dp"
+    android:background="@color/title_line_bellow"></LinearLayout>
+    <Button
+      android:layout_height="fill_parent"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:background="@drawable/yk_btn_light_blue_selector"
+      android:text="@string/yk_text_btn_gx"
+      android:textColor="@color/loading_btn_cancel"
+      android:textSize="@dimen/yk_btn_font_size"
+      android:id="@+id/btn_update" />
+  </LinearLayout>
+</LinearLayout>
+

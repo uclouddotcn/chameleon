@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="@dimen/yk_title_height"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginLeft="@dimen/yk_title_icon_margin_left"
+    android:layout_marginRight="@dimen/yk_title_icon_margin_right"
+    android:layout_width="@dimen/yk_dlg_width">
+    <LinearLayout 
+        android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    android:layout_centerVertical="true"
+    android:id="@+id/lv_img">
+    <ImageView
+    android:layout_gravity="center_vertical"
+    android:layout_height="@dimen/yk_xh_44px_iconhigh"
+    android:layout_width="@dimen/yk_xh_88px_iconwidth"
+    android:id="@+id/yk_icon_title"
+    android:src="@drawable/yk_icon_title"/>
+    </LinearLayout>
+     
+  <TextView
+    android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    android:gravity="center_vertical"
+    android:textSize="@dimen/yk_tv_title_font_size"
+    android:textColor="@color/text_title"
+    android:layout_marginLeft="@dimen/yk_title_margin_left"
+    android:layout_toRightOf="@id/lv_img"
+    android:id="@+id/tv_title_text"
+    android:text="@string/yk_text_ykyx_user_title"/>
+  <Button
+       android:layout_marginTop="@dimen/yk_title_margin_top"
+    android:layout_height="@dimen/yk_xh_44px"
+    android:layout_width="@dimen/yk_xh_70px"
+    android:gravity="center_vertical"
+    android:id="@+id/back"
+    android:visibility="invisible"
+    android:layout_alignParentRight="true"
+    android:layout_marginRight="@dimen/yk_title_back_margin_right"
+    android:background="@drawable/yk_btn_title_back_selector"/>
+  </RelativeLayout>

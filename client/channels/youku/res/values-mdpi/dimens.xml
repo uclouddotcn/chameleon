@@ -1,0 +1,46 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+	<dimen name="yk_xh_664px">295px</dimen>
+	<dimen name="yk_xh_44px">20px</dimen>
+	<dimen name="yk_xh_44px_iconhigh">20px</dimen>
+	<dimen name="yk_xh_10px">4px</dimen>
+	<dimen name="yk_xh_6px">3px</dimen>
+	<dimen name="yk_xh_f6px">-3px</dimen>
+	<dimen name="yk_xh_300px">121px</dimen>
+	<dimen name="yk_xh_350px">145px</dimen>
+	<dimen name="yk_xh_18px">8px</dimen>
+	<dimen name="yk_xh_26px">12px</dimen>
+	<dimen name="yk_xh_20px">9px</dimen>
+	<dimen name="yk_xh_f20px">-9px</dimen>
+	<dimen name="yk_xh_24px">11px</dimen>
+	<dimen name="yk_xh_70px">31px</dimen>
+	<dimen name="yk_xh_474px">211px</dimen>
+	<dimen name="yk_xh_50px">22px</dimen>
+	<dimen name="yk_xh_592px">263px</dimen>
+	<dimen name="yk_xh_100px">44px</dimen>
+	<dimen name="yk_xh_57px">25px</dimen>
+	<dimen name="yk_xh_36px">16px</dimen>
+	<dimen name="yk_xh_14px">6px</dimen>
+	<dimen name="yk_xh_658px">292px</dimen>
+	<dimen name="yk_xh_58px">26px</dimen>
+	<dimen name="yk_xh_427px">190px</dimen>
+	<dimen name="yk_xh_550px">232px</dimen>
+	<dimen name="yk_xh_88px">39px</dimen>
+	<dimen name="yk_xh_88px_iconwidth">39px</dimen>
+	<dimen name="yk_xh_150px">66px</dimen>
+	<dimen name="yk_xh_75px">33px</dimen>
+	<dimen name="yk_xh_75px_resend_height">33px</dimen>
+	<dimen name="yk_xh_138px">61px</dimen>
+	<dimen name="yk_xh_7px">3px</dimen>
+	<dimen name="yk_xh_735px">327px</dimen>
+	<dimen name="yk_xh_236px">105px</dimen>
+	<dimen name="yk_xh_200px">92px</dimen>
+	<dimen name="yk_xh_30px">13px</dimen>
+	<dimen name="yk_xh_28px">12px</dimen>
+	<dimen name="yk_xh_428px">190px</dimen>
+	<dimen name="yk_xh_22px">10px</dimen>
+	<dimen name="yk_xh_119px">53px</dimen>
+	<dimen name="yk_xh_130px">58px</dimen>
+	<dimen name="yk_xh_132px">59px</dimen>
+</resources>

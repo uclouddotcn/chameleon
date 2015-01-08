@@ -1,0 +1,19 @@
+{
+  "desc": "电信",
+  "name": "dianxin",
+  "chamversion": "1.4.1",
+  "version": "V1.0",
+  "cfgitem": [
+    {
+      "name": "appId",
+      "type": "string",
+      "desc": "app id"
+    },
+    {
+      "name": "appSecret",
+      "type": "string",
+      "desc": "app secret",
+      "ignoreInA": 1
+    }
+  ]
+}

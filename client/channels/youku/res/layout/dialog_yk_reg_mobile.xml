@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:nanlus="http://schemas.android.com/apk/res-auto"
+  android:layout_height="300dp" 
+  android:layout_width="@dimen/yk_dlg_width"
+  android:background="@color/ykbgColor"
+   android:orientation="vertical">
+   
+    <include layout="@layout/yk_title_include"/> 
+    
+  <LinearLayout 
+     android:layout_height="1dp"
+    android:layout_width="fill_parent"
+    android:background="@color/title_line"></LinearLayout>
+  <LinearLayout
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_width="fill_parent">
+  <include layout="@layout/yk_tv_error_include"/>
+  
+  
+   <com.youku.gamesdk.widget.EditTextWithErr
+        android:id="@+id/et_username"
+        android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+        android:layout_marginLeft="@dimen/yk_ed_margin_left"
+   		android:layout_marginRight="@dimen/yk_ed_margin_right"
+        android:layout_marginTop="@dimen/yk_ed_margin_top"
+        android:tag="phone#11"
+        android:contentDescription="@string/yk_text_hint_yyzczh"/>
+  </LinearLayout>
+  
+  
+      <Button
+      android:layout_height="@dimen/yk_btn_height"
+      android:layout_width="fill_parent"
+      android:background="@drawable/yk_btn_blue_selector"
+      android:text="@string/yk_btn_text_yzsf_1"
+      android:textColor="@color/btn_text_white"
+      android:textSize="@dimen/yk_btn_font_size"
+      android:layout_marginTop="@dimen/yk_btn_first_margintop"
+      android:layout_marginLeft="@dimen/yk_btn_margin_left"
+      android:layout_marginRight="@dimen/yk_btn_margin_right"
+      android:id="@+id/btn_reg" />
+      
+       <RelativeLayout 
+      android:layout_height="wrap_content"
+      android:layout_width="fill_parent"
+     android:layout_marginLeft="@dimen/yk_btn_margin_left"
+      android:layout_marginTop="@dimen/yk_btn_second_margintop"
+      android:orientation="horizontal">
+    <TextView
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:gravity="center_vertical"
+    android:id="@+id/tv_hink_info"
+    android:layout_alignBottom="@+id/img_hink"
+    android:layout_toRightOf="@id/img_hink"
+    android:textSize="@dimen/yk_ed_font_size"
+    android:textColor="@color/edit_text_hint"
+    android:text="@string/yk_text_nykyy"/>
+      <TextView
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:gravity="center_vertical"
+    android:layout_toRightOf="@id/tv_hink_info"
+    android:textSize="@dimen/yk_ed_font_size"
+    android:textColor="#22b8ff"
+    android:layout_alignBottom="@+id/img_hink"
+    android:layout_marginLeft="1dp"
+    android:id="@+id/tv_reg_name"
+    android:text="@string/yk_text_a_yhmzc"/>
+     
+  </RelativeLayout>
+ 	 <LinearLayout 
+     android:layout_height="1dp"
+     android:layout_marginTop="@dimen/yk_btn_second_margintop"
+    android:layout_width="fill_parent"
+    android:background="@color/title_line"></LinearLayout>
+    <LinearLayout
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:background="@color/ykbgColor" >
+     <Button
+      android:layout_height="@dimen/yk_btn_other_height"
+      android:layout_width="fill_parent"
+      android:textSize="@dimen/yk_btn_font_size"
+      android:textColor="@color/text_gray"
+      android:gravity="center_horizontal|center_vertical"
+      android:text="@string/yk_text_btn_yk_user_login"
+      android:background="@drawable/yk_btn_white_selector"
+      android:id="@+id/btn_other_login" />
+  </LinearLayout>
+</LinearLayout>

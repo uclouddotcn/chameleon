@@ -3,7 +3,7 @@
     "name": "${channel}$",
     "chamversion": "${chamver}$",
     "version": "${version}$",
-    "cfgitem": {
-    }
+    "cfgitem": [
+    ]
 }
 

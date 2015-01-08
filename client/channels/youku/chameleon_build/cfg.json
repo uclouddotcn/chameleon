@@ -1,0 +1,40 @@
+{
+    "desc": "优酷",
+    "name": "youku",
+    "chamversion": "1.4.1",
+    "version": "V1.9.2",
+    "cfgitem": [
+        {
+          "name": "appId",
+          "type" : "string",
+          "desc" : "申请的APPID"
+        },
+        {
+          "name": "appName",
+          "type" : "string",
+          "desc" : "游戏名称"
+        },
+        {
+          "name": "appKey",
+          "type" : "string",
+          "desc" : "申请的APPKEY"
+        },
+        {
+          "name": "appSecret",
+          "type" : "string",
+          "desc" : "申请的—APPSECRET"
+        },
+        {
+          "name": "notifyUri",
+          "type" : "string",
+          "desc" : "支付回调地址"
+        },
+        {
+          "name": "paykey",
+          "type" : "string",
+          "desc" : "peykey",
+          "ignoreInA" : 1
+        }
+    ]
+}
+

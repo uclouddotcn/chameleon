@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    
+    
+
+    
+    
+	<color name="text_title">#1b9ad6</color>
+	<color name="text_error">#FFff6699</color>
+	<color name="text_gray">#909fa8</color>
+	<color name="text_green">#56b81b</color>
+	<color name="text_error_prompt">#ff5a5a</color>
+	<color name="text_line_include">#58abff</color>
+	<color name="edit_text_hint">#b3b3b3</color>
+	<color name="edit_text_line">#58abff</color>
+	
+	<color name="btn_text_blue">#3db5f3</color>
+	<color name="btn_text_white">#ffffff</color>
+	<color name="btn_text_gray">#909fa8</color>
+	
+	
+	<color name="title_line">#dbdbdb</color>
+	<color name="title_line_bellow">#bdbdbd</color>
+	
+	<color name="white">#ffffff</color>
+	<color name="yk_pay_datail_item_issuccess">#ff9c00</color>
+	<color name="bg_color_white">#fffafafa</color>
+	<color name="bg_pay_datail">#e2e2e2</color>
+	<color name="bg_color_white_press">#ffe7e7e7</color>
+	
+	<color name="bg_color_blue">#22b8ff</color>
+	<color name="bg_color_blue_press">#4db5ea</color>
+	
+	<color name="bg_color_light_blue">#1500baff</color>
+	<color name="bg_color_light_blue_press">#33049dd5</color>
+	
+	<color name="bg_color_blue_gray">#d7e2e8</color>
+	<color name="bg_color_blue_gray_press">#4db5ea</color>
+	
+	
+	<color name="bg_color_gray">#d7e2e8</color>
+	<color name="bg_color_gray_press">#b2c3cc</color>
+	
+	<color name="loading_btn_cancel">#737474</color>
+	<color name="loading_bar_text">#626262</color>
+	
+	
+	    <!-- Alipay colors -->
+    <color name="TextColorBlack">#FF000000</color>
+    <color name="TextColorWhite">#FFFFFFFF</color>
+    <color name="TextColorGray">#FF505050</color>
+    <color name="ToastBgColor">#FF424242</color>
+    <color name="btnColor">#FFFFFF</color>
+    <color name="textColorforItemTitle">#FF666666</color>
+    <color name="secondbtntextColor">#FF496ea3</color>
+    <color name="textColorforCheckBox">#FF333333</color>
+    <color name="ykbgColor">#FfFfFf</color>
+    <color name="downLoadTextNomal">#FF3366CC</color>
+    <color name="downLoadTextPressed">#FFFFFFFF</color>
+    <color name="downLoadBackNomal">#FFFFFFFF</color>
+    <color name="downLoadBackFocus">#FF6698E7</color>
+    <color name="downLoadBackPressed">#FF3366CC</color>
+    <color name="dialog_tiltle_blue">#2277BB</color>
+</resources>

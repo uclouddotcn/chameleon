@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_width="fill_parent"
+   >
+   <TextView
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:gravity="center_vertical"
+    android:textSize="@dimen/yk_tv_error_font_size"
+    android:textColor="@color/text_error_prompt"
+    android:paddingLeft="@dimen/yk_tv_error_margin_left"
+    android:paddingTop="@dimen/yk_tv_error_margin_top"
+    android:paddingBottom="@dimen/yk_tv_error_margin_top"
+    android:id="@+id/tv_error"
+    android:visibility="invisible"
+    android:background="#FDF1F1"
+    android:text="@string/yk_text_verify_wrong"/>
+  </RelativeLayout>
