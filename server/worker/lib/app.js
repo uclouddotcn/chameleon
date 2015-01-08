@@ -2,7 +2,7 @@ var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
 var path = require('path');
 
-var workerMain = require('./lib');
+var workerMain = require('./index.js');
 
 function reply(msg, err, body) {
     msg.header.rsp = true;

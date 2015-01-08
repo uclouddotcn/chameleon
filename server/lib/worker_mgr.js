@@ -56,6 +56,12 @@ WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
     this.ver = 0;
     this.worker = null;
     this.num = 0;
+    process.env['CHAMELEON_WORKDIR'] = constants.baseDir;
+    if (workerCfg.env) {
+        for (var i in workerCfg.env) {
+            process.env[i] = workerCfg.env[i].replace(/\$CHAMELEON_WORKDIR/g, constants.baseDir);
+        }
+    }
     cluster.setupMaster({
         exec: __dirname + '/worker.js',
         args: [path.resolve(constants.baseDir, workerCfg.script), constants.baseDir].concat(workerCfg.args)
@@ -169,28 +175,26 @@ WorkerMgr.prototype._forceRestartWorker = function () {
 };
 
 WorkerMgr.prototype._onWorkerExit = function (worker, code, signal) {
-    if (worker !== this.worker) {
+    this._logger.info({wid: worker.id, code: code, signal: signal}, 'worker finished');
+    if (worker.id !== this.worker.wid) {
         return;
     }
-    if (code === 0) {
-        // on restart by purpose
-    } else {
-        var self = this;
-        self.status = 'restarting';
-        this.worker = null;
-        self.emit('restart');
-        // unknown restart
-        this._startWorker(function (err) {
-            if (err) {
-                self.emit('fatal-fail', err);
-            }
-        });
-    }
+    var self = this;
+    self.status = 'restarting';
+    self.worker = null;
+    // unknown restart
+    this._startWorker(function (err) {
+        if (err) {
+            self.emit('fatal-fail', err);
+        }
+    });
+    self.emit('restart');
 };
 
 WorkerMgr.prototype._forkChild = function (callback) {
     var self = this;
-    var w = cluster.fork();
+    var newEnv = process.env;
+    var w = cluster.fork(newEnv);
     var wid = w.id;
     this.worker = new Worker(self.ver, wid, callback);
     w.on('message', function (msg) {

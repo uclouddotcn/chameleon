@@ -1,5 +1,8 @@
 var async = require('async');
 var fs = require('fs');
+var path = require('path');
+var ursa = require('ursa');
+
 var Admin = require('./admin');
 var ChannelCbSvr = require('./channel-callbacksvr');
 var env = require('./env');
