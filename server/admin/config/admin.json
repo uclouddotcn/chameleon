@@ -6,10 +6,10 @@
     },
 
     "worker" : {
-        "script": "./server/worker",
-        "args": ["./server/config/svr.json"],
+        "script": "./worker",
+        "args": ["./worker/config/svr.json"],
         "env": {
-            "NODE_PATH": "$CHAMELEON_WORKDIR/server/worker/node_modules"
+            "NODE_PATH": "$CHAMELEON_WORKDIR/worker/node_modules"
         }
     }
 }

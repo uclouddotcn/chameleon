@@ -1,6 +1,6 @@
 {
     "name" : "chameleon_worker",
-    "version" : "0.0.1",
+    "version" : "1.4.1",
     "main": "./lib/app.js",
     "dependencies" : 
     {
