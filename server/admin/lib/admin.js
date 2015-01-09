@@ -29,9 +29,8 @@ var Admin = function(pluginMgr, options, logger) {
         try {
             switch (req.body.action) {
                 case 'restart':
-                    workerMgr.restartWorker(function () {
+                    workerMgr.restartWorker(req.body.cfg, function () {
                         res.send({code: 0});
-
                     });
                     break;
                 default:

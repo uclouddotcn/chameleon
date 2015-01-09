@@ -1,6 +1,4 @@
 var fs = require('fs');
-var restify = require('restify');
-var async = require('async');
 var chameleon = require('./lib');
 var program = require('commander');
 

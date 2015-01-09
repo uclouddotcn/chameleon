@@ -1,14 +1,15 @@
-var cluster = require('cluster');
 var assert = require('assert');
 var async = require('async');
-var constants = require('./constants');
+var bunyan = require('bunyan');
+var cluster = require('cluster');
+var fs = require('fs');
 var path = require('path');
 
-var createPluginMgr = require('./plugin_mgr').createPluginMgr;
-var LocalSettings = require('./localsettings');
-var bunyan = require('bunyan');
-var workerMgr = require('./worker_mgr');
 var createAdmin = require('./admin').createAdmin;
+var constants = require('./constants');
+var LocalSettings = require('./localsettings');
+var createPluginMgr = require('./plugin_mgr').createPluginMgr;
+var workerMgr = require('./worker_mgr');
 
 function defaultAdminLoggerCfg(level) {
     var infoLv = 'info';
@@ -30,6 +31,19 @@ function defaultAdminLoggerCfg(level) {
     });
 }
 
+function ensureBaseDirReady() {
+    var folders = [
+        path.join(constants.baseDir, 'log'),
+        path.join(constants.baseDir, 'bill'),
+        path.join(constants.baseDir, 'bill')
+    ];
+    for (var i = 0; i < folders.length; ++i) {
+        if (!fs.existsSync(folders[i])) {
+            fs.mkdirSync(folders[i]);
+        }
+    }
+}
+
 exports.main = function (cfg, options) {
     assert(cluster.isMaster, "should only run in master mode");
     if (options.debug) {
@@ -40,6 +54,7 @@ exports.main = function (cfg, options) {
         constants.sdkPluginPoolDir = path.resolve(process.cwd(), options.sdkPluginPath);
     }
     constants.configDir = cfg._path;
+    ensureBaseDirReady();
 
     var adminLogger = defaultAdminLoggerCfg()
     var localSettings = new LocalSettings(path.dirname(cfg._path), adminLogger);
