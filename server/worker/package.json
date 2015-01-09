@@ -1,7 +1,7 @@
 {
     "name" : "chameleon_worker",
     "version" : "1.4.1",
-    "main": "./lib/app.js",
+    "main": "./lib/index.js",
     "dependencies" : 
     {
         "restify": "*",
