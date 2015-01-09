@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.unipay.unipay_sdk.MainActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -221,7 +223,7 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public String getToken() {
         if (!mOpeCenter.isLogin())
-            return mOpeCenter.getCurrentAccount().getState();
+            mOpeCenter.getCurrentAccount().getState();
 
         return null;
 
