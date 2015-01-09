@@ -56,19 +56,24 @@ WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
     this.ver = 0;
     this.worker = null;
     this.num = 0;
-    process.env['CHAMELEON_WORKDIR'] = constants.baseDir;
+    this.status = 'init';
+    this.pluginInfos = pluginInfos;
+    cluster.setupMaster({
+        exec: __dirname + '/worker.js'
+    });
+    this._resetWorkerCfg(workerCfg);
+    this._startWorker(callback);
+};
+
+WorkerMgr.prototype._resetWorkerCfg = function (workerCfg) {
+    this.forkScripts = path.resolve(constants.baseDir, workerCfg.script);
+    this.args = workerCfg.args;
     if (workerCfg.env) {
         for (var i in workerCfg.env) {
             process.env[i] = workerCfg.env[i].replace(/\$CHAMELEON_WORKDIR/g, constants.baseDir);
         }
     }
-    cluster.setupMaster({
-        exec: __dirname + '/worker.js',
-        args: [path.resolve(constants.baseDir, workerCfg.script), constants.baseDir].concat(workerCfg.args)
-    });
-    this.status = 'init';
-    this.pluginInfos = pluginInfos;
-    this._startWorker(callback);
+    process.env['CHAMELEON_WORKDIR'] = constants.baseDir;
 };
 
 WorkerMgr.prototype.request = function (msgid, body, callback) {
@@ -79,7 +84,16 @@ WorkerMgr.prototype.request = function (msgid, body, callback) {
     }
 };
 
-WorkerMgr.prototype.restartWorker = function (callback) {
+WorkerMgr.prototype.restartWorker = function (workerCfg, callback) {
+    if (workerCfg) {
+        try {
+            this._resetWorkerCfg(workerCfg)
+        } catch (e) {
+            this._logger.error({err: e}, 'Fail to reset worker cfg');
+            setImmediate(callback, new Error('Fail to reset worker cfg ' + e.message));
+            return;
+        }
+    }
     if (this.status !== 'running') {
         setImmediate(callback, new Error("Not in running state"));
         return;
@@ -132,7 +146,11 @@ WorkerMgr.prototype._doClose = function (wid, callback) {
 WorkerMgr.prototype._startWorker = function (callback) {
     var self = this;
     this._forkChild(function () {
-        self._doRequest(self.worker.wid, '__start', self.pluginInfos, callback);
+        self._doRequest(self.worker.wid, '__start', {
+            script: self.forkScripts,
+            args: self.args,
+            data: self.pluginInfos
+        }, callback);
     });
 };
 
@@ -168,7 +186,7 @@ WorkerMgr.prototype._forceRestartWorker = function () {
     cluster.workers[workerToClose.wid].kill('SIGKILL');
     this._startWorker(function (err) {
         if (err) {
-            self.logger.error({err: err}, 'Fail to start worker');
+            self._logger.error({err: err}, 'Fail to start worker');
             self.emit('fatal-fail', err);
         }
     });
@@ -223,13 +241,13 @@ WorkerMgr.prototype._onMessage = function (wid, msg) {
 
 WorkerMgr.prototype._onReply = function (msg) {
     if (!msg.header.rsp) {
-        this.logger.error({msg: msg}, "no reply message");
+        this._logger.error({msg: msg}, "no reply message");
         return;
     }
     var seq = msg.seq;
     var obj = this.cmds[seq];
     if (!obj) {
-        this.logger.error({msg: msg}, "no cmd found");
+        this._logger.error({msg: msg}, "no cmd found");
         return;
     }
     if (msg.err) {
