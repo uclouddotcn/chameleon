@@ -95,6 +95,8 @@ android {
         }
         coolpad {
         }
+        mzw {
+        }
         m4399 {
         }
         vivo {
@@ -143,7 +145,7 @@ dependencies {
     compile project(':chameleon')
     qqmobCompile project(':channels:qqmob')
     qqmsdkCompile project(':channels:qqmsdk')
-    anzhiCompile project(':channels:anzhi')
+//    anzhiCompile project(':channels:anzhi')
     nd91Compile project(':channels:nd91')
     qihuCompile project(':channels:qihu')
     chinamobCompile project(':channels:chinamob')
@@ -161,6 +163,7 @@ dependencies {
     htcCompile project(':channels:htc')
     coolpadCompile project(':channels:coolpad')
     m4399Compile project(':channels:m4399')
+    mzwCompile  project(':channels:mzw')
     vivoCompile project(':channels:vivo')
     dianxinCompile project(':channels:dianxin')
     youkuCompile project(':channels:youku')

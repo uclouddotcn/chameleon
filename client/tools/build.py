@@ -60,7 +60,7 @@ def collectChannelInfo(channelParentFolder):
                     os.path.join(channelParentFolder, folder)))
             else:
                 print >> sys.stdout, 'ignore %s' %folder
-        except Exception, e:
+        except Exception , e:
             print >> sys.stderr, 'Fail to collect channel info for %s' %folder
             raise e
     return result
