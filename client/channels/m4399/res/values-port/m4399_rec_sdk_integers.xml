@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="m4399_rec_main_frag_gridview_column_num">4</integer>
+    <integer name="m4399_rec_rmd_gridview_column_num">4</integer>
+    <integer name="m4399_rec_wy_gridview_column_num">3</integer>
+    <integer name="m4399_rec_result_frag_result_weight">2</integer>
+</resources>

@@ -20,10 +20,12 @@ include ':channels:lenovo'
 include ':channels:gionee'
 include ':channels:htc'
 include ':channels:coolpad'
+include ':channels:m4399'
 include ':channels:vivo'
 include ':channels:dianxin'
 include ':channels:youku'
 include ':channels:p_getui'
 include ':channels:p_jpush'
 include ':channels:p_umeng'
+
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 个人中心 操作列表项 by.zhengxu -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/m4399_ope_usercenter_action_item_bg"
+    android:orientation="horizontal"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp" >
+
+    <TextView
+        android:id="@+id/usercenter_action_item_gray_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/m4399_ope_usercenter_grey"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/usercenter_action_item_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:textColor="@color/m4399_ope_usercenter_black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/usercenter_action_item_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/m4399_ope_usercenter_grey"
+        android:textSize="16sp" />
+
+</LinearLayout>
