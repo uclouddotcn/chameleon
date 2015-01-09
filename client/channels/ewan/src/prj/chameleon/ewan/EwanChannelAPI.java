@@ -290,6 +290,7 @@ public final class EwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
                                             }
                                         });
+                                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                                 break;
                             case CwErrorCode.CW_OAUTH_FAIL://授权失败
                                 cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
