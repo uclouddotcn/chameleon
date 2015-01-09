@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="mzw_app_name">MzwOnlineDemo2</string>
+    <string name="mzw_test_name">您好，%s</string>
+
+</resources>
