@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/cw_background"
+    >
+
+    <LinearLayout
+        android:id="@+id/cw_pay_record_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/cw_pay_record_lv"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/cw_pay_record_title"
+        android:background="@null"
+        android:cacheColorHint="#00000000"
+        android:divider="@drawable/cw_spliteline"
+        android:dividerHeight="2dip"
+        android:listSelector="@null"
+        android:scrollbars="vertical"
+        android:transcriptMode="disabled" />
+
+    <LinearLayout
+        android:id="@+id/cw_pay_record_del_layout"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="50dip"
+        android:background="@color/cw_del_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/cw_pay_record_mark_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/cw_blue_big_btn"
+            android:textColor="@color/cw_white"
+            android:textSize="16sp"
+            android:shadowColor="@color/cw_blue_shadow"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:layout_weight="1"
+            android:text="@string/cw_mark_all" />
+
+        <Button
+            android:id="@+id/cw_pay_record_del_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="10dip"
+            android:background="@drawable/cw_red_btn"
+            android:layout_weight="1"
+            android:textColor="@color/cw_white"
+            android:textSize="16sp"
+            android:text="@string/cw_del" />
+        
+    </LinearLayout>
+
+</RelativeLayout>

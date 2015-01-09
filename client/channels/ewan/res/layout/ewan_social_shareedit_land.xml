@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+
+  android:background="#e3d9cd">
+
+    <LinearLayout
+        android:id="@+id/ewan_social_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/ewan_social_translucent" />
+
+    <LinearLayout
+        android:id="@+id/share_edit_layout_id"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="15dip"
+        android:layout_marginRight="15dip"
+        android:layout_marginTop="70dip"
+        android:orientation="horizontal" 
+        android:background="@drawable/ewan_social_shareedit_bg">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="190dip"
+            android:layout_marginTop="18dip"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/ewan_social_shareedit_et"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="top"
+                android:maxLength="120"
+                android:background="@color/ewan_social_translucent"
+                android:textColor="#848484"
+                android:lineSpacingMultiplier="1.2"
+                />
+   		</LinearLayout>
+
+<!--         <LinearLayout
+            android:layout_width="80dip"
+            android:layout_height="100dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="10dip"
+            android:orientation="vertical" 
+            android:background="@drawable/ewan_social_shareedit_bg">
+
+            <ImageView
+                android:id="@+id/ewan_social_share_iv"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="15dip"
+            	android:layout_marginRight="15dip"
+            	android:layout_marginTop="5dip"
+            	android:layout_marginBottom="5dip"
+                android:background="@drawable/pic"
+                android:scaleType="fitCenter"
+                />
+            </LinearLayout> -->
+        </LinearLayout>
+
+    
+         <LinearLayout
+            android:layout_width="155dip"
+            android:layout_height="130dip"
+            android:layout_marginRight="25dip"
+            android:layout_marginTop="90dip"
+            android:orientation="vertical" 
+            android:layout_gravity="right"
+            android:background="@drawable/ewan_social_shareedit_pic_bg">
+
+            <ImageView
+                android:id="@+id/ewan_social_share_iv"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="10dip"
+                android:layout_marginBottom="10dip"
+                android:scaleType="fitXY"
+                />
+            </LinearLayout>
+            
+    <LinearLayout
+            android:layout_width="100dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="15dip"
+            android:layout_marginRight="15dip"
+            android:layout_marginTop="90dip"
+            android:orientation="vertical" 
+            android:layout_gravity="right">
+
+            <ImageView
+                android:id="@+id/ewan_social_shareedit_iv"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/ewan_social_shareedit_pin"
+                />
+    </LinearLayout>
+    
+        <LinearLayout
+            android:layout_width="90dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="56dip"
+            android:layout_marginTop="225dip"
+            android:orientation="vertical" 
+            android:layout_gravity="right">
+
+            <TextView
+                android:id="@+id/ewan_social_edit_length_indicate"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#848484"
+             />
+    </LinearLayout>
+    
+<!--    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="75dip"
+            android:layout_marginLeft="8dip"
+            android:layout_marginRight="8dip"
+            android:layout_marginTop="10dip"
+            android:layout_gravity="bottom">
+            
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/ewan_social_shareedit_bottom"
+                />
+    </LinearLayout> -->
+
+	
+</FrameLayout>

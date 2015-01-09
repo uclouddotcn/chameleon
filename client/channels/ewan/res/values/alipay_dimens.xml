@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="msp_font_medium">16sp</dimen>
+    <dimen name="msp_margin_left">10dp</dimen>
+    <dimen name="msp_margin_top">7dp</dimen>
+    <dimen name="msp_margin_right">10dp</dimen>
+    <dimen name="msp_margin_bottom">7dp</dimen>
+    <dimen name="msp_margin_default">7dp</dimen>
+    <dimen name="msp_dimen_64">64dp</dimen>
+    <dimen name="msp_dimen_40">40dp</dimen>
+    <dimen name="msp_dimen_input_40">40dp</dimen>
+    <dimen name="msp_dimen_input_43">43dp</dimen>
+
+    <!-- 下面为扫卡定义，部分为sdk包使用资源，工程中无引用，不要误删 -->
+    <dimen name="corner_r">8dp</dimen>
+    <dimen name="dialog_width">280dp</dimen>
+    <dimen name="dialog_icon_size">50dp</dimen>
+    <dimen name="kakalib_product_icon_size">75dp</dimen>
+    <dimen name="dialog_qr_safe_status_size">15dp</dimen>
+    <dimen name="dialog_icon_width">50dp</dimen>
+    <dimen name="dialog_icon_height">50dp</dimen>
+    <dimen name="kakalib_nav_height">45dp</dimen>
+    <dimen name="kakalib_margin_bottom_of_init_anim">43dp</dimen>
+    <dimen name="kakalib_huoyan_ad_margin_bottom">31dp</dimen>
+    <dimen name="barscan_preview_decode_size">236dp</dimen>
+    <dimen name="textSizeTitle">16sp</dimen>
+    <dimen name="textSizeTitle_2">15sp</dimen>
+    <dimen name="textSizeContent">13sp</dimen>
+    <dimen name="textSizeContentSmall">11sp</dimen>
+    <dimen name="mini_window_width">280dp</dimen>
+
+</resources>

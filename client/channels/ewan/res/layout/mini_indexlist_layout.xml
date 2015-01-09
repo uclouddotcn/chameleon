@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:divider="#00000000">
+    </ListView>
+
+    <TextView
+        android:id="@+id/tvLetter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#BB000000"
+        android:gravity="center"
+        android:maxWidth="70dip"
+        android:minWidth="70dip"
+        android:padding="10dip"
+        android:textColor="#99FFFFFF"
+        android:textSize="50sp"
+        android:visibility="gone" >
+    </TextView>
+
+    <com.alipay.android.mini.widget.AUBladeView
+        android:id="@+id/letterView"
+        android:layout_width="30dip"
+        android:layout_height="fill_parent"
+        android:layout_gravity="right"
+        android:background="#ffffff" />
+
+</FrameLayout>

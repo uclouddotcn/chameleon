@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="mini_str_null">xx</string>
+    <string name="mini_loading">加载中</string>
+    <string name="mini_net_error">不能连接到网络，是否重试？</string>
+    <string name="mini_redo">重试</string>
+    <string name="mini_cancel">取消</string>
+    <string name="mini_error_title_default">提示</string>
+    <string name="mini_app_error">系统繁忙，请稍后再试。</string>
+    <string name="mini_debug_app_error">程序发生错误！点击确定退出程序。</string>
+    <string name="mini_countdown_info">秒后重发</string>
+    <string name="mini_no_input">不能为空</string>
+    <string name="dummy_tip">请将银行卡片正面置于此区域尝试对齐边缘。</string>
+    <string name="kakalib_bar_qr_code">"条形码·二维码"</string>
+    <string name="kakalib_ok">确定</string>
+    <string name="mini_format_error">格式错误</string>
+    <string name="mini_page_add_title">添加银行卡</string>
+    <string name="mini_page_add_hint">银行卡号</string>
+    <string name="mini_card_no">卡号</string>
+    <string name="mini_page_add_tips"> 提供支付密码和短信验证的双重保障</string>
+    <string name="mini_page_add_other_pay"> 其他付款方式</string>
+    <string name="mini_page_msg_title">填写银行卡信息</string>
+    <string name="mini_page_next">下一步</string>
+    <string name="mini_page_name">姓名          </string>
+    <string name="mini_page_input_name_hint">持卡人姓名</string>
+    <string name="mini_card_type">卡类型</string>
+    <string name="mini_id_no">证件号</string>
+    <string name="mini_page_input_id_hint">证件号码</string>
+    <string name="mini_page_msg_check">信息加密处理，仅用于银行验证</string>
+    <string name="mini_page_msg_choose_type">选择证件类型</string>
+    <string name="mini_date">有效期</string>
+    <string name="mini_date_hint">月份/年份</string>
+    <string name="mini_safe_no">安全码</string>
+    <string name="mini_safe_no_hint">卡背面末三位数字</string>
+    <string name="mini_phone_no">手机号</string>
+    <string name="mini_phone_no_hint">银行预留手机号码</string>
+    <string name="mini_agree">同意</string>
+    <string name="mini_quickpay_protocol">《服务协议》</string>
+    <string name="mini_password">密码</string>
+    <string name="mini_password_hint">请输入密码</string>
+    <string name="mini_weakpassword_error_same">请不要使用相同的数字</string>
+    <string name="mini_weakpassword_error_serial">请不要使用连续的数字</string>
+    <string name="msp_mini_safty_code_info">安全码是打印在信用卡背面签名区的一组数字，一般是后3位数字</string>
+    <string name="msp_mini_safty_code_title">安全码说明</string>
+    <string name="msp_mini_read_protocal_title">选择阅读协议</string>
+    <string name="msp_mini_choose_identitify">选择证件类别</string>
+    <string name="msp_mini_card_type_text">卡类型</string>
+    <string name="mini_fp_validate_failuer">指纹校验失败，将转密码支付</string>
+    <string name="mini_fp_no_open_pay">你的指纹信息发生变更，请重新开启指纹密码</string>
+    <string name="mini_fp_validate_failuer_for">指纹校验失败</string>
+    <string name="alipay_net_error">不能连接到服务器，是否重试？</string>
+    <string name="alipay_data_error">系统繁忙，请稍后再试</string>
+    <string name="alipay_confirm_title">提示</string>
+    <string name="alipay_ensure">确定</string>
+    <string name="alipay_cancel">取消</string>
+    <string name="alipay_processing">加载中</string>
+    <string name="alipay_redo">重试</string>
+    <string name="alipay_keyboard">正在使用支付宝安全键盘</string>
+
+</resources>
