@@ -66,9 +66,9 @@ exports.main = function (cfg, options) {
         },
         function (data, callback) {
             if (options.singleProcess) {
-                var main = require('../worker/lib/index').init;
+                var main = require('../../worker/lib/index').init;
                 var requestPoster = new (require('./inproc_requestposter'))();
-                main(path.join(constants.baseDir, './server/config/svr.json'), constants.baseDir, data, requestPoster, function (err) {
+                main(constants.baseDir, ['./worker/config/svr.json'], data, requestPoster, function (err) {
                     if (err) {
                         return callback(err);
                     }

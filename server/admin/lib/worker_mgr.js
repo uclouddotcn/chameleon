@@ -1,5 +1,5 @@
 var cluster = require('cluster');
-var constants = require('./constants')
+var constants = require('./constants');
 var util = require('util');
 var path = require('path');
 
@@ -58,9 +58,6 @@ WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
     this.num = 0;
     this.status = 'init';
     this.pluginInfos = pluginInfos;
-    cluster.setupMaster({
-        exec: __dirname + '/worker.js'
-    });
     this._resetWorkerCfg(workerCfg);
     this._startWorker(callback);
 };
