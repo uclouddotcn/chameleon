@@ -60,7 +60,7 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void init(Activity activity, IDispatcherCb cb) {
-        mOpeCenter = OperateCenter.getInstance();
+            mOpeCenter = OperateCenter.getInstance();
             mOpeConfig = new OperateCenterConfig.Builder(activity)
             .setGameKey(mAppKey)
             .setDebugEnabled(false)
@@ -92,6 +92,12 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
         mOpeCenter.login(activity, new OnLoginFinishedListener(){
             public void onLoginFinished(boolean success, int resultCode, User userInfo) {
+                if(success){
+                    cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.getState(), null, mChannel));
+                }
+                else{
+                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                }
             }
         });
 
@@ -164,6 +170,7 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     {
                         if(success){
                             //请求游戏服，获取充值结果
+
                             cb.onFinished(resultCode, null);
                         }else{
                             //充值失败逻辑
@@ -253,6 +260,8 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                             cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
                         }
                     });
+                    activity.finish();
+                    android.os.Process.killProcess(android.os.Process.myPid());
                 }
             }
         });
@@ -261,5 +270,7 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void onDestroy(Activity activity) {
         super.onDestroy(activity);
+        mOpeCenter.destroy();
+        mOpeCenter = null;
     }
 }
