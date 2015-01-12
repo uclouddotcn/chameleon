@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <color name="cw_white">#FFFFFF</color>
+    <color name="cw_black">#000000</color>
+    <color name="cw_blue">#0000FF</color>
+    <color name="cw_dark_blue">#415f91</color>
+    <color name="cw_user_setting_hint_color">#898989</color>
+    <color name="cw_recharge_pay_record_bg_color">#b0b0b0</color>
+    <color name="cw_font_color">#333333</color>
+    <color name="cw_btn_font_color">#ffffff</color>
+    <color name="cw_red">#ff0000</color>
+    <color name="cw_list_view_divider">#898989</color>
+    <color name="cw_balance_color">#FFFF8000</color>
+    <color name="cw_background">#dfdfdf</color>
+    <color name="cw_double_item">#d2d2d2</color>
+    <color name="cw_grey">#ffcecece</color>
+    <color name="cw_translucent">#00000000</color>
+    <color name="cw_tip_color">#FF676767</color>
+    <color name="cw_translucent_n">#9000</color>
+    <color name="cw_del_bg">#fff1f1f1</color>
+    <color name="cw_blue_shadow">#FF959395</color>
+    <color name="cw_blue_text">#FF2364A5</color>
+    <color name="cw_blue_nor">#FF2364A5</color>
+    <color name="cw_title_map">#FF76E2F6</color>
+    <color name="cw_custom_end">#FF1c6eaa</color>
+    <color name="cw_custom_center">#FF257ebd</color>
+    <color name="cw_custom_start">#FF2e8fd2</color>
+    <color name="cw_background_8">#BCdfdfdf</color>
+    <color name="cw_title_text">#FF013C6B</color>
+    <color name="cw_progress">#FF33FF33</color>
+    <color name="cw_tip_shadow">#FF959395</color>
+    <color name="cw_yellow_shadow">#FF6b1900</color>
+    <color name="cw_red_shadow">#FF891f02</color>
+    <color name="cw_black_52">#FF525252</color>
+    <color name="cw_dialog_text">#FF616161</color>
+    <color name="cw_network_bg">#FFe9eaeb</color>
+    <color name="cw_tab_nor_text">#9eb472</color>
+    <color name="cw_tab_sel_text">#feea11</color>
+    <color name="cw_custom_text">#d6d1a7</color>
+    <color name="cw_phone_text">#b0a81d</color>
+    <color name="cw_platform_text">#666666</color>
+    <color name="cw_platform_title_text">#0066ff</color>
+        
+
+    <!-- ids部分 -->
+    <item name="cw_pay_twelte_rb" type="id"/>
+    <item name="cw_pay_card_pwd_et" type="id"/>
+    <item name="cw_pay_card_intro_tv" type="id"/>
+    <item name="cw_pay_card_10_rb" type="id"/>
+
+    <!-- dimen部分 -->
+    <dimen name="cw_dim_one_dip">1dip</dimen>
+    <dimen name="cw_bottom_tab_font_size">14sp</dimen>
+    <dimen name="cw_margin_top">50dip</dimen>
+    <dimen name="cw_margin_between">35dip</dimen>
+    <dimen name="cw_text_size">14sp</dimen>
+    <dimen name="cw_btn_height">45dip</dimen>
+
+    <!-- sytele 部分 -->
+    <style name="AppTheme" parent="android:Theme.Light" />
+
+    <!-- 16sp正常黑字 -->
+    <style name="cw_sixteen_bold_textview" parent="@android:style/TextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/cw_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 14sp的正常黑字 -->
+    <style name="cw_normal_textview" parent="@android:style/TextAppearance">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/cw_black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <!-- 充值方式 -->
+    <style name="cw_pay_type_textview" parent="@android:style/TextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/cw_tip_color</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <!-- 18sp的粗体黑字 -->
+    <style name="cw_blod_textview" parent="@android:style/TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/cw_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 20sp的粗体白字 -->
+    <style name="cw_blod_channel_textview" parent="@android:style/TextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/cw_white</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <!-- 正常按钮文字 -->
+    <style name="cw_button_blod_white_text" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/cw_white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">125dip</item>
+        <item name="android:layout_height">45dip</item>
+    </style>
+
+    <!-- radio样式 -->
+    <style name="cw_radio" parent="@android:style/TextAppearance.Widget.Button">
+        <item name="android:button">@drawable/cw_radio</item>
+        <item name="android:textColor">@color/cw_tip_color</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingLeft">28dip</item>
+        <item name="android:paddingTop">8dip</item>
+        <item name="android:paddingBottom">8dip</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- TAB页样式 -->
+    <style name="cw_platform_tab_bottom">
+        <item name="android:textSize">@dimen/cw_bottom_tab_font_size</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+        <item name="android:background">@color/cw_translucent</item>
+        <item name="android:paddingTop">10dip</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:button">@null</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:drawablePadding">3dip</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+
+    <style name="Theme.UPPay" parent="android:style/Theme.Light">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+    
+	<!-- Dialog样式 -->
+    <style name="cw_Dialog" parent="android:style/Theme.Dialog">
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+  		<item name="android:windowCloseOnTouchOutside">false</item>    
+    </style>
+    
+
+</resources>

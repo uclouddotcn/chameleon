@@ -105,6 +105,8 @@ android {
         }
         youku {
         }
+        ewan {
+        }
         p_getui {
 
         }
@@ -167,6 +169,7 @@ dependencies {
     vivoCompile project(':channels:vivo')
     dianxinCompile project(':channels:dianxin')
     youkuCompile project(':channels:youku')
+    ewanCompile project(':channels:ewan')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')

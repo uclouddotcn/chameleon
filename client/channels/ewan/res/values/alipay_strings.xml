@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="msp_str_null" />
+    <string name="msp_app_name">支付宝快捷支付服务</string>
+    <string name="msp_loading_default">加载中</string>
+    <string name="msp_redo">重试</string>
+    <string name="msp_error_title_default">提示</string>
+    <string name="msp_net_error">不能连接到网络，是否重试？</string>
+    <string name="msp_net_error_exit">系统繁忙，请稍后再试。</string>
+    <string name="msp_action_settings">设置</string>
+    <string name="msp_xlistview_header_hint_normal">下拉刷新</string>
+    <string name="msp_xlistview_header_hint_ready">松开刷新数据</string>
+    <string name="msp_xlistview_header_hint_loading">正在加载…</string>
+    <string name="msp_xlistview_header_last_time">上次更新时间：</string>
+    <string name="msp_xlistview_footer_hint_normal">查看更多</string>
+    <string name="msp_xlistview_footer_hint_ready">松开载入更多</string>
+    <string name="msp_xlistview_footer_hint_no_more">已是全部数据</string>
+    <string name="msp_allow_back_hint">本次支付尚未完成，是否退出支付宝快捷支付服务？</string>
+    <string name="msp_confirm_install_hint">升级提示</string>
+    <string name="msp_download_fail">下载安装包失败，是否重新下载？</string>
+    <string name="msp_install_continue">安装尚未完成，是否继续？</string>
+    <string name="msp_exit">退出</string>
+    <string name="msp_channel_state">当前选中已足够付款</string>
+    <string name="msp_close">关闭</string>
+    <string name="msp_on">开</string>
+    <string name="msp_off">关</string>
+    <string name="msp_memo_user_cancel">操作已经取消。</string>
+    <string name="msp_memo_app_cancel">程序或者数据出现问题。</string>
+    <string name="msp_memo_server_cancel">系统繁忙，请稍后再试。</string>
+    <string name="msp_app_error">系统繁忙，请稍后再试。</string>
+    <string name="msp_please_input">请输入</string>
+    <string name="msp_memo_repeat_pay">同一订单禁止同时多次支付。</string>
+    <string name="msp_alert_title">提示</string>
+    <string name="msp_PermissionDesCription">service for alipay application</string>
+    <!-- 以下提示debug专用 -->
+    <string name="msp_debug_app_error">程序发生错误！点击确定退出程序。</string>
+    <string name="msp_debug_win_data_error">窗口数据非法。</string>
+    <string name="msp_debug_null_data">返回的业务数据为空</string>
+    <string name="msp_alert_dialog_title">注意</string>
+    <string name="msp_btn_ok">确定</string>
+
+     <!-- weibo : WeiboChannelInfo, ali : AliChannelInfo, common : CommonChannelInfo -->
+    <string name="channel">AliChannelInfo</string>
+    
+    <string name="msp_update_notify">点击下载更新</string>
+    <string name="msp_start_download">开始下载 </string>
+    <string name="msp_download_progress">下载进度: </string>
+</resources>

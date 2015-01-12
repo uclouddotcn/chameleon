@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+   >
+
+    <LinearLayout
+        android:layout_width="290.0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dip"
+        android:layout_marginTop="30dip"
+        android:background="@drawable/cw_dialog_normal_bg"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="vertical" >
+     
+         <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="50dip"
+            android:src="@drawable/cw_tip_dialog_icon" />
+
+        <TextView
+            android:id="@+id/cw_custom_dialog_title"
+            android:layout_width="fill_parent"
+            android:layout_height="40.0dip"
+            android:gravity="center"
+            android:text="@string/cw_promt"
+            android:textColor="@color/cw_white"
+            android:textSize="18sp" 
+            android:visibility="gone" />
+                
+
+        <TextView
+            android:id="@+id/cw_custom_dialog_message"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.5"
+            android:minHeight="120.0dip"
+            android:paddingBottom="15.0dip"
+            android:paddingLeft="20.0dip"
+            android:paddingRight="20.0dip"
+            android:paddingTop="15.0dip" 
+            android:textColor="@color/cw_white"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="80.0dip"
+            android:layout_gravity="bottom"       
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/cw_custom_dialog_positiveButton"
+                android:layout_width="200.0dip"
+                android:layout_height="40.0dip"
+                android:layout_marginBottom="20dip"
+                android:background="@drawable/cw_tip_dialog_btn"
+                android:gravity="center"
+                android:text="@string/cw_sure" 
+                android:textColor="@color/cw_white"
+                android:textSize="18sp"/>
+        </LinearLayout>
+    </LinearLayout>
+    
+<!--     <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dip"
+        android:clickable="true"
+        android:orientation="vertical" >
+    <ImageView
+        android:id="@+id/cw_dialog_close_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"     
+        android:src="@drawable/cw_dialog_back_btn" />
+ </LinearLayout> -->
+</FrameLayout>

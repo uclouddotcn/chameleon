@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="50dp"
+    android:gravity="center"
+    android:background="@drawable/ewan_suspension_window_bg_left">
+    
+    <LinearLayout
+        android:id="@+id/ewan_layout_suspension_menu_left"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:layout_marginLeft="48dp">
+        
+        
+        <LinearLayout 
+    	    android:id="@+id/ewan_layout_suspension_account_left"
+    	    android:layout_width="42dp"
+    	    android:layout_height="fill_parent"
+    	    android:orientation="vertical"
+    	    android:gravity="center"
+    	    android:visibility="visible"
+    	    android:layout_marginRight="10dp"
+    	    android:clickable="true">
+    	    
+    	    <ImageView
+    	        android:id="@+id/ewan_sus_account_left_iv"
+		        android:layout_width="40dp"
+		        android:layout_height="20dp"
+		        android:layout_marginTop="4dp"
+		        android:src="@drawable/cw_account_btn" />
+    
+    		<TextView
+    		    android:id="@+id/ewan_sus_account_tv"
+        		android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dp"
+		        android:layout_marginBottom="3dp"
+		        android:textSize="14sp"
+		        android:textColor="#ffffff"
+		        android:text="@string/cw_pl_account"/>
+    	</LinearLayout>
+    	
+            	
+        
+        <LinearLayout 
+    	    android:id="@+id/ewan_layout_suspension_message_left"
+    	    android:layout_width="42dp"
+    	    android:layout_height="fill_parent"
+    	    android:orientation="vertical"
+    	    android:gravity="center"
+    	    android:visibility="visible"
+    	    android:layout_marginRight="10dp"
+    	    android:clickable="true">
+    	    
+    	    <ImageView
+    	        android:id="@+id/ewan_sus_message_left_iv"
+		        android:layout_width="40dp"
+		        android:layout_height="20dp"
+		        android:layout_marginTop="4dp"
+		        android:src="@drawable/cw_message_btn" />
+    
+    		<TextView
+    		    android:id="@+id/ewan_sus_message_left_tv"
+        		android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dp"
+		        android:layout_marginBottom="3dp"
+		        android:textSize="14sp"
+		        android:textColor="#ffffff"
+		        android:text="@string/cw_pl_msg"/>
+    	</LinearLayout>
+
+
+    	
+ <!--    	<LinearLayout 
+    	    android:id="@+id/ewan_layout_suspension_prefecture"
+    	    android:layout_width="42dp"
+    	    android:layout_height="fill_parent"
+    	    android:orientation="vertical"
+    	    android:gravity="center"
+    	    android:visibility="gone"
+    	    android:layout_marginRight="0dp">
+    	    
+    	    <ImageView
+    	        android:id="@+id/ewan_sus_prefecture_iv"
+		        android:layout_width="30dp"
+		        android:layout_height="16dp"
+		        android:src="@drawable/ewan_suspension_prefecture_selector" />
+    
+    		<TextView
+    		    android:id="@+id/ewan_sus_prefecture_tv"
+        		android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dp"
+		        android:textSize="12dp"
+		        android:text="喜欢"
+		        />
+    	</LinearLayout>
+    	
+    	<LinearLayout 
+    	    android:id="@+id/ewan_layout_suspension_forum"
+    	    android:layout_width="42dp"
+    	    android:layout_height="fill_parent"
+    	    android:orientation="vertical"
+    	    android:gravity="center"
+    	    android:visibility="gone"
+    	    android:layout_marginRight="0dp">
+    	    
+    	    <ImageView
+    	        android:id="@+id/ewan_sus_forum_iv"
+		        android:layout_width="30dp"
+		        android:layout_height="16dp"
+		        android:src="@drawable/ewan_suspension_forum_selector" />
+    
+    		<TextView
+    		    android:id="@+id/ewan_sus_forum_tv"
+        		android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dp"
+		        android:textSize="12sp"
+		        android:text="论坛"/>
+    	</LinearLayout>
+    	
+    	<LinearLayout 
+    	    android:id="@+id/ewan_layout_suspension_recommend"
+    	    android:layout_width="42dp"
+    	    android:layout_height="fill_parent"
+    	    android:orientation="vertical"
+    	    android:gravity="center"
+    	    android:visibility="gone"
+    	    android:layout_marginRight="0dp">
+    	    
+    	    <ImageView
+    	        android:id="@+id/ewan_sus_recommend_iv"
+		        android:layout_width="30dp"
+		        android:layout_height="16dp"
+		        android:src="@drawable/ewan_suspension_customer_selector" />
+    
+    		<TextView
+    		    android:id="@+id/ewan_sus_recommend_tv"
+        		android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dp"
+		        android:textSize="12sp"
+		        android:text="推荐"/>
+    	</LinearLayout> -->
+    	
+    	<LinearLayout 
+    	    android:id="@+id/ewan_layout_suspension_help_left"
+    	    android:layout_width="42dp"
+    	    android:layout_height="fill_parent"
+    	    android:orientation="vertical"
+    	    android:gravity="center"
+    	    android:visibility="visible"
+    	    android:layout_marginRight="0dp"
+    	    android:clickable="true">
+    	    
+    	    <ImageView
+    	        android:id="@+id/ewan_sus_help_left_iv"
+		        android:layout_width="40dp"
+		        android:layout_height="20dp"
+		        android:layout_marginTop="4dp"
+		        android:src="@drawable/cw_help_btn" />
+    
+    		<TextView
+    		    android:id="@+id/ewan_sus_help_left_tv"
+        		android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="2dp"
+		        android:layout_marginBottom="3dp"
+		        android:textSize="14sp"
+		        android:textColor="#ffffff"
+		        android:text="@string/cw_platform_center_help"/>
+    	</LinearLayout>
+    </LinearLayout>
+</LinearLayout>

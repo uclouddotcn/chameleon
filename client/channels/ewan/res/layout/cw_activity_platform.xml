@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_th"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+    
+
+    <LinearLayout
+        android:id="@+id/cw_paltform_tab_bg"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical" 
+        android:layout_marginLeft="75dip"
+        android:layout_marginRight="75dip"
+        android:layout_marginTop="25dip"
+        android:layout_marginBottom="25dip"
+        android:clickable="true"
+        android:background="@drawable/cw_platform_bg">
+        
+      
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.0"
+            android:visibility="gone" />
+        <!-- 四个ITEM -->
+
+        <LinearLayout
+            android:id="@+id/cw_plat_tab_layout"
+            android:layout_width="200dip"
+            android:layout_height="35dip"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="19dip"
+            android:baselineAligned="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+<!--             <LinearLayout
+                android:id="@+id/cw_pl_tab_rcd_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/cw_tab_item_sel"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/cw_pl_tab_rcd_iv"
+                    android:layout_width="35dip"
+                    android:layout_height="35dip"
+                    android:contentDescription="@string/cw_about_detail"
+                    android:src="@drawable/cw_tab_rcd_game_sel" />
+
+                <TextView
+                    android:id="@+id/cw_pl_tab_rcd_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dip"
+                    android:layout_marginTop="5dip"
+                    android:text="@string/cw_recommend"
+                    android:textColor="@color/cw_white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/cw_pl_tab_down_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/cw_tab_item_nor"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/cw_pl_tab_down_iv"
+                    android:layout_width="35dip"
+                    android:layout_height="35dip"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/cw_about_detail"
+                    android:src="@drawable/cw_tab_down_nor" />
+
+                <TextView
+                    android:id="@+id/cw_pl_tab_down_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/cw_pl_tab_down_iv"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="2dip"
+                    android:layout_marginTop="5dip"
+                    android:text="@string/cw_download"
+                    android:textColor="@color/cw_blue_text"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:id="@+id/cw_pl_tab_count_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dip" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:contentDescription="@string/cw_about"
+                        android:src="@drawable/cw_tip_count" />
+
+                    <TextView
+                        android:id="@+id/cw_pl_tab_count_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/cw_white"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+            </RelativeLayout> -->
+
+            <LinearLayout
+                android:id="@+id/cw_pl_tab_manager_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="20dip"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+<!--                 <ImageView
+                    android:id="@+id/cw_pl_tab_manager_iv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:contentDescription="@string/cw_about"
+                    android:background="@drawable/cw_tab_login_nor" 
+                    android:text="@string/cw_login"
+                    android:textColor="@color/cw_black"
+                    android:textSize="12sp"/> -->
+
+                <TextView
+                    android:id="@+id/cw_pl_tab_manager_tv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:text="@string/cw_title_login"
+                    android:textColor="@color/cw_tab_nor_text"
+                    android:textSize="15sp"
+                    android:background="@drawable/cw_tab_login_nor" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cw_pl_tab_register_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+<!--                 <ImageView
+                    android:id="@+id/cw_pl_tab_register_iv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:contentDescription="@string/cw_register"
+                    android:background="@drawable/cw_tab_login_nor" /> -->
+
+                <TextView
+                    android:id="@+id/cw_pl_tab_register_tv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:text="@string/cw_title_register"
+                    android:gravity="center"
+                    android:textColor="@color/cw_tab_nor_text"
+                    android:background="@drawable/cw_tab_login_nor"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+        
+         <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="0.0dip"
+            android:layout_weight="1.0" />
+         
+         
+    </LinearLayout>
+    
+
+           <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <ImageView
+                android:id="@+id/cw_pl_close_iv"
+                android:layout_width="25dip"
+                android:layout_height="25dip"
+                android:layout_marginRight="90dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="45dip"   
+                android:layout_alignParentTop="true"
+                android:clickable="true"             
+                android:contentDescription="@string/cw_about_detail"
+                android:src="@drawable/cw_close_btn" />
+
+<!--             <Button
+                android:id="@+id/cw_pl_game_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dip"
+                android:layout_centerVertical="true"
+                android:background="@drawable/cw_back_btn"
+                android:gravity="center"
+                android:text="@string/cw_back" 
+                android:textColor="@color/cw_white"
+                android:paddingLeft="18px"
+                android:textSize="14sp" /> -->
+        </RelativeLayout>
+
+</TabHost>
