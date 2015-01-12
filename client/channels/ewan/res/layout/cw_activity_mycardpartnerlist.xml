@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/cw_background"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        layout="@layout/cw_title_full_bar" />
+
+    <ListView
+        android:id="@+id/cw_mycardpartner_lv"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/cw_translucent"
+        android:cacheColorHint="@color/cw_translucent"
+        android:divider="@drawable/cw_spliteline"
+        android:dividerHeight="2dip"
+        android:listSelector="@color/cw_translucent"
+        android:scrollbars="vertical"
+        android:transcriptMode="disabled" />
+</LinearLayout>

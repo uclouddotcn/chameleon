@@ -4,23 +4,22 @@
     "chamversion": "1.0",
     "version": "3.2.6.4",
     "enableWrapPackage": 0,
-    "cfgitem": {
-
-        "appId" : {
+    "cfgitem": [
+        {
+            "name": "appId",
             "type": "int",
-            "desc": "app id"
+            "desc": "APP ID"
         },
-
-        "appKey" : {
+        {
+            "name": "appKey",
             "type": "string",
-            "desc": "app key"
+            "desc": "APP KEY"
         },
-
-        "isForceUpdate" : {
+        {
+            "name": "isForceUpdate",
             "type": "boolean",
-            "desc": "whether force client to update",
+            "desc": "是否强制升级",
             "default": "false"
         }
-    }
+    ]
 }
-

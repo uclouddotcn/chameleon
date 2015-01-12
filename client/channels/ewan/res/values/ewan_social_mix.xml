@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <color name="ewan_social_white">#FFFFFF</color>
+    <color name="ewan_social_black">#000000</color>
+    <color name="ewan_social_blue">#0000FF</color>
+    <color name="ewan_social_dark_blue">#FF415f91</color>
+    <color name="ewan_social_font_color">#333333</color>
+    <color name="ewan_social_btn_font_color">#ffffff</color>
+    <color name="ewan_social_red">#ff0000</color>
+    <color name="ewan_social_list_view_divider">#898989</color>
+    <color name="ewan_social_balance_color">#FFFF8000</color>
+    <color name="ewan_social_background">#dfdfdf</color>
+    <color name="ewan_social_grey">#ffcecece</color>
+    <color name="ewan_social_translucent">#00000000</color>
+    <color name="ewan_social_tip_color">#FF676767</color>
+    <color name="ewan_social_translucent_n">#9000</color>
+    <color name="ewan_social_del_bg">#fff1f1f1</color>
+    <color name="ewan_social_blue_shadow">#FF959395</color>
+    
+    
+    <style name="MyTransparent" > 
+　　 <item name="android:windowBackground">@color/ewan_social_translucent</item> 
+    <!-- 是否允许背景灰暗 -->  
+    <item name="android:backgroundDimEnabled">true</item>　　
+	<item name="android:windowIsTranslucent">true</item> 
+
+<!-- 系统自带的切入效果 -->
+　　<!-- <item name="android:windowAnimationStyle">@+android:style/Animation.Translucent</item> -->
+<!-- 自定义由下向上的切入效果 -->
+　　<item name="android:windowAnimationStyle">@style/AnimBottom</item>
+　　</style>
+
+	<style parent="@android:style/Animation" name="AnimBottom"> 
+    	<item name="android:windowEnterAnimation">@drawable/ewan_social_push_bottom_in</item>
+     	<item name="android:windowExitAnimation">@drawable/ewan_social_push_bottom_out</item>
+    </style>
+    
+	    <!-- 摇一摇相关style -->
+    <style name="scrshot_dlg_style" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+
+    <!--  -->
+    <style name="lan_DialogWindowAnim" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowExitAnimation">@anim/ewan_social_shake_dlg_alpha</item>
+    </style>
+
+    <style name="snapshotDialogWindowAnim" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/ewan_social_shake_scrshot_dlg</item>
+        <item name="android:windowExitAnimation">@anim/ewan_social_shake_dlg_alpha</item>
+    </style>
+
+    <style name="notitleDialog">
+
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 模糊 -->
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="Dialog_Fullscreen">
+
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+
+    <style name="Notitle_Fullscreen">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+         <item name="android:windowBackground">@color/ewan_social_white</item>
+    </style>
+    
+    
+    <style name="EwanTransparentTheme" > 
+　　	 	<item name="android:windowBackground">@color/ewan_social_translucent</item> 
+    	<item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+    	<item name="android:backgroundDimEnabled">true</item>　　
+		<item name="android:windowIsTranslucent">true</item> 
+　　</style>
+
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+    <LinearLayout android:id="@+id/yk_pay_gold_content_linear"
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:orientation="horizontal"
+		android:paddingTop="@dimen/yk_xh_24px">
+		<RelativeLayout 
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+		<LinearLayout android:id="@+id/yk_pay_gold_balance_layout"
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:orientation="vertical"
+			android:gravity="center">
+		    <TextView android:id="@+id/yk_pay_gold_balance_txt"
+		        android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/yk_text_0.0"
+				android:textSize="@dimen/yk_xh_58px"
+				android:textColor="#b3b3b3"/>
+		    <TextView android:id="@+id/yk_pay_gold_balance_tip_txt"
+		        android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/yk_text_jbye"
+				android:textSize="@dimen/yk_xh_26px"
+				android:textColor="#717171"/>
+		    <TextView android:id="@+id/yk_pay_gold_balance_renew_txt"
+		        android:layout_width="@dimen/yk_xh_132px"
+				android:layout_height="@dimen/yk_xh_44px"
+				android:text="@string/yk_text_sxje"
+				android:textSize="@dimen/yk_xh_26px"
+				android:textColor="@android:color/white"
+				android:background="#a0a0a0"
+				android:gravity="center"/>
+		    
+		</LinearLayout>
+		<TextView android:id="@+id/yk_pay_gold_to_chongzhi_txt"
+		    android:layout_width="@dimen/yk_xh_236px"
+			android:layout_height="@dimen/yk_xh_88px"
+			android:text="@string/yk_text_czjb"
+			android:textSize="@dimen/yk_xh_36px"
+			android:textColor="@android:color/white"
+			android:background="#ff9c00"
+			android:gravity="center"
+			android:layout_alignParentRight="true"
+			android:layout_alignBottom="@+id/yk_pay_gold_balance_layout"/>
+		</RelativeLayout>
+	</LinearLayout>
+</LinearLayout>

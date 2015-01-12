@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+>
+
+    <LinearLayout
+        android:layout_width="280.0dip"
+        android:layout_height="wrap_content"
+		android:layout_gravity="center"
+        android:background="@drawable/cw_platform_center_dialog_bg"
+        android:clickable="true"
+        android:orientation="vertical" >
+
+        <GridView
+            android:id="@+id/cw_gridview_share"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:columnWidth="40dp"
+            android:gravity="center"
+            android:horizontalSpacing="5dp"
+            android:numColumns="2"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="2dp" />
+
+    </LinearLayout>
+    
+</FrameLayout>

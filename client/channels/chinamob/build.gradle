@@ -30,7 +30,7 @@ android {
     //sourceSets.main.compileClasspath += ''
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }

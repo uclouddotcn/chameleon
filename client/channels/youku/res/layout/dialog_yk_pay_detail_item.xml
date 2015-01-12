@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:background="@color/white"
+	android:orientation="vertical">
+		<ImageView 
+		    android:layout_width="match_parent"
+	    	android:layout_height="1px"
+	    	android:background="@color/title_line"
+	    	android:layout_alignParentTop="true"
+	    	android:layout_marginTop="0px"
+		    />
+
+	<RelativeLayout
+	    android:id="@+id/yk_pay_detail_item_layout"
+	    android:layout_width="wrap_content"
+	    android:layout_height="@dimen/yk_xh_119px"
+	    android:paddingTop="@dimen/yk_xh_10px"
+	    android:orientation="horizontal" >
+
+	    <RelativeLayout
+	        android:id="@+id/relativeLayout1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toLeftOf="@+id/item_arrow"
+	        android:paddingLeft="@dimen/yk_xh_36px"
+	        android:layout_centerVertical="true" >
+
+	        <RelativeLayout
+	            android:id="@+id/item_line1"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content" >
+
+	            <TextView
+	                android:id="@+id/item_goodsname_txt"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/yk_text_ykgame_pay"
+	                android:textColor="#717171"
+	                android:textSize="@dimen/yk_xh_30px" />
+
+	            <TextView
+	                android:id="@+id/item_isSuccess_txt"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_alignParentRight="true"
+	                android:text="@string/yk_text_ykgame_pay"
+	                android:textColor="@color/yk_pay_datail_item_issuccess"
+	                android:textSize="@dimen/yk_xh_30px" />
+	        </RelativeLayout>
+
+	        <RelativeLayout
+	            android:id="@+id/item_line2"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_below="@+id/item_line1" >
+
+	            <TextView
+	                android:id="@+id/item_price_txt"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/yk_text_ykgame_pay"
+	                android:textColor="#717171"
+	                android:textSize="@dimen/yk_xh_30px"
+	                android:paddingTop="@dimen/yk_xh_6px" />
+
+	            <TextView
+	                android:id="@+id/item_time_txt"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_alignParentRight="true"
+	                android:text="@string/yk_text_ykgame_pay"
+	                android:textColor="@color/edit_text_hint"
+	                android:textSize="@dimen/yk_xh_24px"
+	                android:paddingTop="@dimen/yk_xh_10px" />
+	        </RelativeLayout>
+	    </RelativeLayout>
+	    <ImageView
+	        android:id="@+id/item_arrow"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:padding="@dimen/yk_xh_26px"
+	        android:src="@drawable/yk_pay_detail_item_arrow_down" />
+
+
+	</RelativeLayout>
+	
+	<RelativeLayout
+	    android:id="@+id/item_layout2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="@dimen/yk_xh_138px"
+	    android:orientation="vertical"
+	    android:background="#f5f5f5"
+	    android:visibility="gone">
+		<ImageView android:id="@+id/yk_pay_detail_item_curve_img"
+		    android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:background="@drawable/yk_pay_detail_item_curve"
+		    />
+		<RelativeLayout
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical"
+		    android:layout_centerVertical="true">	    <TextView
+	        android:id="@+id/item_orderid_txt"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/yk_text_ykgame_pay"
+	        android:textColor="#717171"
+	        android:textSize="@dimen/yk_xh_30px"
+	        android:paddingLeft="@dimen/yk_xh_36px"/>
+
+	    <TextView
+	        android:id="@+id/item_tips_txt"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/yk_text_ykgame_pay"
+	        android:textColor="#717171"
+	        android:textSize="@dimen/yk_xh_30px"
+	        android:paddingLeft="@dimen/yk_xh_36px"
+	        android:layout_below="@+id/item_orderid_txt"
+	        android:paddingTop="@dimen/yk_xh_6px"  />
+	</RelativeLayout>
+	</RelativeLayout>
+
+</LinearLayout>

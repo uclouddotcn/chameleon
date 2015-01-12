@@ -230,7 +230,12 @@ public class MainActivity extends Activity implements IAccountActionListener {
         }
     }
 
-	protected void onGotAuthroizationCode(final JSONObject authorization) {
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+    }
+
+    protected void onGotAuthroizationCode(final JSONObject authorization) {
 		final TextView textView = (TextView) this.findViewById(R.id.textView1);
         String t = authorization.toString();
         Log.d("TEST", t);

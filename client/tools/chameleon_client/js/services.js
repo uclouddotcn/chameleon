@@ -231,14 +231,18 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log) {
             defered.resolve(sdkcfg);
         });
         return defered.promise;
-    }
+    };
 
     ProjectMgr.prototype.newChannel = function (project, channelName) {
         return this.chtool.createOrphanChannel(project, channelName);
-    }
+    };
 
     ProjectMgr.prototype.getSupportedDKs = function () {
         return this.chtool.getAllSDKs();
+    };
+
+    ProjectMgr.prototype.getSDK = function (sdkid) {
+        return this.chtool.getSDK(sdkid);
     }
 
     ProjectMgr.prototype.loadIcon = function (projectPath, icon) {

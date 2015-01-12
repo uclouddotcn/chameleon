@@ -1,0 +1,6 @@
+tags
+*.swp
+node_modules
+log/*
+sample/chameleon_cc2d/data/*
+.idea

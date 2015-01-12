@@ -7,7 +7,7 @@
     android:paddingRight="@dimen/dialog_switch_account_Item_padding_left"
     android:orientation="horizontal"
      >
-	
+	<!-- android:layout_height="@dimen/dialog_switch_account_item_height" -->
     <RelativeLayout
         android:id="@+id/item_root"
         android:layout_width="match_parent"
@@ -37,6 +37,7 @@
             android:drawablePadding="@dimen/rem_psw_hint_drawable_padding_left"
             android:gravity="center_vertical"
             android:text="@string/keke_remember_psd"
+            android:textSize="14sp"
             android:textColor="#585858"/>
 		
 		<TextView
@@ -67,7 +68,7 @@
             android:layout_centerInParent="true"
             android:text="@string/keke_delete"
             android:textColor="#edecec"
-            android:textSize="15sp" />
+            android:textSize="18sp" />
         <!-- 79.33dp -->
     </RelativeLayout>
   

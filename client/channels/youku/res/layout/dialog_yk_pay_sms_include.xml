@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+
+    <LinearLayout android:id="@+id/yk_pay_sms_content_linear"
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:orientation="vertical">
+	
+	
+    <TextView android:id="@+id/yk_pay_business_txt"
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="#717171"
+		android:textSize="@dimen/yk_xh_20px"
+		android:text="@string/yk_text_ywmc_stzf_djmc" />
+    <TextView android:id="@+id/yk_pay_provider_txt"
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="#717171"
+		android:textSize="@dimen/yk_xh_20px"
+		android:text="@string/yk_text_fwtgs_yk" />
+    <TextView 
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textSize="@dimen/yk_xh_20px" />
+    <TextView android:id="@+id/yk_pay_declare_txt"
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="#717171"
+		android:textSize="@dimen/yk_xh_20px"
+		android:text="@string/yk_text_prompt_buy_msg" />
+	</LinearLayout>
+</LinearLayout>

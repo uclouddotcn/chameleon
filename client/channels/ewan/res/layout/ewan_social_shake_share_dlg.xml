@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/ewan_social_scrshot_previewImg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@drawable/shake_ewan_social_imgview_border"
+        android:padding="10dp"
+        android:visibility="gone" />
+
+    <!-- 关闭按钮、平台选择等按钮 -->
+
+    <LinearLayout
+        android:id="@+id/ewan_social_toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#00000000"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/ewan_social_half_textview"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:visibility="invisible" />
+
+        <RelativeLayout
+            android:id="@+id/ewan_social_contentLayout"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_gravity="bottom"
+            android:layout_margin="12dp"
+            android:layout_weight="2"
+            android:background="#00000000" >
+
+            <RelativeLayout
+                android:id="@+id/ewan_social_contentBtnLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:alpha="0.9"
+                android:background="@drawable/shake_ewan_social_shake_layout_corner" >
+
+                <ImageButton
+                    android:id="@+id/ewan_social_cancelBtn"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="12dp"
+                    android:background="#00000000"
+                    android:src="@drawable/shake_ewan_social_close_button_style" />
+
+                <!-- 新浪微博 -->
+
+                <ImageButton
+                    android:id="@+id/ewan_social_platform_btn1"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_toRightOf="@id/ewan_social_cancelBtn"
+                    android:background="#00000000"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ewan_social_sina_on"
+                    android:visibility="invisible" />
+
+                <!-- 微信 -->
+
+                <ImageButton
+                    android:id="@+id/ewan_social_platform_btn2"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_toRightOf="@id/ewan_social_platform_btn1"
+                    android:background="#00000000"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ewan_social_wxcircle_off"
+                    android:visibility="invisible" />
+
+                <!-- 朋友圈 -->
+
+                <ImageButton
+                    android:id="@+id/ewan_social_platform_btn3"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_toRightOf="@id/ewan_social_platform_btn2"
+                    android:background="#00000000"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ewan_social_wxcircle_off"
+                    android:visibility="invisible" />
+
+                <!-- QQ平台 -->
+
+                <ImageButton
+                    android:id="@+id/ewan_social_platform_btn4"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_toRightOf="@id/ewan_social_platform_btn3"
+                    android:background="#00000000"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ewan_social_tx_off"
+                    android:visibility="invisible" />
+
+                <!-- Qzone平台 -->
+
+                <ImageButton
+                    android:id="@+id/ewan_social_platform_btn5"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_toRightOf="@id/ewan_social_platform_btn4"
+                    android:background="#00000000"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ewan_social_qzone_off"
+                    android:visibility="invisible" />
+
+                <!-- 分享按钮 -->
+
+                <Button
+                    android:id="@+id/ewan_social_sendBtn"
+                    android:layout_width="64dp"
+                    android:layout_height="42dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/shake_ewan_social_share_btn_style"
+                    android:text="@string/cw_share"
+                    android:textColor="#ffffff"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/ewan_social_contentEdit"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@id/ewan_social_contentBtnLayout"
+                android:background="@drawable/shake_ewan_social_edittext_corner"
+                android:hint="说点啥…"
+                android:inputType="textMultiLine"
+                android:padding="12dp"
+                android:textSize="15sp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</FrameLayout>

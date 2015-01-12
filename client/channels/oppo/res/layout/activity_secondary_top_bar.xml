@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="51.83dp"
+        android:layout_height="44dp"
         android:background="#FFE9E9E9"
         android:orientation="horizontal" >
 
@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="14.83dp"
+                android:layout_marginLeft="0dp"
                 android:background="@drawable/activity_setting_title_back_icon"
                 android:contentDescription="@null"
                 android:paddingLeft="14.83dp" />
@@ -34,11 +34,11 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="38.83dp"
+                android:layout_marginLeft="33dp"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@string/nmgc_boy_alert_button2"
-                android:textSize="20.5sp"
+                android:textSize="17sp"
                 android:textColor="#4c4d4d"/>
         </RelativeLayout>
 
@@ -95,11 +95,5 @@
             android:background="@color/colorline_area_5"
             android:contentDescription="@null" />
     </LinearLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1.5dp"
-        android:background="@drawable/tab_top_divider"
-        android:contentDescription="@null" />
 
 </LinearLayout>

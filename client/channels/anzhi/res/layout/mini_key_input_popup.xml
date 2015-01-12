@@ -1565,7 +1565,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/keyback"
                 android:gravity="center"
-                android:text="@string/mini_input_￥ "
+                android:text="@string/mini_input_rmb"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/C_white" >
             </TextView>
@@ -1580,7 +1580,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/keyback"
                 android:gravity="center"
-                android:text="@string/mini_input_α"
+                android:text="@string/mini_input_aaa"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/C_white" />
 
@@ -1594,7 +1594,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/keyback"
                 android:gravity="center"
-                android:text="@string/mini_input_β"
+                android:text="@string/mini_input_bbb"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/C_white" />
 
@@ -1608,7 +1608,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/keyback"
                 android:gravity="center"
-                android:text="@string/mini_input_γ"
+                android:text="@string/mini_input_vvv"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/C_white" />
 

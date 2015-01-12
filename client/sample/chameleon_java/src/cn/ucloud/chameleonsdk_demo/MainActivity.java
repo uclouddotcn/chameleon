@@ -29,90 +29,90 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	private static String TAG = MainActivity.class.getSimpleName();
-	
-	// ÕËºÅĞĞÎª¼àÌı
-	private IAccountActionListener mIAccountActionListener = new AccountListener(
-			this);
-	// µÇÂ¼»Øµ÷
-	private IDispatcherCb mLoginCallBack = new LoginCallBack(this);
-	// Ö§¸¶»Øµ÷
-	private IDispatcherCb mBuyCallBack = new BuyCallBack(this);
+    private static String TAG = MainActivity.class.getSimpleName();
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		// init ChannelAPI
-		ChannelInterface.init(this, true, new IDispatcherCb() {
-			@Override
-			public void onFinished(int arg0, JSONObject arg1) {
-				// TODO Auto-generated method stub
-				Log.i(TAG, "init() finished.");
-			}
-		});
-	}
+    // è´¦å·è¡Œä¸ºç›‘å¬
+    private IAccountActionListener mIAccountActionListener = new AccountListener(
+            this);
+    // ç™»å½•å›è°ƒ
+    private IDispatcherCb mLoginCallBack = new LoginCallBack(this);
+    // æ”¯ä»˜å›è°ƒ
+    private IDispatcherCb mBuyCallBack = new BuyCallBack(this);
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        // init ChannelAPI
+        ChannelInterface.init(this, true, new IDispatcherCb() {
+            @Override
+            public void onFinished(int arg0, JSONObject arg1) {
+                // TODO Auto-generated method stub
+                Log.i(TAG, "init() finished.");
+            }
+        });
+    }
 
 	/*
-	 * ÒÔÏÂÊÇ°´Å¥µã»÷ÊÂ¼şÏàÓ¦·½·¨
+	 * ä»¥ä¸‹æ˜¯æŒ‰é’®ç‚¹å‡»äº‹ä»¶ç›¸åº”æ–¹æ³•
 	 */
 
-	/****************** ÓÃ»§ÕË»§¹ÜÀí *********************/
-	// µÇÂ¼
-	public void onClickLogin(View v) {
-		if (ChannelInterface.isLogined()) {
-			Toast.makeText(this, "ÄúÒÑ¾­µÇÂ¼£¬ÇëÏÈÍË³ö£¡", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		ChannelInterface.login(this, mLoginCallBack, mIAccountActionListener);
-	}
+    /****************** ç”¨æˆ·è´¦æˆ·ç®¡ç† *********************/
+    // ç™»å½•
+    public void onClickLogin(View v) {
+        if (ChannelInterface.isLogined()) {
+            Toast.makeText(this, "æ‚¨å·²ç»ç™»å½•ï¼Œè¯·å…ˆé€€å‡ºï¼", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ChannelInterface.login(this, mLoginCallBack, mIAccountActionListener);
+    }
 
-	// µÇ³ö
-	public void onClickLogout(View v) {
-		if (ChannelInterface.isLogined()) {
-			ChannelInterface.logout(this);
-			setUserInfo("ÓÃ»§ÒÑÍË³ö£¡");
-		}else {
-			Toast.makeText(this, "Äú»¹Ã»ÓĞµÇÂ¼£¬ÇëÏÈµÇÂ¼£¡", Toast.LENGTH_SHORT).show();
-		}
-	}
-	
-	// ÇĞ»»ÕË»§
-	public void onClickSwitchAccount(View v) {
-		if (ChannelInterface.isLogined()) {
-			ChannelInterface.switchAccount(this, mLoginCallBack);
-		}else {
-			Toast.makeText(this, "Äú»¹Ã»ÓĞµÇÂ¼£¬ÇëÏÈµÇÂ¼£¡", Toast.LENGTH_SHORT).show();
-		}
-	}
+    // ç™»å‡º
+    public void onClickLogout(View v) {
+        if (ChannelInterface.isLogined()) {
+            ChannelInterface.logout(this);
+            setUserInfo("ç”¨æˆ·å·²é€€å‡ºï¼");
+        }else {
+            Toast.makeText(this, "æ‚¨è¿˜æ²¡æœ‰ç™»å½•ï¼Œè¯·å…ˆç™»å½•ï¼", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-	// ÓÎ¿ÍµÇÂ¼
-	public void onClickGuestLogin(View v) {
-		if ("test".equals(ChannelInterface.getChannelName())) {
-			Toast.makeText(this, "¸ÃAPIÔİ²»Ö§³ÖÓÎ¿ÍµÇÂ¼£¡", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		ChannelInterface.loginGuest(this, new LoginGuestCallback(this),
-				mIAccountActionListener);
-	}
+    // åˆ‡æ¢è´¦æˆ·
+    public void onClickSwitchAccount(View v) {
+        if (ChannelInterface.isLogined()) {
+            ChannelInterface.switchAccount(this, mLoginCallBack);
+        }else {
+            Toast.makeText(this, "æ‚¨è¿˜æ²¡æœ‰ç™»å½•ï¼Œè¯·å…ˆç™»å½•ï¼", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-	// ÓÎ¿Í×¢²á
-	public void onClickGuestRegist(View v) {
-		if ("test".equals(ChannelInterface.getChannelName())) {
-			Toast.makeText(this, "¸ÃAPIÔİ²»Ö§³ÖÓÎ¿Í×¢²á£¡", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		boolean t = ChannelInterface.registGuest(this, "please register", new LoginCallBack(this));
+    // æ¸¸å®¢ç™»å½•
+    public void onClickGuestLogin(View v) {
+        if ("test".equals(ChannelInterface.getChannelName())) {
+            Toast.makeText(this, "è¯¥APIæš‚ä¸æ”¯æŒæ¸¸å®¢ç™»å½•ï¼", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ChannelInterface.loginGuest(this, new LoginGuestCallback(this),
+                mIAccountActionListener);
+    }
+
+    // æ¸¸å®¢æ³¨å†Œ
+    public void onClickGuestRegist(View v) {
+        if ("test".equals(ChannelInterface.getChannelName())) {
+            Toast.makeText(this, "è¯¥APIæš‚ä¸æ”¯æŒæ¸¸å®¢æ³¨å†Œï¼", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        boolean t = ChannelInterface.registGuest(this, "please register", new LoginCallBack(this));
         if (!t) {
             setUserInfo("current is not guest. " + "uid: " + ChannelInterface.getUin() + "session: " + ChannelInterface.getToken());
         }
-	}	
+    }
 
-	/****************** ÆäËû *********************/
-	// ÍË³öÓ¦ÓÃ
-	public void onClickExit(View v) {
-		ChannelInterface.exit(this, new IDispatcherCb() {
+    /****************** å…¶ä»– *********************/
+    // é€€å‡ºåº”ç”¨
+    public void onClickExit(View v) {
+        ChannelInterface.exit(this, new IDispatcherCb() {
             @Override
             public void onFinished(int retCode, JSONObject data) {
                 if (retCode == Constants.ErrorCode.ERR_OK) {
@@ -120,18 +120,18 @@ public class MainActivity extends Activity {
                 }
             }
         });
-	}
+    }
 
-	// ·À³ÁÃÔ
-	public void onClickAddiction(View v) {
-		getAddiction();
-	}
-	
-	// ToggleToolbar
-	private boolean mHasCreateToolbar = false;
+    // é˜²æ²‰è¿·
+    public void onClickAddiction(View v) {
+        getAddiction();
+    }
+
+    // ToggleToolbar
+    private boolean mHasCreateToolbar = false;
     private boolean mShowToolbar = false;
-	public void onClickToggleToolbar(View v) {
-		if (!mHasCreateToolbar) {
+    public void onClickToggleToolbar(View v) {
+        if (!mHasCreateToolbar) {
             final Activity activity = this;
             ChannelInterface.createToolBar(this, Constants.TOOLBAR_BOTTOM_LEFT);
             setUserInfo("success to create toolbar");
@@ -142,120 +142,120 @@ public class MainActivity extends Activity {
             ChannelInterface.showFloatBar(this, !mShowToolbar);
             mShowToolbar = !mShowToolbar;
         }
-	}
-	
-	
-	/****************** ÓÃ»§Ö§¸¶¹ÜÀí *********************/
-	// ³äÖµĞéÄâ»õ±Ò
-	public void onClickBuy(View v) {
-		if(!ChannelInterface.isLogined()){
-			setUserInfo("ÇëÏÈµÇÂ¼£¡");
-			return;
-		}
-		RequestParams params = new RequestParams();
-		params.put("token", ChannelInterface.getPayToken());
-		params.put("productId", "xxxx");
-		params.put("uid", ChannelInterface.getUin());
-		params.put("count", "10000");
-		params.put("productName", "testproduct");
-		params.put("productDesc", "the test product ");
-		final Activity activity = this;
-		PlatformAPIRestClient.post("/sdkapi/buy", params,
-				new JsonHttpResponseHandler() {
-					@Override
-					public void onSuccess(JSONObject ret) {
-						try {
-							if (ret.getInt("code") == 0) {
-								String payInfo = null;
-								if (ret.has("payInfo")) {
-									payInfo = ret.getString("payInfo");
-								}
-								ChannelInterface.buy(activity,
-										ret.getString("orderId"),
-										ret.getString("appUid"),
-										"usernameinapp",
-										ret.getString("serverId"), "xxxx",
-										"xxxx", payInfo,
-										ret.getInt("productCount"),
-										ret.getInt("realPayMoney"),
-										mBuyCallBack);
-							} else {
-								Log.e(TAG,
-										"wrong code "
-												+ String.valueOf(ret
-														.getInt("code")));
-							}
-						} catch (JSONException e) {
-							Log.e(TAG, "wrong json", e);
-						}
-					}
-				});
-	}
+    }
 
-	// ¹ºÂòÓÎÏ·µÀ¾ß
-	public void onClickCharge(View v) {
-		if(!ChannelInterface.isLogined()){
-			setUserInfo("ÇëÏÈµÇÂ¼£¡");
-			return;
-		}
-		RequestParams params = new RequestParams();
-		params.put("uid", ChannelInterface.getUin());
-		params.put("count", "10");
-		params.put("token", ChannelInterface.getPayToken());
 
-		final Activity activity = this;
-		PlatformAPIRestClient.post("/sdkapi/charge", params,
-				new JsonHttpResponseHandler() {
-					@Override
-					public void onSuccess(JSONObject ret) {
-						try {
-							if (ret.getInt("code") == 0) {
-								String payInfo = null;
-								if (ret.has("payInfo")) {
-									payInfo = ret.getString("payInfo");
-								}
-								ChannelInterface.charge(activity,
-										ret.getString("orderId"),
-										ret.getString("appUid"),
-										"usernameinapp",
-										ret.getString("serverId"), "xxxxx",
-										payInfo, ret.getInt("ratio"),
-										ret.getInt("realPayMoney"), true,
-										mBuyCallBack);
-							} else {
-								Log.e(TAG,
-										"wrong code "
-												+ String.valueOf(ret
-														.getInt("code")));
-							}
-						} catch (JSONException e) {
-							Log.e(TAG, "wrong json", e);
-						}
-					}
-				});
-	}
+    /****************** ç”¨æˆ·æ”¯ä»˜ç®¡ç† *********************/
+    // å……å€¼è™šæ‹Ÿè´§å¸
+    public void onClickBuy(View v) {
+        if(!ChannelInterface.isLogined()){
+            setUserInfo("è¯·å…ˆç™»å½•ï¼");
+            return;
+        }
+        RequestParams params = new RequestParams();
+        params.put("token", ChannelInterface.getPayToken());
+        params.put("productId", "xxxx");
+        params.put("uid", ChannelInterface.getUin());
+        params.put("count", "10000");
+        params.put("productName", "testproduct");
+        params.put("productDesc", "the test product ");
+        final Activity activity = this;
+        PlatformAPIRestClient.post("/sdkapi/buy", params,
+                new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(JSONObject ret) {
+                        try {
+                            if (ret.getInt("code") == 0) {
+                                String payInfo = null;
+                                if (ret.has("payInfo")) {
+                                    payInfo = ret.getString("payInfo");
+                                }
+                                ChannelInterface.buy(activity,
+                                        ret.getString("orderId"),
+                                        ret.getString("appUid"),
+                                        "usernameinapp",
+                                        ret.getString("serverId"), "xxxx",
+                                        "xxxx", payInfo,
+                                        ret.getInt("productCount"),
+                                        ret.getInt("realPayMoney"),
+                                        mBuyCallBack);
+                            } else {
+                                Log.e(TAG,
+                                        "wrong code "
+                                                + String.valueOf(ret
+                                                .getInt("code")));
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "wrong json", e);
+                        }
+                    }
+                });
+    }
+
+    // è´­ä¹°æ¸¸æˆé“å…·
+    public void onClickCharge(View v) {
+        if(!ChannelInterface.isLogined()){
+            setUserInfo("è¯·å…ˆç™»å½•ï¼");
+            return;
+        }
+        RequestParams params = new RequestParams();
+        params.put("uid", ChannelInterface.getUin());
+        params.put("count", "10");
+        params.put("token", ChannelInterface.getPayToken());
+
+        final Activity activity = this;
+        PlatformAPIRestClient.post("/sdkapi/charge", params,
+                new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(JSONObject ret) {
+                        try {
+                            if (ret.getInt("code") == 0) {
+                                String payInfo = null;
+                                if (ret.has("payInfo")) {
+                                    payInfo = ret.getString("payInfo");
+                                }
+                                ChannelInterface.charge(activity,
+                                        ret.getString("orderId"),
+                                        ret.getString("appUid"),
+                                        "usernameinapp",
+                                        ret.getString("serverId"), "xxxxx",
+                                        payInfo, ret.getInt("ratio"),
+                                        ret.getInt("realPayMoney"), true,
+                                        mBuyCallBack);
+                            } else {
+                                Log.e(TAG,
+                                        "wrong code "
+                                                + String.valueOf(ret
+                                                .getInt("code")));
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "wrong json", e);
+                        }
+                    }
+                });
+    }
 
 	/*
-	 * ÒÔÏÂÊÇ¸¨Öú·½·¨
+	 * ä»¥ä¸‹æ˜¯è¾…åŠ©æ–¹æ³•
 	 */
 
-	public void setUserInfo(String str) {
-		TextView user_info = (TextView) findViewById(R.id.user_info);
-		user_info.setText(str);
-	}
+    public void setUserInfo(String str) {
+        TextView user_info = (TextView) findViewById(R.id.user_info);
+        user_info.setText(str);
+    }
 
-	public void onGotAuthroizationCode(final JSONObject authorization) {
-		String t = authorization.toString();
-		Log.i(TAG, "authorization jsonobject:" + t);
-		try {
-			ChannelInterface.onLoginRsp(authorization.toString());
-			setUserInfo("user login as uid: "+ ChannelInterface.getUin()+ ", token: " + ChannelInterface.getToken());
-		} catch (Exception e) {
-			Log.e(TAG, "fail to get param", e);
-		}
-	}
+    public void onGotAuthroizationCode(final JSONObject authorization) {
+        String t = authorization.toString();
+        Log.i(TAG, "authorization jsonobject:" + t);
+        try {
+            ChannelInterface.onLoginRsp(authorization.toString());
+            setUserInfo("user login as uid: "+ ChannelInterface.getUin()+ ", token: " + ChannelInterface.getToken());
+        } catch (Exception e) {
+            Log.e(TAG, "fail to get param", e);
+        }
+    }
 
-	private void getAddiction() {
+    private void getAddiction() {
         ChannelInterface.antiAddiction(this, new IDispatcherCb() {
             @Override
             public void onFinished(int retCode, JSONObject data) {
@@ -287,55 +287,55 @@ public class MainActivity extends Activity {
 	
 	
 	/*
-	 * ÒÔÏÂÊÇactivityÉúÃüÖÜÆÚ¸÷·½·¨µÄ»Øµ÷
+	 * ä»¥ä¸‹æ˜¯activityç”Ÿå‘½å‘¨æœŸå„æ–¹æ³•çš„å›è°ƒ
 	 */
 
-	@Override
-	protected void onNewIntent(Intent intent) {
-		// TODO Auto-generated method stub
-		super.onNewIntent(intent);
-		ChannelInterface.onNewIntent(this, intent);
-	}
+    @Override
+    protected void onNewIntent(Intent intent) {
+        // TODO Auto-generated method stub
+        super.onNewIntent(intent);
+        ChannelInterface.onNewIntent(this, intent);
+    }
 
-	@Override
-	protected void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
-		ChannelInterface.onStart(this);
-	}
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        ChannelInterface.onStart(this);
+    }
 
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		// Æô¶¯Ê±ÕâÀïÅ×Òì³£ null point
-		ChannelInterface.onResume(this, new IDispatcherCb() {
-			@Override
-			public void onFinished(int arg0, JSONObject arg1) {
-				// TODO Auto-generated method stub
-			}
-		});
-	}
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        // å¯åŠ¨æ—¶è¿™é‡ŒæŠ›å¼‚å¸¸ null point
+        ChannelInterface.onResume(this, new IDispatcherCb() {
+            @Override
+            public void onFinished(int arg0, JSONObject arg1) {
+                // TODO Auto-generated method stub
+            }
+        });
+    }
 
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		ChannelInterface.onPause(this);
-	}
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        ChannelInterface.onPause(this);
+    }
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
-		ChannelInterface.onActivityResult(this, requestCode, resultCode, data);
-	}
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        ChannelInterface.onActivityResult(this, requestCode, resultCode, data);
+    }
 
-	@Override
-	protected void onStop() {
-		// TODO Auto-generated method stub
-		super.onStop();
-		ChannelInterface.onStop(this);
-	}
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
+        ChannelInterface.onStop(this);
+    }
 
 }

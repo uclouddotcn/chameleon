@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="5dip" >
+
+    <ProgressBar
+        android:id="@+id/cw_down_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="22dip"
+        android:paddingTop="2dip"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip" >
+    </ProgressBar>
+
+    <TextView
+        android:id="@+id/cw_file_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        >
+    </TextView>
+
+</FrameLayout>

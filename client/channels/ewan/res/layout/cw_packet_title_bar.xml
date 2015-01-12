@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/cw_tab_repeat_bg" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/cw_pl_top_bg" >
+
+        <Button
+            android:id="@+id/cw_title_left_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="25dip"
+            android:minWidth="60dip"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dip"
+            android:paddingLeft="18dip"
+            android:layout_centerVertical="true"
+            android:background="@drawable/cw_platform_title_back_btn"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="@string/cw_back"
+            android:textColor="@color/cw_platform_title_text" />
+
+        <TextView
+            android:id="@+id/cw_title_content_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="@string/cw_login"
+            android:textColor="@color/cw_platform_title_text"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/cw_title_right_btn"
+            android:layout_width="25dip"
+            android:layout_height="25dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dip"
+            android:layout_centerVertical="true"
+            android:background="@drawable/cw_platform_close_btn"
+            android:minWidth="70dip"/>
+    </RelativeLayout>
+
+</RelativeLayout>
