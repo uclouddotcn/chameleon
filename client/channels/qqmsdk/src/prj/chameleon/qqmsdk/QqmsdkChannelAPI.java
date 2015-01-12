@@ -118,6 +118,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 case LOGIN_TIMEOUT_EVT_ID:
                     if (mLoginCb != null && msg.arg1 == mCmdSeq) {
                         mLoginCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                        mLoginCb = null;
                     }
                     break;
                 default:
@@ -771,7 +772,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCmdSeq += 1;
         Message msg = new Message();
         msg.arg1 = mCmdSeq;
-        mHandler.sendMessageAtTime(msg, LOGIN_TIMEOUT*1000);
+        mHandler.sendMessageDelayed(msg, LOGIN_TIMEOUT*1000);
     }
 
 }
