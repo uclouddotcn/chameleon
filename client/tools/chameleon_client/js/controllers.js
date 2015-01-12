@@ -2006,7 +2006,7 @@ chameleonControllers
             var sdk = selectedsdk;
             var promise = sdk.updateFunc();
             promise.then(function () {
-                $scope.channelCfgForm.$setPristine();
+                //$scope.channelCfgForm.$setPristine();
                 $modalInstance.close();
             }, function (e) {
                 alert(e.message);
