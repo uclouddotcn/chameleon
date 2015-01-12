@@ -147,7 +147,7 @@ dependencies {
     compile project(':chameleon')
     qqmobCompile project(':channels:qqmob')
     qqmsdkCompile project(':channels:qqmsdk')
-//    anzhiCompile project(':channels:anzhi')
+    anzhiCompile project(':channels:anzhi')
     nd91Compile project(':channels:nd91')
     qihuCompile project(':channels:qihu')
     chinamobCompile project(':channels:chinamob')
