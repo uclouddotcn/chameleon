@@ -59,6 +59,9 @@ WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
     this.status = 'init';
     this.pluginInfos = pluginInfos;
     this._resetWorkerCfg(workerCfg);
+    cluster.setupMaster({
+        exec: path.join(__dirname, '..', 'worker', 'worker.js')
+    });
     this._startWorker(callback);
 };
 

@@ -45,7 +45,6 @@ function ensureBaseDirReady() {
 }
 
 exports.main = function (cfg, options) {
-    assert(cluster.isMaster, "should only run in master mode");
     if (options.debug) {
         constants.debug = options.debug;
     }

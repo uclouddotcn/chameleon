@@ -7,7 +7,7 @@
 
     "worker" : {
         "script": "./worker",
-        "args": ["./worker/config/svr.json"],
+        "args": ["./worker/config/svr_debug.json"],
         "env": {
             "NODE_PATH": "$CHAMELEON_WORKDIR/worker/node_modules"
         }
