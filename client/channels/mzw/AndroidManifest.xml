@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
     package="prj.chameleon.mzw">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -11,6 +12,11 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application>
+        <meta-data
+            android:name="MZWAPPKEY" android:value="f1436ab48781" chameleon:replace="android:value=%appKey%" />
+        <meta-data
+            android:name="DEBUG" android:value="true" chameleon:replace="android:value=%debug%" />
+
         <activity
             android:name="com.muzhiwan.sdk.MzwActivity"
             android:configChanges="keyboardHidden|navigation|orientation"
@@ -33,12 +39,6 @@
             android:theme="@android:style/Theme.Translucent"
             android:windowSoftInputMode="adjustResize" >
         </activity>
-        <meta-data
-            android:name="MZWAPPKEY"
-            android:value="f1436ab48781" />
-        <meta-data
-            android:name="DEBUG"
-            android:value="true" />
 
     </application>
 </manifest>

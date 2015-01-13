@@ -4,6 +4,22 @@
     "chamversion": "1.4.1",
     "version": "V2.0.7.1",
     "cfgitem": [
+        {
+          "name": "appId",
+          "type" : "string",
+          "desc" : "申请的APPID"
+        },
+        {
+          "name": "appKey",
+          "type" : "string",
+          "desc" : "申请的appKey"
+        },
+        {
+          "name": "debug",
+          "type" : "string",
+          "desc" : "是否是debug模式 true or false"
+        }
+
     ]
 }
 

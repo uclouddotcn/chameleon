@@ -22,29 +22,19 @@ import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
+import prj.chameleon.channelapi.JsonTools;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
 
 
 public final class MzwChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
-    private String mAppId;
-    private String mAppKey;
     private String mChannel;
     private boolean mIsLandscape;
     private int mScreenOrientation;
-
-    private static class UserInfo {
-        public String mUid;
-        public String mSession;
-        public String mNick;
-    }
-
-    private UserInfo userInfo = new UserInfo();
+    private String mUserSession;
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
-        mAppId = cfg.getString("appId");
-        mAppKey = cfg.getString("appKey");
         mChannel = commCfg.mChannel;
         mIsLandscape = commCfg.mIsLandscape;
         if (mIsLandscape){
@@ -56,50 +46,37 @@ public final class MzwChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     @Override
-    public void init(Activity activity, IDispatcherCb cb) {
+    public void init(Activity activity, final IDispatcherCb cb) {
         MzwApiFactory.getInstance().init(activity, mScreenOrientation, new MzwApiCallback() {
-                    @Override
-                    public void onResult(int code, Object arg1) {
-
-                    }
-                });
+            @Override
+            public void onResult(int code, Object arg1) {
+                if (code == 1) {
+                    cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                } else {
+                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                }
+            }
+        });
     }
-
-
-
-    public void setChannel(String channelName) {
-        mChannel = channelName;
-    }
-
-
 
     @Override
     public void login(final Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
-        doLogin(activity, cb, accountActionListener);
-    }
-
-    private void doLogin(final Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener){
-        MzwApiFactory.getInstance().doLogin(activity, new MzwApiCallback(){
-
+        MzwApiFactory.getInstance().doLogin(activity, new MzwApiCallback() {
             @Override
             public void onResult(final int code, final Object data) {
-                Log.i("mzw_net_modify", "data:" + data);
+                Log.e("mzw_net_modify", "data:" + data);
                 activity.runOnUiThread(new Runnable() {
-
                     @Override
                     public void run() {
                         if (code == CallbackCode.SUCCESS) {
-                            userInfo.mSession = data.toString();    //获取token
+                            mUserSession = String.valueOf(data);    //获取token
                             //这里需要跟服务器通信，获取用户其他信息。
-                            cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.mSession, null, mChannel));
-
+                            cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(mUserSession, null, mChannel));
                         } else if (code == CallbackCode.ERROR) {
                             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-
                         } else if (code == CallbackCode.CANCEL) {
                             cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
                         }
-
                     }
                 });
             }
@@ -107,69 +84,8 @@ public final class MzwChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void loginGuest(Activity activity, final IDispatcherCb loginCallback, IAccountActionListener accountActionListener) {
-        login(activity, new IDispatcherCb() {
-            @Override
-            public void onFinished(int retCode, JSONObject data) {
-                if (retCode == Constants.ErrorCode.ERR_OK) {
-                    JSONObject obj = JsonMaker.makeLoginGuestResponse(false, data);
-                    loginCallback.onFinished(retCode, obj);
-                } else {
-                    loginCallback.onFinished(retCode, null);
-                }
-            }
-        }, accountActionListener);
-    }
-
-    @Override
     public void logout(final Activity activity) {
         MzwApiFactory.getInstance().doLogout(activity);
-    }
-
-    /**
-     * 支付回调
-     */
-    private class PayCallback implements MzwApiCallback {
-
-        public  Activity activity = null;
-        public  IDispatcherCb cb = null;
-
-
-        @Override
-        public void onResult(final int code, final Object data) {
-            if(activity == null)
-                return;
-            activity.runOnUiThread(new Runnable() {
-                public void run() {
-
-                    System.out.println(code);
-
-                    if (code == CallbackCode.SUCCESS) {
-                        final Order order = (Order) data;
-                        Log.i("mzw_sdk_pay", "order:" + order.getProductname());
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (cb != null){
-                                    cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(order.getOrderid(),null,mChannel));
-                                }
-                            }
-                        });
-
-                    } else if (code == CallbackCode.PROCESSING) {
-                         cb.onFinished(Constants.ErrorCode.ERR_PAY_IN_PROGRESS, null);
-
-                    }else if (code == CallbackCode.CANCEL) {
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
-                    }else {
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_UNKNOWN, null);
-
-                    }
-                }
-            });
-
-        }
-
     }
 
     @Override
@@ -184,19 +100,7 @@ public final class MzwChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,//总价
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        Order order = new Order();
-        order.setOrderid(orderId);
-        order.setExtern("aae5698b-3817-4c80-8@10001");
-        order.setMoney(realPayMoney);
-        order.setProductdesc(currencyName);
-        order.setProductid(payInfo);
-        order.setProductname(currencyName);
-
-        PayCallback payCallback = new PayCallback();
-        payCallback.activity = activity;
-        payCallback.cb = cb;
-
-        MzwApiFactory.getInstance().doPay(activity,order, payCallback);
+        doPay(activity, realPayMoney/100, payInfo, cb);
     }
 
     @Override
@@ -211,132 +115,87 @@ public final class MzwChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,//个数
                     int realPayMoney,
                     final IDispatcherCb cb) {
+        doPay(activity, realPayMoney/100, payInfo, cb);
+    }
+
+    private void doPay(final Activity activity, int money, String payInfo, final IDispatcherCb cb){
+
         Order order = new Order();
-        order.setOrderid(orderId);
-        order.setExtern("aae5698b-3817-4c80-8@10001");
-        order.setMoney(realPayMoney);
-        order.setProductdesc(payInfo);
-        order.setProductid(productID);
-        order.setProductname(productName);
+        order.setMoney(money);
+        JSONObject jsonObject = JsonTools.getJsonObject(payInfo);
+        order.setProductid(JsonTools.getStringByKey(jsonObject, "productId"));
+        order.setProductname(JsonTools.getStringByKey(jsonObject, "productName"));
+        order.setProductdesc(JsonTools.getStringByKey(jsonObject, "productDesc"));
+        order.setExtern(JsonTools.getStringByKey(jsonObject, "extern"));
 
-        PayCallback payCallback = new PayCallback();
-        MzwApiFactory.getInstance().doPay(activity,order, payCallback);
-    }
-
-
-    @Override
-    public boolean registGuest(Activity activity, String tips, IDispatcherCb cb) {
-        return false;
-    }
-
-
-    @Override
-    public boolean isSupportSwitchAccount() {
-        return false;
-    }
-
-    @Override
-    public boolean switchAccount(Activity activity, IDispatcherCb cb) {
-        return false;
-    }
-
-
-    @Override
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-
-    }
-
-    @Override
-    public void createToolBar(Activity activity, int position) {
-
-    }
-
-    @Override
-    public void showFloatBar(Activity activity, boolean visible) {
-
-    }
-
-    @Override
-    public void destroyToolBar(Activity activity) {
-
-    }
-
-    @Override
-    public void onResume(Activity activity, final IDispatcherCb cb) {
-        activity.runOnUiThread(new Runnable() {
+        MzwApiFactory.getInstance().doPay(activity, order, new MzwApiCallback() {
             @Override
-            public void run() {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+            public void onResult(final int code, final Object data) {
+                if(activity == null)
+                    return;
+                activity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (code == CallbackCode.SUCCESS) {
+                            final Order order = (Order) data;
+                            Log.e("mzw_sdk_pay", "order:" + order.getProductname());
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (cb != null){
+                                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                                    }
+                                }
+                            });
+                        } else if (code == CallbackCode.PROCESSING) {
+                            cb.onFinished(Constants.ErrorCode.ERR_PAY_IN_PROGRESS, null);
+                        }else if (code == CallbackCode.CANCEL) {
+                            cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
+                        }else {
+                            cb.onFinished(Constants.ErrorCode.ERR_PAY_UNKNOWN, null);
+                        }
+                    }
+                });
             }
         });
     }
 
     @Override
-    public void onPause(Activity activity) {
-
-    }
-
-
-    @Override
-    public JSONObject getPayInfo() {
-        return null;
-    }
-
-    @Override
-    public void onApplicationEvent(int event, Object... arguments) {
-
-    }
-
-    @Override
-    public void submitPlayerInfo(Activity activity,
-                                 String roleId,
-                                 String roleName,
-                                 String roleLevel,
-                                 int zoneId,
-                                 String zoneName) {
-
-    }
-
-    @Override
-    public void onDestroy(Activity activity) {
-        super.onDestroy(activity);
-        MzwApiFactory.getInstance().destroy(activity);
-    }
-
-    @Override
-    public void onStart(Activity activity) {
-
-    }
-
-    @Override
-    public void onStop(Activity activity) {
-
-    }
-
-    @Override
     public String getUid() {
-        return null;
+        if (mUserSession == null) {
+            return "";
+        } else {
+            return mUserSession;
+        }
     }
 
     @Override
     public String getToken() {
-        return null;
-
+        if (mUserSession == null) {
+            return "";
+        } else {
+            return mUserSession;
+        }
     }
 
     @Override
     public boolean isLogined() {
-
-        return false;
+        return mUserSession != null;
     }
 
     @Override
     public String getId() {
-        return null;
+        return "4399";
     }
 
     @Override
-    public void exit(final Activity activity, final IDispatcherCb cb) {
+    public void exit(Activity activity, final IDispatcherCb cb) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
+            }
+        });
     }
+
 }
 
