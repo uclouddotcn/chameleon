@@ -449,7 +449,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     sessionid = "hy_gameid";
                     sessiontype = "wc_actoken";
                 }
-                mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId, mUserInfo.mPayToken,
+                mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId.substring(1), mUserInfo.mPayToken,
                         sessionid, sessiontype, serverId, mUserInfo.mPf,
                         mUserInfo.mPfKey, UnipayPlugAPI.ACCOUNT_TYPE_COMMON,
                         String.valueOf(rest), allowUserChange,
@@ -513,7 +513,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     sessionid = "hy_gameid";
                     sessiontype = "wc_actoken";
                 }
-                mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId, mUserInfo.mPayToken,
+                mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId.substring(1), mUserInfo.mPayToken,
                         sessionid, sessiontype, serverId, mUserInfo.mPf,
                         mUserInfo.mPfKey, UnipayPlugAPI.ACCOUNT_TYPE_COMMON,
                         String.valueOf(rest), true,
@@ -645,11 +645,11 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     private void FillUserInfo(LoginRet ret) {
-        mUserInfo.mOpenId = ret.open_id;
         mUserInfo.mDesc = ret.desc;
         mUserInfo.mPf = ret.pf;
         mUserInfo.mPfKey = ret.pf_key;
         if (ret.platform == WeGame.QQPLATID) {
+            mUserInfo.mOpenId = "q"+ret.open_id;
             mUserInfo.mPlatform = EPlatform.ePlatform_QQ;
             for (TokenRet tr: ret.token) {
                 switch (tr.type) {
@@ -664,6 +664,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 }
             }
         } else if (ret.platform == WeGame.WXPLATID) {
+            mUserInfo.mOpenId = "w"+ret.open_id;
             mUserInfo.mPlatform = EPlatform.ePlatform_Weixin;
             for (TokenRet tr: ret.token) {
                 switch (tr.type) {
