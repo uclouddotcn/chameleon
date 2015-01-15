@@ -1,6 +1,7 @@
 package prj.chameleon.dianxin;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.open189.api.AuthView;
 import cn.open189.api.EmpAPI;
 import cn.open189.api.http.Callback;
 import prj.chameleon.channelapi.ApiCommonCfg;
@@ -19,7 +21,9 @@ import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
+import prj.chameleon.channelapi.JsonTools;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
+import prj.chameleon.channelapi.cbinding.AccountActionListener;
 
 public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
@@ -33,17 +37,20 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private static class Config {
         public String mAppId;
         public String mAppSecret;
+        public String mRedirectUri;
     }
 
     private Config mCfg;
     private UserInfo mUserInfo;
     private IAccountActionListener mAccountActionListener;
+    private IDispatcherCb mLoginCb;
     private IDispatcherCb mPayCb;
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Config();
         mCfg.mAppId = cfg.getString("appId");
         mCfg.mAppSecret = cfg.getString("appSecret");
+        mCfg.mRedirectUri = cfg.getString("redirectUri");
         mChannel = commCfg.mChannel;
     }
 
@@ -54,81 +61,56 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void login(final Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
-        EmpAPI.getAccessToken(mCfg.mAppId,
-                mCfg.mAppSecret, null, null,
-                new Callback() {
-                    @Override
-                    public void onSuccess(final Object object) {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                /**
-                                 * 当请求成功时，获取EMP返回的access
-                                 * token信息.具体请查看《EMP开放API接口规范》的5.3.7章.
-                                 */
-                                try {
-                                    JSONObject json = (JSONObject) object;
-                                    StringBuilder sb = new StringBuilder();
-                                    sb.append("res_code=" + json.getString("res_code") + "\n"); // 标准返回码。返回0表示成功
-                                    sb.append("res_message=" + json.getString("res_message") + "\n"); // 返回码描述信息
-                                    sb.append("access_token=" + json.getString("access_token") + "\n"); // AT访问令牌的有效期（以秒为单位）
-                                    sb.append("expires_in=" + json.getString("expires_in") + "\n"); // AT访问令牌的有效期（以秒为单位）
-                                    if (json.has("scope")) {
-                                        sb.append("scope=" + json.getString("scope") + "\n"); // 权限列表，保留字段，默认为空，表示所有权限
-                                    }
-                                    if (json.has("state")) {
-                                        sb.append("state=" + json.getString("state") + "\n"); // 与请求参数中state的值一致
-                                    }
 
-                                    Log.i(TAG, sb.toString());
-                                    if ("0".equals(json.getString("res_code"))) {
-                                        mUserInfo = new UserInfo();
-                                        mUserInfo.mUserToken = json.getString("access_token");
-                                        mAccountActionListener = accountActionListener;
-                                        cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(mUserInfo.mUserToken, "", mChannel));
-                                    } else {
-                                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                                    }
+        /**
+         * 发起登入请求,具体参数信息,请查看EMP开放API接口规范》的5.2.6章的“当response_type为”token”时”部分
+         * .
+         */
+        if (mLoginCb != null)
+            return;
+        Intent intent = new Intent(activity, AuthView.class);
+        intent.putExtra("app_id", mCfg.mAppId); // 应用在EMP平台上的唯一标识，在应用注册时分配
+        intent.putExtra("app_secret", mCfg.mAppSecret); // EMP颁发给应用的密钥信息
+        intent.putExtra("display", "mobile"); // 登录和授权页面的展现样式
+        intent.putExtra("redirect_uri", mCfg.mRedirectUri); // 必须与应用安全设置中的设置回调地址一致.用于验证请求的目的,防止hack响应的行为.
+        activity.startActivityForResult(intent, 189);
+        mLoginCb = cb;
+    }
 
+    @Override
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(activity, requestCode, resultCode, data);
+        if (mLoginCb == null)
+            return;
+        if (resultCode == Activity.RESULT_OK && requestCode == 189) {
+            /**
+             * 此处获取EMP返回的access
+             * token信息.具体请查看《EMP开放API接口规范》的5.2.7章的“额外应答参数：当response_type为
+             * ”token”时”部分.
+             */
+            Bundle bundle = data.getExtras();
+            Log.e(Constants.TAG, "dianxin login request bundle : " + bundle.toString());
 
-                                } catch (JSONException e) {
-                                    Log.i(TAG, e.toString());
-                                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFail(final int code, final Object object) {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                /**
-                                 * 当请求失败时（如请求参数错误等）,获取EMP返回的信息，具体请查看《
-                                 * EMP开放API接口规范》的5.3.7章.
-                                 */
-                                String result = code // 错误编码
-                                        + ":" + object; // EMP返回的错误信息
-                                Log.i(TAG, result);
-                                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onException(final Throwable throwable) {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                /**
-                                 * 处理发送请求过程中的出现异常
-                                 */
-                                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                            }
-                        });
-                    }
-                });
+            if (bundle.getString("res_code").equals("0")) {
+                mUserInfo.mUserToken = bundle.getString("access_token");
+                mUserInfo.mUserId = bundle.getString("open_id");
+                mLoginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(mUserInfo.mUserToken, mUserInfo.mUserId, mChannel));
+                StringBuilder sb = new StringBuilder();
+                sb.append("res_code=" + bundle.getString("res_code") + "\n"); // 标准返回码。返回0表示成功
+                sb.append("res_message=" + bundle.getString("res_message") + "\n"); // 返回码描述信息
+                sb.append("access_token=" + bundle.getString("access_token") + "\n"); // 获取到的AT访问令牌
+                sb.append("expires_in=" + bundle.getString("expires_in") + "\n"); // AT访问令牌的有效期（以秒为单位）
+                sb.append("scope=" + bundle.getString("scope") + "\n"); // 权限列表，保留字段，默认为空，表示所有权限
+                sb.append("state=" + bundle.getString("state") + "\n"); // 与请求参数中state的值一致
+                sb.append("open_id=" + bundle.getString("open_id") + "\n"); // 天翼帐号的唯一标志，标识当前授权的用户
+                Log.e(Constants.TAG, "dianxin login request : " + sb.toString());
+            } else {
+                mLoginCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+            }
+        } else {
+            mLoginCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+        }
+        mLoginCb = null;
     }
 
 
@@ -211,21 +193,17 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private void startPay(Activity activity, IDispatcherCb cb, String payInfo) {
         if (mPayCb != null)
             return;
-
-        try {
-            JSONObject jsonObject = new JSONObject(payInfo);
-            String payCode = jsonObject.getString("payCode");
-            String payState = jsonObject.getString("payState");
-            PayHelper payHelper = PayHelper.getInstance(activity);
-            payHelper.init(mCfg.mAppId, mCfg.mAppSecret);
-            payHelper.settimeout(120000);	//设置超时时间（可不设，默认为8s）
-            payHelper.pay(activity, payState, handler, payState);
-            mPayCb = cb;
-        } catch (JSONException e) {
-        }
+        JSONObject jsonObject = JsonTools.getJsonObject(payInfo);
+        String payCode = JsonTools.getStringByKey(jsonObject, "payCode");
+        String payState = JsonTools.getStringByKey(jsonObject, "payState");
+        PayHelper payHelper = PayHelper.getInstance(activity);
+        payHelper.init(mCfg.mAppId, mCfg.mAppSecret);
+        payHelper.settimeout(120000);    //设置超时时间（可不设，默认为8s）
+        payHelper.pay(activity, payState, handler, payState);
+        mPayCb = cb;
     }
 
-    Handler handler = new Handler(){
+    Handler handler = new Handler() {
 
         public void handleMessage(android.os.Message msg) {
             if (mPayCb == null)
@@ -234,28 +212,31 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             BaseResponse resp = null;
             switch (msg.what) {
 //			    case com.ffcs.inapppaylib.bean.Constants.RESULT_NO_CT:
-    //				//非电信用户
-    //				break;
+                //				//非电信用户
+                //				break;
                 case com.ffcs.inapppaylib.bean.Constants.RESULT_VALIDATE_FAILURE:
                     //合法性验证失败
-                    resp = (BaseResponse)msg.obj;
+                    resp = (BaseResponse) msg.obj;
                     mPayCb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
                     break;
                 case com.ffcs.inapppaylib.bean.Constants.RESULT_PAY_SUCCESS:
                     //支付成功
-                    resp = (BaseResponse)msg.obj;
+                    resp = (BaseResponse) msg.obj;
                     mPayCb.onFinished(Constants.ErrorCode.ERR_OK, null);
                     break;
                 case com.ffcs.inapppaylib.bean.Constants.RESULT_PAY_FAILURE:
                     //支付失败
-                    resp = (BaseResponse)msg.obj;
+                    resp = (BaseResponse) msg.obj;
                     mPayCb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
                     break;
                 default:
                     break;
             }
+            mPayCb = null;
+        }
 
-        };
+        ;
 
     };
+
 }

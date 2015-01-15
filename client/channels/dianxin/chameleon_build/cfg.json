@@ -14,6 +14,11 @@
       "type": "string",
       "desc": "app secret",
       "ignoreInA": 1
+    },
+    {
+      "name": "redirectUri",
+      "type": "string",
+      "desc": "必须与应用安全设置中的设置回调地址一致.用于验证请求的目的,防止hack响应的行为."
     }
   ]
 }
