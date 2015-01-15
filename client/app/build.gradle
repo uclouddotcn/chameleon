@@ -95,7 +95,7 @@ android {
         }
         coolpad {
         }
-        mzw {
+        muzhiwan {
         }
         m4399 {
         }
@@ -165,7 +165,7 @@ dependencies {
     htcCompile project(':channels:htc')
     coolpadCompile project(':channels:coolpad')
     m4399Compile project(':channels:m4399')
-    mzwCompile  project(':channels:mzw')
+    muzhiwanCompile  project(':channels:muzhiwan')
     vivoCompile project(':channels:vivo')
     dianxinCompile project(':channels:dianxin')
     youkuCompile project(':channels:youku')

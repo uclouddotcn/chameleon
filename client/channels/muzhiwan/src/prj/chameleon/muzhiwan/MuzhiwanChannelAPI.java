@@ -1,12 +1,8 @@
-package prj.chameleon.mzw;
+package prj.chameleon.muzhiwan;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.muzhiwan.sdk.login.MzwApiCallback;
 import com.muzhiwan.sdk.login.MzwApiFactory;
@@ -14,7 +10,6 @@ import com.muzhiwan.sdk.pay.domain.Order;
 import com.muzhiwan.sdk.utils.CallbackCode;
 
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import prj.chameleon.channelapi.ApiCommonCfg;
@@ -27,7 +22,7 @@ import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
 
 
-public final class MzwChannelAPI extends SingleSDKChannelAPI.SingleSDK {
+public final class MuzhiwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     private String mChannel;
     private boolean mIsLandscape;
