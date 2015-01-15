@@ -107,6 +107,8 @@ android {
         }
         ewan {
         }
+        egame {
+        }
         p_getui {
 
         }
@@ -170,10 +172,10 @@ dependencies {
     dianxinCompile project(':channels:dianxin')
     youkuCompile project(':channels:youku')
     ewanCompile project(':channels:ewan')
+    coolpadCompile project(':channels:coolpad')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')
-    coolpadCompile project(':channels:coolpad')
     // generate the compile dependency
 
     /*

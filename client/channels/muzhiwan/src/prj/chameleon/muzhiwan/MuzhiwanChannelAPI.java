@@ -27,6 +27,7 @@ public final class MuzhiwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private String mChannel;
     private boolean mIsLandscape;
     private int mScreenOrientation;
+    private String mUserId;
     private String mUserSession;
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
@@ -56,6 +57,7 @@ public final class MuzhiwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void login(final Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
+
         MzwApiFactory.getInstance().doLogin(activity, new MzwApiCallback() {
             @Override
             public void onResult(final int code, final Object data) {
@@ -76,6 +78,14 @@ public final class MuzhiwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 });
             }
         });
+    }
+
+    @Override
+    public boolean onLoginRsp(String loginRsp) {
+        JSONObject jsonObject = JsonTools.getJsonObject(loginRsp);
+        JSONObject loginInfo = JsonTools.getJsonObject(jsonObject, "loginInfo");
+        mUserId = JsonTools.getStringByKey(loginInfo, "uid");
+        return super.onLoginRsp(loginRsp);
     }
 
     @Override
@@ -156,10 +166,10 @@ public final class MuzhiwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public String getUid() {
-        if (mUserSession == null) {
+        if (mUserId == null) {
             return "";
         } else {
-            return mUserSession;
+            return mUserId;
         }
     }
 
