@@ -33,6 +33,10 @@ var Admin = function(pluginMgr, options, logger) {
                         res.send({code: 0});
                     });
                     break;
+                case 'stop':
+                    workerMgr.stop(function () {
+                        res.send({code: 0});
+                    });
                 default:
                     return next(new restify.InvalidArgumentError(''));
             }

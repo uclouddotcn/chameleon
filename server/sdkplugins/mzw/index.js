@@ -34,27 +34,21 @@ MzwChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     };
     this._logger.debug({qs: u+querystring.stringify(obj)}, 'query string');
     this.client.get(u+querystring.stringify(obj), function (err, req, res, obj) {
-        req.log.debug({req: req, err: err, res: res}, 'on result ');
+        req.log.debug({req: req, err: err, obj: obj}, 'on result ');
         if (!res.body) {
             req.log.warn('null request body');
             return callback(new Error('null request body'));
         }
         try {
             if (obj.code === '1') {
-                if (obj.user.uid !== others) {
-                    callback(null, {
-                        code: ErrorCode.ERR_LOGIN_SESSION_INVALID
-                    });
-                } else {
-                    callback(null, {
-                        code: ErrorCode.ERR_OK,
-                        loginInfo: {
-                            uid: others,
-                            token: token,
-                            channel: wrapper.channelName
-                        }
-                    });
-                }
+                callback(null, {
+                    code: ErrorCode.ERR_OK,
+                    loginInfo: {
+                        uid: obj.user.uid,
+                        token: token,
+                        channel: wrapper.channelName
+                    }
+                });
             } else {
                 req.log.warn({rsp: obj}, 'Fail to verify login');
                 callback(null, {

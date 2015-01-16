@@ -84,6 +84,26 @@ WorkerMgr.prototype.request = function (msgid, body, callback) {
     }
 };
 
+WorkerMgr.prototype.stop = function () {
+    if (this.status !== 'running') {
+        setImmediate(callback, new Error('not in running state'));
+        return;
+    }
+    this.status = 'stop';
+    var self = this;
+    var h = setTimeout(function () {
+        self.forceClose();
+    }, 30000);
+    this._doClose(this.worker.wid, function () {
+        callback();
+    });
+};
+
+
+WorkerMgr.prototype.forceClose = function () {
+
+};
+
 WorkerMgr.prototype.restartWorker = function (workerCfg, callback) {
     if (workerCfg) {
         try {
@@ -135,8 +155,10 @@ WorkerMgr.prototype.close = function (callback) {
 };
 
 WorkerMgr.prototype._doClose = function (wid, callback) {
+    var se
     this._doRequest(wid, '__close', null, function (err) {
         if (err) {
+
             cluster.workers[wid].kill('SIGKILL');
         }
         callback();

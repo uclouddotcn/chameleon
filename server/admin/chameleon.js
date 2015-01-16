@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var program = require('commander');
-var forever = require('forever');
+var pm2 = require('pm2');
 var path = require('path');
 var fs = require('fs');
 var http = require('http');
@@ -9,6 +9,33 @@ var child_process = require('child_process');
 var Zip = require('adm-zip');
 
 var pidFilePath = path.join(__dirname, '..', 'chameleon.pid');
+
+var PROC_NAME = 'chameleon_admin';
+
+function error(message) {
+    console.error(('[ERROR]: '+message).red);
+}
+
+function warn(message) {
+    console.error(('[WARN]: '+message).yellow);
+}
+
+function info(message) {
+    console.error(('[INFO]: '+message).green);
+}
+
+function runUnderPm2(action) {
+    return function () {
+        var input = Array.prototype.splice.call(arguments, 0);
+        pm2.connect(function (err) {
+            if (err) {
+                console.error('Fail to execute command: Fail to connect to PM2.')
+                return;
+            }
+            action.apply(null, input);
+        });
+    }
+}
 
 
 function postRequest (host, port, url, data, callback) {
@@ -71,63 +98,72 @@ function main() {
     program
         .command('start')
         .description('start the server')
-        .action( function () {
-            forever.list(null, function (err, data) {
-                var started = false;
-                if (data != null) {
-                    started = data.filter(function (obj) {
-                        return obj.pidFile === pidFilePath;
-                    }).length > 0;
+        .option('-d, --debug', 'debug mode')
+        .option('-p, --sdkPluginPath <sdkPluginPath>', 'path of sdk plugin')
+        .action( runUnderPm2(function (options) {
+            pm2.describe('chameleon_admin' , function (err, list) {
+                console.log(list)
+                if (list && list.length > 0) {
+                    var p = list[0];
+                    error('process existed as ' + p.pid);
+                    return pm2.disconnect();
                 }
-                if (!started) {
-                    var child = forever.startDaemon('app.js', {
-                        pidFile: pidFilePath,
-                        minUptime: 2000,
-                        spinSleepTime: 1000,
-                        killSignal: 'SIGTERM',
-                        logFile: path.join(__dirname, '..', 'forever.log'),
-                        outFile: path.join(__dirname, '..', 'forever.out'),
-                        errFile: path.join(__dirname, '..', 'forever.err')
-                    });
-                    forever.startServer(child);
-                } else {
-                    console.error("the pid file " + pidFilePath + ' exists! The server might be already up');
-                    return;
+                var opts = {
+                    name: PROC_NAME,
+                    rawArgs: ['--'],
+                    error: path.join(__dirname, '..', 'chameleon.error'),
+                    output:path.join(__dirname, '..', 'chameleon.out')
+                };
+                if (options.debug) {
+                    opts.rawArgs.push('-d');
                 }
-            })
-        });
-
+                if (options.sdkPluginPath) {
+                    opts.rawArgs.push('--sdkplugin');
+                    opts.rawArgs.push(options.sdkPluginPath);
+                }
+                console.log(opts);
+                pm2.start(path.join(__dirname, 'app.js'), opts, function (err, proc) {
+                    if (err) {
+                        console.error('Fail to start chameleon from PM2: ' + err);
+                        return pm2.disconnect();
+                    }
+                    return pm2.disconnect();
+                    // should check the liveness of the
+                    //setTimeout();
+                })
+            });
+        }));
 
     program
         .command('stop')
         .option('-e, --exec <exec>', 'script to execute when the forever process gone')
         .description('stop the server')
-        .action( function () {
-            if (!fs.existsSync(pidFilePath)) {
-                console.log('server already dead');
-                return;
-            }
-            var t = parseInt(fs.readFileSync(pidFilePath, 'utf-8'));
-            forever.list (null, function (err, data) {
+        .action( runUnderPm2(function () {
+            pm2.describe(PROC_NAME, function (err, proc) {
                 if (err) {
-                    console.log('done');
-                    return;
+                    warn("Chameleon process is gone. It has already been stopped");
+                    return pm2.disconnect();
                 }
-                if (!data || data.length === 0) {
-                    onDeadFunc();
-                    console.log('done');
-                    return;
-                }
-                for (var i in data) {
-                    if (data[i].pidFile === pidFilePath) {
-                        var e = forever.stop(i);
-                        e.on('stop', function () {
-                            console.log('done');
-                        })
+                var postData = {
+                    action: 'stop'
+                };
+                postRequest(program.host, program.port, '/admin', postData, function (err) {
+                    if (err) {
+                        error('Fail to close admin server, the server maybe not in right state' + err.message);
+                        return pm2.disconnect();
                     }
-                }
+                    pm2.stop(PROC_NAME, function (err) {
+                        if (err) {
+                            error('Fail to close admin server, the server maybe not in right state' + err.message);
+                        } else {
+                            info('Chameleon server is closed');
+                        }
+                        return pm2.disconnect();
+
+                    });
+                });
             });
-        });
+        }));
 
     program
         .command('alive')
