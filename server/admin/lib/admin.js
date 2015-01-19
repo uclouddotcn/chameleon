@@ -37,6 +37,8 @@ var Admin = function(pluginMgr, options, logger) {
                     workerMgr.stop(function () {
                         res.send({code: 0});
                     });
+                case 'info':
+
                 default:
                     return next(new restify.InvalidArgumentError(''));
             }

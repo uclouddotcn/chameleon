@@ -168,37 +168,32 @@ function main() {
     program
         .command('alive')
         .description('check whether the server is alive')
-        .action( function () {
-            try {
-                var t = parseInt(fs.readFileSync(pidFilePath, 'utf-8'));
-                var l = forever.list (null, function (err, data) {
+        .action( runUnderPm2(function () {
+            pm2.describe(PROC_NAME, function (err, proc) {
+                if (err) {
+                    warn("Chameleon process is gone. It has already been stopped");
+                    return pm2.disconnect();
+                }
+                var postData = {
+                    action: 'stop'
+                };
+                postRequest(program.host, program.port, '/admin', postData, function (err) {
                     if (err) {
-                        onDeadFunc();
-                        console.log('dead (' + err.message + ')');
-                        return;
+                        error('Fail to close admin server, the server maybe not in right state' + err.message);
+                        return pm2.disconnect();
                     }
-                    if (!data || data.length === 0) {
-                        onDeadFunc();
-                        console.log('dead');
-                        return;
-                    }
-                    for (var i in data) {
-                        if (data[i].pidFile === pidFilePath) {
-                            if (data[i].running) {
-                                console.log('running');
-                            } else {
-                                console.log('restarting');
-                            }
-                            return;
+                    pm2.stop(PROC_NAME, function (err) {
+                        if (err) {
+                            error('Fail to close admin server, the server maybe not in right state' + err.message);
+                        } else {
+                            info('Chameleon server is closed');
                         }
-                    }
-                    console.log('dead');
+                        return pm2.disconnect();
+
+                    });
                 });
-            } catch (e) {
-                onDeadFunc();
-                console.log('dead');
-            }
-        });
+            });
+        }));
 
     program
         .command('monitor <type>')
