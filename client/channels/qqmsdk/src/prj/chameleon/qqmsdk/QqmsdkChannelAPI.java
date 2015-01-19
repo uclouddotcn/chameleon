@@ -1,6 +1,8 @@
 package prj.chameleon.qqmsdk;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -108,6 +110,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private final UserInfo mUserInfo = new UserInfo();
     private UnipayPlugAPI mUniPay = null;
     private IDispatcherCb mLoginCb = null;
+    private WeakReference<Activity> mLoginActivity = null;
     private PaymentEnv mPayEnv = null;
     private byte[] mMoneyIcon = null;
     private int mCmdSeq = 0;
@@ -151,12 +154,15 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     break;
                 case CallbackFlag.eFlag_WX_UserCancel:
                 case CallbackFlag.eFlag_QQ_UserCancel:
+                    mPlatform = INVALID_PLAT;
                     mLoginCb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
                     break;
                 case CallbackFlag.eFlag_QQ_NotInstall:
+                    showAlert("未找到手机QQ。请先安装手机QQ。");
                     mLoginCb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_QQ_NON_INSTALLED, null);
                     break;
                 case CallbackFlag.eFlag_WX_NotInstall:
+                    showAlert("未找到微信。请先安装微信。");
                     mLoginCb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_WX_NON_INSTALLED, null);
                     break;
                 case CallbackFlag.eFlag_WX_NotSupportApi:
@@ -171,6 +177,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     break;
             }
             if (loginRet.flag != CallbackFlag.eFlag_Succ) {
+                mPlatform = INVALID_PLAT;
                 Log.e(Constants.TAG, "Fail to login " + loginRet.flag + loginRet.desc);
             }
             mLoginCb = null;
@@ -275,7 +282,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
                     }
                     mPayEnv = null;
-                }
+               }
             });
         }
     };
@@ -291,6 +298,16 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfg.mOfferId = cfg.getString("qqAppId");
         mCfg.mMoneyIconFile = cfg.getString("moneyIcon");
         mCfg.mIsTest = cfg.getBoolean("test");
+    }
+
+    private void showAlert(String message) {
+        Activity activity = mLoginActivity.get();
+        if (activity != null) {
+            new AlertDialog.Builder(activity)
+                    .setTitle("错误")
+                    .setMessage(message)
+                    .show();
+        }
     }
 
    /**
@@ -392,9 +409,12 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         if (mPlatform == WeGame.QQPLATID) {
             WGPlatform.WGLogin(EPlatform.ePlatform_QQ);
             mLoginCb = cb;
+            mLoginActivity = new WeakReference<Activity>(activity);
+            startLoginTimer();
         } else if (mPlatform == WeGame.WXPLATID) {
             WGPlatform.WGLogin(EPlatform.ePlatform_Weixin);
             mLoginCb = cb;
+            mLoginActivity = new WeakReference<Activity>(activity);
             startLoginTimer();
         } else {
             cb.onFinished(Constants.ErrorCode.ERR_LOGIN_MSDK_PLAT_NO_SPEC, null);
@@ -566,6 +586,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public void logout(Activity activity) {
         WGPlatform.WGLogout();
         mUserInfo.setLogout();
+        mPlatform = INVALID_PLAT;
         if (mAccountActionListener != null) {
             activity.runOnUiThread(new Runnable() {
                 @Override
