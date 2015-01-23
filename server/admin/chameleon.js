@@ -6,9 +6,8 @@ var path = require('path');
 var fs = require('fs');
 var http = require('http');
 var child_process = require('child_process');
+var util = require('util');
 var Zip = require('adm-zip');
-
-var pidFilePath = path.join(__dirname, '..', 'chameleon.pid');
 
 var PROC_NAME = 'chameleon_admin';
 
@@ -21,6 +20,9 @@ function warn(message) {
 }
 
 function info(message) {
+    if (message instanceof Object) {
+        message = JSON.stringify(message, null, '\t');
+    }
     console.error(('[INFO]: '+message).green);
 }
 
@@ -59,7 +61,7 @@ function postRequest (host, port, url, data, callback) {
             try {
                 var obj = JSON.parse(s);
                 if (obj.code === 0) {
-                    callback();
+                    callback(null, obj.msg);
                 } else {
                     callback(new Error("server responds " + JSON.stringify(obj)));
                 }
@@ -81,11 +83,6 @@ function main() {
         .option('-f, --force', 'script to execute when the forever process gone')
         .option('-p, --port <port>', 'admin port, default to 8083', Number, 8083)
         .option('-h, --host <host>', 'admin host, default to localhost', String, 'localhost');
-    var onDeadFunc = function () {
-        if (program.exec) {
-            child_process.exec(program.exec);
-        }
-    };
     var monitors = {
         status: {
             p: '/status'
@@ -96,47 +93,92 @@ function main() {
     };
 
     program
+        .command('init <adminport>')
+        .description('init admin server')
+        .option('-d, --debug', 'debug mode')
+        .option('-h, --host <adminhost>', 'admin host to bind, [default to 0.0.0.0]')
+        .option('-o, --override', 'force override old config')
+        .action(function (adminport, options) {
+            var cfgpath = path.join(__dirname, '..', 'config', 'admin.json');
+            if (!options.override && fs.existsSync(cfgpath)) {
+                error('Old config exists. If you want to override, please use -f to override');
+                process.exit(-1);
+            }
+            var admincfg = {
+                debug: options.debug,
+                admin: {
+                    "port" : adminport,
+                    "host": options.adminhost || '0.0.0.0'
+                }
+            };
+            fs.writeFileSync(cfgpath, JSON.stringify(admincfg, null, '\t'));
+            info('Init adminsvr done')
+        });
+
+    program
         .command('start')
         .description('start the server')
         .option('-d, --debug', 'debug mode')
         .option('-p, --sdkPluginPath <sdkPluginPath>', 'path of sdk plugin')
-        .action( runUnderPm2(function (options) {
+        .action( runUnderPm2(function (cmd) {
+            var options = cmd;
             pm2.describe('chameleon_admin' , function (err, list) {
-                console.log(list)
                 if (list && list.length > 0) {
                     var p = list[0];
-                    error('process existed as ' + p.pid);
-                    return pm2.disconnect();
-                }
-                var opts = {
-                    name: PROC_NAME,
-                    rawArgs: ['--'],
-                    error: path.join(__dirname, '..', 'chameleon.error'),
-                    output:path.join(__dirname, '..', 'chameleon.out')
-                };
-                if (options.debug) {
-                    opts.rawArgs.push('-d');
-                }
-                if (options.sdkPluginPath) {
-                    opts.rawArgs.push('--sdkplugin');
-                    opts.rawArgs.push(options.sdkPluginPath);
-                }
-                console.log(opts);
-                pm2.start(path.join(__dirname, 'app.js'), opts, function (err, proc) {
-                    if (err) {
-                        console.error('Fail to start chameleon from PM2: ' + err);
+                    if (p.pm2_env.status === 'online') {
+                        error('process existed as ' + p.pid + ', status ' + p.pm2_env.status);
                         return pm2.disconnect();
+                    } else if (p.pm2_env.status === 'stopped') {
+                        startServer();
+                    } else {
+                        pm2.stop(PROC_NAME, function (err) {
+                            if (err) {
+                                error('Chameleon process is in ill state and can\'t be stopped ' + p.pid);
+                                return;
+                            }
+                            startServer();
+                        });
                     }
-                    return pm2.disconnect();
-                    // should check the liveness of the
-                    //setTimeout();
-                })
+                } else {
+                    startServer();
+                }
+                function startServer() {
+                    var opts = {
+                        name: PROC_NAME,
+                        rawArgs: ['--'],
+                        error: path.join(__dirname, '..', 'chameleon.error'),
+                        output:path.join(__dirname, '..', 'chameleon.out')
+                    };
+                    if (options.debug) {
+                        info('using debug mode') ;
+                        opts.rawArgs.push('-d');
+                    }
+                    if (options.sdkPluginPath) {
+                        info('set sdk plugin path ' + options.sdkPluginPath) ;
+                        opts.rawArgs.push('--sdkplugin');
+                        opts.rawArgs.push(options.sdkPluginPath);
+                    }
+                    info('starting with opts ' + opts.rawArgs);
+                    try {
+                        pm2.start(path.join(__dirname, 'app.js'), opts, function (err, proc) {
+                            info('starting with opts ' + opts.rawArgs);
+                            if (err) {
+                                error('Fail to start chameleon from PM2: ' + err);
+                                return pm2.disconnect();
+                            }
+                            return pm2.disconnect();
+                            // should check the liveness of the
+                            //setTimeout();
+                        });
+                    } catch (e) {
+                        error('Fail to start server ' + e.message);
+                    }
+                }
             });
         }));
 
     program
         .command('stop')
-        .option('-e, --exec <exec>', 'script to execute when the forever process gone')
         .description('stop the server')
         .action( runUnderPm2(function () {
             pm2.describe(PROC_NAME, function (err, proc) {
@@ -144,13 +186,36 @@ function main() {
                     warn("Chameleon process is gone. It has already been stopped");
                     return pm2.disconnect();
                 }
+                if (!proc || proc.length == 0) {
+                    warn("Chameleon process is gone. It has already been stopped");
+                    return pm2.disconnect();
+                }
+                var status = proc[0].pm2_env.status;
+                if (status === 'stopped') {
+                    info('Chameleon process is already stopped');
+                    return pm2.disconnect();
+                }
+                if (status !== 'online') {
+                    info('Chameleon process is ill state: ' + status);
+                    info('force closing');
+                    pm2.stop(PROC_NAME, function (err) {
+                        if (err) {
+                            error('Fail to close admin server, the server maybe not in right state' + err.message);
+                        } else {
+                            info('Chameleon server is closed');
+                        }
+                        return pm2.disconnect();
+
+                    });
+                    return;
+                }
                 var postData = {
                     action: 'stop'
                 };
                 postRequest(program.host, program.port, '/admin', postData, function (err) {
                     if (err) {
                         error('Fail to close admin server, the server maybe not in right state' + err.message);
-                        return pm2.disconnect();
+                        error('forcing close');
                     }
                     pm2.stop(PROC_NAME, function (err) {
                         if (err) {
@@ -168,62 +233,35 @@ function main() {
     program
         .command('alive')
         .description('check whether the server is alive')
-        .action( runUnderPm2(function () {
+        .option('-e, --exec <exec>', 'script to execute when the forever process gone')
+        .action( runUnderPm2(function (options) {
+            var stopExec = options.exec;
+            function onStop() {
+                if (stopExec) {
+                    child_process.exec(stopExec, function (err) {
+                    });
+                }
+            }
             pm2.describe(PROC_NAME, function (err, proc) {
-                if (err) {
+                if (err ) {
                     warn("Chameleon process is gone. It has already been stopped");
+                    onStop();
                     return pm2.disconnect();
                 }
                 var postData = {
-                    action: 'stop'
+                    action: 'info'
                 };
-                postRequest(program.host, program.port, '/admin', postData, function (err) {
+                postRequest(program.host, program.port, '/admin', postData, function (err, obj) {
                     if (err) {
-                        error('Fail to close admin server, the server maybe not in right state' + err.message);
-                        return pm2.disconnect();
+                        error('Fail to get info from chameleon server, maybe dead: ' + err.message);
+                        onStop();
+                    } else {
+                        info(obj);
                     }
-                    pm2.stop(PROC_NAME, function (err) {
-                        if (err) {
-                            error('Fail to close admin server, the server maybe not in right state' + err.message);
-                        } else {
-                            info('Chameleon server is closed');
-                        }
-                        return pm2.disconnect();
-
-                    });
+                    return pm2.disconnect();
                 });
             });
         }));
-
-    program
-        .command('monitor <type>')
-        .description('monitor the server status')
-        .action( function (type) {
-            var t = monitors[type];
-            if (!t) {
-                console.error("Illegal arguments. moitor event or monitor status");
-                process.exit(-1);
-                return;
-            }
-            var req = http.request({
-                port: program.port,
-                hostname: program.host,
-                path: '/monitor'+ t.p
-            }, function (res) {
-                res.setEncoding('utf-8');
-                var s = '';
-                res.on('data', function (chunk) {
-                    s += chunk;
-                });
-                res.on('end', function (chunk) {
-                    console.log(s);
-                });
-            });
-            req.on('error', function (e) {
-                process.exit(-1);
-            });
-            req.end();
-        });
 
     program
         .command('up-product <zipfile>')
@@ -246,7 +284,6 @@ function main() {
                             continue;
                         }
                         var c = zipfile.readAsText(e.entryName, 'utf8');
-                        console.log(e.entryName)
                         var channelName = path.basename(e.name, '.json');
                         postRequest(program.host, program.port, '/product/'+product+'/'+channelName, JSON.parse(c), function (err) {
                             if (err) {

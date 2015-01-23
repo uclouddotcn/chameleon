@@ -39,7 +39,6 @@ var workerMain = null;
 
 function onStart(msg, cmdEmitter) {
     try {
-        console.log(msg)
         var body = msg.body;
         workerMain = require(body.script);
         var argv = body.args;

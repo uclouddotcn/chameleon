@@ -1,6 +1,9 @@
 var restify = require('restify');
+var VError = require('verror');
 var fs = require('fs');
+var path = require('path');
 var workerMgr = require('./worker_mgr');
+var constants = require('./constants');
 
 /**
  * 
@@ -21,24 +24,67 @@ var Admin = function(pluginMgr, options, logger) {
     self.logger = logger;
 
     self.pluginMgr = pluginMgr;
-    self.server.use(restify.bodyParser());
-    self.server.use(restify.queryParser());
+    self.server.use(restify.bodyParser({
+        mapParams: true
+    }));
+    self.server.use(restify.queryParser({
+        mapParams: true
+    }));
     var requestPoster = options.requestPoster || workerMgr;
 
     self.server.post('/admin', function (req, res, next) {
         try {
-            switch (req.body.action) {
+            switch (req.params.action) {
+                case 'start':
+                    if (workerMgr.status !== 'stop') {
+                        res.send({code: -1, msg: 'worker may be already started, using restart if you really know what you are doing'});
+                        return next();
+                    } else {
+                        if (req.params.cfg) {
+                            self.startWorkerAndSave(req.params.cfg, function (err) {
+                                if (err) {
+                                    res.send({code: -1, msg: err.message});
+                                } else {
+                                    res.send({code: 0});
+                                }
+                                return next();
+                            });
+                        } else {
+                            self.startWorkerFromFile(function (err) {
+                                if (err) {
+                                    res.send({code: -1, msg: err.message});
+                                } else {
+                                    res.send({code: 0});
+                                }
+                                return next();
+                            })
+                        }
+                    }
+                    break;
                 case 'restart':
-                    workerMgr.restartWorker(req.body.cfg, function () {
-                        res.send({code: 0});
+                    workerMgr.restartWorker(req.params.cfg, function (err) {
+                        if (err) {
+                            res.send({code: -1, msg: err.message});
+                        } else {
+                            res.send({code: 0});
+                        }
+                        return next();
                     });
                     break;
                 case 'stop':
                     workerMgr.stop(function () {
                         res.send({code: 0});
+                        return next();
                     });
+                    break;
                 case 'info':
-
+                    var msg = workerMgr.info;
+                    if (!res) {
+                        msg = 'worker is no started';
+                    }
+                    res.send({code: 0, msg: msg});
+                    return next();
+                    break;
                 default:
                     return next(new restify.InvalidArgumentError(''));
             }
@@ -204,6 +250,58 @@ Admin.prototype.close = function (callback) {
 
 Admin.prototype.registerExitFunc = function (func) {
     this.exitFunc = func;
+};
+
+Admin.prototype.startWorkerFromFile = function (callback) {
+    var cfgpath = getWorkerCfgPath();
+    var self = this;
+    fs.exists(cfgpath, function (exists) {
+        if (exists) {
+            fs.readFile(cfgpath, 'utf8', function (err, content) {
+                if (err) {
+                    callback(new VError(err, 'Fail to read config from ' + cfgpath));
+                    self.logger.error({err: err}, 'Fail to read config');
+                    return;
+                }
+                try {
+                    var workerCfg = JSON.parse(content);
+                } catch (e) {
+                    self.logger.error({err: e}, 'Fail to read config');
+                    return callback(new VError(err, 'Fail to parse json'))
+                }
+                self.startWorker(workerCfg, callback);
+            });
+        } else {
+            setImmediate(callback);
+        }
+    });
+};
+
+Admin.prototype.startWorkerAndSave = function (workercfg, callback) {
+    this.startWorker(workercfg, function (err) {
+        if (err) {
+            return callback(err);
+        }
+        var cfgpath = getWorkerCfgPath();
+        fs.writeFile(cfgpath, JSON.stringify(workercfg, null, '\t'));
+        callback();
+    });
+};
+
+Admin.prototype.startWorker = function (workercfg, callback) {
+    var self = this;
+    workerMgr.init(self.logger, self.pluginMgr.pluginInfos, workercfg, function (err) {
+        if (err) {
+            self.logger.error({err: err}, "Fail to init worker");
+            callback(err);
+            return;
+        }
+        callback(null, null);
+    });
+};
+
+function getWorkerCfgPath () {
+    return path.join(constants.baseDir, 'config', 'worker.json');
 }
 
 module.exports.createAdmin = function(pluginMgr, options, logger) {

@@ -44,7 +44,19 @@ Worker.prototype.onHeartBeat = function (rsp) {
 };
 
 var WorkerMgr = function (logger, options) {
-    this.status = 'done';
+    this.status = 'stop';
+    var self = this;
+    Object.defineProperty(this, "info", {
+        get: function() {
+            return {
+                status: self.status,
+                worker: {
+                    forkScripts: self.forkScripts,
+                    version: self.workerVersion
+                }
+            };
+        }
+    });
     EventEmitter.call(this);
 };
 util.inherits(WorkerMgr, EventEmitter);
@@ -56,7 +68,6 @@ WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
     this.ver = 0;
     this.worker = null;
     this.num = 0;
-    this.status = 'init';
     this.pluginInfos = pluginInfos;
     this._resetWorkerCfg(workerCfg);
     cluster.setupMaster({
@@ -65,8 +76,14 @@ WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
     this._startWorker(callback);
 };
 
+
 WorkerMgr.prototype._resetWorkerCfg = function (workerCfg) {
-    this.forkScripts = path.resolve(constants.baseDir, workerCfg.script);
+    var p = workerCfg.version;
+    if (workerCfg.version === 'development') {
+        p = '.';
+    }
+    this.workerVersion = workerCfg.version;
+    this.forkScripts = path.resolve(constants.baseDir, p, workerCfg.script);
     this.args = workerCfg.args;
     if (workerCfg.env) {
         for (var i in workerCfg.env) {
@@ -84,7 +101,7 @@ WorkerMgr.prototype.request = function (msgid, body, callback) {
     }
 };
 
-WorkerMgr.prototype.stop = function () {
+WorkerMgr.prototype.stop = function (callback) {
     if (this.status !== 'running') {
         setImmediate(callback, new Error('not in running state'));
         return;
@@ -95,6 +112,7 @@ WorkerMgr.prototype.stop = function () {
         self.forceClose();
     }, 30000);
     this._doClose(this.worker.wid, function () {
+        clearTimeout(h);
         callback();
     });
 };
@@ -155,7 +173,6 @@ WorkerMgr.prototype.close = function (callback) {
 };
 
 WorkerMgr.prototype._doClose = function (wid, callback) {
-    var se
     this._doRequest(wid, '__close', null, function (err) {
         if (err) {
 
@@ -177,6 +194,9 @@ WorkerMgr.prototype._startWorker = function (callback) {
 };
 
 WorkerMgr.prototype._startHeartBeat = function () {
+    if (this.status !== 'running') {
+        return;
+    }
     if (this.worker.isOffline()) {
         this._logger.error('worker seems blocked, force restart');
         this._forceRestartWorker();
@@ -216,6 +236,9 @@ WorkerMgr.prototype._forceRestartWorker = function () {
 
 WorkerMgr.prototype._onWorkerExit = function (worker, code, signal) {
     this._logger.info({wid: worker.id, code: code, signal: signal}, 'worker finished');
+    if (this.status !== 'running') {
+        return;
+    }
     if (worker.id !== this.worker.wid) {
         return;
     }

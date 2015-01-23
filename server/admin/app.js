@@ -9,6 +9,7 @@ function loadConfig(cfgFile, debug) {
     } else {
         svrCfgPath = __dirname + '/../config/' + cfgFile;
     }
+    console.log('using log ' + svrCfgPath);
     try {
         var content = fs.readFileSync(svrCfgPath);
         var cfgObj = JSON.parse(content);
@@ -29,9 +30,6 @@ function checkAdminCfg(cfgObj) {
     if (!adminCfg.port) {
         throw new Error("invalid admin cfg, missing port");
     }
-    if (!cfgObj.worker) {
-        throw new Error("invalid config, missing worker config");
-    }
 }
 
 /**
@@ -41,14 +39,14 @@ function checkAdminCfg(cfgObj) {
  */
 function main() {
     program
-        .option('-d, --debug', 'use debug mode')
         .option('-s, --singleProcess', 'no cluster mode')
         .option('--sdkplugin <pluginpath>', 'use sdk plugin path')
         .parse(process.argv);
-    var cfg = loadConfig('admin.json', program.debug);
+    var debug = process.env.NODE_ENV === 'development';
+    var cfg = loadConfig('admin.json', debug);
     checkAdminCfg(cfg);
     chameleon.main(cfg, {
-        debug: program.debug,
+        debug: debug,
         sdkPluginPath: program.sdkplugin,
         singleProcess: program.singleProcess
     });
