@@ -3,6 +3,8 @@ package prj.chameleon.dianxin;
 import android.app.Activity;
 import android.os.Bundle;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
+import prj.chameleon.channelapi.JsonTools;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
 public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
@@ -31,15 +34,11 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     private static class Config {
         public int mClientId;
-        public String mAppSecret;
-        public String mRedirectUri;
     }
 
     private Config mCfg;
     private UserInfo mUserInfo;
     private IAccountActionListener mAccountActionListener;
-    private IDispatcherCb mLoginCb;
-    private IDispatcherCb mPayCb;
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Config();
@@ -61,6 +60,7 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     public void onSuccess(String info) {
                         //游戏收到登陆返回成功标识
                         cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(info, null, mChannel));
+                        mAccountActionListener = accountActionListener;
                     }
 
                     @Override
@@ -77,7 +77,15 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 });
     }
 
-
+    @Override
+    public boolean onLoginRsp(String loginRsp) {
+        mUserInfo = new UserInfo();
+        JSONObject jsonObject = JsonTools.getJsonObject(loginRsp);
+        JSONObject loginInfo = JsonTools.getJsonObject(jsonObject, "loginInfo");
+        mUserInfo.mUserToken = JsonTools.getStringByKey(loginInfo, "uid");;
+        mUserInfo.mUserId = JsonTools.getStringByKey(loginInfo, "token");;
+        return super.onLoginRsp(loginRsp);
+    }
 
     @Override
     public void logout(Activity activity) {
@@ -179,7 +187,7 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         payParams.put(EgamePay.PAY_PARAMS_KEY_TOOLS_PRICE, price);//道具价格（参数为必填）
         payParams.put(EgamePay.PAY_PARAMS_KEY_CP_PARAMS, orderID);//CP自定义交易号（参数为必填,32位以内string型，请勿包含特殊字符）
         payParams.put(EgamePay.PAY_PARAMS_KEY_TOOLS_DESC, payInfo);//道具描述（可选）
-        //payParams.put(EgamePay.PAY_PARAMS_KEY_PRIORITY, "other");//优先第三方支付
+        payParams.put(EgamePay.PAY_PARAMS_KEY_PRIORITY, "other");//优先第三方支付
         EgamePay.pay(activity, payParams,new EgamePayListener() {
             @Override
             public void paySuccess(Map params) {
