@@ -140,6 +140,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Cfg();
         mCfg.mAppID = (int) cfg.getLong("appId");
+        Log.e("appID" , Integer.toString(mCfg.mAppID));
         mCfg.mAppKey = cfg.getString("appKey");
         mCfg.mScreenOrientation = commCfg.mIsLandscape ? BDGameSDKSetting.Orientation.LANDSCAPE:
                 BDGameSDKSetting.Orientation.PORTRAIT;

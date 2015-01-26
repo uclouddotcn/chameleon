@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.wandoujia.mariosdk.plugin.api.api.WandouGamesApi;
 import com.wandoujia.mariosdk.plugin.api.model.callback.OnLoginFinishedListener;
@@ -92,7 +93,8 @@ public class WandoujiaChannelAPI extends SingleSDKChannelAPI.SingleSDK  {
     }
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
-        mAppId = cfg.getLong("appId");
+        Log.e("appId", cfg.getString("appId"));
+        mAppId = Integer.valueOf(cfg.getString("appId"));
         mAppKey = cfg.getString("appKey");
         mIsDebug = commCfg.mIsDebug;
         mChannel = commCfg.mChannel;

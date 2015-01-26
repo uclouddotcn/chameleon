@@ -15,7 +15,7 @@
     <string name="m4399_rec_junkacz">骏网一卡通充值</string>
     <string name="m4399_rec_youbi_exchange">游币兑换</string>
     <string name="m4399_rec_good_subject">（%s）</string>
-    <string name="m4399_rec_acount">账号：</string>
+    <string name="m4399_rec_acount">账号 :</string>
     <string name="m4399_rec_other_sum">其他金额：</string>
     <string name="m4399_rec_input_cash_hint">请输入你要充值的金额</string>
     <string name="m4399_rec_confirm_pay">确认支付</string>
@@ -117,6 +117,8 @@
     <string name="m4399_rec_result_send_sms_failed">发送短信失败, 请检查系统是否限制此应用发送短信</string>
     <string name="m4399_rec_result_order_submitted_tips">订单已提交</string>
     <string name="m4399_rec_result_failed_unknown">未知原因导致支付失败，请检查网络和是否正常登陆</string>
+    <string name="m4399_rec_pay_channel_unavailable">本充值方式发生异常，请稍后再试或使用其他充值方式</string>
+    <string name="m4399_rec_too_frequent_pay">订单已开始处理，请勿频繁请求订单，建议稍候再试</string>
     
     <!-- For sms and its confirm fragment -->
     <string name="m4399_rec_sms_send_error">短信发送出错，请检查应用是否被允许发送短信，或使用其他方式充值</string>

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  -->
+    <string name="m4399_ope_prompt_debug_mode">请注意： 这是Debug状态 SDK，游戏发布时请务必关闭调试开关！</string>
+    
     <!-- For user center -->
     <string name="m4399_ope_usercenter_youbi_pre_label">游币余额</string>
     <string name="m4399_ope_usercenter_youbi_unit">枚</string>
@@ -45,6 +48,8 @@
     <string name="m4399_ope_no_network">网络异常,不能正常访问服务器</string>
     <string name="m4399_ope_login_success">登录成功</string>
     <string name="m4399_ope_sdk_login_failed_unable_access_oauth2">不能取得认证</string>
+    <string name="m4399_ope_login_error_key">游戏不存在，请检查游戏Game Key</string>
+    <string name="m4399_ope_login_already_login">当前帐号已在登录状态</string>
     <string name="m4399_ope_login_failed_user_cancelled">用户取消登录</string>
     <string name="m4399_ope_login_failed_error_known">由于未知原因导致登录失败，请检查网络状况</string> 
     <string name="m4399_ope_logout_success">注销成功</string>

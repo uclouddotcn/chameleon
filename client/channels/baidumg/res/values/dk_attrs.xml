@@ -3,10 +3,7 @@
     <declare-styleable name="DKFlowLayout">
         <attr name="horizontalSpacing" format="dimension"/>
         <attr name="verticalSpacing" format="dimension"/>
-        <attr name="orientation" format="enum">
-            <enum name="horizontal" value="0"/>
-            <enum name="vertical" value="1"/>
-        </attr>
+
         <attr name="debugDraw" format="boolean" />
     </declare-styleable>
     

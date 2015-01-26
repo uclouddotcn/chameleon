@@ -6,7 +6,7 @@
 
     <GridView
         android:id="@+id/payment_gridview"
-       	android:layout_width="match_parent"
+       	android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:numColumns="@integer/m4399_rec_main_frag_gridview_column_num"
 	    android:listSelector="@drawable/m4399_rec_pm_item_bg" />
