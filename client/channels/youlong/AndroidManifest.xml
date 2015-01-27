@@ -1,0 +1,55 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
+    package="prj.chameleon.youlong">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <application>
+        <!--添加游龙SDK必须的meta-data： PID。该值向游龙申请-->
+        <meta-data
+            android:name="PID"
+            android:value="103977" chameleon:replace="android:value=%pId%"/>
+
+        <!--添加游龙SDK必须的meta-data： PKEY。该值向游龙申请-->
+        <meta-data
+            android:name="PKEY"
+            android:value="3fc17defcf780d3ddd674978c28c4645" chameleon:replace="android:value=%pKey%"/>
+
+        <!--添加游龙SDK必须的meta-data： version。该值填写当前最新的版本号-->
+        <meta-data
+            android:name="Version"
+            android:value="0.72"/>
+
+        <!--添加游龙SDK必须的meta-data： introduction。该值是推广员id，默认为0，表示没有推广员-->
+        <meta-data
+            android:name="introduction"
+            android:value="0"/>
+
+        <!--添加游龙SDK必须的meta-data： 登陆地址toLogin -->
+        <meta-data
+            android:name="toLogin"
+            android:value="http://api.411game.com/login.do"/>
+
+        <!--添加游龙SDK必须的meta-data：注册地址toRegister-->
+        <meta-data
+            android:name="toRegister"
+            android:value="http://api.411game.com/reg.do"/>
+
+        <!--添加游龙SDK必须的meta-data：支付地址torecharge-->
+        <meta-data
+            android:name="torecharge"
+            android:value="http://i.pay.yx9158.com/order.do?"/>
+
+        <activity android:name="com.yx9158.external.YXLoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity android:name="com.yx9158.external.YXRegisterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity android:name="com.yx9158.external.YXWebActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+    </application>
+</manifest>

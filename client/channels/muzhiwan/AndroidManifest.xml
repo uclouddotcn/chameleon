@@ -13,7 +13,7 @@
 
     <application>
         <meta-data
-            android:name="MZWAPPKEY" android:value="f1436ab48781" chameleon:replace="android:value=%appKey%" />
+            android:name="MZWAPPKEY" android:value="e75a04ad5850acf97d3dd9d000d0b9d1" chameleon:replace="android:value=%appKey%" />
         <meta-data
             android:name="DEBUG" android:value="true" chameleon:replace="android:value=%debug%" />
 

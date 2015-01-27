@@ -102,12 +102,15 @@ android {
         vivo {
         }
         dianxin {
+            applicationId "com.xianyugame.sanguofire.dianxin"
         }
         youku {
         }
         ewan {
         }
         egame {
+        }
+        youlong {
         }
         p_getui {
 
@@ -173,6 +176,7 @@ dependencies {
     youkuCompile project(':channels:youku')
     ewanCompile project(':channels:ewan')
     coolpadCompile project(':channels:coolpad')
+    youlongCompile project(':channels:youlong')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')

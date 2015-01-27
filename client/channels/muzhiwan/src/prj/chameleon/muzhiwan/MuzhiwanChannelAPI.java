@@ -105,7 +105,7 @@ public final class MuzhiwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,//总价
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        doPay(activity, realPayMoney/100, payInfo, cb);
+        doPay(activity, realPayMoney/100,currencyName, "",orderId, cb);
     }
 
     @Override
@@ -120,18 +120,19 @@ public final class MuzhiwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,//个数
                     int realPayMoney,
                     final IDispatcherCb cb) {
-        doPay(activity, realPayMoney/100, payInfo, cb);
+        doPay(activity, realPayMoney/100, productName,productID,orderId, cb);
     }
 
-    private void doPay(final Activity activity, int money, String payInfo, final IDispatcherCb cb){
+    private void doPay(final Activity activity, int money,String productName,
+                       String productID, String orderId, final IDispatcherCb cb){
 
         Order order = new Order();
         order.setMoney(money);
-        JSONObject jsonObject = JsonTools.getJsonObject(payInfo);
-        order.setProductid(JsonTools.getStringByKey(jsonObject, "productId"));
-        order.setProductname(JsonTools.getStringByKey(jsonObject, "productName"));
-        order.setProductdesc(JsonTools.getStringByKey(jsonObject, "productDesc"));
-        order.setExtern(JsonTools.getStringByKey(jsonObject, "extern"));
+        order.setProductname(productName);
+        if (!"".equals(productID))
+            order.setProductid(productID);
+//      order.setProductdesc("");
+        order.setExtern(orderId);
 
         MzwApiFactory.getInstance().doPay(activity, order, new MzwApiCallback() {
             @Override

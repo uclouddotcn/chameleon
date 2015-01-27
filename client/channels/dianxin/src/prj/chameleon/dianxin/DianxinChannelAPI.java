@@ -107,7 +107,7 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,//总价
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        startPay(activity,String.valueOf(realPayMoney),orderId,payInfo, cb);
+        startPay(activity,String.valueOf(realPayMoney/100),orderId,payInfo, cb);
     }
 
     @Override
@@ -122,7 +122,7 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,//个数
                     int realPayMoney,
                     IDispatcherCb cb) {
-        startPay(activity,String.valueOf(realPayMoney),orderId,payInfo, cb);
+        startPay(activity,String.valueOf(realPayMoney/100),orderId,payInfo, cb);
     }
 
     @Override
@@ -186,7 +186,7 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         HashMap<String, String> payParams=new HashMap<String, String>();
         payParams.put(EgamePay.PAY_PARAMS_KEY_TOOLS_PRICE, price);//道具价格（参数为必填）
         payParams.put(EgamePay.PAY_PARAMS_KEY_CP_PARAMS, orderID);//CP自定义交易号（参数为必填,32位以内string型，请勿包含特殊字符）
-        payParams.put(EgamePay.PAY_PARAMS_KEY_TOOLS_DESC, payInfo);//道具描述（可选）
+        payParams.put(EgamePay.PAY_PARAMS_KEY_TOOLS_DESC, payInfo);//道具描述（可选）不能包含特殊字符
         payParams.put(EgamePay.PAY_PARAMS_KEY_PRIORITY, "other");//优先第三方支付
         EgamePay.pay(activity, payParams,new EgamePayListener() {
             @Override
