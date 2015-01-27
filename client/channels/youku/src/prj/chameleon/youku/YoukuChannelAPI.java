@@ -25,10 +25,6 @@ public final class YoukuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     private static class Config {
-        public String mAppId;
-        public String mAppName;
-        public String mAppKey;
-        public String mAppSecret;
         public String mNotifyUrl;
     }
 
@@ -38,10 +34,6 @@ public final class YoukuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Config();
-        mCfg.mAppId = cfg.getString("appId");
-        mCfg.mAppName = cfg.getString("appName");
-        mCfg.mAppKey = cfg.getString("appKey");
-        mCfg.mAppSecret = cfg.getString("appSecret");
         mCfg.mNotifyUrl = cfg.getString("notifyUrl");
         mChannel = commCfg.mChannel;
     }
