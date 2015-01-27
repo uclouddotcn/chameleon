@@ -1,0 +1,590 @@
+{
+    "channels": [
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appSecret": {
+                    "type": "string", 
+                    "desc": "app secret"
+                }
+            }, 
+            "chamversion": "1.3.0", 
+            "version": "3.1.2", 
+            "name": "anzhi", 
+            "desc": "\u5b89\u667a"
+        }, 
+        {
+            "name": "baidumg", 
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appSecret": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "app secret"
+                }, 
+                "appId": {
+                    "type": "int", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "3.0.0", 
+            "enableWrapPackage": 0, 
+            "desc": "\u767e\u5ea6\u79fb\u52a8\u6e38\u620f"
+        }, 
+        {
+            "cfgitem": {
+                "payAppId": {
+                    "type": "string", 
+                    "desc": "payAppId"
+                }, 
+                "payPlatKey": {
+                    "type": "string", 
+                    "desc": "payPlatKey"
+                }, 
+                "loginRedirctUrl": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "loginRedirctUrl"
+                }, 
+                "loginAppId": {
+                    "type": "string", 
+                    "desc": "loginAppId"
+                }, 
+                "loginAppKey": {
+                    "type": "string", 
+                    "desc": "loginAppKey"
+                }, 
+                "payAppKey": {
+                    "type": "string", 
+                    "desc": "payAppKey"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "V1.2.1", 
+            "name": "coolpad", 
+            "desc": "\u9177\u6d3e"
+        }, 
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "serverSeqNum": {
+                    "type": "string", 
+                    "desc": "server seq"
+                }, 
+                "paymentKey": {
+                    "type": "string", 
+                    "desc": "payment key"
+                }, 
+                "merchantId": {
+                    "type": "string", 
+                    "desc": "\u5382\u5546ID"
+                }, 
+                "appId": {
+                    "type": "string", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.3.0", 
+            "version": "3.0.5", 
+            "name": "dangle", 
+            "desc": "\u5f53\u4e50"
+        }, 
+        {
+            "name": "gfan", 
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appCpid": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "app cpid"
+                }
+            }, 
+            "chamversion": "1.0", 
+            "version": "3.7.0", 
+            "enableWrapPackage": 0, 
+            "desc": "\u673a\u950b"
+        }, 
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app Key"
+                }, 
+                "secretKey": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "secret Key"
+                }, 
+                "payUrl": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "secret Key"
+                }, 
+                "privateKey": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "secret Key"
+                }, 
+                "publicKey": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "public Key"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "2.1.7.k", 
+            "name": "gionee", 
+            "desc": "\u91d1\u7acb"
+        }, 
+        {
+            "cfgitem": {
+                "payUrl": {
+                    "type": "string", 
+                    "desc": "notify url"
+                }, 
+                "gameName": {
+                    "type": "string", 
+                    "desc": "game name"
+                }, 
+                "pubkey": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "pubkey"
+                }, 
+                "gameCode": {
+                    "type": "string", 
+                    "desc": "game code"
+                }, 
+                "cpPrivateKey": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "cpPrivateKey"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "V3.1", 
+            "name": "htc", 
+            "desc": "HTC"
+        }, 
+        {
+            "cfgitem": {
+                "payRsaPubKey": {
+                    "type": "string", 
+                    "desc": "pay Rsa Pub Key"
+                }, 
+                "payId": {
+                    "type": "string", 
+                    "desc": "pay Id"
+                }, 
+                "cpId": {
+                    "type": "string", 
+                    "desc": "cp Id"
+                }, 
+                "privateKey": {
+                    "type": "string", 
+                    "desc": "private Key"
+                }, 
+                "payPrivateKey": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "Pay Private Key"
+                }, 
+                "payUrl": {
+                    "type": "string", 
+                    "desc": "pay Url"
+                }, 
+                "cpName": {
+                    "type": "string", 
+                    "desc": "cp Name"
+                }, 
+                "appId": {
+                    "type": "string", 
+                    "desc": "app Id"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "1.3.1", 
+            "name": "huawei", 
+            "desc": "\u534e\u4e3a"
+        }, 
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appId": {
+                    "type": "string", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "V2.2.1", 
+            "name": "lenovo", 
+            "desc": "\u8054\u60f3"
+        }, 
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appSecret": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "app secret"
+                }, 
+                "appId": {
+                    "type": "string", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "2.0.0", 
+            "name": "meizu", 
+            "desc": "\u9b45\u65cf"
+        }, 
+        {
+            "name": "nd91", 
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "isForceUpdate": {
+                    "default": "false", 
+                    "type": "boolean", 
+                    "desc": "whether force client to update"
+                }, 
+                "appId": {
+                    "type": "int", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.0", 
+            "version": "3.2.6.4", 
+            "enableWrapPackage": 0, 
+            "desc": "91\u624b\u673a\u52a9\u624b"
+        }, 
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appSecret": {
+                    "type": "string", 
+                    "desc": "app secret"
+                }, 
+                "payCallback": {
+                    "type": "url", 
+                    "desc": "payment callback"
+                }, 
+                "gameId": {
+                    "type": "string", 
+                    "desc": "game id"
+                }, 
+                "allowSwitchAccount": {
+                    "default": "false", 
+                    "type": "boolean", 
+                    "desc": "game id"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "1.6.6", 
+            "name": "oppo", 
+            "desc": "Oppo"
+        }, 
+        {
+            "cfgitem": {
+                "appkey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appsecret": {
+                    "type": "string", 
+                    "desc": "app secret"
+                }, 
+                "groupid": {
+                    "type": "string", 
+                    "desc": "group id"
+                }, 
+                "appid": {
+                    "type": "string", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.3.0", 
+            "version": "V2.3.0.0", 
+            "name": "p_getui", 
+            "desc": "\u4e2a\u63a8"
+        }, 
+        {
+            "cfgitem": {
+                "appkey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "debug": {
+                    "type": "boolean", 
+                    "desc": "false"
+                }
+            }, 
+            "chamversion": "1.3.0", 
+            "version": "V1.7.0", 
+            "name": "p_jpush", 
+            "desc": "\u6781\u5149\u63a8\u9001"
+        }, 
+        {
+            "cfgitem": {
+                "appsecret": {
+                    "type": "string", 
+                    "desc": "app secret"
+                }, 
+                "debug": {
+                    "type": "boolean", 
+                    "desc": "false"
+                }, 
+                "appchannel": {
+                    "type": "string", 
+                    "desc": "app channel id"
+                }, 
+                "appid": {
+                    "type": "string", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.3.0", 
+            "version": "V1.5.0", 
+            "name": "p_umeng", 
+            "desc": "\u53cb\u76df\u63a8\u9001"
+        }, 
+        {
+            "name": "qihu", 
+            "script": "qihu_script", 
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "YOUR_APP_KEY"
+                }, 
+                "uri": {
+                    "type": "url", 
+                    "desc": "the payment callback uri"
+                }, 
+                "appSecret": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "YOUR_APP_SECRET"
+                }, 
+                "isBGTransparent": {
+                    "default": "true", 
+                    "type": "boolean", 
+                    "desc": "whether the background is transparent"
+                }, 
+                "appId": {
+                    "type": "string", 
+                    "desc": "YOUR_APP_ID"
+                }, 
+                "channel": {
+                    "default": "default", 
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "\u7528\u4e8e\u6807\u8bc6\u5e94\u7528\u65b9\u7684\u5b50\u6e20\u9053"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "1.0.4", 
+            "desc": "\u5947\u864e360"
+        }, 
+        {
+            "name": "qqmsdk", 
+            "cfgitem": {
+                "test": {
+                    "default": "false", 
+                    "type": "boolean", 
+                    "desc": "\u662f\u5426\u4f7f\u7528\u6d4b\u8bd5\u73af\u5883"
+                }, 
+                "qqAppKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "moneyIcon": {
+                    "type": "string", 
+                    "desc": "qq\u652f\u4ed8\u65f6\u5019\u6240\u9700\u8981\u7684\u652f\u4ed8\u56fe\u6807\uff0c\u5fc5\u987b\u662f48*48\u7684"
+                }, 
+                "qqAppId": {
+                    "type": "string", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "v2.0.6a", 
+            "enableWrapPackage": 0, 
+            "desc": "QQ\u4e92\u5a31"
+        }, 
+        {
+            "name": "uc", 
+            "cfgitem": {
+                "gameId": {
+                    "type": "int", 
+                    "desc": "game id"
+                }, 
+                "apiKey": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "api key"
+                }, 
+                "cpId": {
+                    "type": "int", 
+                    "desc": "cp id"
+                }
+            }, 
+            "chamversion": "1.2.3", 
+            "version": "3.4.10.1", 
+            "enableWrapPackage": 0, 
+            "desc": "UC\u4e5d\u6e38"
+        }, 
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appId": {
+                    "type": "int", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "3.2.3", 
+            "name": "wandoujia", 
+            "desc": "\u8c4c\u8c46\u835a"
+        }, 
+        {
+            "cfgitem": {
+                "appKey": {
+                    "type": "string", 
+                    "desc": "app key"
+                }, 
+                "appSecret": {
+                    "type": "string", 
+                    "ignoreInA": 1, 
+                    "desc": "app secret"
+                }, 
+                "appId": {
+                    "type": "string", 
+                    "desc": "app id"
+                }
+            }, 
+            "chamversion": "1.3.1", 
+            "version": "4.0.11", 
+            "name": "xiaomi", 
+            "desc": "\u5c0f\u7c73"
+        }
+    ], 
+    "channellist": {
+        "gfan": {
+            "icon": "1", 
+            "name": "\u673a\u950b", 
+            "sdk": "gfan"
+        }, 
+        "qihu": {
+            "name": "\u5947\u864e", 
+            "sdk": "qihu"
+        }, 
+        "htc": {
+            "splashscreen": 1, 
+            "icon": "1", 
+            "pkgsuffix": ".htc$", 
+            "name": "HTC", 
+            "sdk": "htc"
+        }, 
+        "coolpad": {
+            "name": "\u9177\u6d3e", 
+            "sdk": "coolpad"
+        }, 
+        "baidumg": {
+            "icon": 1, 
+            "name": "\u767e\u5ea6\u79fb\u52a8\u6e38\u620f", 
+            "sdk": "baidumg"
+        }, 
+        "huawei": {
+            "pkgsuffix": ".huawei$", 
+            "name": "\u534e\u4e3a", 
+            "sdk": "huawei"
+        }, 
+        "gionee": {
+            "icon": "1", 
+            "pkgsuffix": ".am$", 
+            "name": "\u91d1\u7acb", 
+            "sdk": "gionee"
+        }, 
+        "dangle": {
+            "splashscreen": 2, 
+            "icon": "1", 
+            "name": "\u5f53\u4e50", 
+            "sdk": "dangle"
+        }, 
+        "nd91": {
+            "name": "91\u624b\u673a\u52a9\u624b", 
+            "sdk": "nd91"
+        }, 
+        "xiaomi": {
+            "pkgsuffix": ".mi$", 
+            "name": "\u5c0f\u7c73", 
+            "sdk": "xiaomi"
+        }, 
+        "anzhi": {
+            "splashscreen": 1, 
+            "icon": "1", 
+            "name": "\u5b89\u667a", 
+            "sdk": "anzhi"
+        }, 
+        "wandoujia": {
+            "pkgsuffix": ".wdj$", 
+            "name": "\u8c4c\u8c46\u835a", 
+            "sdk": "wandoujia"
+        }, 
+        "oppo": {
+            "pkgsuffix": ".nearme.gamecenter$", 
+            "name": "Oppo", 
+            "sdk": "oppo"
+        }, 
+        "lenovo": {
+            "icon": "1", 
+            "pkgsuffix": ".lenovo$", 
+            "name": "\u8054\u60f3", 
+            "sdk": "lenovo"
+        }, 
+        "qqmsdk": {
+            "pkgsuffix": "^com.tencent.tmgp.", 
+            "name": "QQ\u4e92\u5a31", 
+            "sdk": "qqmsdk"
+        }, 
+        "uc": {
+            "icon": 1, 
+            "pkgsuffix": ".uc$", 
+            "name": "UC\u4e5d\u6e38", 
+            "sdk": "uc"
+        }, 
+        "meizu": {
+            "pkgsuffix": ".mz$", 
+            "name": "\u9b45\u65cf", 
+            "sdk": "meizu"
+        }
+    }, 
+    "version": "1.3.0"
+}
