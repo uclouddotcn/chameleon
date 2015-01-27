@@ -2,29 +2,33 @@
     "desc": "Oppo",
     "name": "oppo",
     "chamversion": "1.3.1",
-    "version": "1.6.6",
-    "cfgitem": {
-        "gameId" : {
+    "version": "1.6.7",
+    "cfgitem": [
+        {
+            "name": "gameId",
             "type": "string",
-            "desc": "game id"
-        }, 
-        "appKey" : {
-            "type": "string",
-            "desc": "app key"
+            "desc": "GAME ID"
         },
-        "appSecret" : {
+        {
+            "name": "appKey",
             "type": "string",
-            "desc": "app secret"
+            "desc": "APP KEY"
         },
-        "allowSwitchAccount" : {
+        {
+            "name": "appSecret",
+            "type": "string",
+            "desc": "APP SECRET"
+        },
+        {
+            "name": "allowSwitchAccount",
             "type": "boolean",
-            "desc": "game id",
+            "desc": "是否允许切换账户",
             "default": "false"
         },
-        "payCallback" : {
+        {
+            "name": "payCallback",
             "type": "url",
-            "desc": "payment callback"
+            "desc": "支付回调地址"
         }
-    }
+    ]
 }
-

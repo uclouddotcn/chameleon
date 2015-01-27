@@ -1,0 +1,22 @@
+<resources>
+
+    <dimen name="vivowindowTitleHeight">48dip</dimen>
+    <dimen name="vivowindowTitleTextSize">21dip</dimen>
+    <dimen name="vivowindowTitleButtonTextSize">16dip</dimen>
+    <dimen name="vivo_edit_container_height">50dip</dimen>
+    <dimen name="vivo_first_view_marginTop">10dip</dimen>
+    <dimen name="vivo_label_field_width">80dip</dimen>
+    <dimen name="vivo_label_field_marginLeft">3dip</dimen>
+    <dimen name="vivo_label_field_marginRight">3dip</dimen>
+    <dimen name="vivo_text_size_middle">16sp</dimen>
+    <dimen name="vivo_text_size_small">14sp</dimen>
+    <dimen name="vivo_edit_field_paddingLeft">10dip</dimen>
+    <dimen name="vivo_edit_field_paddingRight">12dip</dimen>
+    <dimen name="vivo_green_btn_marginLeft">15dip</dimen>
+    <dimen name="vivo_green_btn_marginRight">15dip</dimen>
+    <dimen name="vivo_green_btn_hight">35dip</dimen>
+    <dimen name="vivo_change_pwd_lable_width">100dip</dimen>
+    <dimen name="vivo_changePasswd_label_marginLeft">6dip</dimen>
+    <dimen name="vivoTitleLeftBtnWidth">77dip</dimen>
+    <dimen name="vivoTitleRightBtnWidth">77dip</dimen>
+</resources>

@@ -1,0 +1,234 @@
+<div>
+    <form>
+        <div role="tabpanel">
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-pills" role="tablist" id="mainTab">
+                <li role="presentation" class="active"><a href="#projectManager" >游戏管理</a></li>
+                <li role="presentation"><a href="#channelManager" >渠道管理</a></li>
+                <li role="presentation"><a href="#SDKManager" >SDK管理</a></li>
+                <li role="presentation"><a href="#SDKConfig" >SDK配置</a></li>
+                <li role="presentation"><a href="#iconManager" >icon管理</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content" style="margin-top: 20px;">
+                <div class="tab-pane fade in active" id="projectManager" role="tabpanel">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">基本配置</div>
+                        <div class="panel-body">
+                            <div class="row row-plus" >
+                                <div class="col-md-3">
+                                    <label>游戏名称</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" ng-model="project.name" />
+                                </div>
+                                <label class="control-label col-md-3">方向</label>
+                                <div class="btn-group col-md-3">
+                                    <label class="btn btn-primary" ng-model="project.landscape" btn-radio="true">LANDSCAPE</label>
+                                    <label class="btn btn-primary" ng-model="project.landscape" btn-radio="false">PORTRAIT</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">签名配置</div>
+                        <div class="panel-body">
+                            <div class="row row-plus">
+                                <div class="col-md-3">
+                                    <label>Keystore文件</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{project.signConfig.keyStoreFile}}</label><input type="file" accept="keystore/*" fileread="project.signConfig.keyStoreFile" name="project" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Alias</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" ng-model="project.signConfig.alias" />
+                                </div>
+                            </div>
+                            <div class="row row-plus">
+                            <div class="col-md-3">
+                                <label>Keystore密码</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" ng-model="project.signConfig.keyStoreSecret" />
+                            </div>
+                            <div class="col-md-3">
+                                <label>Alias密码</label>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" ng-model="project.signConfig.aliasSecret" />
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">回调配置</div>
+                        <div class="panel-body">
+                            <div class="row row-plus">
+                                <div class="col-md-3">
+                                    <label>预发布渠道回调地址</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" ng-model="project.config.testChannelCallbackUrl" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>正式渠道回调地址</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" ng-model="project.config.ChannelCallbackUrl" />
+                                </div>
+                            </div>
+                            <div class="row row-plus">
+                                <div class="col-md-3">
+                                    <label> 预发布支付回调地址</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" ng-model="project.config.testPayCallbackUrl" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label> 正式支付回调地址</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" ng-model="project.config.payCallbackUrl" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div><button class="btn-large btn-success has-spinner" ng-click="saveProjectConfig()" ng-disabled="isProjectUnchanged">保存</button></div>
+                </div>
+                <div class="tab-pane fade" id="channelManager" role="tabpanel" >
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="gridStyle" ng-grid="gridOptions2"></div>
+                        </div>
+                        <div class="col-md-4" ng-hide="hideGrid">
+                            <div class="gridStyle" ng-grid="gridOptions1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="SDKManager" role="tabpanel" >
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="gridStyle" ng-grid="gridOptions5"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="gridStyle" ng-grid="gridOptions3"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="gridStyle" ng-grid="gridOptions4"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="SDKConfig" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="gridStyle" ng-grid="gridOptions6"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="gridStyle" ng-grid="gridOptions7"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">渠道配置</div>
+                                <div class="panel-body">
+                                    <div>
+                                        <label>渠道包名</label><input type="text" ng-model="selectedChannel.config.packageName" />
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <label>Splash</label><label>{{selectedChannel.config.splash}}</label>
+                                        </div>
+                                        <div>
+                                            <input type="file" fileread="selectedChannel.config.splash" name="splash"/>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label>Keystore文件</label><label>{{selectedChannel.signConfig.keyStoreFile}}</label>
+                                    </div>
+                                    <div>
+                                        <input type="file" accept="keystore/*" fileread="selectedChannel.signConfig.keyStoreFile" name="channel"/>
+                                    </div>
+                                    <div>
+                                        <label>Keystore密码</label><input type="text" ng-model="selectedChannel.signConfig.keyStoreSecret"/>
+                                    </div>
+                                    <div>
+                                        <label>Alias</label><input type="text" ng-model="selectedChannel.signConfig.alias"/>
+                                    </div>
+                                    <div>
+                                        <label>Alias密码</label><input type="text" ng-model="selectedChannel.signConfig.aliasSecret"/>
+                                    </div>
+                                </div>
+                                <div class="panel-heading">SDK配置</div>
+                                <div class="panel-body" dynamic-html="SDKConfigHtml" id="SDKConfigView" style="max-height: 280px;overflow: auto;"></div>
+                            </div>
+                            <div class="control-group" style="margin: 5px;">
+                                <div class="controls">
+                                    <button type="submit" class="btn" ng-click="setSDKConfig()" >保存</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div><button class="btn-large btn-success has-spinner" ng-click="generateConfigFile()" >生成配置文件</button></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="iconManager" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="gridStyle" ng-grid="gridOptions8"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label>角标位置</label>
+                                <div class="btn-group" ng-click="setPosition()">
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="0"  >左上</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="1"  >左下</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="2"  >右上</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="3"  >右下</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label>图片选择</label>
+                                <label>{{selectedChannel.config.icon.path}}</label>
+                            </div>
+                            <div class="row">
+                                <input type="file" fileread="selectedChannel.config.icon.path" name="icon"/>
+                            </div>
+                            <div class="row">
+                                <canvas width="72", height="72" drawing-icon id="drawingIcon"></canvas>
+                            </div>
+                            <div class="row">
+                                <label>应用到全部</label>
+                                <input type="checkbox" ng-model="applyPositionToAll">
+                            </div>
+                            <div>
+                                <button class="btn-large btn-success has-spinner" ng-click="saveIcon()">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $('#mainTab a').click(function (e) {
+                    e.preventDefault();
+                    $(this).tab('show');
+                    fixGridShow();
+                });
+
+                function fixGridShow(){
+                    setTimeout(function(){
+                        $(window).resize();
+                        $(window).resize();
+                    }, 500);
+                }
+            </script>
+
+        </div>
+    </form>
+</div>

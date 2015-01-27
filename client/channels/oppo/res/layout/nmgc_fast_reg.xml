@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/nmgc_log_reg_width"
+    android:layout_height="@dimen/nmgc_log_reg_height"
+    android:layout_gravity="center"
+    android:background="@drawable/nmgc_auto_login_dialog_bg"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/nmgc_regist_title"
+        style="@style/nmgc_one_key_reg_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:gravity="center_horizontal"
+        android:text="@string/nmgc_fast_reg" />
+
+    <TextView
+        android:id="@+id/nmgc_regist_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    	android:layout_marginLeft="20dp"
+    	android:layout_marginRight="20dp"
+        android:layout_marginTop="13dp"
+        android:text="@string/nmgc_regist_hint"
+        android:textColor="#8c8c8c"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:id="@+id/nmgc_one_key_reg_root"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+    	android:layout_marginLeft="20dp"
+    	android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/log_reg_bg_selector"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/nmgc_one_key_reg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/nmgc_one_key_reg"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/nmgc_one_key_reg_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:gravity="center_horizontal"
+            android:text="@string/nmgc_need_send_msg_to_verify"
+            android:textColor="#ffffff"
+        	android:textSize="13sp"  />
+    </LinearLayout>
+
+    
+    <RelativeLayout
+        android:id="@+id/nmgc_regist_another_way"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="82dp" >
+
+        <TextView
+            android:id="@+id/nmgc_reg_another_way_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:text="@string/nmgc_reg_another_way"
+            android:textColor="#8c8c8c"
+        	android:textSize="13sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0.5dp"
+            android:layout_alignBottom="@id/nmgc_reg_another_way_tv"
+            android:layout_alignLeft="@id/nmgc_reg_another_way_tv"
+            android:layout_alignRight="@id/nmgc_reg_another_way_tv"
+            android:contentDescription="@null"
+            android:src="#585858" />
+    </RelativeLayout>
+
+</LinearLayout>

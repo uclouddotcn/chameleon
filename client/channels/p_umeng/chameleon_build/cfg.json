@@ -3,23 +3,26 @@
     "name": "p_umeng",
     "chamversion": "1.3.0",
     "version": "V1.5.0",
-    "cfgitem": {
-        "appid" : {
+    "cfgitem": [
+        {
+            "name": "appid",
             "type": "string",
-            "desc": "app id"
+            "desc": "APP ID"
         },
-        "appsecret" : {
+        {
+            "name": "appsecret",
             "type": "string",
-            "desc": "app secret"
+            "desc": "APP SECRET"
         },
-        "appchannel" : {
+        {
+            "name": "appchannel",
             "type": "string",
-            "desc": "app channel id"
+            "desc": "APP CHANNEL ID"
         },
-        "debug" : {
+        {
+            "name": "debug",
             "type": "boolean",
-            "desc": "false"
+            "desc": "是否使用DEBUG模式"
         }
-    }
+    ]
 }
-

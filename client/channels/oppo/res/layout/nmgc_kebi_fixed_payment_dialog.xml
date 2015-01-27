@@ -24,7 +24,7 @@
 
         <include
             android:id="@+id/inc_loading_full_root"
-            layout="@layout/nmgc_loading_full_new"
+            layout="@layout/nmgc_loading_full"
             android:visibility="gone" />
 
         <RelativeLayout

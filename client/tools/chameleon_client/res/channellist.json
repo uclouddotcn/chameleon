@@ -1,0 +1,92 @@
+{
+    "qihu": {
+        "name": "奇虎",
+        "sdk": "qihu"
+    },
+    "nd91": {
+        "name": "91手机助手",
+        "sdk": "nd91"
+    },
+    "xiaomi": {
+        "name": "小米",
+        "pkgsuffix": ".mi$",
+        "sdk": "xiaomi"
+    },
+    "wandoujia": {
+        "name": "豌豆荚",
+        "pkgsuffix": ".wdj$",
+        "sdk": "wandoujia"
+    },
+    "baidumg": {
+        "name": "百度移动游戏",
+        "sdk": "baidumg",
+        "icon": 1
+    }, 
+    "uc": {
+        "name": "UC九游",
+        "pkgsuffix": ".uc$",
+        "sdk": "uc",
+        "icon": 1
+    },
+    "oppo": {
+        "name": "Oppo",
+        "pkgsuffix": ".nearme.gamecenter$",
+        "sdk": "oppo"
+    },
+    "qqmsdk": {
+        "name": "QQ互娱",
+        "pkgsuffix": "^com.tencent.tmgp.",
+        "sdk": "qqmsdk"
+    },
+    "dangle": {
+        "name": "当乐",
+        "sdk": "dangle",
+        "splashscreen": 2,
+        "icon": "1"
+    },
+    "anzhi": {
+        "name": "安智",
+        "sdk": "anzhi",
+        "splashscreen": 1,
+        "icon": "1"
+    },
+    "huawei": {
+        "name": "华为",
+        "sdk": "huawei",
+        "pkgsuffix": ".huawei$"
+    },
+    "meizu": {
+        "name": "魅族",
+        "sdk": "meizu",
+        "pkgsuffix": ".mz$"
+    },
+    "gionee": {
+        "name": "金立",
+        "sdk": "gionee",
+        "pkgsuffix": ".am$",
+        "icon": "1"
+    },
+    "lenovo": {
+        "name": "联想",
+        "sdk": "lenovo",
+        "pkgsuffix": ".lenovo$",
+        "icon": "1"
+    },
+    "htc": {
+        "name": "HTC",
+        "sdk": "htc",
+        "pkgsuffix": ".htc$",
+        "splashscreen": 1,
+        "icon": "1"
+    },
+    "coolpad": {
+        "name": "酷派",
+        "sdk": "coolpad"
+    },
+    "gfan": {
+        "name": "机锋",
+        "sdk": "gfan",
+        "icon": "1"
+    }
+}
+

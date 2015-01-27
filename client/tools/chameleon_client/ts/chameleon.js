@@ -1,3 +1,9 @@
+/// <reference path="declare/node.d.ts"/>
+/// <reference path="declare/async.d.ts"/>
+/// <reference path="declare/ncp.d.ts"/>
+/// <reference path="declare/fs-extra.d.ts"/>
+/// <reference path="declare/xml2js.d.ts"/>
+/// <reference path="declare/adm-zip.d.ts"/>
 var fs = require('fs-extra');
 var childprocess = require("child_process");
 var pathLib = require("path");
@@ -92,6 +98,7 @@ var AndroidEnv = (function () {
         async.waterfall(funcs, function (err) {
             console.log(err);
 
+            // hide all error here, check the valid later
             return cb(null);
         });
     };
@@ -123,6 +130,7 @@ var AndroidEnv = (function () {
             this._sdkPath = p;
             this.androidBin = AndroidEnv.getAndroidBin(p);
             this.db.set('env', 'sdkpath', { value: p });
+            //this.antHome = AndroidEnv.guessAntHome(p);
         },
         enumerable: true,
         configurable: true
@@ -213,7 +221,7 @@ var ConfigDesc = (function () {
     function ConfigDesc() {
         this.items = [];
     }
-    ConfigDesc.prototype.registerItem = function (name, type, defaultValue, ignore) {
+    ConfigDesc.prototype.registerItem = function (name, type, desc, defaultValue, ignore) {
         if (typeof defaultValue === "undefined") { defaultValue = null; }
         if (typeof ignore === "undefined") { ignore = false; }
         var item = ConfigDesc.gItemMaps[IT[type]];
@@ -221,10 +229,10 @@ var ConfigDesc = (function () {
             console.log('expect type ' + type);
             throw new ChameleonError(4 /* CFG_ERROR */, '无法找到类型' + type + '的配置');
         }
-        this.items.push({ name: name, item: item, defaultValue: defaultValue, ignore: ignore });
+        this.items.push({ name: name, item: item, defaultValue: defaultValue, ignore: ignore, desc: desc });
     };
 
-    ConfigDesc.prototype.registerItem1 = function (name, type, defaultValue, ignore) {
+    ConfigDesc.prototype.registerItem1 = function (name, type, desc, defaultValue, ignore) {
         if (typeof defaultValue === "undefined") { defaultValue = null; }
         if (typeof ignore === "undefined") { ignore = false; }
         var item = ConfigDesc.gItemMaps[type];
@@ -232,7 +240,7 @@ var ConfigDesc = (function () {
             console.log('expect type ' + type);
             throw new ChameleonError(4 /* CFG_ERROR */, '无法找到类型' + type + '的配置');
         }
-        this.items.push({ name: name, item: item, defaultValue: defaultValue, ignore: ignore });
+        this.items.push({ name: name, item: item, defaultValue: defaultValue, ignore: ignore, desc: desc });
     };
 
     ConfigDesc.wrapName = function (cfgItem, ignore, name) {
@@ -298,6 +306,18 @@ var ConfigDesc = (function () {
             }
         }
     };
+
+    ConfigDesc.prototype.getItems = function () {
+        var res = [];
+        for (var i = 0; i < this.items.length; ++i) {
+            res.push({
+                name: this.items[i].name,
+                type: this.items[i].item.type,
+                desc: this.items[i].desc
+            });
+        }
+        return res;
+    };
     ConfigDesc.gItemMaps = {
         'String': new ConfigItemType("string", function (name) {
             return 's' + name;
@@ -345,8 +365,8 @@ var GlobalCfg = (function () {
 
     GlobalCfg._createCfgDesc = function () {
         var desc = new ConfigDesc();
-        desc.registerItem('appname', 0 /* String */);
-        desc.registerItem('landscape', 3 /* Boolean */);
+        desc.registerItem('appname', 0 /* String */, 'APP NAME');
+        desc.registerItem('landscape', 3 /* Boolean */, '是否使用横屏');
         return desc;
     };
     GlobalCfg.gCfgDesc = GlobalCfg._createCfgDesc();
@@ -482,10 +502,11 @@ var SDKMetaInfo = (function () {
         res.chamver = new Version(jsonobj['chamversion']);
         var itemcfg = jsonobj['cfgitem'];
         res.cfgdesc = new ConfigDesc();
-        for (var itemname in itemcfg) {
-            var type = itemcfg[itemname]['type'];
+        for (var i = 0; i < itemcfg.length; ++i) {
+            var itemname = itemcfg[i]['name'];
+            var type = itemcfg[i]['type'];
             type = type[0].toUpperCase() + type.substr(1);
-            res.cfgdesc.registerItem1(itemname, type, itemcfg[itemname]['default'], itemcfg[itemname]['ignoreInA']);
+            res.cfgdesc.registerItem1(itemname, type, itemcfg[i]['desc'], itemcfg[i]['default'], itemcfg[i]['ignoreInA']);
         }
         if (jsonobj['script']) {
             var p = pathLib.join(chameloenPath, 'script', jsonobj['script']);
@@ -526,6 +547,10 @@ var SDKMetaInfo = (function () {
         if (this.script) {
             return this.script.afterCfgSet(cfg);
         }
+    };
+
+    SDKMetaInfo.prototype.getSettingItemInfo = function () {
+        return this.cfgdesc.getItems();
     };
     return SDKMetaInfo;
 })();
@@ -1079,6 +1104,23 @@ var ChameleonTool = (function () {
 
     ChameleonTool.checkSingleLock = function (callback) {
         setImmediate(callback, null);
+        /*
+        var homePath = ChameleonTool.getChameleonHomePath();
+        fs.ensureDir(homePath, function (err) {
+        var name = pathLib.join(homePath, '.lock');
+        try {
+        var fd = fs.openSync(name, 'wx');
+        process.on('exit', function () {
+        fs.unlinkSync(name);
+        });
+        try { fs.closeSync(fd) } catch (err) {}
+        callback(null);
+        } catch (err) {
+        Logger.log("Fail to lock", err);
+        callback(new ChameleonError(ErrorCode.OP_FAIL, "Chameleon重复开启，请先关闭另外一个Chameleon的程序"));
+        }
+        });
+        */
     };
 
     ChameleonTool.getChameleonHomePath = function () {
@@ -1667,32 +1709,33 @@ var Project = (function () {
             copyfile: []
         };
 
+        /*
         if (!paySDK) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '渠道依赖的SDK未配置'));
-            return;
+        setImmediate(cb, new ChameleonError(ErrorCode.OP_FAIL, '渠道依赖的SDK未配置'));
+        return;
         }
-
+        
         if (!userSDK) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '渠道依赖的SDK未配置'));
-            return;
+        setImmediate(cb, new ChameleonError(ErrorCode.OP_FAIL, '渠道依赖的SDK未配置'));
+        return;
         }
-
+        
         if (chcfg.hasIcon && !icons) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '这个渠道需要定制化icon，请设置'));
-            return;
+        setImmediate(cb, new ChameleonError(ErrorCode.OP_FAIL, '这个渠道需要定制化icon，请设置'));
+        return;
         }
         if (chcfg.hasSplashScreen && !splashscreen) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, '这个渠道需要定制化闪屏，请设置'));
-            return;
+        setImmediate(cb,  new ChameleonError(ErrorCode.OP_FAIL, '这个渠道需要定制化闪屏，请设置'));
+        return;
         }
-
-        try  {
-            chcfg.validatePkgName(pkg);
+        
+        try {
+        chcfg.validatePkgName(pkg);
         } catch (e) {
-            setImmediate(cb, new ChameleonError(3 /* OP_FAIL */, e.message));
-            return;
+        setImmediate(cb,  new ChameleonError(ErrorCode.OP_FAIL, e.message));
+        return;
         }
-
+        */
         if (splashscreen && cfg['splashscreenToCp']) {
             var sc = cfg['splashscreenToCp'];
             var newsc = ['assets', 'chameleon', 'chameleon_splashscreen_0.png'].join('/');

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/preference_background_color"
+    android:orientation="vertical" >
+
+    <include layout="@layout/bbk_payment_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/preference_background_color"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="6dip"
+                        android:text="@string/bbk_order_title"
+                        android:textAppearance="?android:attr/textAppearanceMediumInverse"
+                        android:textColor="@color/TextColorBlack"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/order_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="16dip"
+                        android:textAppearance="?android:attr/textAppearanceMediumInverse"
+                        android:textColor="@color/bbk_product_name"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="6dip"
+                        android:text="@string/bbk_order_price"
+                        android:textAppearance="?android:attr/textAppearanceMediumInverse"
+                        android:textColor="@color/TextColorBlack"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/order_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMediumInverse"
+                        android:textColor="@color/bbk_product_name"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bbk_price_unit"
+                        android:textAppearance="?android:attr/textAppearanceMediumInverse"
+                        android:textColor="@color/TextColorBlack"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/bbk_product_paytype_dis"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="10dip"
+                    android:text="@string/bbk_pay_method"
+                    android:textColor="@color/TextColorBlack"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:id="@+id/pay_layout_first"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/bbk_pay_type_height"
+                    android:layout_marginLeft="@dimen/bbk_pay_type_left"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/bbk_edit_all_round"
+                    android:onClick="true" >
+
+                    <ImageView
+                        android:id="@+id/pay_icon_first"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp" />
+
+                    <TextView
+                        android:id="@+id/pay_type_first"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="85dp"
+                        android:textColor="@color/TextColorBlack"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/bbk_next_pay" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/pay_layout_sec"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/bbk_pay_type_height"
+                    android:layout_marginLeft="@dimen/bbk_pay_type_left"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/bbk_edit_all_round"
+                    android:onClick="true" >
+
+                    <ImageView
+                        android:id="@+id/pay_icon_sec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp" />
+
+                    <TextView
+                        android:id="@+id/pay_type_sec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="85dp"
+                        android:textColor="@color/TextColorBlack"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/bbk_next_pay" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/pay_layout_third"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/bbk_pay_type_height"
+                    android:layout_marginLeft="@dimen/bbk_pay_type_left"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/bbk_edit_all_round"
+                    android:onClick="true" >
+
+                    <ImageView
+                        android:id="@+id/pay_icon_third"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp" />
+
+                    <TextView
+                        android:id="@+id/pay_type_third"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="85dp"
+                        android:textColor="@color/TextColorBlack"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/bbk_next_pay" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/pay_layout_four"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/bbk_pay_type_height"
+                    android:layout_marginLeft="@dimen/bbk_pay_type_left"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/bbk_edit_all_round"
+                    android:onClick="true" >
+
+                    <ImageView
+                        android:id="@+id/pay_icon_four"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp" />
+
+                    <TextView
+                        android:id="@+id/pay_type_four"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="85dp"
+                        android:textColor="@color/TextColorBlack"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/bbk_next_pay" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

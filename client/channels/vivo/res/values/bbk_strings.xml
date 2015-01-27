@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="bbk_app_name">vivoPayment</string>
+    <string name="bbk_pay_method">Payment methods</string>
+    <string name="bbk_cancel">Cancel</string>
+    <string name="bbk_back">Back</string>
+    <string name="bbk_submit">OK</string>
+    <string name="bbk_alipay">Alipay</string>
+    <string name="bbk_paytype_title">Order</string>
+    <string name="bbk_uppay">Unionpay</string>
+    <string name="bbk_pay_invalid_param">支付参数不全，不能进行支付</string>
+    <string name="bbk_pay_sys_error">支付系统出现异常，支付失败</string>
+    <string name="bbk_pay_inipay_fail">初始化交易信息失败</string>
+    <string name="bbk_pay_succ">支付成功</string>
+    <string name="bbk_pay_fail">支付失败</string>
+    <string name="bbk_pay_cancel">交易被取消</string>
+    <string name="bbk_initail_paying">vivoPayment initializing...</string>
+    <string name="bbk_network_abnormal">Network anomalies, please check the network connection</string>
+    <string name="bbk_detect_update_msg">Checking for new version, please wait</string>
+    <string name="bbk_self_update">支付服务正在进行升级操作</string>
+    <string name="bbk_install_hint">安装提示</string>
+    <string name="bbk_install_fail">安装支付控件失败</string>
+    <string name="bbk_pay_next_step">Next step</string>
+    <string name="bbk_order_title">"Name: "</string>
+    <string name="bbk_order_price">"Price:   "</string>
+    <string name="bbk_order_desc">Details:</string>
+    <string name="bbk_invalid_net_work_title">Unable connect to the network</string>
+    <string name="bbk_invalid_net_work">Please connect to the network before place order</string>
+    <string name="bbk_net_work_setting">Set network</string>
+    <string name="bbk_self_update_submit">Update</string>
+    <string name="bbk_update_progress">Downloading, please wait…</string>
+    <string name="bbk_waiting_for_download">"Connecting..."</string>
+    <string name="bbk_retry_download">"Network anomalies, please check the network connection"</string>
+    <string name="bbk_install_tips">Install the update</string>
+    <string name="bbk_install">Install</string>
+    <string name="bbk_retry_down">Retry</string>
+    <string name="bbk_new_version_detect">Checking for new version, please wait</string>
+    <string name="bbk_app_new_version">Found a new version</string>
+    <string name="bbk_tips">Tips</string>
+    <string name="bbk_install_message">Detect the latest installation package in local, install now?</string>
+    <string name="bbk_update_now">Update now</string>
+    <string name="bbk_update_later">Ignore</string>
+    <string name="bbk_exit_app">Exit</string>
+    <string name="bbk_msg_latest_version">No update</string>
+    <string name="bbk_msg_server_error">Server is temporarily unable to respond, please retry later</string>
+    <string name="bbk_msg_server_failed">Server is temporarily unable to respond or Network anomalies, please retry later</string>
+    <string name="bbk_download_file_error" msgid="1206648050615176113">Download failed, storage is  not available or not space enough</string>
+    <string name="bbk_download_percent" msgid="6029710962459481088">"<xliff:g id="NUMBER">%d</xliff:g><xliff:g id="PERCENT">%%</xliff:g>"</string>
+    <string name="bbk_price_unit">yuan</string>
+    <string name="bbk_file_len">File size:</string>
+    <string name="bbk_paymethod_unsel">请选择支付方式</string>
+    <string name="bbk_limit_pay_amount">Please select other payment methods</string>
+    <string name="bbk_install_alipay">Please install plug-in to guarantee safety paying</string>
+
+    <!-- 第二期 begin -->
+    <string name="bbk_tencent">Tenpay</string>
+    <string name="bbk_card">Rechargeable card</string>
+    <string name="bbk_phone_card">Rechargeable card</string>
+    <string name="bbk_game_card">Jcard</string>
+    <string name="bbk_phone_card_yidong">CM</string>
+    <string name="bbk_phone_card_liantong">CU</string>
+    <string name="bbk_phone_card_dianxin">CT</string>
+    <string name="bbk_card_tip">Please check the face value</string>
+    <string name="bbk_game_card_support">Jcard supported currently</string>
+    <string name="bbk_card_num_tip">Card ID</string>
+    <string name="bbk_card_pwd_tip">Code</string>
+    <string name="bbk_card_amount_tip">Face value</string>
+    <string name="bbk_card_submit_fail">Failed to submit, please try later</string>
+    <string name="bbk_detect_pay_result">Payment is ongoing…</string>
+    <string name="bbk_card_le_price">Face value is not enough</string>
+    <string name="bbk_card_amount_empty">Please select face value</string>
+    <string name="bbk_card_num_empty">Please input card ID</string>
+    <string name="bbk_card_pwd_empty">Please input card code</string>
+    <string name="bbk_card_gt_price">The part of the face value beyond the order amount will not be back fill, sure to continue?</string>
+    <string name="bbk_card_succ_balance">Deal succeeded, the balance of ### yuan can continue to consume in vivo</string>
+    <string name="bbk_card_succ_nobalance">Deal succeeded, the balance can continue to consume in vivo</string>
+    <string name="bbk_card_succ">Deal succeeded</string>
+    <string name="bbk_card_fail_balance">Deal failed, the balance of ### yuan can continue to consume in vivo</string>
+    <string name="bbk_card_fail_nobalance">Deal failed, the balance can continue to consume in vivo</string>
+    <string name="bbk_card_pay_continue">Continue</string>
+    <string name="bbk_card_pay_submit">Submit</string>
+    <string name="bbk_card_service_refuse">Point cards not supported temporlly</string>
+    <string name="bbk_card_num_le_len">卡号错误，请重新输入</string>
+    <string name="bbk_card_pwd_le_len">卡密错误，请重新输入</string>
+    <string name="bbk_balance_invalid">Balance payment not supported temporarily, please try later</string>
+
+    <string-array name="bbk_phone_card_type_yd">
+        <item>"10"</item>
+        <item>"20"</item>
+        <item>"30"</item>
+        <item>"50"</item>
+        <item>"100"</item>
+        <item>"300"</item>
+        <item>"500"</item>
+    </string-array>
+    <string-array name="bbk_phone_card_type_lt">
+        <item>"20"</item>
+        <item>"30"</item>
+        <item>"50"</item>
+        <item>"100"</item>
+        <item>"300"</item>
+        <item>"500"</item>
+    </string-array>
+    <string-array name="bbk_phone_card_type_dx">
+        <item>"50"</item>
+        <item>"100"</item>
+    </string-array>
+    <string-array name="bbk_game_card_type">
+        <item>"10"</item>
+        <item>"15"</item>
+        <item>"20"</item>
+        <item>"30"</item>
+        <item>"50"</item>
+        <item>"55"</item>
+        <item>"100"</item>
+        <item>"200"</item>
+        <item>"500"</item>
+        <item>"1000"</item>
+    </string-array>
+    <!-- 第二期end -->
+
+    <array name="bbk_payment_type">
+        <item>@string/bbk_uppay</item>
+        <item>@string/bbk_alipay</item>
+        <item>@string/bbk_tencent</item>
+        <item>@string/bbk_card</item>
+    </array>
+    <array name="bbk_payment_type_icons">
+        <item>@drawable/bbk_uppay</item>
+        <item>@drawable/bbk_alipay</item>
+        <item>@drawable/bbk_tencent</item>
+        <item>@drawable/bbk_card</item>
+    </array>
+
+</resources>

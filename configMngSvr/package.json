@@ -1,0 +1,10 @@
+{
+  "name": "configMngSvr",
+  "version": "0.0.1",
+  "dependencies" :
+  {
+    "restify": "*",
+    "forever": "*",
+    "redis": "0.10.1"
+  }
+}

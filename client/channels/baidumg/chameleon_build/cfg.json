@@ -1,26 +1,25 @@
 {
     "desc": "百度移动游戏",
     "name": "baidumg",
-    "chamversion": "1.3.1",
-    "version": "3.0.0",
+    "chamversion": "1.3.3",
+    "version": "3.1.1",
     "enableWrapPackage": 0,
-    "cfgitem": {
-
-        "appId" : {
+    "cfgitem": [
+        {
+            "name": "appId",
             "type": "int",
-            "desc": "app id"
+            "desc": "APP ID"
         },
-
-        "appKey" : {
+        {
+            "name": "appKey",
             "type": "string",
-            "desc": "app key"
+            "desc": "APP KEY"
         },
-
-        "appSecret": {
+        {
+            "name": "appSecret",
             "type": "string",
-            "desc": "app secret",
-            "ignoreInA" : 1
+            "desc": "APP SECRET",
+            "ignoreInA": 1
         }
-    }
+    ]
 }
-

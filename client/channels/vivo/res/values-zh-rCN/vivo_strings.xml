@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- LoginActivity begin -->
+    <string name="vivo_app_name">"vivo帐户"</string>
+    <string name="vivo_back">"返回"</string>
+    <string name="vivo_account_num_label">"帐&#160;&#160;号"</string>
+    <string name="vivo_account_hint_label">"邮箱/手机号/用户名"</string>
+    <string name="vivo_account_password_label">"密&#160;&#160;码"</string>
+    <string name="vivo_account_login">"登录"</string>
+    <string name="vivo_account_registe">"注册帐户"</string>
+    <string name="vivo_account_findpassword">"找回密码"</string>
+    <string name="vivo_get_data_network_error">"无法与服务器建立连接，请检查网络与服务器设置"</string>
+    <string name="vivo_loading_string">"正在载入&#8230;"</string>
+    <string name="vivo_account_loginempty_wrong">"帐号或密码不能为空"</string>
+    <string name="vivo_email_empty_wrong">"Email不能为空     "</string>
+    <string name="vivo_email_formatmore_wrong">"邮箱不能多于50位  "</string>
+    <string name="vivo_email_format_wrong">"邮箱格式错误"</string>
+    <string name="vivo_account_num_empty_wrong">"帐号不能为空"</string>
+    <string name="vivo_account_num_formatmore_wrong" >"帐号不能多于50位"</string>
+    <string name="vivo_account_num_formatless_wrong">"帐号不能小于3位"</string>
+    <string name="vivo_password_empty_wrong">"密码不能为空     "</string>
+    <string name="vivo_password_formatless_wrong">"密码不能少于6位     "</string>
+	<string name="vivo_password_formatmore_wrong">"密码不能多于16位     "</string>
+	<string name="vivo_password_format_wrong">"请输入字母或数字"</string>
+	<string name="vivo_username_empty_wrong">"请输入手机号或邮箱   "</string>
+	<string name="vivo_phone_num_empty_wrong">"手机号不能为空     "</string>
+	<string name="vivo_phone_or_email_format_wrong">"请输入手机号或邮箱     "</string>
+	<string name="vivo_net_work_not_connect_title">"无法连接网络"</string>
+	<string name="vivo_net_work_not_connect_info">"请检查网络或稍后重试"</string>
+	<string name="vivo_set_network">"设置网络"</string>
+	<string name="vivo_cancle">"取消"</string>
+	<string name="vivo_use_temp_account">"游客登录"</string>
+	<string name="vivo_msg_bind_security_email">"以防日后忘记密码，vivo手机上可设置"</string>
+	<string name="vivo_title_bind_security_email">"vivo帐户&#160;&#160;请绑定邮箱"</string>
+	<!-- LoginActivity end -->
+	<!-- RegisterActivity -->
+	<string name="vivo_registe_title">"注册帐户"</string>
+    <string name="vivo_name_indispensable_label">"3&#8211;15个字符或2&#8211;7个汉字"</string>
+    <string name="vivo_password_indispensable_label">"6&#8211;16位字母或数字"</string>
+    <string name="vivo_show_password">"显示密码 "</string>
+    <string name="vivo_read_protocol">"同意《用户协议》"</string>
+    <string name="vivo_submit_label">"提交"</string>
+    <string name="vivo_commit_success_tips">"提交成功"</string>
+    <string name="vivo_commit_success_msg">"验证邮件已发送到您的邮箱，请注意查收"</string>
+    <string name="vivo_enter_email">"进入邮箱"</string>
+    <string name="vivo_agree_protocol_error">"请阅读并同意《用户协议》"</string>
+    <string name="vivo_username_format_wrong">"用户名必须为3&#8211;15个字符或2&#8211;7个汉字"</string>
+    <string name="vivo_username_pure_num_wrong">"用户名不可为纯数字     "</string>
+    <string name="vivo_email_label">"邮&#160;&#160;箱"</string>
+    <string name="vivo_email_indispensable_label">"请如实填写，用于找回密码"</string>
+    <!-- RegisterActivity end -->
+    <!-- VerifyPhoneNumActivity begin -->
+    <string name="vivo_phone_num_verify">"输入验证码"</string>
+    <string name="vivo_phone_num_verify_label">"验证码"</string>
+    <string name="vivo_verify_num_format_wrong">"验证码为4位数字"</string>
+    <string name="vivo_get_verify_code">"获取验证码"</string>
+    <string name="vivo_get_verify_code_wait">"获取验证码（*秒）"</string>
+    <string name="vivo_get_verify_code_one_sec">"获取验证码（1秒）"</string>
+    <string name="vivo_phone_num_verify_intro">"短信可能会有延时，请耐心等待，如果长时间未收到短信，请60秒后重新获取"</string>
+    <string name="vivo_finish_label">"完成"</string>
+    <!-- VerifyPhoneNumActivity end -->
+    <!-- FindPasswordActivity begin -->
+    <string name="vivo_find_password">"找回密码"</string>
+	<string name="vivo_find_password_intro">"请填写需要找回密码的帐号"</string>
+	<string name="vivo_from_question">"通过密保问题"</string>
+	<string name="vivo_from_email">"通过邮箱"</string>
+	<string name="vivo_next_step">"下一步"</string>
+	<string name="vivo_find_password_hint_label">"邮箱/手机号/用户名"</string>
+	<string name="vivo_send_email_success">"验证邮件已发送到您的邮箱（%1$s），请注意查收"</string>
+	<string name="vivo_ok_label">"确定"</string>
+	<string name="vivo_question_next">"换一个"</string>
+    <string name="vivo_question_next_end">"已是最后一个"</string>
+    <string name="vivo_input_answer">"回答密保问题"</string>
+    <string name="vivo_answer_wrong">"回答错误，请重新输入"</string>
+    <string name="vivo_answer_empty_wrong">"答案不能为空"</string>
+    <string name="vivo_question_lable">"问题"</string>
+    <string name="vivo_no_network_title">"无法与服务器建立连接，请检查网络与服务器设置"</string>
+    <string name="vivo_commit_success">"提交成功"</string>
+    <string name="vivo_open_Email">"进入邮箱"</string>
+	<!-- FindPasswordActivity end -->
+	<!-- SetPassWordActivity begin -->
+	<string name="vivo_set_password_label">"设置密码"</string>
+	<string name="vivo_new_password_label">"新密码"</string>
+	<string name="vivo_confirm_password_label">"确认密码"</string>
+	<string name="vivo_passwordconfirm_empty_wrong">"确认密码不能为空     "</string>
+	<string name="vivo_password_confirm_wrong">"两次输入密码不一致     "</string>
+	<string name="vivo_confirm_password_empty_wrong">"确认密码不能为空 "</string>
+    <!-- SetPassWordActivity end -->
+    <!-- RegisterProtocolActivity Begin -->
+	<string name="vivo_account_agreement_title">"用户协议"</string>
+	<string name="vivo_net_error_retry">"网络连接失败，点击重试"</string>
+	<string name="vivo_agree_label">"同意"</string>
+	<!-- RegisterProtocolActivity End -->
+</resources>

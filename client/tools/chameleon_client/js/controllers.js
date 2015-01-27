@@ -417,6 +417,103 @@ chameleonControllers
 
             };
 
+            $scope.editSDK = function() {
+                var fs = require('fs');
+                var _ = require('underscore');
+                var channelname = $scope.channel.data.metaInfo.name;
+                var channelTemplate = function(channelName){
+                    var result = "";
+                    var channelInfo = fs.readFileSync('./channelInfo.json', 'utf-8');
+                    var channelInfo = channelInfo.replace('/\n/g', '');
+                    var context = JSON.parse(channelInfo);
+                    var getControlNode = function(key, value){
+                        var nodeText = '',
+                            desc = value.desc,
+                            descLow = key.toLowerCase(),
+                            datafield = key,
+                            type = value.type;
+                        if(type === 'string'){
+                            nodeText =  '<div class="control-group">'
+                            + '<label class="control-label" for="@descLow">@desc</label>'
+                            + '<div class="controls">'
+                            + '<input id="@descLow" name="@descLow" type="text" style="width:60%;" ng-model="selectedsdk.cfg.@datafield" />'
+                            + '</div>'
+                            + '</div>';
+                        }
+                        if(type === 'int' || type === 'float'){
+                            nodeText =  '<div class="control-group">'
+                            + '<label class="control-label" for="@descLow">@desc</label>'
+                            + '<div class="controls">'
+                            + '<input id="@descLow" name="@descLow" type="number" style="width:60%;" ng-model="selectedsdk.cfg.@datafield" />'
+                            + '</div>'
+                            + '</div>';
+                        }
+                        if(type === 'url'){
+                            nodeText =  '<div class="control-group">'
+                            + '<label class="control-label" for="@descLow">@desc</label>'
+                            + '<div class="controls">'
+                            + '<input id="@descLow" name="@descLow" type="url" style="width:60%;" ng-model="selectedsdk.cfg.@datafield" />'
+                            + '</div>'
+                            + '</div>';
+                        }
+                        if(type === 'boolean'){
+                            nodeText = '<div class="control-group" >'
+                            + '<label class="control-label">@desc</label>'
+                            + '<div class="controls">'
+                            + '<div class="btn-group">'
+                            + '<label class="btn btn-primary" ng-model="selectedsdk.cfg.@datafield" btn-radio="true">是</label>'
+                            + '<label class="btn btn-primary" ng-model="selectedsdk.cfg.@datafield" btn-radio="false">否</label>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>';
+                        }
+                        nodeText = nodeText.replace(/@desc/g, desc);
+                        nodeText = nodeText.replace(/@descLow/g, descLow);
+                        nodeText = nodeText.replace(/@datafield/g, datafield);
+                        return nodeText;
+                    }
+                    var channelConfig = _.findWhere(context.channels, {name: channelname});
+                    for(var key in channelConfig.cfgitem){
+                        result += getControlNode(key, channelConfig.cfgitem[key]);
+                    }
+                    result += ('<div class="control-group" style="margin: 5px;">'
+                        + '<div class="controls">'
+                        + '<button type="submit" class="btn" ng-disabled="!channelCfgForm.$dirty || channelCfgForm.$invalid">保存</button>'
+                        + '<button type="button" class="btn" ng-click="submitCancel()">取消</button>'
+                        + '</div></div>');
+                    return result;
+                }
+                var template = channelTemplate(channelname);
+                var instance = $modal.open({
+                    templateUrl: 'partials/sdkConfig.html',
+                    controller:'editSDKController',
+                    size: 'lg',
+                    backdrop: false,
+                    keyboard: false,
+                    resolve: {
+                        selectedsdk: function(){
+                            console.log($scope);
+                            var sdk = $scope.channel.sdk;
+                            return {
+                                cfg: sdk.cfg,
+                                data: sdk,
+                                name: sdk.metaInfo.name,
+                                outdated: false,
+                                updateFunc: function () {
+                                    console.log(project);
+                                    return ProjectMgr.updateSDKCfg(
+                                        project, sdk.cfg, sdk);
+                                }
+                            };
+                        },
+                        template: function(){
+                            return template;
+                        }
+                    }
+                });
+                $scope.openModalInstance = instance;
+            }
+
 
 
 
@@ -574,13 +671,52 @@ chameleonControllers
                     }
                 });
                 instance.result.then(function (channel) {
+                    var initShownChannel = function (nowChannel) {
+                        if (project.orient === 'portrait') {
+                            var scHeight = 180;
+                            var scWidth = 120;
+                        } else {
+                            var scHeight = 120;
+                            var scWidth = 180;
+                        }
+                        var iconshown = nowChannel.shownIcon;
+                        if (!iconshown) {
+                            iconshown = projectIcons['medium'] || projectIcons['high'] || projectIcons['xhigh'];
+                        }
+                        var sdk = null;
+                        if (nowChannel.userSDK) {
+                            sdk = project.getSDKCfg(nowChannel.userSDK);
+                        }
+                        return {
+                            desc: nowChannel.desc,
+                            splashscreen: nowChannel.splashscreen,
+                            sdk: sdk,
+                            data: nowChannel,
+                            scWidth: scWidth,
+                            scHeight: scHeight,
+                            iconshown: iconshown,
+                            icons: nowChannel.icons,
+                            packageName: project.am.getPkgName() + nowChannel.packageName
+                        };
+                    };
                     var newChannel = ProjectMgr.newChannel(project, channel.name);
+                    $scope.channel = initShownChannel(newChannel);
                     $scope.channels.push(newChannel);
                     var l = $scope.channels.length - 1;
                     gridEventHandler = function () {
                         $scope.installedChTable.selectRow(
                             l, true);
                     };
+                    //create an empty sdk for new channel
+                   var promise = ProjectMgr.newSDK(project, channel.name, '');
+                        promise.then(function(sdkcfg){
+                            var sdk = sdkcfg;
+                            $scope.channel.sdk = sdk;
+                            //ProjectMgr.updateSDKCfg(project, sdk.cfg, sdk);
+                            //ProjectMgr.setChannel(project, $scope.channel.data, $scope.channel);
+                            $scope.saveChannel();
+
+                    });
                 }, function () {
                     console.log('dialog dismissed');
                 });
@@ -918,8 +1054,6 @@ chameleonControllers
                 }
 
 
-
-                globalCache.allsdks = allsdks;
                 $scope.allsdks = allsdks;
 
                 /**
@@ -936,36 +1070,9 @@ chameleonControllers
     }])
     .controller('InitController', function ($scope, $state, $modal, ProjectMgr, WaitingDlg) {
         var promise = ProjectMgr.init();
-        promise = WaitingDlg.wait(promise, '初始化工具');
-        promise.then(function (chtool) {
-            if (chtool.isEnvSet())  {
-                $state.go('projectlist');
-            } else {
-                var instance = $modal.open( {
-                    templateUrl: 'partials/init.html.orig',
-                    backdrop: false,
-                    keyboard: false,
-                    resolve: {
-                        inited: function () {
-                            return chtool.isEnvSet();
-                        },
-                        sdkroot: function () {
-                            return '';
-                        }
-                    },
-                    controller: 'InitDlgController'
-                });
-                instance.result.then(
-                    function () {
-                        $state.go('projectlist');
-                    }
-                );
-            }
-        }, function (err) {
-            alert(err.message);
-            var gui = require('nw.gui');
-            gui.App.quit();
-        })
+        promise.then(function(){
+            $state.go('projectlist');
+        });
     })
     .controller('InitDlgController',function ($scope, $modalInstance, fileDialog, ProjectMgr, inited, sdkroot) {
         $scope.inited = inited;
@@ -1001,11 +1108,8 @@ chameleonControllers
         };
     })
     .controller('ProjectListCtrl', ['$scope', '$state', 'ProjectMgr', '$modal','globalCache', function($scope, $state, ProjectMgr, $modal,globalCache) {
-
         $scope.projects = [];
-
-
-        $scope.show.index = true;
+        //$scope.show.index = true;
 
         var promise = ProjectMgr.getProjectList();
         promise.then(
@@ -1013,14 +1117,22 @@ chameleonControllers
                 $scope.projects = data;
             }
         );
-        $scope.newProject = function () {
-            $state.go('newproject');
-        };
-        $scope.bindProject = function () {
-            $state.go('bindproject');
+        $scope.addProject = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'partials/newproject.html',
+                controller: 'NewProjectCtrl',
+                size: 'lg',
+                resolve: {
+                },
+                backdrop: false,
+                keyboard: false
+            });
+            modalInstance.result.then(function(result){
+                $scope.projects.push(result);
+            });
         };
 
-        $scope.selectProject = [];
+        $scope.selectedProject = [];
 
         $scope.projectTable = {
             data: 'projects',
@@ -1028,27 +1140,13 @@ chameleonControllers
                 {
                     displayName: '游戏名称',
                     field: 'name',
-                    width: '20%',
-                    resizable: false,
-                    groupable: false
-                },
-                {
-                    displayName: '游戏代码路径',
-                    field: 'path',
-                    width: '70%',
-                    resizable: false,
-                    groupable: false
-                },
-                {
-                    displayName: '版本',
-                    field: 'version',
-                    width: '10%',
+                    width: '100%',
                     resizable: false,
                     groupable: false
                 }
             ],
             multiSelect: false,
-            selectedItems: $scope.selectProject,
+            selectedItems: $scope.selectedProject,
             showSelectionCheckbox: true,
             showGroupPanel: false,
             beforeSelectionChange: function() {
@@ -1063,32 +1161,23 @@ chameleonControllers
             globalCache.rowIndex = row.rowIndex;
             var project = $scope.projects[row.rowIndex];
             if (project) {
-                globalCache.projectId = project._id;
-                $scope.show.index = false;
-                $scope.show.header = 'loadPlayManage';
-
-
-                $state.go('playmanage', {projectId: project._id});
+                $state.go('playmanage', {project: JSON.stringify(project)});
             }
         }
 
         $scope.openProject = function () {
-            if ($scope.selectProject.length > 0) {
-                globalCache.projectId = $scope.selectProject[0]._id;
-                $scope.show.index = false;
-                $scope.show.header = 'loadPlayManage';
-
-                $state.go('playmanage', {projectId:$scope.selectProject[0]._id});
+            if ($scope.selectedProject.length > 0) {
+                var project = $scope.selectedProject[0];
+                $state.go('playmanage', {projectId: JSON.stringify(project)});
             }
         }
 
         $scope.removeProject = function () {
-            angular.forEach($scope.selectProject, function(rowItem) {
+            angular.forEach($scope.selectedProject, function(rowItem) {
                 $scope.projects.splice($scope.projects.indexOf(rowItem),1);
-                ProjectMgr.removeProject(rowItem);
+                ProjectMgr.removeProject(rowItem.id);
             });
         }
-
     }])
     .controller('BindProjectCtrl', ['$scope', '$state', 'ProjectMgr', 'fileDialog', 'globalCache', function ($scope, $state, ProjectMgr, fileDialog, globalCache) {
         $scope.newProjectPromise = null;
@@ -1125,36 +1214,18 @@ chameleonControllers
             }
         };
     }])
-    .controller('NewProjectCtrl', ['$scope', '$state', 'ProjectMgr','globalCache',function ($scope, $state, ProjectMgr,globalCache) {
-        $scope.updatePathName = '(' + function () {
-            $scope.pathName = this.files[0];
-        }.toString() + ')';
-        $scope.newProjectPromise = null;
-        $scope.setFiles = function(element) {
-            $scope.$apply(function(scope) {
-                    console.log(element.files)
-                    $scope.gamePath = element.files[0].path;
-                }
-            );
-        };
-        $scope.portrait = false; // default use landscape
-        $scope.unity = false; // default no unity package
-        $scope.force = false; // default no force create
+    .controller('NewProjectCtrl', function ($scope, $modalInstance, ProjectMgr) {
+        $scope.newProject = ProjectMgr.createProject();
+        $scope.cancel = function(){
+            $modalInstance.close();
+        }
         $scope.create = function () {
             try {
-                var params = {
-                    path: $scope.gamePath,
-                    name: $scope.gameName,
-                    portrait: $scope.portrait || false,
-                    unity: $scope.unity || false,
-                    force: $scope.force || false
-                };
-                $scope.newProjectPromise = ProjectMgr.createProject(params);
+                $scope.newProjectPromise = ProjectMgr.createProject($scope.newProject);
                 $scope.newProjectPromise.then(
-                    function (projectId) {
-                        console.log('switch to projects' %projectId);
-                        globalCache.projectId = projectId;
-                        $state.go('playmanage', {projectId: projectId});
+                    function (projectID) {
+                        $scope.newProject.id = projectID;
+                        $modalInstance.close($scope.newProject);
                     },
                     function (err) {
                         alert(err.message);
@@ -1164,7 +1235,7 @@ chameleonControllers
                 console.log(e.stack);
             }
         };
-    }])
+    })
     .controller('AddSDKController',function ($scope, $modalInstance, supportedSDK) {
         $scope.selected = [];
         $scope.info = {
@@ -1597,9 +1668,6 @@ chameleonControllers
             $modalInstance.close($scope.selected[0]);
         };
 
-
-        globalCache.allsdks = allsdks;
-        console.log(allsdks)
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
@@ -1714,7 +1782,7 @@ chameleonControllers
         $scope.show.index = true;
         $scope.globalCache = globalCache;
         $scope.headerTpl = 'partials/nav.html';
-        console.log($scope)
+        //console.log($scope)
         $scope.navClass = function (page) {
             var currentRoute = $location.path().substring(1) || 'projects';
             return page === currentRoute ? 'active' : '';
@@ -1726,6 +1794,7 @@ chameleonControllers
             $scope.globalCache.projectId = '';
             $state.go('projectlist',{projectId:globalCache.projectId});
         };
+
         $scope.loadPlayManage = function (str) {
             $scope.show.index = false;
             $scope.show.header = str;
@@ -1818,12 +1887,6 @@ chameleonControllers
 
         };
 
-
-
-
-
-
-
         $scope.setFiles = function(element) {
             $scope.$apply(function() {
                     var fse = require('fs-extra');
@@ -1850,8 +1913,7 @@ chameleonControllers
 
     }])
     .controller('canctrl',['$scope', '$log', '$stateParams', '$state', '$modal',  'WaitingDlg', '$timeout',function ($scope, $log, $stateParams, $state, $modal, WaitingDlg,$timeout) {
-        $scope.updateCurrentCfg = function () {
-
+        /**$scope.updateCurrentCfg = function () {
             var sdk = $scope.selectedsdk;
             var promise = sdk.updateFunc();
             promise = WaitingDlg.wait(promise, '更新配置中');
@@ -1860,5 +1922,24 @@ chameleonControllers
             }, function (e) {
                 alert(e.message);
             });
-        };
+        };*/
     }])
+    .controller('editSDKController', function($scope, $modalInstance, selectedsdk, template){
+        console.log(template);
+        $scope.selectedsdk = selectedsdk;
+        $scope.sdkConfigHtml = template;
+        $scope.submitCancel = function(){
+            $modalInstance.close();
+        }
+        $scope.updateCurrentCfg = function () {
+            console.log(selectedsdk);
+            var sdk = selectedsdk;
+            var promise = sdk.updateFunc();
+            promise.then(function () {
+                //$scope.channelCfgForm.$setPristine();
+                $modalInstance.close();
+            }, function (e) {
+                alert(e.message);
+            });
+        };
+    });

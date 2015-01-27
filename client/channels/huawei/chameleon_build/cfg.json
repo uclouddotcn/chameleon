@@ -3,40 +3,47 @@
     "name": "huawei",
     "chamversion": "1.3.1",
     "version": "1.3.1",
-    "cfgitem": {
-        "appId" : {
-            "type" : "string",
-            "desc" : "app Id"
+    "cfgitem": [
+        {
+            "name": "appId",
+            "type": "string",
+            "desc": "APP ID"
         },
-        "cpId" : {
-            "type" : "string",
-            "desc" : "cp Id"
+        {
+            "name": "cpId",
+            "type": "string",
+            "desc": "CP ID"
         },
-        "privateKey" : {
-            "type" : "string",
-            "desc" : "private Key"
+        {
+            "name": "privateKey",
+            "type": "string",
+            "desc": "PRIVATE KEY"
         },
-        "payId" : {
-            "type" : "string",
-            "desc" : "pay Id"
+        {
+            "name": "payId",
+            "type": "string",
+            "desc": "PAY ID"
         },
-        "cpName" : {
-            "type" : "string",
-            "desc" : "cp Name"
+        {
+            "name": "cpName",
+            "type": "string",
+            "desc": "CP NAME"
         },
-        "payUrl" : {
-            "type" : "string",
-            "desc" : "pay Url"
+        {
+            "name": "payUrl",
+            "type": "string",
+            "desc": "支付回调URL"
         },
-        "payRsaPubKey" : {
-            "type" : "string",
-            "desc" : "pay Rsa Pub Key"
+        {
+            "name": "payRsaPubKey",
+            "type": "string",
+            "desc": "pay Rsa Pub Key"
         },
-        "payPrivateKey" : {
-            "type" : "string",
-            "desc" : "Pay Private Key",
-            "ignoreInA" : 1
+        {
+            "name": "payPrivateKey",
+            "type": "string",
+            "desc": "Pay Private Key",
+            "ignoreInA": 1
         }
-    }
+    ]
 }
-
