@@ -1,0 +1,44 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
+    package="prj.chameleon.muzhiwan">
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application>
+        <meta-data
+            android:name="MZWAPPKEY" android:value="e75a04ad5850acf97d3dd9d000d0b9d1" chameleon:replace="android:value=%appKey%" />
+        <meta-data
+            android:name="DEBUG" android:value="true" chameleon:replace="android:value=%debug%" />
+
+        <activity
+            android:name="com.muzhiwan.sdk.MzwActivity"
+            android:configChanges="keyboardHidden|navigation|orientation"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity
+            android:name="com.inject_tencent.tauth.TAuthView"
+            android:configChanges="keyboardHidden|navigation|orientation"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="auth" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.muzhiwan.sdk.DialogActivity"
+            android:configChanges="keyboardHidden|navigation|orientation"
+            android:theme="@android:style/Theme.Translucent"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+
+    </application>
+</manifest>

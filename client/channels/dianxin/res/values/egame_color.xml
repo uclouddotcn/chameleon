@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="light_blue">#50b3f2</color>
+    <color name="dark_gray">#505050</color>
+    <color name="light_red">#fa5555</color>
+    <color name="mesgpush_title">#505050</color>
+    <color name="regist_text">#777777</color>
+    <color name="mesgpush_other">#888888</color>
+    <color name="text_green">#74c73d</color>
+    
+    <color name="default_circle_indicator_stroke_color">#ff642e</color>
+    <color name="default_circle_indicator_fill_color">#74c73d</color>
+    <color name="default_circle_indicator_page_color">#cccccc</color>
+
+</resources>

@@ -1,0 +1,161 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
+    package="prj.chameleon.dianxin">
+    <!-- 需要添加的权限 wei.han BEGIN -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 需要添加的权限 wei.han END -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <application>
+
+        <meta-data android:name="EGAME_CHANNEL" android:value="10000000"  />
+
+        <!-- 根据游戏实际情况修改screenOrientation属性 -->
+        <activity
+            android:name="cn.egame.terminal.paysdk.EgamePayActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.mpay.ifmgr.PayManagerActivity"
+            android:configChanges="keyboardHidden|orientation|navigation"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="adjustPan"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+        <!-- 一键支付 -->
+        <activity
+            android:name="com.iapppay.oneclickpay.FastPayActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.oneclickpay.InputCardActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.oneclickpay.LLUnbindCardActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.oneclickpay.YPUnbindCardActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.oneclickpay.SplashActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.oneclickpay.AgreementActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.oneclickpay.CommUnbindCardActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.oneclickpay.CallWaitingActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.oneclickpay.SmsVerifyActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <activity
+            android:name="com.iapppay.oneclickpay.SmsVerifyUnbindCardActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%"/>
+
+        <!-- 银联标准版 -->
+        <activity
+            android:name="com.unionpay.uppay.PayActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.UPPay"></activity>
+
+        <activity
+            android:name="com.unionpay.uppay.PayActivityEx"
+            android:configChanges="orientation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"></activity>
+
+        <activity
+            android:name="cn.play.dserv.EmpActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:exported="true" />
+
+        <service
+            android:name="cn.play.dserv.DService"
+            android:enabled="true"
+            android:exported="false"
+            android:label="dservice"
+            android:process=":dservice_v1"></service>
+        <receiver
+            android:name="cn.play.dserv.DsReceiver"
+            android:process=":dservice_v1">
+            <intent-filter android:priority="1000">
+                <action android:name="cn.play.dservice" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+
+        <!-- alipay sdk begin -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"></activity>
+
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"></activity>
+        <!-- alipay sdk end -->
+    </application>
+</manifest>

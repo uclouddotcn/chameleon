@@ -51,7 +51,8 @@ function init(cfgFile, baseDir, pluginInfos, cmdEmitter, callback) {
     }
 }
 
-function _init(cfgFile, baseDir, pluginInfos, cmdEmitter, callback) {
+function _init(baseDir, argv, pluginInfos, cmdEmitter, callback) {
+    var cfgFile = path.resolve(baseDir, argv[0]);
     env.initFromBaseDir(baseDir);
     var cfg = loadCfg(cfgFile);
     env.debug = cfg.debug;

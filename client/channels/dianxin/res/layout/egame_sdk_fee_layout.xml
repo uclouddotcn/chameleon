@@ -1,0 +1,503 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="256dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/egame_sdk_popup_title" >
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/egame_sdk_egame_logo" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@id/logo"
+                android:textColor="#ffffff"
+                android:textSize="13dp" />
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/egame_sdk_btn_close_selector" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/egame_sdk_popup_white_bg"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:id="@+id/fee_info_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/game_name_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="5dp"
+                        android:textColor="#888888"
+                        android:textSize="13dp" />
+
+                    <TextView
+                        android:id="@+id/tools_name_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="1dp"
+                        android:textColor="#888888"
+                        android:textSize="13dp" />
+
+                    <TextView
+                        android:id="@+id/tools_price_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="1dp"
+                        android:textColor="#888888"
+                        android:textSize="13dp" />
+
+                    <TextView
+                        android:id="@+id/tools_desc_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/egame_sdk_popup_orange_bg"
+                        android:textColor="#f43400"
+                        android:textSize="10dp"
+                        android:visibility="visible" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/egame_sdk_popup_dotted_line" />
+
+                    <TextView
+                        android:id="@+id/fee_tip"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="4dp"
+                        android:textColor="#888888"
+                        android:textSize="11dp" />
+
+                    <TextView
+                        android:id="@+id/confirm"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/egame_sdk_btn_green_selector"
+                        android:gravity="center"
+                        android:textColor="#ffffff"
+                        android:textSize="14dp" />
+
+                    <LinearLayout
+                        android:id="@+id/one_confirm_btn_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="2dp"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/one_confirm"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/egame_sdk_btn_green_selector"
+                            android:gravity="center"
+                            android:textColor="#ffffff"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/one_cancel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/egame_sdk_btn_grey_selector"
+                            android:gravity="center"
+                            android:textColor="#ffffff"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/other_pay_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="38dp"
+                        android:layout_marginRight="31dp" >
+
+                        <TextView
+                            android:id="@+id/alipay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="5dp"
+                            android:paddingTop="5dp"
+                            android:textColor="#3aa9f6"
+                            android:textSize="12dp" />
+
+                        <TextView
+                            android:id="@+id/morepay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="5dp"
+                            android:textColor="#3aa9f6"
+                            android:textSize="12dp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/fee_two_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="168dp"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/two_tip"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#888888"
+                        android:textSize="13dp" />
+
+                    <LinearLayout
+                        android:id="@+id/number_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="36dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal" >
+
+                        <EditText
+                            android:id="@+id/input"
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/egame_sdk_popup_import_box"
+                            android:imeOptions="flagNoExtractUi"
+                            android:inputType="number"
+                            android:textColor="#888888"
+                            android:textSize="13dp" />
+
+                        <TextView
+                            android:id="@+id/number_tip"
+                            android:layout_width="48dp"
+                            android:layout_height="fill_parent"
+                            android:layout_marginLeft="8dp"
+                            android:background="#bbbbbb"
+                            android:gravity="center"
+                            android:textColor="#888888"
+                            android:textSize="13dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="9dp"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/number_pay"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/egame_sdk_btn_green_selector"
+                            android:gravity="center"
+                            android:textColor="#ffffff"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/number_cancel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/egame_sdk_btn_grey_selector"
+                            android:gravity="center"
+                            android:textColor="#ffffff"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/progress_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="168dp" >
+
+                    <ProgressBar
+                        android:id="@+id/progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="59dp"
+                        android:indeterminate="false"
+                        android:indeterminateDrawable="@drawable/egame_sdk_progress_loading_style" />
+
+                    <TextView
+                        android:id="@+id/progress_tip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="8dp"
+                        android:layout_toRightOf="@id/progress"
+                        android:textColor="#888888"
+                        android:textSize="13dp" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/tip_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="168dp"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/result_tip"
+                        android:layout_width="fill_parent"
+                        android:layout_height="76dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#888888"
+                        android:textSize="13dp" />
+
+                    <TextView
+                        android:id="@+id/return_game"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="22dp"
+                        android:background="@drawable/egame_sdk_btn_green_selector"
+                        android:gravity="center"
+                        android:textColor="#ffffff"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/list_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <RelativeLayout
+                        android:id="@+id/sms_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/egame_sdk_list_item_selector" >
+
+                        <ImageView
+                            android:id="@+id/icon_phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="13dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/egame_sdk_icon_pay_phone" />
+
+                        <TextView
+                            android:id="@+id/text_phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_toRightOf="@id/icon_phone"
+                            android:textColor="#888888"
+                            android:textSize="13dp" />
+
+                        <TextView
+                            android:id="@+id/text1_phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/text_phone"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_toRightOf="@id/icon_phone"
+                            android:textColor="#888888"
+                            android:textSize="11dp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:background="@drawable/egame_sdk_icon_arrow_right" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/icon_phone"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/egame_sdk_popup_parting" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/alipay_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/egame_sdk_list_item_selector" >
+
+                        <ImageView
+                            android:id="@+id/icon_alipay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="13dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/egame_sdk_icon_pay_alipay" />
+
+                        <TextView
+                            android:id="@+id/text_alipay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_toRightOf="@id/icon_alipay"
+                            android:textColor="#888888"
+                            android:textSize="13dp" />
+
+                        <TextView
+                            android:id="@+id/text1_alipay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/text_alipay"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_toRightOf="@id/icon_alipay"
+                            android:textColor="#888888"
+                            android:textSize="11dp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:background="@drawable/egame_sdk_icon_arrow_right" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/icon_alipay"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/egame_sdk_popup_parting" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/more_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/egame_sdk_list_item_selector" >
+
+                        <ImageView
+                            android:id="@+id/icon_more"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="13dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/egame_sdk_icon_pay_more" />
+
+                        <TextView
+                            android:id="@+id/text_more"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_toRightOf="@id/icon_more"
+                            android:textColor="#888888"
+                            android:textSize="13dp" />
+
+                        <TextView
+                            android:id="@+id/text1_more"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/text_more"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_toRightOf="@id/icon_more"
+                            android:textColor="#888888"
+                            android:textSize="11dp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:background="@drawable/egame_sdk_icon_arrow_right" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/icon_more"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/egame_sdk_popup_parting" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/line"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/egame_sdk_popup_parting" />
+
+            <TextView
+                android:id="@+id/custom_service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:textColor="#bbbbbb"
+                android:textSize="12dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

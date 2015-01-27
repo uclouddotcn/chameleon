@@ -1,0 +1,39 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="MyCheckBox" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/egame_pwcheckbox_selector</item>
+    </style>
+	
+    <style name="MyCheckBox2" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/egame_agreecheckbox_selector</item>
+    </style>
+<!--          <item name="android:paddingLeft">2dip</item>   -->
+    
+    <style name="popup_dialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    
+	<style name="myProgressBarStyleLarge" >
+	　　<item name="android:indeterminateDrawable">@drawable/progress_large</item>
+	　　<item name="android:minWidth">76dip</item>
+	　　<item name="android:maxWidth">76dip</item>
+	　　<item name="android:minHeight">76dip</item>
+	　　<item name="android:maxHeight">76dip</item>
+	</style>
+	
+	 <style name="pop_style">
+        <item name="android:textSize">@dimen/pop_font_size</item>
+        <item name="android:textColor">@color/light_red</item>
+        <item name="android:gravity">center</item>
+        <item name="android:checked">true</item>
+        <item name="android:padding">@dimen/pop_padding_up</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@null</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:drawablePadding">@dimen/pop_padding_drawable</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+</resources>

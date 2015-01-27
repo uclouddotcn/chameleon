@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:background="@color/ykbgColor">
+				<TextView 
+	                android:id="@+id/item_img_line"
+	                android:layout_width="fill_parent"
+	                android:layout_height="@dimen/yk_xh_44px"
+	                android:background="@drawable/announcement_list_line"/>
+	            <TextView
+	                android:id="@+id/item_title_txt"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginLeft="@dimen/yk_xh_24px"
+					android:layout_marginRight="@dimen/yk_xh_24px"
+	                android:textColor="#3db5f3"
+	                android:layout_marginTop="1dp"
+	                android:layout_marginBottom="2dp"
+	                android:textSize="@dimen/yk_tv_title_font_size" />
+			
+	            <TextView
+	                android:id="@+id/item_content_txt"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginLeft="@dimen/yk_xh_24px"
+					android:layout_marginRight="@dimen/yk_xh_24px"
+					android:textColor="#636363"
+					android:lineSpacingExtra="3dp"
+					android:maxLength="90"
+					android:minLines="5"
+					android:maxLines="5"
+					android:ellipsize="end"
+	                android:textSize="@dimen/yk_xh_28px" />
+	           <RelativeLayout
+			android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content">
+	            <TextView
+	                android:id="@+id/item_url_txt"
+	                android:layout_alignParentRight="true"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginLeft="@dimen/yk_xh_24px"
+					android:layout_marginRight="@dimen/yk_xh_24px"
+	                android:layout_marginTop="1dp"
+	                android:layout_marginBottom="1dp"
+	                android:textColor="#3db5f3"
+	                android:textSize="@dimen/yk_xh_28px" />
+	            </RelativeLayout>
+</LinearLayout>

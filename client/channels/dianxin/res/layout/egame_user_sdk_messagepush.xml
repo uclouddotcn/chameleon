@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/egame_disembark_bg"
+    
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/egame_mesgpush_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:layout_marginTop="18dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/egame_mesgpush_titletv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/mesgpush_title"
+            android:textSize="18dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/egame_mesgpush_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/egame_mesgpush_msgpager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/egame_mesgpush_indicator" />
+
+        <egame.terminal.usersdk.CirclePageIndicator
+            android:id="@+id/egame_mesgpush_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:layout_marginLeft="19dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="20dp"
+        >
+
+        <CheckBox
+            android:id="@+id/egame_mesgpush_cb"
+            style="@style/MyCheckBox2"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="@string/egame_without_messagepush"
+            android:textColor="@color/mesgpush_other"
+            android:textSize="13dp" />
+
+        <Button
+            android:id="@+id/egame_mesgpush_canclebt"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/egame_mesgpush_cb"
+            android:background="@drawable/egame_btn_login_status"
+            android:text="@string/egame_withoutmesg_but"
+            android:textColor="@color/white"
+            android:textSize="15dp" />
+    </RelativeLayout>
+
+</LinearLayout>

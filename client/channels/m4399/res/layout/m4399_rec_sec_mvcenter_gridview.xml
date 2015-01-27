@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <GridView
+        android:id="@+id/payment_gridview"
+       	android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:numColumns="@integer/m4399_rec_main_frag_gridview_column_num"
+	    android:listSelector="@drawable/m4399_rec_pm_item_bg" />
+
+</LinearLayout>

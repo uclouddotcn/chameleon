@@ -289,7 +289,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfg.mWXAppKey = cfg.getString("wxAppKey");
         mCfg.mOfferId = cfg.getString("qqAppId");
         mCfg.mMoneyIconFile = cfg.getString("moneyIcon");
-        mCfg.mIsTest = cfg.getBoolean("test");
+        mCfg.mIsTest = Boolean.valueOf(cfg.getString("test"));
     }
 
    /**

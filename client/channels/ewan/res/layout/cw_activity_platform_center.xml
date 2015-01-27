@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_th"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/cw_tab_repeat_bg" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+<!--          <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:background="@drawable/cw_pl_top_bg">
+            
+            <TextView
+               android:id="@+id/cw_pl_title_tv"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_centerVertical="true"
+               android:layout_centerHorizontal="true"
+               android:text="用户中心"
+               android:textColor="@color/cw_platform_title_text"
+               android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/cw_pl_game_iv"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dip"
+                android:layout_centerVertical="true"
+                android:background="@drawable/cw_platform_close_btn"
+                android:gravity="center"
+                android:textSize="14sp" />
+        </RelativeLayout> -->
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="0.0dip"
+            android:layout_weight="1.0" />
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.0"
+            android:visibility="gone" />
+        <!-- 四个ITEM -->
+
+        <LinearLayout
+            android:id="@+id/cw_plat_center_tab_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="60dip"
+            android:layout_gravity="bottom"
+            android:baselineAligned="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+            
+            <LinearLayout
+                android:id="@+id/cw_pl_tab_msg_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/cw_pl_top_bg"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/cw_pl_tab_msg_iv"
+                    android:layout_width="25dip"
+                    android:layout_height="25dip"
+                    android:contentDescription="@string/cw_account_management"
+                    android:src="@drawable/cw_tab_account_nor" />
+
+                <TextView
+                    android:id="@+id/cw_pl_tab_msg_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dip"
+                    android:layout_marginTop="5dip"
+                    android:text="@string/cw_pl_msg"
+                    android:textColor="@color/cw_platform_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cw_pl_tab_account_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/cw_pl_top_bg"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/cw_pl_tab_account_iv"
+                    android:layout_width="25dip"
+                    android:layout_height="25dip"
+                    android:contentDescription="@string/cw_account_management"
+                    android:src="@drawable/cw_tab_account_nor" />
+
+                <TextView
+                    android:id="@+id/cw_pl_tab_account_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dip"
+                    android:layout_marginTop="5dip"
+                    android:text="@string/cw_account_management"
+                    android:textColor="@color/cw_platform_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/cw_pl_tab_forum_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/cw_pl_top_bg"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/cw_pl_tab_forum_iv"
+                    android:layout_width="25dip"
+                    android:layout_height="25dip"
+                    android:contentDescription="@string/cw_platform_center_forum"
+                    android:src="@drawable/cw_tab_forum_nor" />
+
+                <TextView
+                    android:id="@+id/cw_pl_tab_forum_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dip"
+                    android:layout_marginTop="5dip"
+                    android:text="@string/cw_platform_center_forum"
+                    android:textColor="@color/cw_platform_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cw_pl_tab_packet_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/cw_pl_top_bg"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/cw_pl_tab_packet_iv"
+                    android:layout_width="25dip"
+                    android:layout_height="25dip"
+                    android:contentDescription="@string/cw_platform_center_share"
+                    android:src="@drawable/cw_tab_packet_nor" />
+
+                <TextView
+                    android:id="@+id/cw_pl_tab_packet_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dip"
+                    android:layout_marginTop="5dip"
+                    android:text="@string/cw_pl_packet"
+                    android:textColor="@color/cw_platform_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cw_pl_tab_help_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/cw_pl_top_bg"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/cw_pl_tab_help_iv"
+                    android:layout_width="25dip"
+                    android:layout_height="25dip"
+                    android:contentDescription="@string/cw_platform_center_help"
+                    android:src="@drawable/cw_tab_help_nor" />
+
+                <TextView
+                    android:id="@+id/cw_pl_tab_help_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dip"
+                    android:layout_marginTop="5dip"
+                    android:text="@string/cw_platform_center_help"
+                    android:textColor="@color/cw_platform_text"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</TabHost>

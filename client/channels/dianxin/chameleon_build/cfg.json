@@ -1,0 +1,13 @@
+{
+  "desc": "电信",
+  "name": "dianxin",
+  "chamversion": "1.4.1",
+  "version": "V1.0",
+  "cfgitem": [
+    {
+      "name": "clientId",
+      "type": "string",
+      "desc": "app id"
+    }
+  ]
+}

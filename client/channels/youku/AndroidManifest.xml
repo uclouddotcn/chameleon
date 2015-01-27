@@ -1,0 +1,122 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
+    package="prj.chameleon.youku">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_SMS"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application>
+
+        <!--添加 优酷SDK 必需的 meta-data：YKGAME_APPID。 Value为申请的APPID-->
+        <meta-data
+            android:name="appId"
+            android:value="333" chameleon:replace="android:value=%appId%" >
+        </meta-data>
+        <!--添加 优酷SDK 必需的 meta-data：YKGAME_APPNAME。 Value为游戏名称-->
+        <meta-data
+            android:name="appName"
+            android:value="GAMESDKDEMO" chameleon:replace="android:value=%appName%" >
+        </meta-data>
+        <!--添加 优酷SDK 必需的 meta-data：YKGAME_APPKEY。 Value为申请的APPKEY-->
+        <meta-data
+            android:name="appKey"
+            android:value="1706d7484c36e755" chameleon:replace="android:value=%appKey%" >
+        </meta-data>
+        <!--添加 优酷SDK 必需的 meta-data：YKGAME_PRIVATEKEY。 Value为申请的—APPSECRET-->
+        <meta-data
+            android:name="privateKey"
+            android:value="fb8ed0797dce9537be7579d2f1b746a3" chameleon:replace="android:value=%appSecret%" >
+        </meta-data>
+
+        <!--以下为声明必须的Activity/Service，不可擅自更改（尤其是支付宝横竖屏设置）-->
+        <activity
+            android:name="com.alipay.android.mini.window.sdk.MiniPayActivity"
+            android:configChanges="orientation"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/msp_app_name"
+            android:launchMode="singleTop"
+            android:process="com.alipay.sdk"
+            android:screenOrientation="portrait"
+            android:theme="@style/MspAppTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+            <intent-filter android:priority="800" >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.alipay.android.mini.window.sdk.MiniWebActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:process="com.alipay.sdk"
+            android:theme="@style/MspAppTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.youku.gamesdk.widget.WebViewActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Black"/>
+        <activity android:name="com.youku.gamesdk.operatorpay.CTResultActivity"
+            android:theme="@android:style/Theme.Translucent"/>
+        <activity android:name="com.estore.ui.CTEStoreSDKActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent"/>
+        <activity
+            android:name="com.unicom.woopenchannelsmspayment.UnicomWoOpenPaymentMainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.unicom.woopenchannelsmspayment.UnicomSMSSuccessActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.unicom.woopenchannelsmspayment.UnicomSMSFaildActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <meta-data
+            android:name="CHINA_UNICOM_MOBILE_CHANNEL"
+            android:value="23" />
+        <service android:name="com.youku.gamesdk.update.DownloadService"/>
+        <service android:name="com.z.beans.android.common.MdoSmsService"/>
+        <service android:name="com.alipay.android.app.MspService"
+            android:process="com.alipay.sdk"
+            android:exported="false" >
+            <intent-filter android:priority="800" >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+        <service android:name="com.youku.gamesdk.memfloat.FloatService" android:enabled="true"
+            android:exported="true" >
+        </service>
+        <receiver android:name="com.zb.feecharge.processline.sms.SmsReceiver" >
+            <intent-filter android:priority="2147483647" >
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

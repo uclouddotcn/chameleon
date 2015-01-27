@@ -14,7 +14,7 @@ public class SingleSDKChannelAPI {
     public static abstract class SingleSDK implements IChannelPayAPI, IChannelUserAPI {
         protected String mChannel;
 
-        @Override
+       @Override
         public void init(Activity activity, IDispatcherCb cb) {
         }
 

@@ -1,0 +1,37 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="prj.chameleon.m4399">
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <application>
+
+        <!-- For 4399 Recharge SDK -->
+        <activity
+            android:name="cn.m4399.recharge.ui.activity.RechargeActivity"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/m4399ActivityTheme" />
+        <activity
+            android:name="cn.m4399.operate.ui.activity.LoginActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/m4399TransparentStyle" />
+        <activity
+            android:name="cn.m4399.operate.ui.activity.UserCenterActivity"
+            android:hardwareAccelerated="false"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity
+            android:name="cn.m4399.operate.ui.activity.CustomWebActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+        <activity android:name="com.alipay.sdk.app.H5PayActivity"
+            android:screenOrientation="landscape"/>
+    </application>
+</manifest>
