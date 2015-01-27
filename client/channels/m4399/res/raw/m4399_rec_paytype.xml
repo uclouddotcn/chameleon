@@ -48,6 +48,12 @@
         <instructiron insLink="m4399_rec_ins_link_sms_yidong" insTitle="m4399_rec_ins_sms_yidong_title" />
         <telephone>m4399_rec_hotline_yidong</telephone>
     </paytype>
+    <paytype id="-1">
+        <description>This is an unregister pay type, which be consider sms-type.</description>
+        <shortname>m4399_rec_duanxincz</shortname>
+        <page title="m4399_rec_duanxincz" />
+        <instructiron insLink="m4399_rec_ins_link_sms_yidong" insTitle="m4399_rec_ins_sms_yidong_title" />
+    </paytype>
     <paytype id="222">
         <shortname>m4399_rec_yikatong</shortname>
         <page title="m4399_rec_yikatongcz" />

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.unipay.unipay_sdk.MainActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +33,8 @@ import prj.chameleon.channelapi.JsonMaker;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
 
+
+
 public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     OperateCenter mOpeCenter;
@@ -42,6 +46,32 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     boolean mIsLandscape;
 
     private IAccountActionListener mAccountActionListener;
+
+    public final static class M4399_CONSTANTS{
+        public final static int m4399_ope_no_network=-2;
+        public final static int m4399_ope_login_success = 16;
+        public final static int m4399_ope_login_failed_error_known = 25;
+        public final static int m4399_ope_sdk_login_failed_unable_access_oauth2 = 17;
+        public final static int m4399_ope_login_error_key = 19;
+        public final static int m4399_ope_login_already_login = 20;
+        public final static int m4399_ope_login_failed_user_cancelled = 18  ;
+
+        public final static int m4399_ope_logout_success = 32 ;
+        public final static int m4399_ope_logout_failed_repeated = 33;
+        public final static int m4399_ope_logout_failed_not_logging = 2;
+        public final static int m4399_ope_logout_failed_error_unknown = 35;
+
+        public final static int m4399_ope_sdk_update_success = 48;
+        public final static int m4399_ope_update_result_no_update = 49;
+        public final static int m4399_ope_update_result_user_canclled = 50;
+        public final static int m4399_ope_update_result_update_now = 51 ;
+        public final static int m4399_ope_update_result_download_success = 52 ;
+        public final static int m4399_ope_update_result_check_error = 53 ;
+        public final static int m4399_ope_update_result_download_error = 54 ;
+
+        public final static int m4399_ope_pay_failed_init_error = 66 ;
+        public final static int m4399_ope_pay_failed_fetch_token = 68 ;
+    }
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
 
@@ -59,7 +89,7 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
 
     @Override
-    public void init(Activity activity, IDispatcherCb cb) {
+    public void init(final Activity activity, final IDispatcherCb cb) {
             mOpeCenter = OperateCenter.getInstance();
             mOpeConfig = new OperateCenterConfig.Builder(activity)
             .setGameKey(mAppKey)
@@ -71,20 +101,50 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             .setPopWinPosition(PopWinPosition.POS_LEFT)
             .build();
             mOpeCenter.setConfig(mOpeConfig);
-            mOpeCenter.init(activity ,new OperateCenter.OnInitGloabListener() {
+            //初始化SDK，在这个过程中会读取各种配置和检查当前帐号是否在登录中
+            //只有在init之后， isLogin()返回的状态才可靠
+            mOpeCenter.init(activity, new OperateCenter.OnInitGloabListener() {
+
+                // 初始化结束执行后回调
                 @Override
-            public void onInitFinished(boolean isLogin, User userInfo)
-            {
-            }
-            @Override
-            public void onUserAccountLogout()
-            {
-            }
-        });
+                public void onInitFinished(boolean isLogin, User userInfo) {
+                    if (isLogin == mOpeCenter.isLogin()){
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                    }
+                    else{
+                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                    }
+
+                }
+
+                // 注销帐号的回调， 包括个人中心里的注销和logout()注销方式
+                @Override
+                public void onUserAccountLogout(boolean fromUserCenter, int resultCode) {
+                    if (fromUserCenter){
+                        switch(resultCode){
+                            case M4399_CONSTANTS.m4399_ope_logout_success:
+                                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                                break;
+                            default:
+                                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                        }
+                    }
+                    else{
+                        mAccountActionListener.onAccountLogout();
+                    }
+                }
+
+                // 个人中心里切换帐号的回调
+                @Override
+                public void onSwitchUserAccountFinished(User userInfo) {
+
+
+                }
+            });
 
         mOpeCenter.setSupportExcess(false);
 
-        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+//        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
@@ -96,7 +156,15 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.getState(), null, mChannel));
                 }
                 else{
-                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                    if(resultCode == M4399_CONSTANTS.m4399_ope_login_failed_user_cancelled){
+                        cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                    }
+                    else if (resultCode == M4399_CONSTANTS.m4399_ope_login_failed_error_known){
+                        cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
+                    }
+                    else{
+                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                    }
                 }
             }
         });
@@ -135,12 +203,7 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void logout(final Activity activity) {
-        mOpeCenter.logout(new OnLogoutFinishedListener() {
-            @Override
-            public void onLogoutFinished(boolean success, int resultCode) {
-                mAccountActionListener.onAccountLogout();
-            }
-        });
+        mOpeCenter.logout();
     }
 
     @Override
@@ -170,11 +233,15 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     {
                         if(success){
                             //请求游戏服，获取充值结果
-
-                            cb.onFinished(resultCode, null);
+                            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                         }else{
                             //充值失败逻辑
-                            cb.onFinished(resultCode, null);
+                            if (resultCode == M4399_CONSTANTS.m4399_ope_pay_failed_init_error)
+                                cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
+                            else if (resultCode == M4399_CONSTANTS.m4399_ope_pay_failed_fetch_token)
+                                cb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
+                            else
+                                cb.onFinished(Constants.ErrorCode.ERR_PAY_UNKNOWN, null);
                         }
                     }
                 });
@@ -207,14 +274,18 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     {
                         if(success){
                             //请求游戏服，获取充值结果
-                            cb.onFinished(resultCode, null);
+                            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                         }else{
                             //充值失败逻辑
-                            cb.onFinished(resultCode, null);
+                            if (resultCode == M4399_CONSTANTS.m4399_ope_pay_failed_init_error)
+                                cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
+                            else if (resultCode == M4399_CONSTANTS.m4399_ope_pay_failed_fetch_token)
+                                cb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
+                            else
+                                cb.onFinished(Constants.ErrorCode.ERR_PAY_UNKNOWN, null);
                         }
                     }
                 });
-
     }
 
     @Override
@@ -261,7 +332,7 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                         }
                     });
                     activity.finish();
-                    android.os.Process.killProcess(android.os.Process.myPid());
+//                    android.os.Process.killProcess(android.os.Process.myPid());
                 }
             }
         });

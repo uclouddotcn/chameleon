@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- style name="m4399ActivityTheme" >
+        <item name="android:windowNoTitle">true</item>
+		<item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+       	<item name="android:windowFullscreen">true</item>
+       	<item name="android:windowContentOverlay">@null</item>
+       	<item name="android:windowIsFloating">false</item>
+       	<item name="android:windowFrame">@null</item>
+    </style-->
+    
     <style name="m4399ActivityTheme" parent="android:Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/m4399_rec_page_bg</item>
     </style>
-    
-    <style name="m4399RecPageStyle">
+
+	<style name="m4399RecPageStyle">
         <item name="android:orientation">vertical</item>
         <item name="android:background">@drawable/m4399_rec_page_bg2</item>
         <item name="android:baselineAligned">false</item>
