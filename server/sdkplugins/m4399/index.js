@@ -11,7 +11,6 @@ var ErrorCode = commonLib.ErrorCode;
 var SDKPluginBase = commonLib.SDKPluginBase;
 
 var cfgDesc = {
-    'appId': 'string',
     'appKey': "string",
     'appSecret': "string"
 };

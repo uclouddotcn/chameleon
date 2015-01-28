@@ -178,6 +178,66 @@ function main() {
         }));
 
     program
+        .command('start-worker <version>')
+        .description('start the worker')
+        .action( runUnderPm2(function (cmd) {
+            var options = cmd;
+            pm2.describe('chameleon_admin' , function (err, list) {
+                if (list && list.length > 0) {
+                    var p = list[0];
+                    if (p.pm2_env.status === 'online') {
+                        error('process existed as ' + p.pid + ', status ' + p.pm2_env.status);
+                        return pm2.disconnect();
+                    } else if (p.pm2_env.status === 'stopped') {
+                        startServer();
+                    } else {
+                        pm2.stop(PROC_NAME, function (err) {
+                            if (err) {
+                                error('Chameleon process is in ill state and can\'t be stopped ' + p.pid);
+                                return;
+                            }
+                            startServer();
+                        });
+                    }
+                } else {
+                    startServer();
+                }
+                function startServer() {
+                    var opts = {
+                        name: PROC_NAME,
+                        rawArgs: ['--'],
+                        error: path.join(__dirname, '..', 'chameleon.error'),
+                        output:path.join(__dirname, '..', 'chameleon.out')
+                    };
+                    if (options.debug) {
+                        info('using debug mode') ;
+                        opts.rawArgs.push('-d');
+                    }
+                    if (options.sdkPluginPath) {
+                        info('set sdk plugin path ' + options.sdkPluginPath) ;
+                        opts.rawArgs.push('--sdkplugin');
+                        opts.rawArgs.push(options.sdkPluginPath);
+                    }
+                    info('starting with opts ' + opts.rawArgs);
+                    try {
+                        pm2.start(path.join(__dirname, 'app.js'), opts, function (err, proc) {
+                            info('starting with opts ' + opts.rawArgs);
+                            if (err) {
+                                error('Fail to start chameleon from PM2: ' + err);
+                                return pm2.disconnect();
+                            }
+                            return pm2.disconnect();
+                            // should check the liveness of the
+                            //setTimeout();
+                        });
+                    } catch (e) {
+                        error('Fail to start server ' + e.message);
+                    }
+                }
+            });
+        }));
+
+    program
         .command('stop')
         .description('stop the server')
         .action( runUnderPm2(function () {

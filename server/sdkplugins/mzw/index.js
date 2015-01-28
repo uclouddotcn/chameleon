@@ -85,14 +85,14 @@ MzwChannel.prototype.getPayUrlInfo = function ()  {
 
 MzwChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
     var self = this;
-    req.log.debug({req: req, params: req.params, body: req.body}, 'recv pay rsp');
+    req.log.debug({req: req, params: req.params, query: req.query}, 'recv pay rsp');
     try {
         var obj = req.query;
         if (!obj) {
             return next(new restify.InvalidArgumentError());
         } else {
             if (obj.appkey !== wrapper.cfg.appKey) {
-                this._logger({appkey: obj.appkey}, 'wrong app key');
+                this._logger.error({appkey: obj.appkey}, 'wrong app key');
                 self.reply(res, 'ERROR');
                 return next();
             }
@@ -108,14 +108,16 @@ MzwChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
                 wrapper.cfg.payKey
             ]);
             if (obj.sign !== sign) {
-                this._logger({expected: obj.sign, sign: sign}, 'unmatched sign');
+                this._logger.error({expected: obj.sign, sign: sign}, 'unmatched sign');
                 self.reply(res, 'ERROR');
                 return next();
             }
-            var orderId = obj.orderID;
+            var orderId = obj.extern;
             var uid = obj.uid;
             var payMoney = parseInt(obj.money)*100;
-            var other = {};
+            var other = {
+                chOrderId: orderId
+            };
             wrapper.userAction.pay(wrapper.channelName, uid, null,
                 orderId, ErrorCode.ERR_OK,
                 null, null, payMoney, other,

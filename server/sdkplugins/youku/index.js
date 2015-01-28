@@ -41,11 +41,11 @@ YoukuChannel.prototype.verifyLogin = function(wrapper, token, others, callback) 
     this.client.post(q, querystring.stringify(postObj), function (err, req, res, obj) {
         req.log.debug({req: req, err: err, obj: obj, q: q}, 'on result ');
         try {
-            obj = JSON.parse(obj);
             if (err) {
                 req.log.warn({err: err}, 'request error');
                 return callback(null, { code: ErrorCode.ERR_FAIL});
             }
+            obj = JSON.parse(obj);
             callback(null, {
                     code: 0,
                     loginInfo: {
@@ -131,7 +131,7 @@ YoukuChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
 YoukuChannel.prototype.send = function (res, body) {
     res.writeHead(200, {
         'Content-Length': Buffer.byteLength(body),
-        'Content-Type': 'json'
+        'Content-Type': 'application/json'
     });
     res.write(body);
 };

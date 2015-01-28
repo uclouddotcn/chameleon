@@ -1,4 +1,6 @@
 var restify = require('restify');
+var child_process = require('child_process');
+var versionParser = require('./versionparser');
 var VError = require('verror');
 var fs = require('fs');
 var path = require('path');
@@ -37,24 +39,24 @@ var Admin = function(pluginMgr, options, logger) {
             switch (req.params.action) {
                 case 'start':
                     if (workerMgr.status !== 'stop') {
-                        res.send({code: -1, msg: 'worker may be already started, using restart if you really know what you are doing'});
-                        return next();
+                        return next(new restify.InvalidArgumentError('worker may be already started, ' +
+                        'using restart if you really know what you are doing'));
                     } else {
                         if (req.params.cfg) {
                             self.startWorkerAndSave(req.params.cfg, function (err) {
                                 if (err) {
-                                    res.send({code: -1, msg: err.message});
+                                    return next(new restify.InvalidArgumentError(err.message));
                                 } else {
-                                    res.send({code: 0});
+                                    res.send(workerMgr.info);
                                 }
                                 return next();
                             });
                         } else {
                             self.startWorkerFromFile(function (err) {
                                 if (err) {
-                                    res.send({code: -1, msg: err.message});
+                                    return next(new restify.InvalidArgumentError(err.message));
                                 } else {
-                                    res.send({code: 0});
+                                    res.send(workerMgr.info);
                                 }
                                 return next();
                             })
@@ -64,16 +66,17 @@ var Admin = function(pluginMgr, options, logger) {
                 case 'restart':
                     workerMgr.restartWorker(req.params.cfg, function (err) {
                         if (err) {
-                            res.send({code: -1, msg: err.message});
+                            return next(new restify.InvalidArgumentError(err.message));
                         } else {
-                            res.send({code: 0});
+                            saveWorkerCfg(req.params.cfg);
+                            res.send(workerMgr.info);
                         }
                         return next();
                     });
                     break;
                 case 'stop':
                     workerMgr.stop(function () {
-                        res.send({code: 0});
+                        res.send();
                         return next();
                     });
                     break;
@@ -82,7 +85,7 @@ var Admin = function(pluginMgr, options, logger) {
                     if (!res) {
                         msg = 'worker is no started';
                     }
-                    res.send({code: 0, msg: msg});
+                    res.send(msg);
                     return next();
                     break;
                 default:
@@ -92,6 +95,60 @@ var Admin = function(pluginMgr, options, logger) {
             logger.error({err: e, req: req}, 'Fail to handle admin request');
             return next(new restify.InvalidArgumentError(e.message));
         }
+    });
+
+    self.server.post('/worker/install', function (req, res, next) {
+        var s = req.params.workerzipFile;
+        child_process.exec('node ' + path.join(__dirname, 'script', 'installworker.js') + ' ' + s, function (err, stdout, stderr) {
+            if (err) {
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.send();
+            return next();
+        });
+    });
+
+    self.server.post('/worker/start', function (req, res, next) {
+        var version = req.params.version;
+        var versionCode = versionParser.getVersionCode(req.params.version);
+        var cfg = {
+            version: version,
+            script: path.join(__dirname, 'worker', versionCode.toString(), "worker"),
+            "args": [
+                "./config/svr.json"
+            ],
+            "env": {
+                "NODE_PATH": "$CHAMELEON_WORKDIR/worker/"+versionCode.toString()+"/worker"+"/node_modules"
+            }
+        };
+        if (workerMgr.status === 'running') {
+            workerMgr.restartWorker(cfg, function () {
+                if (err) {
+                    return next(new restify.InvalidArgumentError(err.message));
+                } else {
+                    saveWorkerCfg(cfg);
+                    res.send(workerMgr.info);
+                }
+                return next();
+            });
+        } else {
+            self.startWorkerAndSave(cfg, function (err) {
+                if (err) {
+                    return next(new restify.InvalidArgumentError(err.message));
+                }
+                res.send(workerMgr.info);
+                return next();
+            });
+        }
+    });
+
+    self.server.get('/worker/info', function (req, res, next) {
+        var msg = workerMgr.info;
+        if (!res) {
+            msg = 'worker is no started';
+        }
+        res.send(msg);
+        return next();
     });
 
     self.server.get('/monitor', function (req, res, next) {
@@ -129,7 +186,7 @@ var Admin = function(pluginMgr, options, logger) {
         if (newInst instanceof Error) {
             return next(new restify.InvalidArgumentError(newInst.message));
         } else {
-            res.send({code: 0});
+            res.send();
             return next();
         }
     });
@@ -240,7 +297,7 @@ Admin.prototype.exit = function () {
     if (this.exitFunc) {
         this.exitFunc();
     }
-}
+};
 
 Admin.prototype.close = function (callback) {
     this.logger.info('admin server exit');
@@ -282,11 +339,15 @@ Admin.prototype.startWorkerAndSave = function (workercfg, callback) {
         if (err) {
             return callback(err);
         }
-        var cfgpath = getWorkerCfgPath();
-        fs.writeFile(cfgpath, JSON.stringify(workercfg, null, '\t'));
+        saveWorkerCfg(workercfg);
         callback();
     });
 };
+
+function saveWorkerCfg(cfg) {
+    var cfgpath = getWorkerCfgPath();
+    fs.writeFile(cfgpath, JSON.stringify(workercfg, null, '\t'));
+}
 
 Admin.prototype.startWorker = function (workercfg, callback) {
     var self = this;

@@ -102,11 +102,23 @@ DianxinChannel.prototype.calcMd5 = function (wrapper, postData, signSort) {
     return md5sum.digest('hex');
 };
 
+DianxinChannel.prototype.pendingPay = function (wrapper, params, infoFromSDK, callback) {
+    try {
+        var orderId = wrapper.genOrderId();
+        orderId = orderId.replace(/-/g, '');
+        setImmediate(callback, null, orderId, params);
+    } catch (e) {
+        this._logger.error({err: e}, 'Fail to parse input');
+        callback(new restify.InvalidArgumentError());
+    }
+};
+
+
 DianxinChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
     var self = this;
-    var obj = req.body;
-    this._logger.debug({req: req, obj: obj}, 'receive pay callback');
+    this._logger.debug({req: req, body: req.body}, 'receive pay callback');
     try {
+        var obj = querystring.parse(req.body);
         if (obj.method === 'check') {
             self.if1(obj, res, next, wrapper);
         } else if (obj.method === 'callback') {
@@ -122,12 +134,16 @@ DianxinChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
 
 DianxinChannel.prototype.if2 = function (params, res, next, wrapper) {
     var self = this;
-    params.md5 = wrapper.cfg.appKey;
+    params.appKey = wrapper.cfg.appKey;
     var sign =
         this.calcMd5(wrapper, params, ['cp_order_id', 'correlator', 'result_code', 'fee', 'pay_type', 'method', 'appKey']);
     if (sign !== params.sign) {
         this._logger.error({sign: sign, expect: params.sign}, 'sign not match');
         return next(new restify.InvalidArgumentError('error'));
+    }
+    var status = ErrorCode.ERR_OK;
+    if (params.result_code !== '00') {
+        status = ErrorCode.ERR_FAIL;
     }
     var orderId = params.cp_order_id;
     var amount = parseInt(params.fee) * 100;
@@ -141,11 +157,11 @@ DianxinChannel.prototype.if2 = function (params, res, next, wrapper) {
         function (err, result) {
             if (err) {
                 self._logger.error({err: err}, "fail to pay");
-                self.send(self.respToIf2(-1, orderId));
+                self.send(res, self.respToIf2(-1, orderId));
                 return next();
             }
             self._logger.debug({result: result}, "recv result");
-            self.send(self.respToIf2(0, orderId));
+            self.send(res, self.respToIf2(0, orderId));
             return next();
         }
     );
@@ -163,10 +179,10 @@ DianxinChannel.prototype.if1 = function (params, res, next, wrapper) {
     }
     wrapper.userAction.requestOrderInfo(params.cp_order_id, function (err, record) {
         if (err || record) {
-            res.send(self.respToIf1(params, '', 0, -1));
+            res.send(res, self.respToIf1(params, '', 0, -1));
             return next();
         }
-        res.send(self.respToIf1(params, record.uid, record.rmb, 0));
+        res.send(res, self.respToIf1(params, record.uid, record.rmb, 0));
         return next();
     });
 };
@@ -211,7 +227,7 @@ DianxinChannel.prototype.respToIf1 = function (params, uid, fee, ifpay) {
 DianxinChannel.prototype.respToIf2 = function (ret, orderid) {
     return "<cp_notify_resp>" +
                 "<h_ret>" + ret + "</hret>" +
-                "<cp_order_id>" + orderid + "</cp_order_id>"
+                "<cp_order_id>" + orderid + "</cp_order_id>" +
            "</cp_notify_resp>"
 };
 
