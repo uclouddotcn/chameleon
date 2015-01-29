@@ -100,15 +100,13 @@ chameleonApp = angular.module('chameleonApp', [
                             $scope.isProjectUnchanged = true;
                         });
                     };
-
                     $scope.$watch('project', function(newValue, oldValue) {
                         if(newValue !== oldValue) $scope.isProjectUnchanged = false;
                     }, true);
 
                     //channel manage
-                    $scope.hideGrid = true;
                     $scope.selectedChannels = { };
-                    $scope.channelList = ProjectMgr.getChannelList();
+                    $scope.channelList = { };
                     $scope.gridOptions1 = {
                         data: 'channelList',
                         columnDefs: [{
@@ -130,12 +128,13 @@ chameleonApp = angular.module('chameleonApp', [
                     promise.then(function(){
                         $scope.selectedChannels = $scope.project.channels;
                         if($scope.selectedChannels.length > 0){
+                            var channelList = ProjectMgr.getChannelList();
                             //set channelList checkbox value.
                             for(var i=0; i<$scope.selectedChannels.length; i++){
-                                (_.findWhere($scope.channelList, {channelName: $scope.selectedChannels[i].channelName})).checked = true;
+                                (_.findWhere(channelList, {channelName: $scope.selectedChannels[i].channelName})).checked = true;
                             }
+                            $scope.channelList = channelList;
                         }
-                        $scope.hideGrid = false;
                     });
                     $scope.toggleChannel = function(event, channel){
                         if(event.target.checked){
