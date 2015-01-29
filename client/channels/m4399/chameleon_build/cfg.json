@@ -4,6 +4,16 @@
     "chamversion": "1.4.1",
     "version": "V2.2.0.2",
     "cfgitem": [
+        {
+            "name": "appKey",
+            "type": "string",
+            "desc": "APP KEY"
+        },
+        {
+            "name": "appSecret",
+            "type": "string",
+            "desc": "APP SECRET"
+        }
     ]
 }
 
