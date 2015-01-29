@@ -171,8 +171,6 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                         cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
                     }
                     else{
-                        showInToast(activity, OperateCenter.getResultMsg(resultCode)+ "GameKey is : "+OperateCenter.getGameKey());
-
                         cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
                     }
                 }
