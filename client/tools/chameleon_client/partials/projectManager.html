@@ -185,11 +185,11 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <label>角标位置</label>
-                                <div class="btn-group" ng-click="setPosition()">
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="0"  >左上</label>
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="1"  >左下</label>
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="2"  >右上</label>
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="3"  >右下</label>
+                                <div class="btn-group" >
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="1"  >左上</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="2"  >左下</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="3"  >右上</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="4"  >右下</label>
                                 </div>
                             </div>
                             <div class="row">
@@ -218,15 +218,7 @@
                 $('#mainTab a').click(function (e) {
                     e.preventDefault();
                     $(this).tab('show');
-                    fixGridShow();
                 });
-
-                function fixGridShow(){
-                    setTimeout(function(){
-                        $(window).resize();
-                        $(window).resize();
-                    }, 500);
-                }
             </script>
 
         </div>
