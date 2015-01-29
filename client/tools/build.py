@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os, shutil, codecs, json, subprocess, sys, zipfile
 from collections import namedtuple
+#from buildtool.chameleon_tool import build_channel
 
 BASEDIR = os.path.split(os.path.realpath(__file__))[0]
 BASEDIR = os.path.join(BASEDIR, '..')
@@ -78,7 +79,7 @@ def packChannels(channelParentFolder, targetParentFolder):
 
 def copyChannel(buildchannel, channel, channelPath,  targetPath,  versionInfo):
     paras = []
-    paras.append(('Python34', buildchannel))
+    paras.append(('python', buildchannel))
     paras.append(('-c', channel))
     paras.append(('-r', channelPath))
     if not os.path.exists(targetPath):
@@ -86,6 +87,7 @@ def copyChannel(buildchannel, channel, channelPath,  targetPath,  versionInfo):
     paras.append(('-g', targetPath))
     channelCmd = genCmd(paras)
     os.system(channelCmd)
+    #build_channel.channel_Build(channel, channelPath, targetPath)
 
 def genCmd(paras):
     return ' '.join([x+' '+y for (x,y) in paras])
@@ -132,9 +134,6 @@ def compileChannel(gradleCmd, channel):
     taskTarget = ':channels:%s' %channel
     def task(task):
         return taskTarget+':%s'%task
-    #ret = subprocess.check_call([gradleCmd, task('clean')])
-    #if ret != 0:
-    #    raise RuntimeError('Fail to clean the chameleon sdk')
     ret = subprocess.check_call([gradleCmd, task('assembleRelease')])
     if ret != 0:
         raise RuntimeError('Fail to assemble the chameleon sdk')
@@ -159,9 +158,7 @@ def compileAllChannels(channels):
         os.chdir(olddir)
 
 
-def buildChameleonLib(targetFolder):
-    targetLibFoldr = os.path.realpath(os.path.join(targetFolder, 'Resource',
-        'chameleon', 'libs'))
+def buildChameleonLib():
     olddir = os.getcwd()
     os.chdir(BASEDIR)
     try:
@@ -178,10 +175,14 @@ def buildChameleonLib(targetFolder):
         ret = subprocess.check_call([gradleCmd, 'chameleon_unity:assembleRelease'])
         if ret != 0:
             raise RuntimeError('Fail to assemble the chameleon unity sdk')
+
+        chameleonLibPath = os.path.join("chameleon", "chameleon_build")
+        if not os.path.exists(chameleonLibPath):
+            os.makedirs(chameleonLibPath)
         shutil.copy2(os.path.join("chameleon", "build", "intermediates", "bundles", "release", "classes.jar"),
-            os.path.join(targetLibFoldr, 'chameleon.jar'))
+            os.path.join(chameleonLibPath, 'chameleon.jar'))
         shutil.copy2(os.path.join("chameleon_unity", "build", "intermediates", "bundles", "release", "classes.jar"),
-            os.path.join(targetLibFoldr, 'chameleon_unity.jar'))
+            os.path.join(chameleonLibPath, 'chameleon_unity.jar'))
     finally:
         os.chdir(olddir)
 
@@ -278,11 +279,11 @@ def build():
     chameleonTarget = os.path.join(targetFolder, 'chameleon')
     print('get version is %s' %version)
 
+    print('build chameleon libs...')
+    buildChameleonLib()
+
     print('start initing build folder...')
     initProjectFolder(chameleonTarget, version)
-
-    print('build chameleon libs...')
-    buildChameleonLib(chameleonTarget)
 
     print('build chameleon client...')
     mergeToNodewebkit(targetFolder)
