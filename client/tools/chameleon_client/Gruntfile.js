@@ -1,41 +1,16 @@
 module.exports = function (grunt) {
-
-    // Configure grunt here
     grunt.initConfig({
-        ts: {
-            build: {
-                src: ["ts/**/*.ts"],
-                outDir: 'ts',
-                options: {
-                    // 'es3' (default) | 'es5'
-                    target: 'es5',
-                    // 'amd' (default) | 'commonjs'
-                    module: 'commonjs',
-                    // true (default) | false
-                    sourceMap: true,
-                    // true | false (default)
-                    declaration: false,
-                    // true (default) | false
-                    removeComments: true
-                }
-            },
-            // a particular target
-            dev: {
-                src: ["ts/**/*.ts"],
-                outDir: 'ts',
-                options: {
-                    // 'es3' (default) | 'es5'
-                    target: 'es5',
-                    module: 'commonjs',
-                    // true (default) | false
-                    sourceMap: true
-                },
+        shell:{
+            rebuildSqlite3: {
+                command: "npm install sqlite3 --build-from-source --runtime=node-webkit --target_arch=ia32 --target=0.8.6"
             }
-        } 
-    })
+        }
+    });
 
-    // load the task
-    grunt.loadNpmTasks("grunt-ts");
+    grunt.loadNpmTasks('grunt-npm-install');
+    grunt.loadNpmTasks("grunt-bower-install-task");
+    grunt.loadNpmTasks('grunt-shell');
 
-    grunt.registerTask("default", ["ts:build"]);
+    grunt.registerTask('default', ['npm-install', 'bower_install', 'shell:rebuildSqlite3']);
+
 }
