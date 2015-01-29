@@ -169,7 +169,7 @@ public final class DianxinChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     @Override
                     public void exit() {
                         //退出游戏操作
-                        cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
                     }
 
                     @Override
