@@ -27,10 +27,10 @@ def loadJsonFile(channelPath):
     cfgJsonFile = os.path.join(channelPath, 'chameleon_build', 'cfg.json')
     with codecs.open(cfgJsonFile, 'r', 'utf8') as f:
         obj = json.load(f)
-        if not (obj.has_key('name') and
-                obj.has_key('chamversion') and
-                obj.has_key('version') and
-                obj.has_key('cfgitem')):
+        if not ('name' in obj and
+                'chamversion' in obj and
+                'version' in obj and
+                'cfgitem' in obj):
             raise RuntimeError('illegal cfg in %s %s' %(cfgJsonFile, obj))
         return obj
 
@@ -59,9 +59,9 @@ def collectChannelInfo(channelParentFolder):
                 result.append(getChannelInfo(folder,
                     os.path.join(channelParentFolder, folder)))
             else:
-                print >> sys.stdout, 'ignore %s' %folder
-        except Exception , e:
-            print >> sys.stderr, 'Fail to collect channel info for %s' %folder
+                print(sys.stdout, 'ignore %s' %folder)
+        except Exception as e:
+            print(sys.stderr, 'Fail to collect channel info for %s' %folder)
             raise e
     return result
 
@@ -69,11 +69,11 @@ def packChannels(channelParentFolder, targetParentFolder):
     channelInfos = collectChannelInfo(channelParentFolder)
     build_channel_path = os.path.join(BUILD_TOOL_DIR, 'chameleon_tool')
     build_channel = os.path.join(build_channel_path, 'build_channel.py')
-    print build_channel
-    print '*********************start build channels**************************'
+    print(build_channel)
+    print('*********************start build channels**************************')
     for ci in channelInfos:
         copyChannel(build_channel, ci.name, CHANNEL_DIR, targetParentFolder, {"version": ci.cfg["chamversion"], "realVer": ci.cfg["version"]})
-    print '*********************end build channels**************************'
+    print('*********************end build channels**************************')
     return channelInfos
 
 def copyChannel(buildchannel, channel, channelPath,  targetPath,  versionInfo):
@@ -187,7 +187,7 @@ def buildChameleonLib(targetFolder):
 
 def cleanOldBuild(targetFolder):
     if os.path.exists(targetFolder):
-        print 'cleaning existing build folder %s ...' %(targetFolder)
+        print('cleaning existing build folder %s ...' %(targetFolder))
         shutil.rmtree(targetFolder)
 
 def getversion():
@@ -276,17 +276,17 @@ def build():
     cleanOldBuild(targetFolder)
     version = getversion()
     chameleonTarget = os.path.join(targetFolder, 'chameleon')
-    print 'get version is %s' %version
+    print('get version is %s' %version)
 
-    print 'start initing build folder...'
+    print('start initing build folder...')
     initProjectFolder(chameleonTarget, version)
 
-    print 'build chameleon libs...'
-    #buildChameleonLib(chameleonTarget)
+    print('build chameleon libs...')
+    buildChameleonLib(chameleonTarget)
 
-    print 'build chameleon client...'
-    #mergeToNodewebkit(targetFolder)
+    print('build chameleon client...')
+    mergeToNodewebkit(targetFolder)
 
-    print 'done'
+    print('done')
 
 build()
