@@ -40,10 +40,12 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     OperateCenter mOpeCenter;
     OperateCenterConfig mOpeConfig;
 
-    private String mAppId;
+    private String mAppName;
     private String mAppKey;
     private int mScreenOrientation;
     boolean mIsLandscape;
+    boolean mIsDebug;
+
 
     private IAccountActionListener mAccountActionListener;
 
@@ -75,10 +77,12 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
 
-        mAppId = cfg.getString("appId");
+//        mAppId = cfg.getString("appId");
         mAppKey = cfg.getString("appKey");
         mChannel = commCfg.mChannel;
         mIsLandscape = commCfg.mIsLandscape;
+        mIsDebug = commCfg.mIsDebug;
+        mAppName = commCfg.mAppName;
         if (mIsLandscape){
             mScreenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         }else{
@@ -87,16 +91,21 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     }
 
+    public static final String T_PREFFIX = "[M4399ChannelAPI]";
+    private void showInToast(Activity activity, String msg) {
+        Toast.makeText(activity, T_PREFFIX + msg, Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public void init(final Activity activity, final IDispatcherCb cb) {
             mOpeCenter = OperateCenter.getInstance();
             mOpeConfig = new OperateCenterConfig.Builder(activity)
             .setGameKey(mAppKey)
-            .setDebugEnabled(false)
-
-            .setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            .setGameName(mAppName)
+            .setDebugEnabled(mIsDebug)
+            .setOrientation(mScreenOrientation)
             .setSupportExcess(true)
+            .setTestRecharge(false)
             .setPopLogoStyle(PopLogoStyle.POPLOGOSTYLE_ONE)
             .setPopWinPosition(PopWinPosition.POS_LEFT)
             .build();
@@ -114,7 +123,6 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     else{
                         cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
                     }
-
                 }
 
                 // 注销帐号的回调， 包括个人中心里的注销和logout()注销方式
@@ -148,12 +156,12 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void login(Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
+    public void login(final Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
 
         mOpeCenter.login(activity, new OnLoginFinishedListener(){
             public void onLoginFinished(boolean success, int resultCode, User userInfo) {
                 if(success){
-                    cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.getState(), null, mChannel));
+                    cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.getState(), userInfo.getUid(), mChannel));
                 }
                 else{
                     if(resultCode == M4399_CONSTANTS.m4399_ope_login_failed_user_cancelled){
@@ -163,6 +171,8 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                         cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
                     }
                     else{
+                        showInToast(activity, OperateCenter.getResultMsg(resultCode)+ "GameKey is : "+OperateCenter.getGameKey());
+
                         cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
                     }
                 }
@@ -219,10 +229,8 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
         int je = 0;
-        if (realPayMoney < 100)     //4399至少充值1元，且只能充值整数，小于1元的，当做0元，从而使SDK报错。
-            je = 0;
-        else
-            je = realPayMoney/100 + 1;
+        je = (realPayMoney+99)/100;
+        showInToast(activity, "invoke charge api..");
 
         mOpeCenter.recharge(activity, je, //充值金额（元）
                 orderId, //游戏方订单号
@@ -260,32 +268,31 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int realPayMoney,
                     final IDispatcherCb cb) {
         int je = 0;
-        if (realPayMoney < 100)     //4399至少充值1元，且只能充值整数，小于1元的，当做0元，从而使SDK报错。
-            je = 0;
-        else
-            je = realPayMoney/100 + 1;
+        je = (realPayMoney+99)/100;
 
-        mOpeCenter.recharge(activity, je, //充值金额（元）
-                orderId, //游戏方订单号
-                productName, //商品名称
-                new OnRechargeFinishedListener() {
-                    @Override
-                    public void onRechargeFinished(boolean success, int resultCode, String msg)
-                    {
-                        if(success){
-                            //请求游戏服，获取充值结果
-                            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                        }else{
-                            //充值失败逻辑
-                            if (resultCode == M4399_CONSTANTS.m4399_ope_pay_failed_init_error)
-                                cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
-                            else if (resultCode == M4399_CONSTANTS.m4399_ope_pay_failed_fetch_token)
-                                cb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
-                            else
-                                cb.onFinished(Constants.ErrorCode.ERR_PAY_UNKNOWN, null);
-                        }
+        showInToast(activity, "invoke buy api..");
+
+                mOpeCenter.recharge(activity, je, //充值金额（元）
+            orderId, //游戏方订单号
+            productName, //商品名称
+            new OnRechargeFinishedListener() {
+                @Override
+                public void onRechargeFinished(boolean success, int resultCode, String msg)
+                {
+                    if(success){
+                        //请求游戏服，获取充值结果
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                    }else{
+                        //充值失败逻辑
+                        if (resultCode == M4399_CONSTANTS.m4399_ope_pay_failed_init_error)
+                            cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
+                        else if (resultCode == M4399_CONSTANTS.m4399_ope_pay_failed_fetch_token)
+                            cb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
+                        else
+                            cb.onFinished(Constants.ErrorCode.ERR_PAY_UNKNOWN, null);
                     }
-                });
+                }
+            });
     }
 
     @Override
@@ -299,10 +306,9 @@ public final class M4399ChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public String getToken() {
         if (!mOpeCenter.isLogin())
-            return mOpeCenter.getCurrentAccount().getState();
+            return null ;
 
-        return null;
-
+        return mOpeCenter.getCurrentAccount().getState();
     }
 
     @Override

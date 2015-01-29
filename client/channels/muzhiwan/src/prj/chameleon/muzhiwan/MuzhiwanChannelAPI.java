@@ -189,7 +189,7 @@ public final class MuzhiwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public String getId() {
-        return "4399";
+        return "muzhiwan";
     }
 
     @Override
