@@ -78,19 +78,18 @@ def packChannels(channelParentFolder, targetParentFolder):
     return channelInfos
 
 def copyChannel(buildchannel, channel, channelPath,  targetPath,  versionInfo):
+    if not os.path.exists(targetPath):
+        os.makedirs(targetPath)
+    genCmd(buildchannel, channel, channelPath, targetPath)
+    #build_channel.channel_Build(channel, channelPath, targetPath)
+
+def genCmd(buildchannel, channel, channelPath,  targetPath):
     paras = []
     paras.append(('python', buildchannel))
     paras.append(('-c', channel))
     paras.append(('-r', channelPath))
-    if not os.path.exists(targetPath):
-        os.makedirs(targetPath)
     paras.append(('-g', targetPath))
-    channelCmd = genCmd(paras)
-    os.system(channelCmd)
-    #build_channel.channel_Build(channel, channelPath, targetPath)
-
-def genCmd(paras):
-    return ' '.join([x+' '+y for (x,y) in paras])
+    os.system(' '.join([x+' '+y for (x,y) in paras]))
 
 def initTargetScriptFolder(targetScriptFolder):
     if not os.path.exists(targetScriptFolder):
