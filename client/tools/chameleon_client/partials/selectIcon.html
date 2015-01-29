@@ -13,11 +13,41 @@
         </div>
     </div>
     <div class="row">
+        <label>选择图片</label><input id="selectedIcon" type="file" fileread="selectedFile" />
+    </div>
+    <div class="row">
       <champic base-icon="{{shownimages}}" dump="dump"></champic>
     </div>
+
 </div>
 <div class="modal-footer">
     <button class="btn btn-default" ng-click="useImage()">添加</button>
     <button class="btn btn-default" ng-click="cancel()">取消</button>
 </div>
 </div>
+
+<script type="application/javascript">
+    var DENSITY_SIZE = {
+        high: [72, 72],
+        xhigh: [96, 96],
+        xxhigh: [144, 144]
+    }
+
+    $('#selectedIcon').on('change', function(){
+        var file = $(this).val();
+        var type = file.match(/\.([^\.]+)$/)[1];
+        var size = [];
+        switch(type)
+        {
+            case 'jpg':
+            case 'bmp':
+            case 'png':
+            case 'gif':
+            case 'tif':
+                break;
+            default:
+                alert('Please select an image file');
+                $(this).val('');
+        }
+    });
+</script>

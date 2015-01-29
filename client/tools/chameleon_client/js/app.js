@@ -64,156 +64,408 @@ chameleonApp = angular.module('chameleonApp', [
                 controller: 'BindProjectCtrl'
             })
             .state('playmanage', {
-                url: '/playmanage/:projectId',
-                templateUrl: 'partials/play_manage.html',
+                url: '/playmanage/:project',
+                templateUrl: 'partials/projectManager.html',
                 resolve: {
-                    project: ['$stateParams', 'ProjectMgr', '$modal', 'WaitingDlg', 'globalCache', '$q',
-                        function ($stateParams, ProjectMgr, $modal, WaitingDlg, globalCache, $q) {
-
-                            var defered = $q.defer();
-                            // 全部数据
-                            var promise = ProjectMgr.loadProject($stateParams.projectId);
-                            promise.then(function (project) {
-                                ProjectMgr.checkProjectUpgrade(project, function (err, desc) {
-                                    // show desc
-                                    if (desc) {
-                                        var instance = $modal.open({
-                                            templateUrl: 'partials/historicalRecode.html',
-                                            controller: 'ManageServerController',
-                                            size: 'lg',
-                                            backdrop: false,
-                                            keyboard: false,
-                                            resolve: {
-                                                project: function () {
-                                                    return project;
-                                                }
-                                            }
-                                        });
-                                        instance.result.then(function (data) {
-                                        }, function (reason) {
-                                        });
-                                        defered.resolve(project);
-                                    } else {
-                                        defered.resolve(project);
-                                    }
-                                });
-                            }, function (err) {
-                                defered.reject(err);
-                            })
-                            return defered.promise;
+                    project: ['$stateParams', function ($stateParams) {
+                            return JSON.parse($stateParams.project);
                         }]
                 },
                 controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, globalCache) {
-                    $scope.show.index = true;
-                    $scope.show.header = 'loadPlayManage';
+                    var _ = require('underscore');
+                    var fs = require('fs');
+                    //project manage
                     $scope.project = project;
-
-                    $scope.projectDoc = project.__doc;
-                    $scope.toolversion = ProjectMgr.version;
-                    $scope.hasChanged = false;
-                    $scope.hasChangedLandscape = false;
-                    var promise = ProjectMgr.getProjectList();
-                    globalCache.project = project;
-                    promise.then(
-                        function (data) {
-                            $scope.projects = data;
+                    $scope.fileread = project.signConfig.keyStoreFile;
+                    $scope.isProjectUnchanged = true;
+                    $scope.setFiles = function(element){
+                        if(element[0].name == "channel") $scope.selectedChannel.signConfig.keyStoreFile = $scope.fileread.path;
+                        if(element[0].name == "project") $scope.project.signConfig.keyStoreFile = $scope.fileread.path;
+                        if(element[0].name == "splash") $scope.selectedChannel.config.splash = $scope.fileread.path;
+                        if(element[0].name == "icon") {
+                            if(!$scope.selectedChannel.config.icon) $scope.selectedChannel.config.icon = {};
+                            $scope.selectedChannel.config.icon.path = $scope.fileread.path;
+                            $scope.pictureToDraw = {
+                                base: $scope.selectedChannel.config.icon.path,
+                                overlay: $scope.selectedChannel.config.icon.position
+                            }
                         }
-                    );
-                    var signcfg = project.getSignCfg();
-                    var cfg = project.cloneGlobalCfg();
-                    var sdkset = project.getAllSDKs();
+                    }
+                    $scope.saveProjectConfig = function(){
+                        var promise = ProjectMgr.updateProject($scope.project);
+                        promise.then(function(data){
+                            if(!data){
+                                alert("Update project config failed.");
+                            }
+                            $scope.isProjectUnchanged = true;
+                        });
+                    };
 
+                    $scope.$watch('project', function(newValue, oldValue) {
+                        if(newValue !== oldValue) $scope.isProjectUnchanged = false;
+                    }, true);
 
-                    $scope.$watch('selectedsdk.cfg.landscape', function (nw, ow) {
-                        $scope.hasChangedLandscape = nw == ow ? false : true;
-
-                    })
-                    $scope.selectedsdk = {
-                        cfg: cfg,
-                        signcfg: signcfg,
-                        desc: '全局配置',
-                        sdkset: sdkset,
-                        isnew: false,
-                        outdated: false,
-                        updateFunc: function () {
-                            return ProjectMgr.updateGlobalCfg(project,
-                                cfg);
+                    //channel manage
+                    $scope.hideGrid = true;
+                    $scope.selectedChannels = { };
+                    $scope.channelList = ProjectMgr.getChannelList();
+                    $scope.gridOptions1 = {
+                        data: 'channelList',
+                        columnDefs: [{
+                            field: 'desc',
+                            displayName: " 备选渠道列表",
+                            cellTemplate: '<div ng-class="ngCellText" ><input style="margin:2px;" type="checkbox" ng-click="toggleChannel($event, row.entity)" ng-checked="{{row.entity.checked}}" class="selectChannel" />{{row.getProperty(col.field)}}</div>'
+                        }]
+                    }
+                    $scope.gridOptions2 = {
+                        data: 'selectedChannels',
+                        multiSelect: false,
+                        columnDefs: [{
+                            field: 'desc',
+                            displayName: "已选渠道列表",
+                            cellTemplate: '<div ng-class="ngCellText" style="margin: 2px;">{{row.getProperty(col.field)}}</div>'
+                        }]
+                    }
+                    var promise = ProjectMgr.getAllChannels($scope.project);
+                    promise.then(function(){
+                        $scope.selectedChannels = $scope.project.channels;
+                        if($scope.selectedChannels.length > 0){
+                            //set channelList checkbox value.
+                            for(var i=0; i<$scope.selectedChannels.length; i++){
+                                (_.findWhere($scope.channelList, {channelName: $scope.selectedChannels[i].channelName})).checked = true;
+                            }
+                        }
+                        $scope.hideGrid = false;
+                    });
+                    $scope.toggleChannel = function(event, channel){
+                        if(event.target.checked){
+                            var promise = ProjectMgr.setChannel($scope.project, channel);
+                            promise.then(function(){
+                                $scope.project.channels.push(channel);
+                                $scope.selectedChannels = $scope.project.channels;
+                            });
+                        }else{
+                            var channelToDelete = _.findWhere($scope.project, {channelName: channel.channelName});
+                            var promise = ProjectMgr.deleteChannel($scope.project, channelToDelete);
+                            promise.then(function(){
+                                $scope.project.channels = _.reject($scope.project.channels, function(element){
+                                    return element.channelName == channel.channelName;
+                                });
+                                $scope.selectedChannels = $scope.project.channels;
+                            });
                         }
                     };
-                    $scope.setSignCfg = function () {
-                        var instance = $modal.open({
-                            templateUrl: 'partials/setsign.html',
-                            controller: 'SetSignController',
-                            backdrop: false,
-                            keyboard: false,
-                            resolve: {
-                                signcfg: function () {
-                                    var signcfg = null;
-                                    if (!$scope.selectedsdk.signcfg) {
-                                        signcfg = {
-                                            keystroke: '',
-                                            keypass: '',
-                                            storepass: '',
-                                            alias: ''
-                                        };
-                                    } else {
-                                        var pathLib = require('path');
+                    $scope.selectChannel = function(event, channel){
+                        $scope.selectedChannel = channel;
+                        $scope.selectedSDKs = channel.sdks;
+                        $scope.hideGridOptions4 = true;
+                        setTimeout(function(){
+                            for(var i=0; i<$scope.selectedSDKs.length; i++){
+                                (_.findWhere($scope.SDKList, {name: $scope.selectedSDKs[i].name})).checked = true;
+                            }
+                            $scope.hideGridOptions4 = false;
+                        }, 500);
+                    };
 
-                                        if (!$scope.selectedsdk.signcfg.keystroke) {
-                                            var keystroke = '';
-                                        } else {
-                                            console.log($scope.projectDoc);
-                                            var keystroke = pathLib.join($scope.projectDoc.path, $scope.selectedsdk.signcfg.keystroke);
-                                        }
-                                        signcfg = {
-                                            keystroke: keystroke,
-                                            keypass: $scope.selectedsdk.signcfg.keypass,
-                                            storepass: $scope.selectedsdk.signcfg.storepass,
-                                            alias: $scope.selectedsdk.signcfg.alias
-                                        };
-                                    }
-                                    return signcfg;
+
+                    //sdk manage
+                    $scope.selectedChannel = { };
+                    $scope.SDKList = ProjectMgr.getSDKList();
+                    $scope.gridOptions3 = {
+                        data: 'selectedSDKs',
+                        multiSelect: false,
+                        columnDefs: [{
+                            field: 'desc',
+                            displayName: "SDK列表",
+                            cellTemplate: '<div ng-class="ngCellText" >{{row.getProperty(col.field)}}</div>'
+                        }]
+                    }
+                    $scope.gridOptions4 = {
+                        data: 'SDKList',
+                        columnDefs: [{
+                            field: 'desc',
+                            displayName: "SDK",
+                            cellTemplate: '<div ng-class="ngCellText" ><input id="{{row.entity.name}}" style="margin:2px;" type="checkbox" ng-click="toggleSDK($event, row.entity)" ng-checked="{{row.entity.checked}}" class="sdkList" />{{row.getProperty(col.field)}}</div>'
+                        }]
+                    }
+                    $scope.gridOptions5 = {
+                        data: 'selectedChannels',
+                        multiSelect: false,
+                        columnDefs: [{
+                            field: 'desc',
+                            displayName: "渠道名",
+                            cellTemplate: '<div ng-class="ngCellText" ng-click="selectChannelForSDK($event, row.entity)">{{row.getProperty(col.field)}}</div>'
+                        }]
+                    }
+                    $scope.toggleSDK = function(event, sdk){
+                        if(event.target.checked){
+                            $scope.selectedChannel.sdks.push(sdk);
+                            (_.findWhere($scope.project.channels, {channelName: $scope.selectedChannel.channelName})).sdks = $scope.selectedChannel.sdks;
+                            $scope.selectedSDKs = $scope.selectedChannel.sdks;
+                            ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
+                        }else{
+                            $scope.selectedChannel.sdks = _.reject($scope.selectedChannel.sdks, function(element){
+                                return element.name == sdk.name;
+                            });
+                            (_.findWhere($scope.project.channels, {channelName: $scope.selectedChannel.channelName})).sdks = $scope.selectedChannel.sdks;
+                            $scope.selectedSDKs = $scope.selectedChannel.sdks;
+                            ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
+                        }
+                    }
+                    $scope.selectChannelForSDK = function(event, channel){
+                        //hack css to fix grid problem.
+                        $('.sdkList').prop({'checked':false});
+                        $scope.selectedChannel = channel;
+                        $scope.selectedSDKs = channel.sdks;
+                        for (var i = 0; i < $scope.selectedSDKs.length; i++) {
+                            (_.findWhere($scope.SDKList, {name: $scope.selectedSDKs[i].name})).checked = true;
+                            $('#' + $scope.selectedSDKs[i].name).prop({'checked': true});
+                        }
+                    }
+
+                    //sdk config
+                    $scope.gridOptions6 = {
+                        data: 'selectedChannels',
+                        multiSelect: false,
+                        afterSelectionChange: function(rowItem, event){
+                            var channel = rowItem.entity;
+                            $scope.selectedChannel = channel;
+                            $scope.fileread = channel.signConfig.keyStoreFile;
+                            $scope.selectedSDKs = channel.sdks;
+                            $scope.selectedSDK = {};
+                            $('#SDKConfigView').empty();
+                        },
+                        columnDefs: [{
+                            field: 'desc',
+                            displayName: "渠道名",
+                            cellTemplate: '<div ng-class="ngCellText">{{row.getProperty(col.field)}}</div>'
+                        }]
+                    }
+                    $scope.gridOptions7 = {
+                        data: 'selectedSDKs',
+                        multiSelect: false,
+                        afterSelectionChange: function(rowItem, event){
+                            var sdk = rowItem.entity;
+                            $scope.selectedSDK = sdk;
+                            $scope.SDKConfigHtml = SDKTemplate(sdk.name);
+                        },
+                        columnDefs: [{
+                            field: 'desc',
+                            displayName: "SDK列表",
+                            cellTemplate: '<div ng-class="ngCellText" >{{row.getProperty(col.field)}}</div>'
+                        }]
+                    }
+                    $scope.selectChannelForConfig = function(event, channel){
+                        $scope.selectedChannel = channel;
+                        $scope.fileread = channel.signConfig.keyStoreFile;
+                        $scope.selectedSDKs = channel.sdks;
+                        $scope.selectedSDK = {};
+                        $('#SDKConfigView').empty();
+                    }
+                    var SDKTemplate = function(SDKName){
+                        var result = "";
+                        var SDKInfo = fs.readFileSync('././res/sdklist.json', 'utf-8');
+                        SDKInfo = SDKInfo.replace('/\n/g', '');
+                        var context = JSON.parse(SDKInfo);
+                        var getControlNode = function(key, value){
+                            var nodeText = '',
+                                desc = value.desc,
+                                descLow = key.toLowerCase(),
+                                datafield = key,
+                                type = value.type;
+                            if(type === 'string'){
+                                nodeText =  '<div class="control-group">'
+                                + '<label class="control-label" for="@descLow">@desc</label>'
+                                + '<div class="controls">'
+                                + '<input id="@descLow" name="@descLow" type="text" style="width:60%;" ng-model="selectedSDK.@datafield" />'
+                                + '</div>'
+                                + '</div>';
+                            }
+                            if(type === 'int' || type === 'float'){
+                                nodeText =  '<div class="control-group">'
+                                + '<label class="control-label" for="@descLow">@desc</label>'
+                                + '<div class="controls">'
+                                + '<input id="@descLow" name="@descLow" type="number" style="width:60%;" ng-model="selectedSDK.@datafield" />'
+                                + '</div>'
+                                + '</div>';
+                            }
+                            if(type === 'url'){
+                                nodeText =  '<div class="control-group">'
+                                + '<label class="control-label" for="@descLow">@desc</label>'
+                                + '<div class="controls">'
+                                + '<input id="@descLow" name="@descLow" type="url" style="width:60%;" ng-model="selectedSDK.@datafield" />'
+                                + '</div>'
+                                + '</div>';
+                            }
+                            if(type === 'boolean'){
+                                nodeText = '<div class="control-group" >'
+                                + '<label class="control-label">@desc</label>'
+                                + '<div class="controls">'
+                                + '<div class="btn-group">'
+                                + '<label class="btn btn-primary" ng-model="selectedSDK.@datafield" btn-radio="true">是</label>'
+                                + '<label class="btn btn-primary" ng-model="selectedSDK.@datafield" btn-radio="false">否</label>'
+                                + '</div>'
+                                + '</div>'
+                                + '</div>';
+                            }
+                            nodeText = nodeText.replace(/@desc/g, desc);
+                            nodeText = nodeText.replace(/@descLow/g, descLow);
+                            nodeText = nodeText.replace(/@datafield/g, datafield);
+                            return nodeText;
+                        }
+                        var SDKConfig = _.findWhere(context.channels, {name: SDKName});
+                        for(var key in SDKConfig.cfgitem){
+                            result += getControlNode(key, SDKConfig.cfgitem[key]);
+                        }
+                        return result;
+                    }
+                    $scope.setSDKConfig = function(){
+                        ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
+                    }
+                    $scope.generateConfigFile = function(){
+                        var path = './res/output.json';
+                        var dirName = ProjectMgr.dirName();
+                        var project = $scope.project||{};
+                        var channel = $scope.selectedChannel;
+                        var root = dirName.substr(0, dirName.length-2);
+                        var data = {};
+                        data.projectName = project.name;
+                        data.landscape = project.landscape;
+                        data.signConfig = project.signConfig;
+                        if(channel){
+                            data.channel = {};
+                            data.channel.channelName = channel.channelName;
+                            data.channel.packageName = channel.config.packageName;
+                            data.channel.splashPath = channel.config.splash;
+                            data.channel.iconPath = root + 'res/channels/' + channel.channelName + '.png';
+                            if(channel.sdks && channel.sdks.length>0){
+                                data.channel.sdks = [];
+                                for(var i =0; i<channel.sdks.length; i++){
+                                    data.channel.sdks.push({
+                                        name: channel.channelName,
+                                        type: 'pay',
+                                        config: channel.sdks[i]
+                                    });
                                 }
                             }
-                        });
-                        instance.result.then(function (signcfg) {
-
-                            var pathLib = require('path');
-                            var relpath = pathLib.relative($scope.projectDoc.path,
-                                signcfg.keystroke);
-                            if (pathLib.sep !== '/') {
-                                relpath = relpath.split(pathLib.sep).join('/');
-                            }
-                            console.log('pathLib:' + pathLib)
-                            signcfg.keystroke = relpath;
-                            var promise = ProjectMgr.updateSignCfg(
-                                $scope.project,
-                                null,
-                                signcfg);
-                            promise = WaitingDlg.wait(promise, "更新签名配置");
-                            promise.then(function (obj) {
-                                $scope.selectedsdk.signcfg = signcfg;
-                                project.updateSignCfg(
-                                    null,
-                                    signcfg);
-                            }, function (err) {
-                                // TODO: error handling
-                            });
-                        }, function () {
-                            console.log('dialog dismissed');
-                        });
+                        }
+                        var buf = new Buffer(JSON.stringify(data));
+                        fs.writeFileSync(path, buf);
                     };
-//                    $scope.updateCurrentCfg = function () {
-//                        alert(1)
-//                        var sdk = $scope.selectedsdk;
-//                        var promise = sdk.updateFunc();
-//                        promise = WaitingDlg.wait(promise, '更新配置中');
-//                        promise.then(function () {
-//                        }, function (e) {
-//                            alert(e.message);
-//                        });
-//                    };
 
+                    //icon config
+                    $scope.applyPositionToAll = false;
+                    $scope.gridOptions8 ={
+                        data: 'selectedChannels',
+                        multiSelect: false,
+                        afterSelectionChange: function(rowItem){
+                            var channel = rowItem.entity;
+                            $scope.selectedChannel = channel;
+                            if(channel.config.icon&&channel.config.icon.path){
+                                $scope.pictureToDraw = {
+                                    base: $scope.selectedChannel.config.icon.path,
+                                    overlay: $scope.selectedChannel.config.icon.position
+                                }
+                            }else{
+                                $scope.pictureToDraw = undefined;
+                            }
+
+                            //empty file selection
+                            $('#icon').empty();
+                        },
+                        columnDefs: [{
+                            field: 'desc',
+                            displayName: '渠道',
+                            cellTemplate: '<div ng-class="ngCellText" >{{row.getProperty(col.field)}}</div>'
+                        }]
+                    }
+                    $scope.$watch('selectedChannel.config.icon.position', function(){
+                        if($scope.selectedChannel.config){
+                            $scope.pictureToDraw = {
+                                base: $scope.selectedChannel.config.icon.path,
+                                overlay: $scope.selectedChannel.config.icon.position
+                            }
+                        }
+                    });
+                    $scope.saveIcon = function(){
+                        var canvas = $('#drawingIcon')[0];
+                        var channel = $scope.selectedChannel;
+                        var saveImage = function(canvas, path){
+                            var dataURL = canvas.toDataURL();
+                            var data = dataURL.replace(/^data:image\/\w+;base64,/, "");
+                            var buf = new Buffer(data, 'base64');
+                            fs.writeFileSync(path, buf);
+                        }
+                        var saveImageWithoutDisplay = function(canvas, base, overlay, path, channel){
+                            var drawImage = function(canvas, base, overlay, path){
+                                var context = canvas.getContext('2d');
+                                var baseImage = new Image();
+                                var overlayImage = new Image();
+                                var readyFlag = 0;
+                                var saveImage = function(canvas, path){
+                                    var dataURL = canvas.toDataURL();
+                                    var data = dataURL.replace(/^data:image\/\w+;base64,/, "");
+                                    var buf = new Buffer(data, 'base64');
+                                    fs.writeFileSync(path, buf);
+                                }
+                                var drawFunc = function () {
+                                    context.clearRect(0, 0, canvas.width, canvas.height);
+                                    context.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+                                    context.drawImage(overlayImage, 0, 0);
+                                    saveImage(canvas, path);
+                                }
+                                baseImage.onload = function () {
+                                    readyFlag += 1;
+                                    if (readyFlag < 2) {
+                                        return;
+                                    }
+                                    drawFunc();
+                                }
+                                overlayImage.onload = function () {
+                                    readyFlag += 1;
+                                    if (readyFlag < 2) {
+                                        return;
+                                    }
+                                    drawFunc();
+                                }
+                                baseImage.src = base;
+                                overlayImage.src = overlay;
+                            }
+                            var getOverlayPath = function(position){
+                                var path = 'icon-decor-';
+                                if(position === 1) path += 'leftup';
+                                if(position === 2) path += 'leftdown';
+                                if(position === 3) path += 'rightup';
+                                if(position === 4) path += 'rightdown';
+                                return path + '.png';
+                            }
+                            var b = base;
+                            var o = './res/channels/' + channel.channelName + '/drawable/' + getOverlayPath(overlay);
+                            drawImage(canvas, b, o, path);
+                        }
+                        var path = './res/channels/' + channel.channelName + '/icon/' + channel.channelName + '.png';
+                        saveImage(canvas, path);
+                        ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
+                        //if 'apply to all' is selected.
+                        if($scope.applyPositionToAll){
+                            var position = $scope.selectedChannel.config.icon.position;
+                            for(var i=0; i<$scope.selectedChannels.length; i++){
+                                var config = $scope.selectedChannels[i].config;
+                                if(config.icon){
+                                    config.icon.position = position;
+                                    ProjectMgr.setChannel($scope.project, $scope.selectedChannels[i]);
+                                    if(config.icon.path){
+                                        var savePath = './res/channels/' + $scope.selectedChannels[i].channelName + '/icon/' + $scope.selectedChannels[i].channelName + '.png';
+                                        saveImageWithoutDisplay(canvas, config.icon.path, config.icon.position, savePath, $scope.selectedChannels[i]);
+                                    }
+                                }
+                            }
+                            $scope.pictureToDraw = {
+                                base: $scope.selectedChannel.config.icon.path,
+                                overlay: $scope.selectedChannel.config.icon.position
+                            }
+                        }
+                    }
                 }]
             })
             .state('loadsdk', {
@@ -254,14 +506,12 @@ chameleonApp = angular.module('chameleonApp', [
                         }
                     };
 
-
                     if (project) {
                         $scope.show.index = false;
                         $scope.show.header = 'loadSdk';
                         $state.go('project.globalsdk', {projectId: globalCache.projectId});
 
                     }
-
 
                     //测试数据
                     var selected = [];
@@ -992,17 +1242,91 @@ chameleonApp = angular.module('chameleonApp', [
             })
     }])
     .directive('dynamicHtml', ['$compile', function($compile){
-            return {
-                restrict: 'A',
-                replace: true,
-                link: function(scope, element, attrs) {
-                    scope.$watch(attrs.dynamicHtml, function (html) {
-                        element.html(html);
-                        $compile(element.contents())(scope);
-                    });
-                }
+        return {
+            restrict: 'A',
+            replace: true,
+            link: function(scope, element, attrs) {
+                scope.$watch(attrs.dynamicHtml, function (html) {
+                    element.html(html);
+                    $compile(element.contents())(scope);
+                });
             }
+        }
 
+    }])
+    .directive("fileread", [function () {
+        return {
+            scope: {
+                fileread: "="
+            },
+            link: function (scope, element, attributes) {
+                element.bind("change", function (changeEvent) {
+                    scope.$apply(function () {
+                        scope.$parent.fileread = changeEvent.target.files[0];
+                        scope.$parent.setFiles(element);
+                    });
+                });
+            }
+        }
+    }])
+    .directive("drawingIcon", ['ProjectMgr', function(ProjectMgr){
+        return {
+            restrict: 'A',
+            link: function(scope, element){
+                var fs = require('fs');
+                var drawImage = function(canvas, base, overlay){
+                    var context = canvas.getContext('2d');
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    var baseImage = new Image();
+                    var overlayImage = new Image();
+                    var readyFlag = 0;
+                    var drawFunc = function () {
+                        context.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+                        context.drawImage(overlayImage, 0, 0);
+                    }
+                    baseImage.onload = function () {
+                        readyFlag += 1;
+                        if (readyFlag < 2) {
+                            return;
+                        }
+                        drawFunc();
+                    }
+                    overlayImage.onload = function () {
+                        readyFlag += 1;
+                        if (readyFlag < 2) {
+                            return;
+                        }
+                        drawFunc();
+                    }
+                    baseImage.src = base;
+                    overlayImage.src = overlay;
+                }
+                var getOverlayPath = function(position){
+                    var path = 'icon-decor-';
+                    if(position === 1) path += 'leftup';
+                    if(position === 2) path += 'leftdown';
+                    if(position === 3) path += 'rightup';
+                    if(position === 4) path += 'rightdown';
+                    return path + '.png';
+                }
+                var renderIcon = function(){
+                    var canvas = element[0];
+                    if(!scope.pictureToDraw) {
+                        var context = canvas.getContext('2d');
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+                        return;
+                    }
+                    if(!scope.pictureToDraw.base) return;
+                    if(!scope.pictureToDraw.overlay) return;
+                    var channel = scope.selectedChannel;
+                    var base = scope.pictureToDraw.base;
+                    var overlay = './res/channels/' + channel.channelName + '/drawable/' + getOverlayPath(scope.pictureToDraw.overlay);
+                    drawImage(canvas, base, overlay);
+                }
+
+                scope.$watch('pictureToDraw', renderIcon);
+            }
+        }
     }]);
 
 function createMenu ($modal) {

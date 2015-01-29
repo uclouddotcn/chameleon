@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
-    package="prj.chameleon.nd91">
+    package="prj.chameleon.baidumg">
 
     <uses-sdk
         android:minSdkVersion="8"

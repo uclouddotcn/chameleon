@@ -39,7 +39,7 @@
         <!--添加 优酷SDK 必需的 meta-data：YKGAME_PRIVATEKEY。 Value为申请的—APPSECRET-->
         <meta-data
             android:name="privateKey"
-            android:value="fb8ed0797dce9537be7579d2f1b746a3" chameleon:replace="android:value=%privateKey%" >
+            android:value="fb8ed0797dce9537be7579d2f1b746a3" chameleon:replace="android:value=%appSecret%" >
         </meta-data>
 
         <!--以下为声明必须的Activity/Service，不可擅自更改（尤其是支付宝横竖屏设置）-->

@@ -91,6 +91,36 @@
     "vivo": {
         "name": "VIVO",
         "sdk": "vivo"
+    },
+    "youku": {
+        "name": "优酷",
+        "pkgsuffix": ".youku$",
+        "sdk": "youku"
+    },
+    "youlong": {
+        "name": "游龙",
+        "sdk": "youlong"
+    },
+    "muzhiwan": {
+        "name": "拇指玩",
+        "sdk": "muzhiwan",
+        "splashscreen": 1,
+        "icon": "1"
+    },
+    "m4399": {
+        "name": "4399",
+        "sdk": "m4399"
+    },
+    "ewan": {
+        "name": "益玩",
+        "sdk": "ewan",
+        "splashscreen": 1,
+        "icon": "1"
+    },
+    "dianxin": {
+        "name": "电信爱游戏",
+        "sdk": "dianxin",
+        "splashscreen": 1
     }
 }
 
