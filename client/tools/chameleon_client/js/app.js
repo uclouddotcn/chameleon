@@ -126,15 +126,16 @@ chameleonApp = angular.module('chameleonApp', [
                     }
                     var promise = ProjectMgr.getAllChannels($scope.project);
                     promise.then(function(){
+                        var channelList = ProjectMgr.getChannelList();
                         $scope.selectedChannels = $scope.project.channels;
                         if($scope.selectedChannels.length > 0){
-                            var channelList = ProjectMgr.getChannelList();
+
                             //set channelList checkbox value.
                             for(var i=0; i<$scope.selectedChannels.length; i++){
                                 (_.findWhere(channelList, {channelName: $scope.selectedChannels[i].channelName})).checked = true;
                             }
-                            $scope.channelList = channelList;
                         }
+                        $scope.channelList = channelList;
                     });
                     $scope.toggleChannel = function(event, channel){
                         if(event.target.checked){
