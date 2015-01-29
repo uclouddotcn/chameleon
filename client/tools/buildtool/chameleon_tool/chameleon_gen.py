@@ -3,29 +3,31 @@ import xml.dom.minidom as xml
 from chameleon_build_comm import *
 from AndroidManifest import AndroidManifestInst
 
+
 def error(s):
     print >> sys.stderr, s
 
+
 def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg):
-    projectJsonPath = os.path.join('chameleon', 'channels', channel, 
-            'project.json')
-    with codecs.open(projectJsonPath, 'r') as f:
-        obj = json.load(f)
-    sc = obj.get("splashscreen")
-    icons = obj.get("icons")
-    pkgname = obj.get("package")
+
+    obj = globalcfg.get("channel")
+    sc = obj.get("splashPath")
+    icons = obj.get("iconPath")
+    pkgname = obj.get("packageName")
     manifestInst = loadManifest(manifestFilePathOrig)
     oldPkgName = manifestInst.getPkgName()
+
     if pkgname is None:
         pkgname = oldPkgName+'.'+channel
     elif pkgname.startswith('.'):
         pkgname = oldPkgName+pkgname
+
     if pkgname != oldPkgName:
         manifestInst.fullQualifyName(oldPkgName)
         manifestInst.setPkgName(pkgname)
     mergeLibManifests(libs, manifestInst)
-    manifestInst.replace({'channel': channel, 'packageId': pkgname})
-    if globalcfg['blandscape']:
+    manifestInst.replace({'channel': channel})
+    if globalcfg['landscape']:
         orientation = 'landscape'
     else:
         orientation = 'portrait'
@@ -38,24 +40,30 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, global
         manifestInst.replaceTargetSDK('15')
     manifestInst.safeDump(manifestFilePath)
 
+
 def loadManifest(path):
     return AndroidManifestInst(path)
+
 
 def mergeLibManifests(libs,  manifestInst):
     for l in libs:
         mergeSingleLibManifest(l,  manifestInst)
 
+
 def mergeSingleLibManifest(lib, manifestInst):
     libManifestInst = loadLibManifest(lib)
     mergeLibManifestInst(lib.cfg, libManifestInst, manifestInst)
 
+
 def loadLibManifest(lib):
-    p = os.path.join(lib.path, 'AndroidManifest.xml.template')
+    p = os.path.join(lib.path, 'AndroidManifest.xml')
     return AndroidManifestInst(p)
 
+
 def mergeLibManifestInst(cfg, libManifestInst, manifestInst):
-    libManifestInst.replace(dict([(name[1:], value) for name, value in cfg.items()]))
+    libManifestInst.replace(dict([(name[0:], value) for name, value in cfg.items()]))
     manifestInst.merge(libManifestInst)
+
 
 def makeBooleanValue(name, val):
     if val: 
@@ -123,6 +131,7 @@ def checkDependency(genFilePath, depends):
             return True
     return False
 
+
 def doGenInstantializer(channel, globalcfg, libs, debug):
     libStrs = [genLibInstantializer(l) for l in libs]
     importStrs = '\t\t\n'.join([x[0] for x in libStrs])
@@ -134,12 +143,13 @@ def doGenInstantializer(channel, globalcfg, libs, debug):
     debugStr = 'false'
     if debug == 'true':
         debugStr = 'true'
-    content = SINGLE_LIB_TEMPLATE.substitute(lib=l.name, 
+    content = SINGLE_LIB_TEMPLATE.substitute(lib=libs[0].name,
             landscape=landscape, appName=globalcfg['sappname'],
             channel=channel, debug=debugStr,
             importstrs=importStrs, initfuncs=initfuncs,
             initfuncbodys = initFuncBody)
     return content
+
 
 def genInstantializer(channel, genPath, globalcfg, libs, debug):
     genPkgPath = os.path.join(genPath, 'prj', 'chameleon', 'channelapi')
@@ -152,13 +162,16 @@ def genInstantializer(channel, genPath, globalcfg, libs, debug):
     with codecs.open(genFilePath, 'w', 'utf-8') as f:
         f.write(content)
 
+
 def genLibInstantializer(l):
     libAPIImp =l.name[0].upper()+l.name[1:]+'ChannelAPI'
     bundleStr = genBundleCfg(libAPIImp, l.type, l.cfg)
     return ('import prj.chameleon.%s.%s;' %(l.name, libAPIImp), 'init%s(commCfg);' %libAPIImp, bundleStr)
 
+
 def isNewerThan(a, b):
     return os.path.getmtime(a) > os.path.getmtime(b)
+
 
 def getPkgSuffix(channel):
     doc = xml.parse(os.path.join('chameleon', 'channels', channel, 'info.xml'))
@@ -167,6 +180,7 @@ def getPkgSuffix(channel):
         return t[1:]
     else:
         return '' 
+
 
 def main():
     if len(sys.argv) < 5:
@@ -182,5 +196,3 @@ def main():
     libs = getDependLibs(channel, globalcfg)   
     modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg) 
     genInstantializer(channel, genPath, globalcfg, libs, debug)
-
-sys.exit(main())

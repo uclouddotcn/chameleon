@@ -67,39 +67,28 @@ def collectChannelInfo(channelParentFolder):
 
 def packChannels(channelParentFolder, targetParentFolder):
     channelInfos = collectChannelInfo(channelParentFolder)
-    #compileAllChannels([x.name for x in channelInfos])
+    build_channel_path = os.path.join(BUILD_TOOL_DIR, 'chameleon_tool')
+    build_channel = os.path.join(build_channel_path, 'build_channel.py')
+    print build_channel
+    print '*********************start build channels**************************'
     for ci in channelInfos:
-        copyChannel(ci.name, ci.path, os.path.join(targetParentFolder, ci.name), {"version": ci.cfg["chamversion"], "realVer": ci.cfg["version"]})
+        copyChannel(build_channel, ci.name, CHANNEL_DIR, targetParentFolder, {"version": ci.cfg["chamversion"], "realVer": ci.cfg["version"]})
+    print '*********************end build channels**************************'
     return channelInfos
 
-def copyChannel(channel, channelPath, targetPath, versionInfo):
-    ignore = shutil.ignore_patterns('.*',  #ignore the hidden files and directories
-        '*.template', #ignore the template files
-        'chameleon_build', # ignore the tool directory
-        'build',
-        'android-support-v4.jar',
-        '*.iml')
-    copyfilelist = []
-    for root, dirs, files in os.walk(channelPath):
-        ignoreFiles = ignore(root, files)
-        ignoreDirs = ignore(root, dirs)
-        for d in ignoreDirs:
-            dirs.remove(d)
-        copyfilelist += [os.path.join(root, x)
-                for x in filter(lambda f : f not in ignoreFiles, files)]
-    relfilelist = [os.path.relpath(x, channelPath) for x in copyfilelist]
-    copyFileInList(channelPath, targetPath, relfilelist)
-    shutil.copy2(os.path.join(channelPath, 'AndroidManifest.xml'),
-            os.path.join(targetPath, 'AndroidManifest.xml.template'))
-    relfilelist.append('AndroidManifest.xml.template')
-    shutil.copyfile(os.path.join(BUILD_SCRIPT_DIR, 'Resource', 'default',
-        'AndroidManifest.xml'), os.path.join(targetPath, 'AndroidManifest.xml'))
-    with codecs.open(os.path.join(targetPath, 'filelist.txt'), 'w', 'utf8') as f:
-        f.write('\n'.join(relfilelist))
-    with codecs.open(os.path.join(targetPath, 'version.json'), 'w', 'utf8') as f:
-        json.dump(versionInfo, f, indent=4)
-    archive(targetPath, os.path.join(targetPath, '..'), targetPath)
-    shutil.rmtree(targetPath)
+def copyChannel(buildchannel, channel, channelPath,  targetPath,  versionInfo):
+    paras = []
+    paras.append(('Python34', buildchannel))
+    paras.append(('-c', channel))
+    paras.append(('-r', channelPath))
+    if not os.path.exists(targetPath):
+        os.makedirs(targetPath)
+    paras.append(('-g', targetPath))
+    channelCmd = genCmd(paras)
+    os.system(channelCmd)
+
+def genCmd(paras):
+    return ' '.join([x+' '+y for (x,y) in paras])
 
 def initTargetScriptFolder(targetScriptFolder):
     if not os.path.exists(targetScriptFolder):
@@ -113,6 +102,7 @@ def copyChameleonCpp(targetFolder):
 # copy channel folders and channel resources, generate build info json
 def initProjectFolder(targetFolder, version):
     targetSDKPath = os.path.join(targetFolder, 'sdk')
+    #this is channels zip list
     targetChannelPath = os.path.join(targetSDKPath, 'libs')
     targetScriptPath = os.path.join(targetFolder, 'script')
     toolPath = os.path.join(targetFolder, 'tools')
@@ -122,7 +112,10 @@ def initProjectFolder(targetFolder, version):
     copyChameleonCpp(targetFolder)
     initTargetScriptFolder(targetScriptPath)
     os.makedirs(toolPath)
+
+    #packChannels
     channelInfos = packChannels(CHANNEL_DIR, targetChannelPath)
+
     with codecs.open(channelListFile, 'r', 'utf8') as channelListFObj:
         channellistobj = json.load(channelListFObj)
     cfg = {'version': version, 'channels': [x.cfg for x in channelInfos],
@@ -284,12 +277,16 @@ def build():
     version = getversion()
     chameleonTarget = os.path.join(targetFolder, 'chameleon')
     print 'get version is %s' %version
+
     print 'start initing build folder...'
     initProjectFolder(chameleonTarget, version)
+
     print 'build chameleon libs...'
-    buildChameleonLib(chameleonTarget)
+    #buildChameleonLib(chameleonTarget)
+
     print 'build chameleon client...'
-    mergeToNodewebkit(targetFolder)
+    #mergeToNodewebkit(targetFolder)
+
     print 'done'
 
 build()
