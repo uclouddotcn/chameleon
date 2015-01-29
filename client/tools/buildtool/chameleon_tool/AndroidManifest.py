@@ -1,10 +1,10 @@
 import xml.dom.minidom as xml
-import tempfile, os, codecs, sys, re
+import tempfile, os, codecs, sys, re, shutil
 
 class TempFile(object):
     def __init__(self, finalTargetFilePath):
         tmpfd, self.temppath = tempfile.mkstemp()
-        self.tmpfo = os.fdopen(tmpfd, 'w')
+        self.tmpfo = os.fdopen(tmpfd, 'wb')
         self.targetPath = finalTargetFilePath
 
     def __enter__(self):
@@ -15,7 +15,7 @@ class TempFile(object):
         if not exc_type:
             if os.path.exists(self.targetPath):
                 os.remove(self.targetPath)
-            os.rename(self.temppath, self.targetPath)
+            shutil.move(self.temppath, self.targetPath)
         else:
             os.unlink(self.temppath)
         return None
@@ -43,14 +43,14 @@ class AndroidManifestInst(object):
     def replaceTargetSDK(self, target):
         children = AndroidManifestInst._getChildrenNS(self._rootNode, 'uses-sdk')
         if len(children) == 0:
-            targetNode = self._rootNode.createElement('use-sdk')
+            targetNode = self.doc.createElement('use-sdk')
             targetNode.setAttribute('android:minSdkVersion', '7')
         else:
             targetNode = children[0] 
         targetNode.setAttribute('android:targetSdkVersion', target)
 
     def replaceApplication(self, newApp):
-        self._applicationNode.setAttribute('android:name', newApp)        
+        self._applicationNode.setAttribute('android:name', newApp)
 
     def replaceEntryActivity(self, orientation, channel):
         entryActivityNode = self._findEntryActivity()
@@ -145,7 +145,7 @@ class AndroidManifestInst(object):
                         [('android:name', 'android.intent.action.MAIN')])
                 categoryNode = AndroidManifestInst._getChildNS(intentNode,
                         'category', 
-                        [('android:name','android.intent.category.LAUNCHER')])
+                        [('android:name', 'android.intent.category.LAUNCHER')])
                 if actionNode is not None and categoryNode is not None:
                     return n
 
@@ -268,11 +268,11 @@ def replaceNodeAttr(node, cfg):
         c = o.group(1)
         if cfg.get(c) is None:
             return c
-        return unicode(cfg.get(c))
+        return str(cfg.get(c))
     if len(replaceVal) != 0:
         replaceVal = parseReplaceVal(replaceVal)
         for name, val in replaceVal:
-            realv = REPLACE_RE.sub(repl, unicode(val))
+            realv = REPLACE_RE.sub(repl, str(val))
             node.setAttribute(name, realv)
         node.removeAttribute("chameleon:replace")
 
