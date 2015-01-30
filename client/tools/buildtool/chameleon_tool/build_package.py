@@ -23,6 +23,8 @@ SMALI_PATH = os.path.join(EXEC_ROOT, 'smali.jar')
 DST_DIR_NAME = 'target'
 CHANNEL_DIR_NAME = 'channel'
 MANIFEST_FILE_NAME = 'AndroidManifest.xml'
+BUILD_DIR_NAME = 'build'
+OUTPUT_DIR = 'output'
 
 JAR_SIGNER_CMD = 'jarsigner'#os.path.join(EXEC_ROOT, 'jarsigner')
 ZIPALIGN = os.path.join(EXEC_ROOT, 'zipalign.exe')
@@ -149,12 +151,10 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
                 if not os.path.exists(os.path.join(tarDir, y)):
                     shutil.copy(os.path.join(x, y), os.path.join(tarDir, y))
 
-
     tempRPath = os.path.join(desDir, '__temp__R_JAVA___')
     if os.path.exists(tempRPath):
         shutil.rmtree(tempRPath)
     os.makedirs(tempRPath)
-
 
 
     paras = []
@@ -381,7 +381,7 @@ def main():
     channel = options.channel
     channelRoot = options.channelRoot
 
-    proj = options.projectRoot
+    proj = os.path.join(options.projectRoot, BUILD_DIR_NAME)
     unpackDest = os.path.join(proj, DST_DIR_NAME)
 
     if not os.path.exists(proj):
@@ -391,7 +391,7 @@ def main():
         unpackAPK(options.package, options.packageRoot, unpackDest)
         return
 
-    globalcfg = getCommCfg(os.path.join(proj, 'cfg', channel))
+    globalcfg = getCommCfg(os.path.join(options.projectRoot, 'cfg', channel))
     libs = getDependLibs(proj, globalcfg)
 
     for sdkinfo in libs:
@@ -456,6 +456,8 @@ def main():
         os.remove(tempForAlighPkgName)
     else:
         shutil.move(tempForAlighPkgName, options.generatePkgName)
+
+    shutil.copy(options.generatePkgName, os.path.join(options.projectRoot, OUTPUT_DIR, options.generatePkgName))
 
     os.remove(tempPkgName)
     os.chdir(pwd)
