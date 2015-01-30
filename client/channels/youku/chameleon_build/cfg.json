@@ -7,7 +7,7 @@
         {
           "name": "appId",
           "type" : "string",
-          "desc" : "申请的APPID"
+          "desc" : "APPID"
         },
         {
           "name": "appName",
@@ -17,12 +17,12 @@
         {
           "name": "appKey",
           "type" : "string",
-          "desc" : "申请的APPKEY"
+          "desc" : "APPKEY"
         },
         {
           "name": "appSecret",
           "type" : "string",
-          "desc" : "申请的—APPSECRET"
+          "desc" : "APPSECRET"
         },
         {
           "name": "notifyUri",

@@ -7,7 +7,31 @@
     {
       "name": "clientId",
       "type": "string",
-      "desc": "app id"
+      "desc": "ClientId  "
+    },
+    {
+      "name": "clientSecret",
+      "type": "string",
+      "desc": "ClientSecret  ",
+      "ignoreInA": 1
+    },
+    {
+      "name": "digitalId",
+      "type": "string",
+      "desc": "数字ID",
+      "ignoreInA": 1
+    },
+    {
+      "name": "cpId",
+      "type": "string",
+      "desc": "CPID",
+      "ignoreInA": 1
+    },
+    {
+      "name": "appKey",
+      "type": "string",
+      "desc": "AppKey",
+      "ignoreInA": 1
     }
   ]
 }
