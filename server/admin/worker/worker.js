@@ -58,7 +58,7 @@ function onClose(msg) {
         });
     } else {
         reply(msg, null, null);
-        setTimeout(process.exit, 1);
+        setTimeout(process.exit, 5000);
     }
 }
 

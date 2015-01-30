@@ -12,18 +12,15 @@ var Zip = require('adm-zip');
 var PROC_NAME = 'chameleon_admin';
 
 function error(message) {
-    console.error(('[ERROR]: '+message).red);
+    console.error(('[ERROR]: '+message));
 }
 
 function warn(message) {
-    console.error(('[WARN]: '+message).yellow);
+    console.error(('[WARN]: '+message));
 }
 
 function info(message) {
-    if (message instanceof Object) {
-        message = JSON.stringify(message, null, '\t');
-    }
-    console.error(('[INFO]: '+message).green);
+    console.log(('[INFO]: '+message));
 }
 
 function runUnderPm2(action) {
@@ -31,7 +28,7 @@ function runUnderPm2(action) {
         var input = Array.prototype.splice.call(arguments, 0);
         pm2.connect(function (err) {
             if (err) {
-                console.error('Fail to execute command: Fail to connect to PM2.')
+                error('Fail to execute command: Fail to connect to PM2.')
                 return;
             }
             action.apply(null, input);
@@ -39,6 +36,39 @@ function runUnderPm2(action) {
     }
 }
 
+var adminSvr = {
+    host: 'localhost',
+    port: 8083
+};
+
+function initAdmin(host, port) {
+    adminSvr.host = host || adminSvr.host;
+    adminSvr.port = port || adminSvr.port;
+}
+
+function startWorker(version, callback) {
+    var postObj = {
+       version: version
+    };
+    postRequest(adminSvr.host, adminSvr.port, '/worker/start', postObj, function (err, obj) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, obj);
+    })
+}
+
+function installWorker(p, callback) {
+    var postObj = {
+        workerzipFile: p
+    };
+    postRequest(adminSvr.host, adminSvr.port, '/worker/install', postObj, function (err, obj) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, obj);
+    });
+}
 
 function postRequest (host, port, url, data, callback) {
     var s = JSON.stringify(data);
@@ -53,6 +83,7 @@ function postRequest (host, port, url, data, callback) {
         }
     }, function (res) {
         res.setEncoding('utf-8');
+        res.setTimeout(1000);
         var s = '';
         res.on('data', function (chunk) {
             s += chunk;
@@ -60,11 +91,7 @@ function postRequest (host, port, url, data, callback) {
         res.on('end', function (chunk) {
             try {
                 var obj = JSON.parse(s);
-                if (obj.code === 0) {
-                    callback(null, obj.msg);
-                } else {
-                    callback(new Error("server responds " + JSON.stringify(obj)));
-                }
+                callback(null, obj.msg);
             } catch (e) {
                 callback(e);
             }
@@ -79,7 +106,7 @@ function postRequest (host, port, url, data, callback) {
 
 function main() {
     program
-        .usage('[options] [start|stop|active]')
+        .usage('[options] ')
         .option('-f, --force', 'script to execute when the forever process gone')
         .option('-p, --port <port>', 'admin port, default to 8083', Number, 8083)
         .option('-h, --host <host>', 'admin host, default to localhost', String, 'localhost');
@@ -158,17 +185,34 @@ function main() {
                         opts.rawArgs.push('--sdkplugin');
                         opts.rawArgs.push(options.sdkPluginPath);
                     }
-                    info('starting with opts ' + opts.rawArgs);
                     try {
                         pm2.start(path.join(__dirname, 'app.js'), opts, function (err, proc) {
-                            info('starting with opts ' + opts.rawArgs);
                             if (err) {
                                 error('Fail to start chameleon from PM2: ' + err);
                                 return pm2.disconnect();
                             }
-                            return pm2.disconnect();
-                            // should check the liveness of the
-                            //setTimeout();
+                            pm2.disconnect();
+                            var postData = {
+                                action: 'info'
+                            };
+                            setTimeout(function () {
+                                fetchInfo();
+                            }, 1100);
+                            var retrytimes = 3;
+                            function fetchInfo () {
+                                postRequest(program.host, program.port, '/admin', postData, function (err, obj) {
+                                    if (err) {
+                                        retrytimes--;
+                                        if (retrytimes < 0) {
+                                            error('Fail to start admin server');
+                                        } else {
+                                            setTimeout(fetchInfo(), 1100);
+                                        }
+                                    } else {
+                                        info('Admin started');
+                                    }
+                                });
+                            }
                         });
                     } catch (e) {
                         error('Fail to start server ' + e.message);
@@ -180,62 +224,36 @@ function main() {
     program
         .command('start-worker <version>')
         .description('start the worker')
-        .action( runUnderPm2(function (cmd) {
-            var options = cmd;
-            pm2.describe('chameleon_admin' , function (err, list) {
-                if (list && list.length > 0) {
-                    var p = list[0];
-                    if (p.pm2_env.status === 'online') {
-                        error('process existed as ' + p.pid + ', status ' + p.pm2_env.status);
-                        return pm2.disconnect();
-                    } else if (p.pm2_env.status === 'stopped') {
-                        startServer();
-                    } else {
-                        pm2.stop(PROC_NAME, function (err) {
-                            if (err) {
-                                error('Chameleon process is in ill state and can\'t be stopped ' + p.pid);
-                                return;
-                            }
-                            startServer();
-                        });
-                    }
-                } else {
-                    startServer();
+        .action( function (version) {
+            startWorker(version, function (err, obj) {
+                if (err) {
+                    return error('Fail to start worker: ' + err.message);
                 }
-                function startServer() {
-                    var opts = {
-                        name: PROC_NAME,
-                        rawArgs: ['--'],
-                        error: path.join(__dirname, '..', 'chameleon.error'),
-                        output:path.join(__dirname, '..', 'chameleon.out')
-                    };
-                    if (options.debug) {
-                        info('using debug mode') ;
-                        opts.rawArgs.push('-d');
-                    }
-                    if (options.sdkPluginPath) {
-                        info('set sdk plugin path ' + options.sdkPluginPath) ;
-                        opts.rawArgs.push('--sdkplugin');
-                        opts.rawArgs.push(options.sdkPluginPath);
-                    }
-                    info('starting with opts ' + opts.rawArgs);
-                    try {
-                        pm2.start(path.join(__dirname, 'app.js'), opts, function (err, proc) {
-                            info('starting with opts ' + opts.rawArgs);
-                            if (err) {
-                                error('Fail to start chameleon from PM2: ' + err);
-                                return pm2.disconnect();
-                            }
-                            return pm2.disconnect();
-                            // should check the liveness of the
-                            //setTimeout();
-                        });
-                    } catch (e) {
-                        error('Fail to start server ' + e.message);
-                    }
+                info("Successful start worker: " + JSON.stringify(obj, null, '\t'));
+            });
+        });
+
+    program
+        .command('install-worker <workerZipFile>')
+        .option('-s, --start', 'start worker after install')
+        .description('start the worker')
+        .action( function (workerZipFile, options) {
+            installWorker(workerZipFile, function (err, obj) {
+                if (err) {
+                    return error('Fail to install worker: ' + err.message + '\n' + err.stack);
+                }
+                info("Successful install worker: " + JSON.stringify(obj, null, '\t'));
+                if (options.start) {
+                    info("trying start worker");
+                    startWorker(info.version, function (err, obj) {
+                        if (err) {
+                            return error('Fail to start worker: ' + err.message);
+                        }
+                        info("Successful start worker: " + JSON.stringify(info, null, '\t'));
+                    });
                 }
             });
-        }));
+        });
 
     program
         .command('stop')
@@ -334,7 +352,7 @@ function main() {
                 var productCfg = JSON.parse(zipfile.readAsText(product+'/_product.json', 'utf8'));
                 postRequest(program.host, program.port, '/product/'+product, productCfg, function (err) {
                     if (err) {
-                        console.error('Fail to upgrade project: ' + err.message);
+                        error('Fail to upgrade project: ' + err.message);
                         process.exit(-1);
                     }
                     var entries = zipfile.getEntries();
@@ -347,16 +365,16 @@ function main() {
                         var channelName = path.basename(e.name, '.json');
                         postRequest(program.host, program.port, '/product/'+product+'/'+channelName, JSON.parse(c), function (err) {
                             if (err) {
-                                console.error("Fail to upgrade channel " + channelName + ': ' + err.message);
+                                error("Fail to upgrade channel " + channelName + ': ' + err.message);
                                 return;
                             }
-                            console.log("Successfully upgrade channel " + channelName);
+                            info("Successfully upgrade channel " + channelName);
                         });
                     }
                 });
             } catch (e) {
-                console.error("invalid zip file: " + e.message);
-                console.error(e.stack);
+                error("invalid zip file: " + e.message);
+                error(e.stack);
             }
         });
 
@@ -367,13 +385,13 @@ function main() {
             try {
                 postRequest(program.host, program.port, '/plugin', {fileurl: fileurl}, function (err) {
                     if (err) {
-                        console.error('Fail to add plugin: ' + err.message);
+                        error('Fail to add plugin: ' + err.message);
                         process.exit(-1);
                     }
-                    console.log('successful add plugin');
+                    info('successful add plugin');
                 });
             } catch (e) {
-                console.error("invalid zip file: " + e.message);
+                error("invalid zip file: " + e.message);
             }
         });
 
@@ -381,7 +399,7 @@ function main() {
         .command('*')
         .description('show help')
         .action(function () {
-            console.log('unknown command');
+            error('unknown command');
             program.help();
         });
 
@@ -389,6 +407,7 @@ function main() {
         program.help();
     } else {
         program.parse(process.argv);
+        initAdmin(program.host, program.port);
     }
 }
 

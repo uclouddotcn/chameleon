@@ -37,7 +37,7 @@ function defaultServerLoggerCfg(level) {
             },
             {
                 type: 'rotating-file',
-                path: path.join(__dirname, '../../log/server.err'),
+                path: path.join(env.logDir, 'server.err'),
                 level: 'error',
                 period: '1d',
                 count: 4

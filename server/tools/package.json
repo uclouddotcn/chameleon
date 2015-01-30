@@ -1,0 +1,17 @@
+{
+  "name": "chameleon-build-tool",
+  "version": "0.0.0",
+  "description": "",
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^0.9.0",
+    "colors": "^1.0.3",
+    "fs-extra": "^0.15.0",
+    "commander": "^2.6.0"
+  }
+}

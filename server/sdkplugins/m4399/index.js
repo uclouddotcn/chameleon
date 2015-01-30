@@ -47,7 +47,7 @@ M4399Channel.prototype.verifyLogin = function(wrapper, token, others, callback) 
         }
         try {
             var obj = JSON.parse(res.body);
-            if (obj.code === 100) {
+            if (obj.code == 100) {
                 callback(null, {
                     code: ErrorCode.ERR_OK,
                     loginInfo: {
@@ -90,18 +90,31 @@ M4399Channel.prototype.getPayUrlInfo = function ()  {
     ];
 };
 
+M4399Channel.prototype.pendingPay = function (wrapper, params, infoFromSDK, callback) {
+    try {
+        var orderId = wrapper.genOrderId();
+        orderId = orderId.replace(/-/g, '');
+        setImmediate(callback, null, orderId, params);
+    } catch (e) {
+        this._logger.error({err: e}, 'Fail to parse input');
+        callback(new restify.InvalidArgumentError());
+    }
+};
+
+
 M4399Channel.prototype.respondsToPay = function (req, res, next, wrapper) {
     var self = this;
     req.log.debug({req: req, params: req.params, body: req.body}, 'recv pay rsp');
     try {
-        var obj = req.query;
+        var obj = req.params;
         if (!obj) {
             self.reply(res, false, {code: 'other_error'});
             return next();
         } else {
-            var sign = calcMd5([obj.orderid, obj.uid, obj.money, obj.gamemoney, obj.serverid, obj.secret,
+            var sign = calcMd5([obj.orderid, obj.uid, obj.money, obj.gamemoney, obj.serverid, wrapper.cfg.appSecret,
                 obj.mark, obj.roleid, obj.time]);
             if (sign !== obj.sign) {
+                req.log.error({e: sign, r: obj.sign}, 'unmatched sign');
                 self.reply(res, false, {code: 'sign_error'});
                 return next();
             } else {

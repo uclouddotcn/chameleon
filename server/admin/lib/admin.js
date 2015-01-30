@@ -99,7 +99,7 @@ var Admin = function(pluginMgr, options, logger) {
 
     self.server.post('/worker/install', function (req, res, next) {
         var s = req.params.workerzipFile;
-        child_process.exec('node ' + path.join(__dirname, 'script', 'installworker.js') + ' ' + s, function (err, stdout, stderr) {
+        child_process.exec('node ' + path.join(__dirname, '..', 'script', 'installworker.js') + ' ' + s, function (err, stdout, stderr) {
             if (err) {
                 return next(new restify.InvalidArgumentError(err.message));
             }
@@ -109,20 +109,9 @@ var Admin = function(pluginMgr, options, logger) {
     });
 
     self.server.post('/worker/start', function (req, res, next) {
-        var version = req.params.version;
-        var versionCode = versionParser.getVersionCode(req.params.version);
-        var cfg = {
-            version: version,
-            script: path.join(__dirname, 'worker', versionCode.toString(), "worker"),
-            "args": [
-                "./config/svr.json"
-            ],
-            "env": {
-                "NODE_PATH": "$CHAMELEON_WORKDIR/worker/"+versionCode.toString()+"/worker"+"/node_modules"
-            }
-        };
+        var cfg = versionParser.genDefaultWorkerCfg(req.params.version);
         if (workerMgr.status === 'running') {
-            workerMgr.restartWorker(cfg, function () {
+            workerMgr.restartWorker(cfg, function (err) {
                 if (err) {
                     return next(new restify.InvalidArgumentError(err.message));
                 } else {
@@ -346,7 +335,7 @@ Admin.prototype.startWorkerAndSave = function (workercfg, callback) {
 
 function saveWorkerCfg(cfg) {
     var cfgpath = getWorkerCfgPath();
-    fs.writeFile(cfgpath, JSON.stringify(workercfg, null, '\t'));
+    fs.writeFile(cfgpath, JSON.stringify(cfg, null, '\t'));
 }
 
 Admin.prototype.startWorker = function (workercfg, callback) {

@@ -1,4 +1,6 @@
-exports.getVersionCode = function (version) {
+// do not require any third party module here, it will be used in other scripts
+
+var getVersionCode = exports.getVersionCode = function (version) {
     var names = version.split('.');
     var major = parseInt(names[0] || '0');
     var medium = parseInt(names[1] || '0');
@@ -19,4 +21,17 @@ exports.formatVersionCode = function (versionCode) {
     return major+'.'+medium+'.'+minor+'.'+build;
 }
 
+exports.genDefaultWorkerCfg = function (version) {
+    var versionCode = getVersionCode(version);
+    return {
+        version: version,
+        script: path.join(__dirname, '..', '..', 'worker', versionCode.toString(), "worker"),
+        "args": [
+            "./config/svr.json"
+        ],
+        "env": {
+            "NODE_PATH": "$CHAMELEON_WORKDIR/worker/"+versionCode.toString()+"/worker"+"/node_modules"
+        }
+    };
+};
 

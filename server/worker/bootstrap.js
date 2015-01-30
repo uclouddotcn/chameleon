@@ -5,7 +5,7 @@ var fs = require('fs');
 var workdir = __dirname;
 
 var cfgtemplate = {
-    "debug" : 1,
+    "debug" : false,
     "sdkSvr" : {
         "port" : 8081,
             "host" : "0.0.0.0"
@@ -63,9 +63,11 @@ function series (funcs, callback) {
     wrapper(next, cb);
 }
 
-function npmInstall(callback) {
-    console.log('npm install under ' + process.cwd());
-    child_process.exec('npm install', function (err, stdout, stderr) {
+function npmInstall(p, callback) {
+    console.log('npm install under ' + p);
+    child_process.exec('npm install', {
+        cwd: p
+    }, function (err, stdout, stderr){
         if (err) {
             console.error("Fail to install under: " + process.cwd());
             console.error(stderr);
@@ -82,22 +84,20 @@ function bfs(p, callback) {
     var morePath = []
     for (var i = 0; i < subs.length; ++i) {
         var f = path.join(p, subs[i]);
+        if (subs[i] === 'package.json') {
+            toInstall.push(p);
+            continue;
+        }
         if (!fs.statSync(f).isDirectory() ||
             subs[i] === 'node_modules' ||
             subs[i].substr(0, 1) === '.') {
             continue;
         }
         morePath.push(f);
-        if (fs.existsSync(path.join(f, 'package.json'))) {
-            toInstall.push(f);
-        }
     }
     series(toInstall.map(function (a) {
         return function (cb) {
-            var nowDir = process.cwd();
-            process.chdir(a);
-            npmInstall(function (err) {
-                process.chdir(nowDir);
+            npmInstall(a, function (err) {
                 cb(err);
             });
         }
@@ -118,6 +118,7 @@ function bfs(p, callback) {
 }
 
 var basedir = process.argv[2];
+console.log(basedir)
 
 bfs(workdir, function (err) {
     if (err) {

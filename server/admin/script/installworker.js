@@ -2,11 +2,15 @@ var AdmZip = require('adm-zip');
 var child_process = require('child_process');
 var fs = require('fs');
 var path = require('path');
-var toVersionCode = require(path.join(__dirname, '..', 'lib', 'versionparser')).getVersionCode;
-var workerDir = path.join(__dirname, '..', 'worker');
+var versionparser = require(path.join(__dirname, '..', 'lib', 'versionparser'));
+var toVersionCode = versionparser.getVersionCode;
+var genDefaultWorkerCfg = versionparser.genDefaultWorkerCfg;
+var baseDir = path.join(__dirname, '..', '..');
+var workerDir = path.join(baseDir, 'worker');
 
 function main(callback) {
     var workerzip = process.argv[2];
+    var toInstallCfg = process.argv[3];
     var zipf = new AdmZip(workerzip);
     var packageContent = JSON.parse(zipf.readAsText('worker/package.json'));
     var versionCode = toVersionCode(packageContent.version);
@@ -21,7 +25,14 @@ function main(callback) {
             return;
         }
         fs.rename(tmpFolder, targetFolder, function (err) {
-            callback(err, targetFolder);
+            if (err) {
+                return callback(err);
+            }
+            if (toInstallCfg === 'true') {
+                var cfg = genDefaultWorkerCfg(packageContent.version);
+                fs.writeFileSync(path.join(baseDir, 'config', 'worker.json'), JSON.stringify(cfg, null, '\t'));
+            }
+            callback(null, err);
         });
     });
 }

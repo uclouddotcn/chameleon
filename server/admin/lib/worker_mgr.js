@@ -175,7 +175,6 @@ WorkerMgr.prototype.close = function (callback) {
 WorkerMgr.prototype._doClose = function (wid, callback) {
     this._doRequest(wid, '__close', null, function (err) {
         if (err) {
-
             cluster.workers[wid].kill('SIGKILL');
         }
         callback();
@@ -298,12 +297,12 @@ WorkerMgr.prototype._onReply = function (msg) {
     if (msg.err) {
         obj.callback.call(null, msg.err);
     } else {
-        obj.callback.call(null, null, msg.body);
         if (msg.header._id === '__start') {
             this.worker.onStarted();
             this.status = 'running';
             this._startHeartBeat();
         }
+        obj.callback.call(null, null, msg.body);
     }
     clearTimeout(obj.timeout);
 };
