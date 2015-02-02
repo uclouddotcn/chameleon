@@ -31,6 +31,8 @@ JAVAC = "javac"
 
 DX_PATH = "java -jar dx.jar"
 
+# subprocess.call()
+
 if JAVA_HOME is None:
     print('Can\'t find JAVA_HOME, Please install JDK first')
     sys.exit()
@@ -131,6 +133,19 @@ def baksmali(dexfile, destdir):
     return u
 
 
+def relateCopy(src, dest, rejectRegex):
+    if os.path.exists(src):
+        allTarLibFilePath = __getAllObjFiles(src, rejectRegex, True)
+        for (x, y) in allTarLibFilePath:
+            pt = os.path.join(dest, os.path.relpath(x, src))
+            print(x)
+            print(os.path.join(pt, y))
+            if not os.path.exists(pt):
+                os.makedirs(pt)
+            if not os.path.exists(os.path.join(pt, y)):
+                shutil.copy(os.path.join(x, y), os.path.join(pt, y))
+
+
 def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     manifestPath = os.path.join(desDir, 'AndroidManifest.xml')
     # channelRes = os.path.join(desDir, 'res')
@@ -142,9 +157,6 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     dstPackagePath = os.path.join(desDir, genPkgName)
     channelPath = desDir
 
-    # allTarAssetsFilePath = __getAllObjFiles(tarAssetsPath, '.*(\.jar)$', True)
-    # allAssetsFilePath = []
-    # allAssetsFilePath.append(allTarAssetsFilePath)
     sdkPaths.append(targetPath)
 
     for sdkPath in sdkPaths:
@@ -238,33 +250,14 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
         shutil.rmtree(tempLibDir)
     os.makedirs(tempLibDir)
 
+    # copy lib files of the target apk file to the temp lib dir
+    p = os.path.join(targetPath, 'lib')
+    relateCopy(p, tempLibDir, '.*(\.jar)$')
+
     # copy lib files of the channel to the temp lib dir
     for sdkPath in sdkPaths:
         p = os.path.join(sdkPath, 'libs')
-        if os.path.exists(p):
-            allLibFilePath = __getAllObjFiles(p, '.*(\.jar)$', True)
-            for (x, y) in allLibFilePath:
-                pt = os.path.join(tempLibDir, os.path.relpath(x, p))
-                print(x)
-                print(os.path.join(pt, y))
-                if not os.path.exists(pt):
-                    os.makedirs(pt)
-                if not os.path.exists(os.path.join(pt, y)):
-                    shutil.copy(os.path.join(x, y), os.path.join(pt, y))
-
-    # copy lib files of the target apk file to the temp lib dir
-    p = os.path.join(targetPath, 'lib')
-    if os.path.exists(p):
-        allTarLibFilePath = __getAllObjFiles(p, '.*(\.jar)$', True)
-        for (x, y) in allTarLibFilePath:
-            p = os.path.join(tempLibDir, os.path.relpath(x, os.path.join(targetPath, 'lib')))
-            print(x)
-            print(os.path.join(p, y))
-            if not os.path.exists(p):
-                        os.makedirs(p)
-            if not os.path.exists(os.path.join(p, y)):
-                shutil.copy(os.path.join(x, y), os.path.join(p, y))
-
+        relateCopy(p, tempLibDir, '.*(\.jar)$')
 
     pwd = os.getcwd()
 
@@ -409,7 +402,7 @@ def main():
         if u != 0:
             u = 1
             print(ERR_MSG[u])
-            return u
+        return u
 
     globalcfg = getCommCfg(os.path.join(options.projectRoot, 'cfg', channel))
     libs = getDependLibs(proj, globalcfg)
@@ -426,12 +419,8 @@ def main():
             return u
 
         with zipfile.ZipFile(os.path.join(channelRoot, sdk+'.zip'), 'r') as sdkFile:
-            u = sdkFile.extractall(sdkinfo.path)
+            sdkFile.extractall(sdkinfo.path)
             sdkFile.close()
-            if u != 0:
-                u = 2
-                print(ERR_MSG[u])
-                return u
 
     dexPaths = [os.path.join(x.path, 'smali') for x in libs]
 
@@ -460,7 +449,8 @@ def main():
     manifestFilePath = os.path.join(channelPath, MANIFEST_FILE_NAME)
 
     u = modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg)
-    if u != 0:
+    if u != 0 and u is not None:
+        print(u)
         u = 4
         print(ERR_MSG[u])
         return u
@@ -498,8 +488,11 @@ def main():
         os.remove(tempForAlighPkgName)
     else:
         shutil.move(tempForAlighPkgName, options.generatePkgName)
+    outputdir = os.path.join(options.projectRoot, OUTPUT_DIR)
+    if not os.path.exists(outputdir):
+        os.makedirs(outputdir)
 
-    shutil.copy(options.generatePkgName, os.path.join(options.projectRoot, OUTPUT_DIR, options.generatePkgName))
+    shutil.copy(options.generatePkgName, os.path.join(outputdir, options.generatePkgName))
 
     os.remove(tempPkgName)
     os.chdir(pwd)
