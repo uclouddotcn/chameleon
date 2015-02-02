@@ -16,4 +16,5 @@ _book
 sample/chameleon_cc2d/proj.android/bin
 bin
 gen
+smali
 chameleon_build

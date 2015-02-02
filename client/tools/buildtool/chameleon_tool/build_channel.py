@@ -78,7 +78,7 @@ def compileChannel(channelName, channelRootPath):
     os.chdir(pwd)
 
     dexPath = os.path.join(channelPath, 'bin', 'classes.dex')
-    channelSmaliPath = os.path.join(channelPath, 'bin', 'smali')
+    channelSmaliPath = os.path.join(channelPath, 'smali')
 
     paras = []
     paras.append(('java', '-jar'))
@@ -116,7 +116,7 @@ def main():
 
     with zipfile.ZipFile(os.path.join(genRoot, channel+'.zip'), 'w', zipfile.ZIP_DEFLATED) as pkgFile:
 
-        smalif = __getAllObjFiles(os.path.join('bin', 'smali'), '.*')
+        smalif = __getAllObjFiles(os.path.join('smali'), '.*')
 
         [pkgFile.write(os.path.join(x, y)) for (x, y) in smalif]
 
