@@ -104,6 +104,7 @@
     "muzhiwan": {
         "name": "拇指玩",
         "sdk": "muzhiwan",
+        "pkgsuffix": ".muwan$",
         "splashscreen": 1,
         "icon": "1"
     },
@@ -114,6 +115,7 @@
     "ewan": {
         "name": "益玩",
         "sdk": "ewan",
+        "pkgsuffix": ".ewan$",
         "splashscreen": 1,
         "icon": "1"
     },
