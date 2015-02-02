@@ -1,4 +1,5 @@
 // do not require any third party module here, it will be used in other scripts
+var path = require('path');
 
 var getVersionCode = exports.getVersionCode = function (version) {
     var names = version.split('.');
