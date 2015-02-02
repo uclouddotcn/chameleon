@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 import subprocess, sys, os, re, json, codecs
 import shutil
-import xml.dom.minidom as dom
 from chameleon_gen import *
 from optparse import OptionParser
 import zipfile
-from itertools import *
 
 CHANNEL_ROOT = ''
 
@@ -33,10 +31,6 @@ JAVAC = "javac"
 
 DX_PATH = "java -jar dx.jar"
 
-# if ANDROID_HOME is None:
-#     print('can\'t find ANDROID SDK')
-#     sys.exit()
-
 if JAVA_HOME is None:
     print('Can\'t find JAVA_HOME, Please install JDK first')
     sys.exit()
@@ -58,7 +52,9 @@ def unpackAPK(apkName, apkPath, destPath):
     paras.append(('-o', destPath))
     paras.append(('-f', ''))
 
-    os.system(genCmd(paras))
+    u = os.system(genCmd(paras))
+    if u != 0:
+        return u
 
     manifestInst = loadManifest(os.path.join(destPath, MANIFEST_FILE_NAME))
     pkgName = str(manifestInst.getPkgName())
@@ -68,9 +64,10 @@ def unpackAPK(apkName, apkPath, destPath):
     allRsmaliFiles = __getAllObjFiles(packageSmali, '^(R[\$\.]).*')
     [os.remove(os.path.join(x, y)) for (x, y) in allRsmaliFiles]
 
+    return 0
+
 
 def __getAllObjFiles(rootpath, regex, isReverseCondition=False):
-
     objs = []
 
     if not os.path.exists(rootpath):
@@ -97,11 +94,14 @@ def buildClassesDex(channelName, projRoot, oriUnpackPath):
     smaliCmd = genCmd(paras)
 
     print(smaliCmd)
-    os.system(smaliCmd)
+    u = os.system(smaliCmd)
+    if u != 0:
+        print(smaliCmd + " failed.")
+
+    return u
 
 
 def buildDex(smalidirs, destDir):
-
     paras = []
     paras.append(('java', '-jar'))
     paras.append((SMALI_PATH, ''))
@@ -110,7 +110,11 @@ def buildDex(smalidirs, destDir):
     smaliCmd = genCmd(paras)
 
     print(smaliCmd)
-    os.system(smaliCmd)
+    u = os.system(smaliCmd)
+    if u != 0:
+        print(smaliCmd + " failed.")
+
+    return u
 
 
 def baksmali(dexfile, destdir):
@@ -120,8 +124,11 @@ def baksmali(dexfile, destdir):
     paras.append(('-o', destdir))
     paras.append(('', dexfile))
     cmd = genCmd(paras)
-    print (cmd)
-    os.system(cmd)
+    print(cmd)
+    u = os.system(cmd)
+    if u != 0:
+        print(cmd + " failed.")
+    return u
 
 
 def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
@@ -154,7 +161,7 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     tempRPath = os.path.join(desDir, '__temp__R_JAVA___')
     if os.path.exists(tempRPath):
         shutil.rmtree(tempRPath)
-    os.makedirs(tempRPath)
+    os.makedirs(tempRPath, exist_ok=True)
 
 
     paras = []
@@ -213,13 +220,12 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     print(cmd)
     r = os.system(cmd)
     if r != 0:
+        print(cmd + " failed")
         return r
 
 
     baksmali(os.path.join(tempRPath, 'r.dex'), os.path.join(tempRPath, 'smali'))
     baksmali(os.path.join(channelPath, 'classes.dex'), os.path.join(os.path.join(tempRPath, 'classes')))
-    # allRsmaliFiles = __getAllObjFiles(os.path.join(os.path.join(tempRPath, 'classes')), '^(R[\$\.]).*')
-    # [os.remove(os.path.join(x, y)) for (x, y) in allRsmaliFiles]
 
     buildDex([os.path.join(tempRPath, 'classes'), os.path.join(tempRPath, 'smali')], channelPath)
 
@@ -358,10 +364,21 @@ def procSplashIcons(channelPath, globalcfg):
                 continue
             if not os.path.exists(os.path.join(channelPath, 'res', os.path.split(x)[-1])):
                 os.mkdir(os.path.join(channelPath, 'res', os.path.split(x)[-1]))
-            print("copy "+ dest)
+            print("copy "+dest)
             shutil.copy(os.path.join(x, y), dest)
 
+ERR_MSG = {
+    1:'decompress package failed.',
+    2:'get sdk failed.',
+    3:'build dex files failed.',
+    4:'modify androidmanifest file failed.',
+    5:'pack files failed.',
+    6:'sign package failed.',
+    7:'align package failed.'
+}
+
 def main():
+    u = 0
     parser = OptionParser()
     parser.add_option('-c', '--channel', dest='channel', help='channel name, e.g. xiaomi')
     parser.add_option('-r', '--channelRoot', dest='channelRoot', help='Root directory of the channels')
@@ -388,8 +405,11 @@ def main():
         os.makedirs(proj)
 
     if options.decompressOnly.casefold() in ['true', 't']:
-        unpackAPK(options.package, options.packageRoot, unpackDest)
-        return
+        u = unpackAPK(options.package, options.packageRoot, unpackDest)
+        if u != 0:
+            u = 1
+            print(ERR_MSG[u])
+            return u
 
     globalcfg = getCommCfg(os.path.join(options.projectRoot, 'cfg', channel))
     libs = getDependLibs(proj, globalcfg)
@@ -401,11 +421,17 @@ def main():
 
         if not os.path.exists(os.path.join(channelRoot, sdk+'.zip')):
             print(channel+'.zip does not exist.')
+            u = 2
+            print(ERR_MSG[u])
+            return u
 
         with zipfile.ZipFile(os.path.join(channelRoot, sdk+'.zip'), 'r') as sdkFile:
-            sdkFile.extractall(sdkinfo.path)
+            u = sdkFile.extractall(sdkinfo.path)
             sdkFile.close()
-
+            if u != 0:
+                u = 2
+                print(ERR_MSG[u])
+                return u
 
     dexPaths = [os.path.join(x.path, 'smali') for x in libs]
 
@@ -416,31 +442,39 @@ def main():
     for dp in dexPaths:
         files = __getAllObjFiles(dp, '.*\.smali$')
         p = [os.path.join(os.path.relpath(x, dp), y) for (x, y) in files]
-        # p = [x for (x, y)in groupby(sorted(p))]
         for x in p:
             if x in tarspaths:
                 os.remove(os.path.join(dp, x))
-                # shutil.rmtree(os.path.join(dp, x))
 
     dexPaths.append(os.path.join(unpackDest, 'smali'))
 
-    buildDex(dexPaths, os.path.join(proj, globalcfg['channel']['channelName']))
+    u = buildDex(dexPaths, os.path.join(proj, globalcfg['channel']['channelName']))
+    if u != 0:
+        u = 3
+        print(ERR_MSG[u])
+        return u
 
     channelPath = os.path.join(proj, channel)
-    # buildClassesDex(channel,  proj, unpackDest)
 
     manifestFilePathOrig = os.path.join(unpackDest, MANIFEST_FILE_NAME)
     manifestFilePath = os.path.join(channelPath, MANIFEST_FILE_NAME)
 
-    modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg)
+    u = modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg)
+    if u != 0:
+        u = 4
+        print(ERR_MSG[u])
+        return u
+
     transformCfg(channelPath, globalcfg)
     procSplashIcons(channelPath, globalcfg)
     tempPkgName = options.generatePkgName+'.tempzipfile'
 
     sdkPaths = [x.path for x in libs]
-    rv = aaptPack(channel, sdkPaths, tempPkgName, unpackDest, channelPath)
-    if rv != 0:
-        return rv
+    u = aaptPack(channel, sdkPaths, tempPkgName, unpackDest, channelPath)
+    if u != 0:
+        u = 5
+        print(ERR_MSG[u])
+        return u
 
     pwd = os.getcwd()
     os.chdir(channelPath)
@@ -449,10 +483,18 @@ def main():
 
     globalcfg['signConfig']['keystore'] = os.path.join(proj, globalcfg['signConfig']['keystore'])
 
-    sign_pkg(globalcfg['signConfig'], tempPkgName, tempForAlighPkgName)
+    u = sign_pkg(globalcfg['signConfig'], tempPkgName, tempForAlighPkgName)
+    if u != 0:
+        u = 6
+        print(ERR_MSG[u])
+        return u
 
     if str(options.align).casefold() in ['true']:
-        pkgAlign(tempForAlighPkgName, options.generatePkgName)
+        u = pkgAlign(tempForAlighPkgName, options.generatePkgName)
+        if u != 0:
+            u = 7
+            print(ERR_MSG[u])
+            return u
         os.remove(tempForAlighPkgName)
     else:
         shutil.move(tempForAlighPkgName, options.generatePkgName)
