@@ -173,8 +173,8 @@ function main() {
                     var opts = {
                         name: PROC_NAME,
                         rawArgs: ['--'],
-                        error: path.join(__dirname, '..', 'chameleon.error'),
-                        output:path.join(__dirname, '..', 'chameleon.out')
+                        error: path.join(__dirname, '..', 'log', 'chameleon.error'),
+                        output:path.join(__dirname, '..', 'log', 'chameleon.out')
                     };
                     if (options.debug) {
                         info('using debug mode') ;

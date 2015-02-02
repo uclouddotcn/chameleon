@@ -17,7 +17,7 @@ function main(callback) {
     var tmpFolder = path.join(workerDir, 'tmp-'+versionCode);
     var targetFolder = path.join(workerDir, versionCode.toString());
     zipf.extractAllTo(tmpFolder, true);
-    child_process.exec('node ' + path.join(tmpFolder, 'worker', 'bootstrap.js'), function (err, stdout, stderr) {
+    child_process.exec('node ' + path.join(tmpFolder, 'worker', 'bootstrap.js') + ' ' + baseDir, function (err, stdout, stderr) {
         if (err) {
             console.error(stderr);
             console.error(err.stack);
