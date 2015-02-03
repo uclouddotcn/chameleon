@@ -12,7 +12,8 @@
         {
             "name": "appSecret",
             "type": "string",
-            "desc": "APP SECRET"
+            "desc": "APP SECRET",
+            "ignoreInA": 1
         }
     ]
 }

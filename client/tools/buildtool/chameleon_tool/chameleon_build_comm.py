@@ -2,7 +2,7 @@ import codecs, os, json
 from collections import namedtuple
 
 LibInfo = namedtuple('LibInfo', ['name', 'path', 'cfg', 'type'])
-GLOBALCFGNAME = "projectcfg.json"
+GLOBALCFGNAME = "config.json"
 
 
 def getCommCfg(projChannelPath):

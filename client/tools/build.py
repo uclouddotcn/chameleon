@@ -104,7 +104,6 @@ def copyChameleonCpp(targetFolder):
 def initProjectFolder(targetFolder, version):
     targetSDKPath = os.path.join(targetFolder, 'sdk')
     #this is channels zip list
-    targetChannelPath = os.path.join(targetSDKPath, 'libs')
     targetScriptPath = os.path.join(targetFolder, 'script')
     toolPath = os.path.join(targetFolder, 'tools')
     infoJsonFile = os.path.join(targetFolder, 'info.json')
@@ -115,7 +114,7 @@ def initProjectFolder(targetFolder, version):
     os.makedirs(toolPath)
 
     #packChannels
-    channelInfos = packChannels(CHANNEL_DIR, targetChannelPath)
+    channelInfos = packChannels(CHANNEL_DIR, targetSDKPath)
 
     with codecs.open(channelListFile, 'r', 'utf8') as channelListFObj:
         channellistobj = json.load(channelListFObj)

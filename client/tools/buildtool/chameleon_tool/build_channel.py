@@ -78,7 +78,7 @@ def compileChannel(channelName, channelRootPath):
     os.chdir(pwd)
 
     dexPath = os.path.join(channelPath, 'bin', 'classes.dex')
-    channelSmaliPath = os.path.join(channelPath, 'bin', 'smali')
+    channelSmaliPath = os.path.join(channelPath, 'smali')
 
     paras = []
     paras.append(('java', '-jar'))
@@ -116,17 +116,17 @@ def main():
 
     with zipfile.ZipFile(os.path.join(genRoot, channel+'.zip'), 'w', zipfile.ZIP_DEFLATED) as pkgFile:
 
-        smalif = __getAllObjFiles('smali', '_____', True)
+        smalif = __getAllObjFiles(os.path.join('smali'), '.*')
 
         [pkgFile.write(os.path.join(x, y)) for (x, y) in smalif]
 
-        resf = __getAllObjFiles('res', '-----', True)
+        resf = __getAllObjFiles('res', '.*')
         [pkgFile.write(os.path.join(x, y)) for (x, y) in resf]
 
         libsf = __getAllObjFiles('libs', '.*\.jar$', True)
         [pkgFile.write(os.path.join(x, y)) for (x, y) in libsf]
 
-        assetsf = __getAllObjFiles('assets', '-----', True)
+        assetsf = __getAllObjFiles('assets', '.*')
         [pkgFile.write(os.path.join(x, y)) for (x, y) in assetsf]
 
         pkgFile.write('AndroidManifest.xml')

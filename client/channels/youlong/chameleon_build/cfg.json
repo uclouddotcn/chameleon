@@ -7,12 +7,12 @@
         {
           "name": "pId",
           "type" : "string",
-          "desc" : "添加游龙SDK必须的meta-data： PID。该值向游龙申请"
+          "desc" : "PID"
         },
         {
           "name": "pKey",
           "type" : "string",
-          "desc" : "添加游龙SDK必须的meta-data： PKEY。该值向游龙申请"
+          "desc" : "PKEY"
         }
     ]
 }

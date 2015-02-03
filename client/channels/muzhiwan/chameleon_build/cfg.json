@@ -7,7 +7,7 @@
         {
           "name": "appId",
           "type" : "string",
-          "desc" : "申请的APPID",
+          "desc" : "APPID",
           "ignoreInA" : 1
         },
         {
@@ -18,7 +18,7 @@
         {
           "name": "debug",
           "type" : "string",
-          "desc" : "是否是debug模式 true or false"
+          "desc" : "debug : true or false"
         }
 
     ]

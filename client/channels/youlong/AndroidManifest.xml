@@ -43,12 +43,15 @@
 
         <activity android:name="com.yx9158.external.YXLoginActivity"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity android:name="com.yx9158.external.YXRegisterActivity"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity android:name="com.yx9158.external.YXWebActivity"
             android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
     </application>
