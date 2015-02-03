@@ -208,6 +208,9 @@ namespace ChameleonChannelAPI{
      * 是否登录
      */
     bool isLogined();
+
+    bool isSupportProtocol(const std::string & protocl);
+    int runProtocol(int id, const std::string & protocol, const std::string & message);
 }
 }
 
