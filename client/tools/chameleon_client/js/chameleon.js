@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2015/1/12.
  */
-var fs = require('fs');
+var fs = require('fs-extra');
 var childprocess = require("child_process");
 var pathLib = require("path");
 var os = require('os');
@@ -130,28 +130,39 @@ ChameleonTool.prototype.updateProject = function(project, callback){
 }
 
 ChameleonTool.prototype.getChannelList = function(){
-    var channelList = [];
-    var data = fs.readFileSync('././res/channellist.json');
-    var channelInfo = JSON.parse(data);
-    for(var p in channelInfo){
-        var channel = new Channel();
-        channel.channelName = p;
-        channel.desc = channelInfo[p].name;
-        channel.checked = false;
-        channel.config.pkgsuffix = channelInfo[p].pkgsuffix;
-        channel.config.splashPath = channelInfo[p].splashscreen == 1 ? '': undefined;
+    try {
+        var channelList = [];
+        var channelInfo = fs.readJsonFileSync('../../app/chameleon/channelinfo/channellist.json');
+        for (var p in channelInfo) {
+            var channel = new Channel();
+            channel.channelName = p;
+            channel.desc = channelInfo[p].name;
+            channel.checked = false;
+            channel.config.pkgsuffix = channelInfo[p].pkgsuffix;
+            channel.config.splashPath = channelInfo[p].splashscreen == 1 ? '' : undefined;
+            channel.config.icon = channelInfo[p].icon == 1 ? {} : undefined;
+            channel.config.SDKName = channelInfo[p].sdk;
 
-        channelList.push(channel);
+            channelList.push(channel);
+        }
+    }catch (e){
+        console.log(e);
+        Logger.log(e.message, e);
     }
+
     return channelList;
 }
 
 ChameleonTool.prototype.getSDKList = function(){
-    var data = fs.readFileSync('././res/sdklist.json');
-    var SDKInfo = JSON.parse(data);
-    var SDKList = SDKInfo.channels;
-    for(var i=0; i<SDKList.length; i++){
-        SDKList[i].checked = false;
+    try {
+        var SDKInfo = fs.readJsonFileSync('../../app/chameleon/info.json');
+        var SDKList = SDKInfo.channels;
+        for (var i = 0; i < SDKList.length; i++) {
+            SDKList[i].checked = false;
+        }
+    }catch (e){
+        console.log(e);
+        Logger.log(e.message, e);
     }
 
     return SDKList;
@@ -159,6 +170,72 @@ ChameleonTool.prototype.getSDKList = function(){
 
 ChameleonTool.prototype.dirName = function(){
     return __dirname;
+}
+
+ChameleonTool.prototype.createProjectDirectory = function(name){
+    var root = '../../app/projects/';
+    try{
+        var path = root + name;
+        fs.mkdirpSync(path);
+        path += '/cfg';
+        fs.mkdirpSync(path);
+    }catch (e){
+        console.log(e);
+        Logger.log(e.message, e);
+    }
+}
+
+ChameleonTool.prototype.createChannelDirectory = function(project, channelName){
+    var root = '../../app/projects/' + project.name + '/cfg/';
+    try{
+        var path = root + channelName;
+        fs.mkdirpSync(path);
+        path += '/res';
+        fs.mkdirpSync(path);
+    }catch (e){
+        console.log(e);
+        Logger.log(e.message, e);
+    }
+}
+
+ChameleonTool.prototype.removeProjectDirectory = function(name){
+    var root = '../../app/projects/';
+    try{
+        var path = root + name;
+        fs.removeSync(path);
+    }catch (e){
+        console.log(e);
+        Logger.log(e.message, e);
+    }
+}
+
+ChameleonTool.prototype.removeChannelDirectory = function(project, channelName){
+    var root = '../../app/projects/'+ project.name + '/cfg/';
+    try{
+        var path = root + channelName;
+        fs.removeSync(path);
+    }catch (e){
+        console.log(e);
+        Logger.log(e.message, e);
+    }
+}
+
+ChameleonTool.prototype.command = function(command, args){
+    var root = '../../../buildtool/chameleon_tool/';
+    var commandContext = {
+        buildPackage: root + 'build_package.py'
+    }
+    var spawn = childprocess.spawn;
+    var result = spawn(commandContext[command], args);
+    result.stdout.on('data', function(data){
+        console.log(data);
+    });
+    result.stderr.on('data', function(data){
+        console.log(data);
+    });
+    result.on('close', function (code) {
+        console.log('child process exited with code ' + code);
+    });
 }
 
 module.exports = ChameleonTool;

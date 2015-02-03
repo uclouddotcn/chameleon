@@ -148,6 +148,26 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.dirName();
     }
 
+    ProjectMgr.prototype.createProjectDirectory = function(name){
+        return this.tool.createProjectDirectory(name);
+    }
+
+    ProjectMgr.prototype.createChannelDirectory = function(project, channelName){
+        return this.tool.createChannelDirectory(project, channelName);
+    }
+
+    ProjectMgr.prototype.removeProjectDirectory = function(name){
+        return this.tool.removeProjectDirectory(name);
+    }
+
+    ProjectMgr.prototype.removeChannelDirectory = function(project, channelName){
+        return this.tool.removeChannelDirectory(project, channelName);
+    }
+
+    ProjectMgr.prototype.command = function(command, args){
+        return this.tool.command(command, args);
+    }
+
     return new ProjectMgr();
 }])
     .factory('WaitingDlg', ['$q', '$modal', function ($q, $modal) {

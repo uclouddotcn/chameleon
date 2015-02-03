@@ -8,7 +8,8 @@
                 <li role="presentation"><a href="#channelManager" >渠道管理</a></li>
                 <li role="presentation"><a href="#SDKManager" >SDK管理</a></li>
                 <li role="presentation"><a href="#SDKConfig" >SDK配置</a></li>
-                <li role="presentation"><a href="#iconManager" >icon管理</a></li>
+                <li role="presentation" ng-hide="!hasIcon()"><a href="#iconManager" >icon管理</a></li>
+                <li role="presentation"><a href="#pack" >打包</a></li>
             </ul>
 
             <!-- Tab panes -->
@@ -106,7 +107,7 @@
                         <div class="col-md-8">
                             <div class="gridStyle" ng-grid="gridOptions2"></div>
                         </div>
-                        <div class="col-md-4" ng-hide="hideGrid">
+                        <div class="col-md-4">
                             <div class="gridStyle" ng-grid="gridOptions1"></div>
                         </div>
                     </div>
@@ -140,8 +141,8 @@
                                         <label>渠道包名</label><input type="text" ng-model="selectedChannel.config.packageName" />
                                     </div>
                                     <div>
-                                        <div>
-                                            <label>Splash</label><label>{{selectedChannel.config.splash}}</label>
+                                        <div ng-hide="!hasSplash">
+                                            <label>Splash</label><label>{{selectedChannel.config.splashPath}}</label>
                                         </div>
                                         <div>
                                             <input type="file" fileread="selectedChannel.config.splash" name="splash"/>
@@ -173,9 +174,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div><button class="btn-large btn-success has-spinner" ng-click="generateConfigFile()" >生成配置文件</button></div>
-                    </div>
                 </div>
                 <div class="tab-pane fade" id="iconManager" role="tabpanel">
                     <div class="row">
@@ -186,10 +184,10 @@
                             <div class="row">
                                 <label>角标位置</label>
                                 <div class="btn-group" >
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="1"  >左上</label>
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="2"  >左下</label>
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="3"  >右上</label>
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="4"  >右下</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="1" ng-hide="!iconPosition.leftUp" >左上</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="2" ng-hide="!iconPosition.leftDown" >左下</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="3" ng-hide="!iconPosition.rightUp" >右上</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="4" ng-hide="!iconPosition.rightDown" >右下</label>
                                 </div>
                             </div>
                             <div class="row">
@@ -200,7 +198,7 @@
                                 <input type="file" fileread="selectedChannel.config.icon.path" name="icon"/>
                             </div>
                             <div class="row">
-                                <canvas width="72", height="72" drawing-icon id="drawingIcon"></canvas>
+                                <canvas width="96", height="96" drawing-icon id="drawingIcon"></canvas>
                             </div>
                             <div class="row">
                                 <label>应用到全部</label>
@@ -211,6 +209,15 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="tab-pane fade" id="pack" role="tabpanel">
+                    <div>
+                        <label>Keystore文件</label><label>{{apkFilePath}}</label>
+                    </div>
+                    <div>
+                        <input type="file" accept="apk/*" fileread="apkFilePath" name="apk"/>
+                    </div>
+                    <input class="btn-large btn-success has-spinner" type="button" ng-click="pack()" value="打包" />
                 </div>
             </div>
 

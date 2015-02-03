@@ -1129,6 +1129,7 @@ chameleonControllers
             });
             modalInstance.result.then(function(result){
                 $scope.projects.push(result);
+                ProjectMgr.createProjectDirectory(result.name);
             });
         };
 
@@ -1175,6 +1176,7 @@ chameleonControllers
         $scope.removeProject = function () {
             angular.forEach($scope.selectedProject, function(rowItem) {
                 $scope.projects.splice($scope.projects.indexOf(rowItem),1);
+                ProjectMgr.removeProjectDirectory(rowItem.name);
                 ProjectMgr.removeProject(rowItem.id);
             });
         }
