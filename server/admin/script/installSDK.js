@@ -30,7 +30,7 @@ function extractInfo (obj) {
 function main() {
     var sdkzip = process.argv[2];
     if (!sdkzip || !fs.existsSync(sdkzip)) {
-        throw new Error('must provide a valid zip file');
+        throw new Error('must provide a valid zip file: ' + sdkzip);
     }
     var sdkpluginFolder = path.join(__dirname, '..', '..', 'sdkplugins');
     var zipf = new AdmZip(sdkzip);
@@ -45,16 +45,16 @@ function main() {
     packageEntry = packageEntry[0];
     var obj = JSON.parse(zipf.readAsText(packageEntry));
     var packageInfo = extractInfo(obj);
-    var tmpFolder = path.join(__dirname, 'tmp-'+packageInfo.versionCode);
+    var tmpFolder = path.join(__dirname, 'tmp-'+packageInfo.name+packageInfo.versionCode);
     var targetFolder = path.join(sdkpluginFolder, packageInfo.sdkname+'-'+packageInfo.versionCode.toString());
     zipf.extractAllTo(tmpFolder, true);
     fs.renameSync(path.join(tmpFolder, packageInfo.sdkname), targetFolder);
     fs.rmdirSync(tmpFolder);
+    process.stdout.write(JSON.stringify(obj));
 }
 
 try {
     main();
-    console.log('Done');
 } catch (e) {
     console.error('Fail to install sdk: ' + e.messgae + '\n' + e.stack);
     process.exit(-1);

@@ -109,7 +109,11 @@ function postRequest (host, port, url, data, callback) {
             }
             try {
                 var obj = JSON.parse(s);
-                callback(null, obj);
+                if (res.statusCode != 200) {
+                    callback(new Error(s));
+                } else {
+                    callback(null, obj);
+                }
             } catch (e) {
                 callback(e);
             }
@@ -386,8 +390,8 @@ function main() {
         });
 
     program
-        .command('up-product <zipfile>')
-        .description('monitor the server status')
+        .command('add-product <zipfile>')
+        .description('add product')
         .action(function (filepath) {
             try {
                 filepath = path.resolve(process.cwd(), filepath);
@@ -405,16 +409,17 @@ function main() {
         });
 
     program
-        .command('add-plugin <fileurl>')
-        .description('monitor the server status')
+        .command('add-sdk <fileurl>')
+        .description('add sdk')
         .action(function (fileurl) {
+            var fileurl = path.resolve(process.cwd(), fileurl);
             try {
-                postRequest(program.host, program.port, '/plugin', {fileurl: fileurl}, function (err) {
+                postRequest(program.host, program.port, '/sdk', {fileurl: fileurl}, function (err, obj) {
                     if (err) {
-                        error('Fail to add plugin: ' + err.message);
+                        error('Fail to add sdk: ' + err.message);
                         process.exit(-1);
                     }
-                    info('successful add plugin');
+                    info('successful add sdk: ' + JSON.stringify(obj));
                 });
             } catch (e) {
                 error("invalid zip file: " + e.message);

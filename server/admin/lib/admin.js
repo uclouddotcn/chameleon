@@ -159,13 +159,17 @@ var Admin = function(pluginMgr, options, logger) {
 
     // path for adding a plugin 
     self.server.post('/sdk', function(req, res, next) {
-        self.pluginMgr.upgradePlugin(req.params.fileurl, req.params.md5value, function(err, info) {
+        self.pluginMgr.upgradePlugin(req.params.fileurl, req.params.md5value, function(err, info, version, path) {
             if (err) {
                 req.log.info({err:err}, 'fail to add plugin');
                 return next(new restify.InvalidArgumentError(err.message));
             }
-            var showChannelInfo = doFormatPluginInfo(info);
-            res.send({code: 0, channel: showChannelInfo});
+            var showChannelInfo = {
+                name: info,
+                version: version,
+                path: path
+            };
+            res.send(showChannelInfo);
             return next();
         });
     });
