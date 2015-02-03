@@ -377,7 +377,7 @@ def main():
     parser.add_option('-r', '--channelRoot', dest='channelRoot', help='Root directory of the channels')
     parser.add_option('-p', '--package', dest='package', help='APK Package to process')
     parser.add_option('-R', '--packageRoot', dest='packageRoot', help='Root directory where the package in')
-    parser.add_option('-g', '--generatePkgName', dest='generatePkgName', help='Name of the package to generate.')
+    #parser.add_option('-g', '--generatePkgName', dest='generatePkgName', help='Name of the package to generate.')
     parser.add_option('-P', '--ProjectRoot', dest='projectRoot', help='path of the projects directory')
     parser.add_option('-d', '--decompressOnly', dest='decompressOnly', help="whether need to decompress the package. True/False")
     parser.add_option('-a', '--align', dest='align', help="whether need to align the package. True/False")
@@ -457,7 +457,10 @@ def main():
 
     transformCfg(channelPath, globalcfg)
     procSplashIcons(channelPath, globalcfg)
-    tempPkgName = options.generatePkgName+'.tempzipfile'
+
+    generatePkgName = channel+'-release.apk'
+
+    tempPkgName = generatePkgName+'.tempzipfile'
 
     sdkPaths = [x.path for x in libs]
     u = aaptPack(channel, sdkPaths, tempPkgName, unpackDest, channelPath)
@@ -469,7 +472,7 @@ def main():
     pwd = os.getcwd()
     os.chdir(channelPath)
 
-    tempForAlighPkgName = options.generatePkgName+'.tempsignfile'
+    tempForAlighPkgName = generatePkgName+'.tempsignfile'
 
     globalcfg['signConfig']['keystore'] = os.path.join(proj, globalcfg['signConfig']['keystore'])
 
@@ -480,19 +483,19 @@ def main():
         return u
 
     if str(options.align).casefold() in ['true']:
-        u = pkgAlign(tempForAlighPkgName, options.generatePkgName)
+        u = pkgAlign(tempForAlighPkgName, generatePkgName)
         if u != 0:
             u = 7
             print(ERR_MSG[u])
             return u
         os.remove(tempForAlighPkgName)
     else:
-        shutil.move(tempForAlighPkgName, options.generatePkgName)
+        shutil.move(tempForAlighPkgName, generatePkgName)
     outputdir = os.path.join(options.projectRoot, OUTPUT_DIR)
     if not os.path.exists(outputdir):
         os.makedirs(outputdir)
 
-    shutil.copy(options.generatePkgName, os.path.join(outputdir, options.generatePkgName))
+    shutil.copy(generatePkgName, os.path.join(outputdir, generatePkgName))
 
     os.remove(tempPkgName)
     os.chdir(pwd)
