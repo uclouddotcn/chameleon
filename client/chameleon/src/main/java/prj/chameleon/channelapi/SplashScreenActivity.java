@@ -1,30 +1,25 @@
 package prj.chameleon.channelapi;
 
-import android.app.ActionBar;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SplashScreenActivity extends Activity {
     private ArrayList<Drawable> mListImages;
@@ -121,6 +116,11 @@ public class SplashScreenActivity extends Activity {
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int flags = getIntent().getFlags();
+        if ((flags & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
         int totalTime = initFromXml();
         if (totalTime < 0) {
             totalTime = initFromAsset();
