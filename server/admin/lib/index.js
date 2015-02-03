@@ -13,8 +13,8 @@ var workerMgr = require('./worker_mgr');
 
 function defaultAdminLoggerCfg(level) {
     var infoLv = 'info';
-    if (level) {
-        infoLv = level;
+    if (process.env.NODE_ENV === 'development') {
+        infoLv = 'debug';
     }
     return bunyan.createLogger({
         name: 'admin',

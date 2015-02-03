@@ -23,6 +23,7 @@ function info(message) {
 }
 
 function exportWorker(destPath, callback) {
+    info('export worker');
     child_process.execFile('git', ['archive', '--f', 'zip', '-o', destPath, 'HEAD', 'worker'], {
         cwd: path.join(__dirname, '..')
     }, function (err, stdout, stderr){
@@ -35,6 +36,7 @@ function exportWorker(destPath, callback) {
 }
 
 function exportAdmin(destPath, callback) {
+    info('export admin');
     child_process.execFile('git', ['archive', '--f', 'zip', '-o', destPath, 'HEAD', 'admin'], {
         cwd: path.join(__dirname, '..')
     }, function (err, stdout, stderr) {
@@ -47,6 +49,7 @@ function exportAdmin(destPath, callback) {
 }
 
 function outputManifest(version, dest, callback) {
+    info('output manifest');
     var manifest = {
         version: version
     };
@@ -54,9 +57,12 @@ function outputManifest(version, dest, callback) {
 }
 
 function zipAll(version, dirToZip, callback) {
+    info('zip all');
     var sversion = version.replace(/\./g, '_');
     var dest = path.join(__dirname, 'chameleon_'+sversion+'.zip');
-    child_process.exec('zip -j -r '+dest+ ' ' + dirToZip, callback);
+    child_process.exec('zip -r '+dest+ ' *', {
+        cwd: dirToZip
+    }, callback);
 }
 
 function buildAll(version) {
@@ -73,10 +79,10 @@ function buildAll(version) {
         exportWorker.bind(null, path.join(outputPath, workerFileName)),
         outputManifest.bind(null, version, path.join(outputPath, 'manifest.json')),
         exportAllPlugins.bind(null, sdkOutputPath),
-        zipAll.bind(null, version, outputPath),
         function (cb) {
             fs.copy(path.join(__dirname, 'install'), outputPath, cb);
-        }
+        },
+        zipAll.bind(null, version, outputPath)
     ], function (err) {
         if (err) {
             error('on error: ' + err.message + ': \n'  + err.stack);
@@ -98,6 +104,7 @@ function buildWorker(version, outputf) {
 }
 
 function exportSDK(sdkname, folder, callback) {
+    info('export SDK');
     var srcPath = path.join(__dirname, '..', 'sdkplugins');
     var packageName = path.join(srcPath, sdkname, 'package.json');
     try {
@@ -114,7 +121,7 @@ function exportSDK(sdkname, folder, callback) {
     });
 }
 
-function exportSDKCommon(folder) {
+function exportSDKCommon(folder, callback) {
     var srcPath = path.join(__dirname, '..', 'sdkplugins');
     var targetName = path.join(folder, '_common.zip');
     child_process.execFile('git', ['archive', '--f', 'zip', '-o', targetName, 'HEAD', '_common'], {
@@ -138,8 +145,12 @@ function exportAllPlugins (folder, callback) {
         }
     });
     async.parallelLimit(funcs, 5, function (err) {
-        exportSDKCommon(folder);
-        callback(err);
+        if (err) {
+            return callback(err);
+        }
+        exportSDKCommon(folder, function (e) {
+            callback(e);
+        });
     });
 }
 

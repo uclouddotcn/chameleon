@@ -10,6 +10,8 @@ var util = require('util');
 var Zip = require('adm-zip');
 
 var PROC_NAME = 'chameleon_admin';
+var BASE_DIR = path.join(__dirname, '..');
+var BUNYAN_SCRIPT=  path.join(__dirname, 'node_modules', 'bunyan', 'bin', 'bunyan');
 
 function error(message) {
     console.error(('[ERROR]: '+message));
@@ -70,6 +72,19 @@ function installWorker(p, callback) {
     });
 }
 
+function installProduct(p, callback) {
+    var postObj = {
+        zipfile: p
+    };
+
+    postRequest(adminSvr.host, adminSvr.port, '/product', postObj, function (err, obj) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, obj);
+    });
+}
+
 function postRequest (host, port, url, data, callback) {
     var s = JSON.stringify(data);
     var req = http.request({
@@ -89,9 +104,12 @@ function postRequest (host, port, url, data, callback) {
             s += chunk;
         });
         res.on('end', function (chunk) {
+            if (s.length === 0) {
+                return callback(null, null);
+            }
             try {
                 var obj = JSON.parse(s);
-                callback(null, obj.msg);
+                callback(null, obj);
             } catch (e) {
                 callback(e);
             }
@@ -334,7 +352,7 @@ function main() {
                         error('Fail to get info from chameleon server, maybe dead: ' + err.message);
                         onStop();
                     } else {
-                        info(obj);
+                        info(JSON.stringify(obj));
                     }
                     return pm2.disconnect();
                 });
@@ -342,36 +360,44 @@ function main() {
         }));
 
     program
+        .command('log [type]')
+        .description('show log of type [admin|worker]')
+        .action(function (_type) {
+            _type = _type || 'admin';
+            var logfile = null;
+            switch (_type) {
+                case 'admin':
+                    logfile = path.join(BASE_DIR, 'log', 'adminsvr.log');
+                    break;
+                case 'worker':
+                    logfile = path.join(BASE_DIR, 'log', 'server.log');
+                    break;
+                default:
+                    error('log type must be admin or worker');
+                    return;
+            }
+            if (!fs.existsSync(logfile)) {
+                info('log file is empty');
+                return;
+            }
+            child_process.exec('tail -n50 ' + logfile + ' | ' + BUNYAN_SCRIPT, function (err, stdout, stderr) {
+                console.log(stdout);
+            });
+        });
+
+    program
         .command('up-product <zipfile>')
         .description('monitor the server status')
         .action(function (filepath) {
             try {
-                var zipfile = new Zip(filepath);
-                var manifest = JSON.parse(zipfile.readAsText("manifest.json"));
-                var product = manifest.product;
-                var productCfg = JSON.parse(zipfile.readAsText(product+'/_product.json', 'utf8'));
-                postRequest(program.host, program.port, '/product/'+product, productCfg, function (err) {
+                filepath = path.resolve(process.cwd(), filepath);
+                installProduct(filepath, function (err) {
                     if (err) {
-                        error('Fail to upgrade project: ' + err.message);
-                        process.exit(-1);
+                        error('Fail to install products: ' + err.message + '\n' + err.stack);
+                        return;
                     }
-                    var entries = zipfile.getEntries();
-                    for (var i = 0; i < entries.length; ++i) {
-                        var e = entries[i];
-                        if (e.isDirectory || e.entryName.substr(0, product.length+1) !==  product+'/' || e.name === '_product.json') {
-                            continue;
-                        }
-                        var c = zipfile.readAsText(e.entryName, 'utf8');
-                        var channelName = path.basename(e.name, '.json');
-                        postRequest(program.host, program.port, '/product/'+product+'/'+channelName, JSON.parse(c), function (err) {
-                            if (err) {
-                                error("Fail to upgrade channel " + channelName + ': ' + err.message);
-                                return;
-                            }
-                            info("Successfully upgrade channel " + channelName);
-                        });
-                    }
-                });
+                    info('Done');
+                })
             } catch (e) {
                 error("invalid zip file: " + e.message);
                 error(e.stack);

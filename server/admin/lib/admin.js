@@ -151,14 +151,14 @@ var Admin = function(pluginMgr, options, logger) {
     });
 
     // path for get all plugins
-    self.server.get('/plugins', function (req, res, next) {
+    self.server.get('/sdk', function (req, res, next) {
         var infos = pluginMgr.getAllPluginInfos().map(formatPluginInfo);
         res.send(infos);
         return next();
     });
 
     // path for adding a plugin 
-    self.server.post('/plugin', function(req, res, next) {
+    self.server.post('/sdk', function(req, res, next) {
         self.pluginMgr.upgradePlugin(req.params.fileurl, req.params.md5value, function(err, info) {
             if (err) {
                 req.log.info({err:err}, 'fail to add plugin');
@@ -192,28 +192,25 @@ var Admin = function(pluginMgr, options, logger) {
     });
 
     // path for add a product
-    self.server.post('/product/:name', function (req, res, next) {
-        requestPoster.request('product.new', {product: req.params.name, cfg: req.body}, function (err, rsp) {
-            console.log(err);
+    self.server.post('/product', function (req, res, next) {
+        req.log.info({params: req.params}, 'recv products');
+        var zipfile = req.params.zipfile;
+        child_process.exec('node ' + path.join(__dirname, '..', 'script', 'installProducts.js') + ' ' + zipfile, function (err, stdout, stderr) {
             if (err) {
                 return next(new restify.InvalidArgumentError(err.message));
             }
-            res.send(rsp);
-            return next();
+            workerMgr.restartWorker(null, function (err) {
+                req.log.debug({err: err}, 'worker restarted');
+                if (err) {
+                    return next(new restify.InternalError('Fail to restart worker: ' + err.message));
+                }
+                res.send('');
+                return next();
+            });
         });
     });
 
-    self.server.put('/product/:name', function (req, res, next) {
-        requestPoster.request('product.update', {product: req.params.name, cfg: req.body}, function (err, rsp) {
-            if (err) {
-                return next(new restify.InvalidArgumentError(err.message));
-            }
-            res.send(rsp);
-            return next();
-        });
-    });
-
-
+    /*
     // path for add a plugin instance
     self.server.post('/product/:name/:channelName', function(req, res, next) {
         requestPoster.request('product.addchannel', {
@@ -258,6 +255,7 @@ var Admin = function(pluginMgr, options, logger) {
             return next();
         });
     });
+    */
 
     self.server.on('uncaughtException', function (req, res, route, error) {
         req.log.error({route: route, err: error}, 'on uncaught exception');

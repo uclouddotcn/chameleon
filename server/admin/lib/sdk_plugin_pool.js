@@ -95,7 +95,7 @@ SDKPluginPool.prototype.getNewestPluginPath = function (name) {
 
 SDKPluginPool.prototype.loadUpgradePlugin = function (fileurl, md5value, callback) {
     var self = this;
-    childProcess.execFile('node', [path.join(__dirname, '..', 'upgrade.js'), fileurl, md5value, self.chdir],
+    childProcess.execFile('node', [path.join(__dirname, '..', 'script', 'upgradeSDK.js'), fileurl, md5value, self.chdir],
         {timeout: 10000}, function (err, stdout, stderr) {
             self._logger.debug({stderr: stderr, stdout: stdout}, 'recv');
             if (!err) {

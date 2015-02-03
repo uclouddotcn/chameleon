@@ -123,6 +123,10 @@ WorkerMgr.prototype.forceClose = function () {
 };
 
 WorkerMgr.prototype.restartWorker = function (workerCfg, callback) {
+    if (this.status !== 'running') {
+        setImmediate(callback, new Error("Not in running state"));
+        return;
+    }
     if (workerCfg) {
         try {
             this._resetWorkerCfg(workerCfg)
@@ -132,20 +136,17 @@ WorkerMgr.prototype.restartWorker = function (workerCfg, callback) {
             return;
         }
     }
-    if (this.status !== 'running') {
-        setImmediate(callback, new Error("Not in running state"));
-        return;
-    }
     var self = this;
     self.ver += 1;
     self.status = 'restarting';
     var workerToClose = this.worker;
     this.worker = null;
     this._startWorker(function (err) {
+        self._logger.debug({err: err}, 'worker started');
         if (err) {
             callback(new Error("Fail to create new server: " + err.message));
-            this.worker = workerToClose;
-            this.status = 'running';
+            self.worker = workerToClose;
+            self.status = 'running';
             self.ver -= 1;
             return;
         }
@@ -209,7 +210,7 @@ WorkerMgr.prototype._startHeartBeat = function () {
             return;
         }
         if (self.worker.version === rsp.ver) {
-            self._logger.info('on heart beat ' + rsp.seq);
+            self._logger.debug('on heart beat ' + rsp.seq);
             self.worker.onHeartBeat(rsp);
         }
     });
@@ -269,6 +270,7 @@ WorkerMgr.prototype._forkChild = function (callback) {
 };
 
 WorkerMgr.prototype._onMessage = function (wid, msg) {
+    this._logger.debug({wid: wid, data: msg}, 'recv message from worker');
     var worker = cluster.workers[wid];
     if (!worker) {
         this._logger.info({msg: msg.header}, "Fail to create inst");
@@ -276,6 +278,7 @@ WorkerMgr.prototype._onMessage = function (wid, msg) {
     }
     switch (msg.header._id) {
         case '__closed':
+            this._onReply(msg);
             worker.closed();
             break;
         default:
@@ -323,6 +326,7 @@ WorkerMgr.prototype._doRequest = function (wid, msgid, body, callback) {
         }, 10000),
         callback: callback
     };
+    this._logger.debug({wid: wid, data: msg}, 'request message');
 };
 
 var workermgr = new WorkerMgr();

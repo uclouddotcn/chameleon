@@ -3,13 +3,7 @@ var chameleon = require('./lib');
 var program = require('commander');
 
 function loadConfig(cfgFile, debug) {
-    var svrCfgPath = null;
-    if (debug) {
-        svrCfgPath = __dirname + '/config/' + cfgFile;
-    } else {
-        svrCfgPath = __dirname + '/../config/' + cfgFile;
-    }
-    console.log('using log ' + svrCfgPath);
+    var svrCfgPath = __dirname + '/../config/' + cfgFile;
     try {
         var content = fs.readFileSync(svrCfgPath);
         var cfgObj = JSON.parse(content);
