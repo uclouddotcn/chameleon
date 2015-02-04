@@ -120,15 +120,13 @@ chameleonApp = angular.module('chameleonApp', [
                             var projectRoot = packingRoot + 'app/projects/' + $scope.project.name + '/';
                             $scope.apkFilePath = $scope.fileread.path;
                             ProjectMgr.command('python', [
-                                node_path.normalize(packingRoot + 'tools/buildtool/chameleon_tool/build_package.py'),
+                                node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
                                 '-p',
                                 $scope.apkFilePath,
                                 '-P',
                                 projectRoot,
                                 '-d',
                                 true,
-                                '-R',
-                                node_path.normalize(projectRoot + 'build'),
                                 '-a',
                                 false
                             ]);
@@ -541,7 +539,7 @@ chameleonApp = angular.module('chameleonApp', [
                         var configRoot = packingRoot + 'app/chameleon/';
                         $scope.apkFilePath = $scope.fileread.path;
                         ProjectMgr.command('python', [
-                            node_path.normalize(packingRoot + 'tools/buildtool/chameleon_tool/build_package.py'),
+                            node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
                             '-c',
                             $scope.selectedChannel.channelName,
                             '-r',

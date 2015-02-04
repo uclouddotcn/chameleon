@@ -223,9 +223,9 @@ ChameleonTool.prototype.removeChannelDirectory = function(project, channelName){
 }
 
 ChameleonTool.prototype.command = function(command, args){
-    var root = '../../tools/buildtool/chameleon_tool/';
     var spawn = childprocess.spawn;
     var result = spawn(command, args);
+    console.log(command, args.join(" "));
     result.stdout.on('data', function(data){
         console.log(data);
     });
