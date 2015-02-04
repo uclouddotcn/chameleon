@@ -43,8 +43,8 @@ if JAVA_HOME is None:
 def genCmd(paras):
     return ' '.join([x+' '+y for (x,y) in paras])
 
-def unpackAPK(apkName, apkPath, destPath):
-    fullPath = os.path.join(apkPath, apkName)
+def unpackAPK(apkPath, destPath):
+    fullPath = apkPath
     if not os.path.exists(fullPath):
         print(fullPath+' does not exist.')
         return False
@@ -386,7 +386,7 @@ def main():
     parser.add_option('-c', '--channel', dest='channel', help='channel name, e.g. xiaomi')
     parser.add_option('-r', '--channelRoot', dest='channelRoot', help='Root directory of the channels')
     parser.add_option('-p', '--package', dest='package', help='APK Package to process')
-    parser.add_option('-R', '--packageRoot', dest='packageRoot', help='Root directory where the package in')
+    # parser.add_option('-R', '--packageRoot', dest='packageRoot', help='Root directory where the package in')
     # parser.add_option('-g', '--generatePkgName', dest='generatePkgName', help='Name of the package to generate.')
     parser.add_option('-P', '--ProjectRoot', dest='projectRoot', help='path of the projects directory')
     parser.add_option('-d', '--decompressOnly', dest='decompressOnly', help="whether need to decompress the package. True/False")
@@ -408,7 +408,7 @@ def main():
         os.makedirs(proj)
 
     if options.decompressOnly.casefold() in ['true', 't']:
-        u = unpackAPK(options.package, options.packageRoot, unpackDest)
+        u = unpackAPK(options.package, unpackDest)
         if u != 0:
             u = 1
             print(ERR_MSG[u])

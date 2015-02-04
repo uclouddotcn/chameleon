@@ -74,6 +74,7 @@ chameleonApp = angular.module('chameleonApp', [
                 controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, globalCache) {
                     var _ = require('underscore');
                     var fs = require('fs-extra');
+                    var node_path = require('path');
                     var dirName = ProjectMgr.dirName();
                     var packingRoot = dirName.substr(0, dirName.length-19);
                     //functions
@@ -119,7 +120,7 @@ chameleonApp = angular.module('chameleonApp', [
                             var projectRoot = packingRoot + 'app/projects/' + $scope.project.name + '/';
                             $scope.apkFilePath = $scope.fileread.path;
                             ProjectMgr.command('python', [
-                                packingRoot + 'tools/buildtool/chameleon_tool/build_package.py',
+                                node_path.normalize(packingRoot + 'tools/buildtool/chameleon_tool/build_package.py'),
                                 '-p',
                                 $scope.apkFilePath,
                                 '-P',
@@ -127,7 +128,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 '-d',
                                 true,
                                 '-R',
-                                projectRoot + 'build',
+                                node_path.normalize(projectRoot + 'build'),
                                 '-a',
                                 false
                             ]);
@@ -540,17 +541,17 @@ chameleonApp = angular.module('chameleonApp', [
                         var configRoot = packingRoot + 'app/chameleon/';
                         $scope.apkFilePath = $scope.fileread.path;
                         ProjectMgr.command('python', [
-                            packingRoot + 'tools/buildtool/chameleon_tool/build_package.py',
+                            node_path.normalize(packingRoot + 'tools/buildtool/chameleon_tool/build_package.py'),
                             '-c',
                             $scope.selectedChannel.channelName,
                             '-r',
-                            configRoot + 'sdk',
+                            node_path.normalize(configRoot + 'sdk'),
                             '-d',
                             false,
                             '-a',
                             true,
                             '-P',
-                            projectRoot
+                            node_path.normalize(projectRoot)
                         ]);
                     }
                 }]

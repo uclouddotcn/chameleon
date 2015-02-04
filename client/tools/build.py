@@ -187,7 +187,7 @@ def buildChameleonLib():
 def cleanOldBuild(targetFolder):
     if os.path.exists(targetFolder):
         print('cleaning existing build folder %s ...' %(targetFolder))
-        shutil.rmtree(targetFolder)
+        shutil.rmtree(targetFolder, ignore_errors=True)
 
 def getversion():
     versionFolder = os.path.join(BASEDIR, '..', 'version')
@@ -233,10 +233,10 @@ def buildChameleonClientMacOS(zf, chameleonFolder, targetFolder, place):
 def placePlatformStartScript(targetFolder):
     if sys.platform == 'win32':
         with open(os.path.join(targetFolder, 'chameleon.bat'), 'w') as f:
-            f.write('start nw\\nw.exe app')
+            f.write('start nw\\nw.exe chameleon_client')
     else:
         with open(os.path.join(targetFolder, 'chameleon.bat'), 'w') as f:
-            f.write('open nw\\nw.app app')
+            f.write('open nw\\nw.app chameleon_client')
 
 def placeNodeWebkitWin(targetFolder):
     src = os.path.join('nodewebkit-bin', 'nodewebkit-win.zip')
