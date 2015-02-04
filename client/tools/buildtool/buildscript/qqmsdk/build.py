@@ -1,12 +1,12 @@
 import os, json, shutil
 
 MSDK_DEBUG = """[dev.g domains start]
-MSDK_URL=http://opensdktest.tencent.com
+MSDK_URL=http://msdktest.qq.com
 [dev.g domains end]
 """
 
 MSDK_RELEASE = """[dev.g domains start]
-MSDK_URL=http://opensdk.tencent.com
+MSDK_URL=http://msdk.qq.com
 [dev.g domains end]
 """
 

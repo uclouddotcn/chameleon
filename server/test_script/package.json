@@ -1,0 +1,7 @@
+{
+  "name": "sdk",
+  "version": "1.4.1",
+  "dependencies": {
+    "restify": "*"
+  }
+}

@@ -1,6 +1,8 @@
 package prj.chameleon.qqmsdk;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -100,7 +102,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private static final String WX_PLATFORM = "w";
     private static final String QQ_PLATFORM = "q";
     private static final int INVALID_PLAT = -99999;
-    private static final int LOGIN_TIMEOUT = 10;
+    private static final int LOGIN_TIMEOUT = 30;
     private static final int LOGIN_TIMEOUT_EVT_ID = 0;
     private IAccountActionListener mAccountActionListener;
     private final Config mCfg = new Config();
@@ -108,6 +110,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private final UserInfo mUserInfo = new UserInfo();
     private UnipayPlugAPI mUniPay = null;
     private IDispatcherCb mLoginCb = null;
+    private WeakReference<Activity> mLoginActivity = null;
     private PaymentEnv mPayEnv = null;
     private byte[] mMoneyIcon = null;
     private int mCmdSeq = 0;
@@ -118,6 +121,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 case LOGIN_TIMEOUT_EVT_ID:
                     if (mLoginCb != null && msg.arg1 == mCmdSeq) {
                         mLoginCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                        mLoginCb = null;
                     }
                     break;
                 default:
@@ -136,9 +140,9 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 case CallbackFlag.eFlag_Succ:
                     FillUserInfo(loginRet);
                     String platform = null;
-                    if (loginRet.flag == WeGame.QQPLATID) {
+                    if (loginRet.platform == WeGame.QQPLATID) {
                         platform = QQ_PLATFORM;
-                    } else if (loginRet.flag == WeGame.WXPLATID) {
+                    } else if (loginRet.platform == WeGame.WXPLATID) {
                         platform = WX_PLATFORM;
                     }
                     try {
@@ -150,12 +154,15 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     break;
                 case CallbackFlag.eFlag_WX_UserCancel:
                 case CallbackFlag.eFlag_QQ_UserCancel:
+                    mPlatform = INVALID_PLAT;
                     mLoginCb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
                     break;
                 case CallbackFlag.eFlag_QQ_NotInstall:
+                    showAlert("未找到手机QQ。请先安装手机QQ。");
                     mLoginCb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_QQ_NON_INSTALLED, null);
                     break;
                 case CallbackFlag.eFlag_WX_NotInstall:
+                    showAlert("未找到微信。请先安装微信。");
                     mLoginCb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_WX_NON_INSTALLED, null);
                     break;
                 case CallbackFlag.eFlag_WX_NotSupportApi:
@@ -170,6 +177,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     break;
             }
             if (loginRet.flag != CallbackFlag.eFlag_Succ) {
+                mPlatform = INVALID_PLAT;
                 Log.e(Constants.TAG, "Fail to login " + loginRet.flag + loginRet.desc);
             }
             mLoginCb = null;
@@ -250,9 +258,6 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     switch (code) {
                         case 0:
                             if (payState == 0) {
-                                CharSequence text = "游戏币充值成功，请重新购买";
-                                Toast toast = Toast.makeText(activity.getApplicationContext(), text, Toast.LENGTH_SHORT);
-                                toast.show();
                                 mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_PAY_RETRY, null);
                             } else if (payState == 1) {
                                 mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
@@ -274,7 +279,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
                     }
                     mPayEnv = null;
-                }
+               }
             });
         }
     };
@@ -292,6 +297,15 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfg.mIsTest = Boolean.valueOf(cfg.getString("test"));
     }
 
+    private void showAlert(String message) {
+        Activity activity = mLoginActivity.get();
+        if (activity != null) {
+            new AlertDialog.Builder(activity)
+                    .setTitle("错误")
+                    .setMessage(message)
+                    .show();
+        }
+    }
    /**
      * init the SDK
      * @param activity the activity to give the real SDK
@@ -391,9 +405,12 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         if (mPlatform == WeGame.QQPLATID) {
             WGPlatform.WGLogin(EPlatform.ePlatform_QQ);
             mLoginCb = cb;
+            mLoginActivity = new WeakReference<Activity>(activity);
+            startLoginTimer();
         } else if (mPlatform == WeGame.WXPLATID) {
             WGPlatform.WGLogin(EPlatform.ePlatform_Weixin);
             mLoginCb = cb;
+            mLoginActivity = new WeakReference<Activity>(activity);
             startLoginTimer();
         } else {
             cb.onFinished(Constants.ErrorCode.ERR_LOGIN_MSDK_PLAT_NO_SPEC, null);
@@ -448,7 +465,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     sessionid = "hy_gameid";
                     sessiontype = "wc_actoken";
                 }
-                mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId, mUserInfo.mPayToken,
+                mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId.substring(1), mUserInfo.mPayToken,
                         sessionid, sessiontype, serverId, mUserInfo.mPf,
                         mUserInfo.mPfKey, UnipayPlugAPI.ACCOUNT_TYPE_COMMON,
                         String.valueOf(rest), allowUserChange,
@@ -512,10 +529,10 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     sessionid = "hy_gameid";
                     sessiontype = "wc_actoken";
                 }
-                mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId, mUserInfo.mPayToken,
+                mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId.substring(1), mUserInfo.mPayToken,
                         sessionid, sessiontype, serverId, mUserInfo.mPf,
                         mUserInfo.mPfKey, UnipayPlugAPI.ACCOUNT_TYPE_COMMON,
-                        String.valueOf(rest), true,
+                        String.valueOf(rest), false,
                         mMoneyIcon);
                 mPayEnv = new PaymentEnv(activity, cb);
             }
@@ -565,6 +582,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     public void logout(Activity activity) {
         WGPlatform.WGLogout();
         mUserInfo.setLogout();
+        mPlatform = INVALID_PLAT;
         if (mAccountActionListener != null) {
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -644,11 +662,11 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     private void FillUserInfo(LoginRet ret) {
-        mUserInfo.mOpenId = ret.open_id;
         mUserInfo.mDesc = ret.desc;
         mUserInfo.mPf = ret.pf;
         mUserInfo.mPfKey = ret.pf_key;
         if (ret.platform == WeGame.QQPLATID) {
+            mUserInfo.mOpenId = "q"+ret.open_id;
             mUserInfo.mPlatform = EPlatform.ePlatform_QQ;
             for (TokenRet tr: ret.token) {
                 switch (tr.type) {
@@ -663,6 +681,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 }
             }
         } else if (ret.platform == WeGame.WXPLATID) {
+            mUserInfo.mOpenId = "w"+ret.open_id;
             mUserInfo.mPlatform = EPlatform.ePlatform_Weixin;
             for (TokenRet tr: ret.token) {
                 switch (tr.type) {
@@ -771,7 +790,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCmdSeq += 1;
         Message msg = new Message();
         msg.arg1 = mCmdSeq;
-        mHandler.sendMessageAtTime(msg, LOGIN_TIMEOUT*1000);
+        mHandler.sendMessageDelayed(msg, LOGIN_TIMEOUT*1000);
     }
 
 }

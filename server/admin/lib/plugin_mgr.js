@@ -80,7 +80,7 @@ PluginMgr.prototype.loadAllPlugins = function (callback) {
             }
         }
         self.pluginInfos = pluginInfos;
-        callback(null, pluginInfos);
+        callback(null);
         //doLoadPluginModule(self, plugin)
     });
 };

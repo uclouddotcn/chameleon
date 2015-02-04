@@ -57,6 +57,7 @@ public class UnityChannelInterface {
         prj.chameleon.channelapi.ChannelInterface.init(UnityPlayer.currentActivity, true, new IDispatcherCb() {
             @Override
             public void onFinished(int retCode, JSONObject data) {
+                mRetCode = retCode;
                 Log.d(Constants.TAG, String.format("on init finished %d", retCode));
                 mRequestProxy.setInitDone();
             }

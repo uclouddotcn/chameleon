@@ -90,7 +90,7 @@ module.exports.listen = function (eventCenter, storageEngine) {
 
     eventCenter.on('pay-cancel', function (product, channel, orderId, billno, amount) {
         var obj = {
-            action: 'pay-fail',
+            action: 'pay-cancel',
             time: Date.now(),
             product: product,
             channel: channel,
@@ -103,7 +103,7 @@ module.exports.listen = function (eventCenter, storageEngine) {
 
     eventCenter.on('pay-cancel-fail', function (product, channel, orderId, billno, amount, code) {
         var obj = {
-            action: 'pay-fail',
+            action: 'pay-cancel-fail',
             time: Date.now(),
             product: product,
             channel: channel,
@@ -126,7 +126,4 @@ module.exports.listen = function (eventCenter, storageEngine) {
         storageEngine.record(obj);
     });
 };
-
-
-
 

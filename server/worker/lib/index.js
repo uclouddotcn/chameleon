@@ -100,18 +100,32 @@ function _init(baseDir, argv, pluginInfos, cmdEmitter, callback) {
             for (var i = 0; i < svrs.length; ++i) {
                 svrs[i].close(closeServerCb);
             }
-            callback();
         };
+        var isCallbackDone = false;
         async.series([closeSvr,
+                function (cb) {
+                    logger.svrLog().info('svr have all been closed now. Callback now');
+                    isCallbackDone = true;
+                    callback();
+                    setImmediate(cb);
+                },
                 pendingOrderStore.close.bind(pendingOrderStore),
                 eventStorageEng.close.bind(eventStorageEng)],
             function (err) {
                 if (err) {
                     logger.svrLog().error({err: err}, 'Fail to termniate');
-                    process.exit(-1);
+                    if (isCallbackDone) {
+                        process.exit(-1);
+                    } else {
+                        callback(err);
+                    }
+                    return;
                 }
                 logger.svrLog().info({err: err}, 'exit done');
-                process.exit(0);
+                // give worker a chance to reply to admin
+                setTimeout(function () {
+                    process.exit(0);
+                }, 5000);
             }
         );
     };
@@ -139,7 +153,7 @@ function close(callback) {
     if (exitFuncs) {
         exitFuncs(callback);
     } else {
-        process.exit(0);
+        setImmediate(callback);
     }
 }
 

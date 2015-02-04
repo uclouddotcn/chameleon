@@ -3,6 +3,7 @@ package prj.chameleon.channelapi.cbinding;
 import android.app.Activity;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
+import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -23,6 +24,7 @@ public class NativeChannelInterface {
 
     private static Activity mActivity;
     private static final AccountActionListener mAccountActionListener = new AccountActionListener();
+    private static int mRetCode = 0;
     private static class GlSurfaceViewRunEnv implements IRunEnv{
         public WeakReference<GLSurfaceView> mGlView;
         GlSurfaceViewRunEnv(GLSurfaceView view) {
@@ -44,7 +46,7 @@ public class NativeChannelInterface {
         private boolean mIsInited = false;
 
         // run on UI thread only
-        public void setInitDone (Activity activity) {
+        public synchronized void setInitDone (Activity activity) {
             setActivity(activity);
             for (Runnable runnable : mPendingQueue) {
                 Log.d(Constants.TAG, "run all queueed runnables");
@@ -97,6 +99,7 @@ public class NativeChannelInterface {
     public static void setRunningEnv(final Activity activity, final IRunEnv runEnv) {
         mActivity = activity;
         mRunEnv = runEnv;
+        onCreate(activity);
     }
 
     /**
@@ -107,6 +110,7 @@ public class NativeChannelInterface {
     public static void setRunningEnv(final Activity activity, final GLSurfaceView view) {
         mActivity = activity;
         mRunEnv = new GlSurfaceViewRunEnv(view);
+        onCreate(activity);
     }
 
     /**
@@ -116,6 +120,18 @@ public class NativeChannelInterface {
     public static void setRunningEnv(final Activity activity) {
         mActivity = activity;
         mRunEnv = new UIRunEnv();
+        onCreate(activity);
+    }
+
+    private static void onCreate(final Activity activity) {
+        ChannelInterface.init(activity, false, new IDispatcherCb() {
+            @Override
+            public void onFinished(final int retCode, JSONObject data) {
+                mRetCode = retCode;
+                Log.d(Constants.TAG, String.format("on init finished %d", retCode));
+                mRequestProxy.setInitDone(mActivity);
+            }
+        });
     }
 
 
@@ -123,24 +139,18 @@ public class NativeChannelInterface {
      *  init the cbinding channel interface
      */
     public static void init() {
-        mActivity.runOnUiThread(new Runnable() {
+        Log.i(Constants.TAG, "call init");
+        mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                ChannelInterface.init(mActivity, false, new IDispatcherCb() {
+                runInRunEnv(new Runnable() {
                     @Override
-                    public void onFinished(final int retCode, JSONObject data) {
-                        Log.d(Constants.TAG, String.format("on init finished %d", retCode));
-                        mRequestProxy.setInitDone(mActivity);
-                        runInRunEnv(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    ChannelAPINative.init(retCode, ChannelInterface.isDebug(), getChannelName());
-                                } catch (UnsupportedEncodingException e) {
-                                    Log.e(Constants.TAG, "Fail to encode to UTF-8???", e);
-                                }
-                            }
-                        });
+                    public void run() {
+                        try {
+                            ChannelAPINative.init(mRetCode, ChannelInterface.isDebug(), getChannelName());
+                        } catch (UnsupportedEncodingException e) {
+                            Log.e(Constants.TAG, "Fail to encode to UTF-8???", e);
+                        }
                     }
                 });
             }
@@ -306,11 +316,11 @@ public class NativeChannelInterface {
                         strServerId, strCurrencyName, strPayInfo, rate, realPayMoney, allowUserChange,
                         new IDispatcherCb() {
                             @Override
-                            public void onFinished(int retCode, JSONObject data) {
+                            public void onFinished(final int retCode, JSONObject data) {
                                 Runnable callbackFunc = new Runnable() {
                                     @Override
                                     public void run() {
-                                        ChannelAPINative.onCharge(id, Constants.ErrorCode.ERR_OK);
+                                        ChannelAPINative.onCharge(id, retCode);
                                     }
                                 };
                                 runInRunEnv(callbackFunc);
@@ -496,16 +506,21 @@ public class NativeChannelInterface {
      * @param id
      */
     public static void onResume(final int id) {
-        ChannelInterface.onResume(mActivity, new IDispatcherCb() {
+        mRequestProxy.request(new Runnable() {
             @Override
-            public void onFinished(int retCode, JSONObject data) {
-                Runnable callbackFunc = new Runnable() {
+            public void run() {
+                ChannelInterface.onResume(mActivity, new IDispatcherCb() {
                     @Override
-                    public void run() {
-                        ChannelAPINative.onPause();
+                    public void onFinished(int retCode, JSONObject data) {
+                        Runnable callbackFunc = new Runnable() {
+                            @Override
+                            public void run() {
+                                ChannelAPINative.onPause();
+                            }
+                        };
+                        runInRunEnv(callbackFunc);
                     }
-                };
-                runInRunEnv(callbackFunc);
+                });
             }
         });
     }
@@ -615,8 +630,9 @@ public class NativeChannelInterface {
         });
     }
 
-    public static boolean isSupportProtocol(String protocol) {
-        return ChannelInterface.isSupportProtocol(protocol);
+    public static boolean isSupportProtocol(final byte[] protocol) throws UnsupportedEncodingException {
+        final String strProtocol = new String(protocol, "UTF-8");
+        return ChannelInterface.isSupportProtocol(strProtocol);
     }
 
     public static void runProtocol(final int id,
@@ -635,13 +651,17 @@ public class NativeChannelInterface {
                                     @Override
                                     public void run() {
                                         try {
+                                            String strData = "";
+                                            if (data != null) {
+                                                strData = data.toString();
+                                            }
                                             ChannelAPINative.onProtocolDone(id, retCode, strProtocol.getBytes("UTF-8"),
-                                                    data.toString().getBytes("UTF-8"));
+                                                    strData.getBytes("UTF-8"));
                                         } catch (UnsupportedEncodingException e) {
                                             Log.e(Constants.TAG, "encode error", e);
                                             ChannelAPINative.onProtocolDone(id, retCode, null, null);
                                         }
-                                    }
+                            }
                                 });
                             }
                         });

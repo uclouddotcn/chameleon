@@ -1,5 +1,5 @@
 var cluster = require('cluster');
-var constants = require('./constants')
+var constants = require('./constants');
 var util = require('util');
 var path = require('path');
 
@@ -44,7 +44,19 @@ Worker.prototype.onHeartBeat = function (rsp) {
 };
 
 var WorkerMgr = function (logger, options) {
-    this.status = 'done';
+    this.status = 'stop';
+    var self = this;
+    Object.defineProperty(this, "info", {
+        get: function() {
+            return {
+                status: self.status,
+                worker: {
+                    forkScripts: self.forkScripts,
+                    version: self.workerVersion
+                }
+            };
+        }
+    });
     EventEmitter.call(this);
 };
 util.inherits(WorkerMgr, EventEmitter);
@@ -56,17 +68,22 @@ WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
     this.ver = 0;
     this.worker = null;
     this.num = 0;
-    this.status = 'init';
     this.pluginInfos = pluginInfos;
-    cluster.setupMaster({
-        exec: __dirname + '/worker.js'
-    });
     this._resetWorkerCfg(workerCfg);
+    cluster.setupMaster({
+        exec: path.join(__dirname, '..', 'worker', 'worker.js')
+    });
     this._startWorker(callback);
 };
 
+
 WorkerMgr.prototype._resetWorkerCfg = function (workerCfg) {
-    this.forkScripts = path.resolve(constants.baseDir, workerCfg.script);
+    var p = workerCfg.version;
+    if (workerCfg.version === 'development') {
+        p = '.';
+    }
+    this.workerVersion = workerCfg.version;
+    this.forkScripts = path.resolve(constants.baseDir, p, workerCfg.script);
     this.args = workerCfg.args;
     if (workerCfg.env) {
         for (var i in workerCfg.env) {
@@ -84,7 +101,32 @@ WorkerMgr.prototype.request = function (msgid, body, callback) {
     }
 };
 
+WorkerMgr.prototype.stop = function (callback) {
+    if (this.status !== 'running') {
+        setImmediate(callback, new Error('not in running state'));
+        return;
+    }
+    this.status = 'stop';
+    var self = this;
+    var h = setTimeout(function () {
+        self.forceClose();
+    }, 30000);
+    this._doClose(this.worker.wid, function () {
+        clearTimeout(h);
+        callback();
+    });
+};
+
+
+WorkerMgr.prototype.forceClose = function () {
+
+};
+
 WorkerMgr.prototype.restartWorker = function (workerCfg, callback) {
+    if (this.status !== 'running') {
+        setImmediate(callback, new Error("Not in running state"));
+        return;
+    }
     if (workerCfg) {
         try {
             this._resetWorkerCfg(workerCfg)
@@ -94,20 +136,17 @@ WorkerMgr.prototype.restartWorker = function (workerCfg, callback) {
             return;
         }
     }
-    if (this.status !== 'running') {
-        setImmediate(callback, new Error("Not in running state"));
-        return;
-    }
     var self = this;
     self.ver += 1;
     self.status = 'restarting';
     var workerToClose = this.worker;
     this.worker = null;
     this._startWorker(function (err) {
+        self._logger.debug({err: err}, 'worker started');
         if (err) {
             callback(new Error("Fail to create new server: " + err.message));
-            this.worker = workerToClose;
-            this.status = 'running';
+            self.worker = workerToClose;
+            self.status = 'running';
             self.ver -= 1;
             return;
         }
@@ -155,6 +194,9 @@ WorkerMgr.prototype._startWorker = function (callback) {
 };
 
 WorkerMgr.prototype._startHeartBeat = function () {
+    if (this.status !== 'running') {
+        return;
+    }
     if (this.worker.isOffline()) {
         this._logger.error('worker seems blocked, force restart');
         this._forceRestartWorker();
@@ -168,7 +210,7 @@ WorkerMgr.prototype._startHeartBeat = function () {
             return;
         }
         if (self.worker.version === rsp.ver) {
-            self._logger.info('on heart beat ' + rsp.seq);
+            self._logger.debug('on heart beat ' + rsp.seq);
             self.worker.onHeartBeat(rsp);
         }
     });
@@ -194,6 +236,9 @@ WorkerMgr.prototype._forceRestartWorker = function () {
 
 WorkerMgr.prototype._onWorkerExit = function (worker, code, signal) {
     this._logger.info({wid: worker.id, code: code, signal: signal}, 'worker finished');
+    if (this.status !== 'running') {
+        return;
+    }
     if (worker.id !== this.worker.wid) {
         return;
     }
@@ -225,6 +270,7 @@ WorkerMgr.prototype._forkChild = function (callback) {
 };
 
 WorkerMgr.prototype._onMessage = function (wid, msg) {
+    this._logger.debug({wid: wid, data: msg}, 'recv message from worker');
     var worker = cluster.workers[wid];
     if (!worker) {
         this._logger.info({msg: msg.header}, "Fail to create inst");
@@ -232,6 +278,7 @@ WorkerMgr.prototype._onMessage = function (wid, msg) {
     }
     switch (msg.header._id) {
         case '__closed':
+            this._onReply(msg);
             worker.closed();
             break;
         default:
@@ -253,12 +300,12 @@ WorkerMgr.prototype._onReply = function (msg) {
     if (msg.err) {
         obj.callback.call(null, msg.err);
     } else {
-        obj.callback.call(null, null, msg.body);
         if (msg.header._id === '__start') {
             this.worker.onStarted();
             this.status = 'running';
             this._startHeartBeat();
         }
+        obj.callback.call(null, null, msg.body);
     }
     clearTimeout(obj.timeout);
 };
@@ -279,6 +326,7 @@ WorkerMgr.prototype._doRequest = function (wid, msgid, body, callback) {
         }, 10000),
         callback: callback
     };
+    this._logger.debug({wid: wid, data: msg}, 'request message');
 };
 
 var workermgr = new WorkerMgr();
