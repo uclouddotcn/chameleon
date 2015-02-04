@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/cw_phone_et"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/cw_pwd_input_eg"
+        android:digits="@string/cw_limit_pwd"
+        android:hint="@string/cw_input_phone"
+        android:maxLength="11"
+        android:textSize="14sp"
+        android:singleLine="true" />
+</LinearLayout>

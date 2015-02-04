@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 个人中心 个人中心Fragment by.zhengxu -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+   
+    <cn.m4399.operate.ui.widget.NavigationBarView
+        android:id="@+id/usercenter_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <cn.m4399.operate.ui.widget.UserInfoView
+        android:id="@+id/usercenter_userinfo_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="15dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="15dp" />
+
+    <ListView
+        android:id="@+id/usercenter_action_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="#000"
+        android:dividerHeight="0dp"
+        android:listSelector="@null"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" />
+
+</LinearLayout>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"  
+ android:layout_width="fill_parent"  
+ android:layout_height="fill_parent"  
+ android:fadingEdge="vertical">  
+ 
+<RelativeLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/cw_pay_net_choose_type_tip_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="32dip"
+        android:layout_marginLeft="20dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color" 
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/cw_pay_net_pay_money_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:layout_below="@id/cw_pay_net_choose_type_tip_tv"
+        android:layout_marginLeft="20dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color" 
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/cw_pay_net_pay_product_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:layout_below="@id/cw_pay_net_pay_money_tv"
+        android:layout_marginLeft="20dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color" 
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/cw_pay_net_pay_note_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:layout_below="@id/cw_pay_net_pay_product_tv"
+        android:layout_marginLeft="20dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color" 
+        android:textSize="14sp"/>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cw_pay_net_pay_note_tv"
+        android:layout_marginTop="20dip"
+        android:layout_marginLeft="15dip"
+        android:id="@+id/cw_pay_net_no_radio_btn_layout">
+
+        <Button
+            android:id="@+id/cw_pay_net_go_pay_btn"
+            style="@style/cw_button_blod_white_text"
+            android:layout_width="150dip"
+            android:layout_height="40dip"
+            android:background="@drawable/cw_tip_dialog_btn"
+            android:shadowColor="#ff891f02"
+            android:shadowDy="1"
+            android:text="@string/cw_pay"
+            android:textColor="@color/cw_white" />
+    </LinearLayout>
+    
+    
+       <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="15dip"
+        android:layout_marginBottom="15dip"
+        android:layout_marginTop="30dip"
+        android:gravity="center_vertical"
+        android:layout_below="@id/cw_pay_net_no_radio_btn_layout">
+       
+       <TextView
+        android:id="@+id/cw_pay_net_no_radio_tip_tv"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textColor="@color/cw_black" />
+	</LinearLayout>
+
+</RelativeLayout>
+</ScrollView>

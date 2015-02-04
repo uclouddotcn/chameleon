@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="m4399_rec_main_title">选择支付方式</string>
+    <string name="m4399_rec_amount_payment">支付金额： </string>
+    <string name="m4399_rec_unit_yuan">元</string>
+    <string name="m4399_rec_unit_youbi">游币</string>
+    <string name="m4399_rec_zhifubaozc">支付宝充值</string>
+    <string name="m4399_rec_duanxincz">短信充值</string>
+    <string name="m4399_rec_caifutongcz">财付通充值</string>
+    <string name="m4399_rec_rec_wycz">网银充值</string>
+    <string name="m4399_rec_yikatong">4399一卡通</string>
+    <string name="m4399_rec_yikatongcz">4399一卡通充值</string>
+    <string name="m4399_rec_mobilecardcz">手机充值卡充值</string>
+    <string name="m4399_rec_junka">骏网一卡通</string>
+    <string name="m4399_rec_junkacz">骏网一卡通充值</string>
+    <string name="m4399_rec_youbi_exchange">游币兑换</string>
+    <string name="m4399_rec_good_subject">（%s）</string>
+    <string name="m4399_rec_acount">账号：</string>
+    <string name="m4399_rec_other_sum">其他金额：</string>
+    <string name="m4399_rec_input_cash_hint">请输入你要充值的金额</string>
+    <string name="m4399_rec_confirm_pay">确认支付</string>
+    <string name="m4399_rec_hotline_4399"><u>0592-3214399</u></string>
+    <string name="m4399_rec_hotline_yidong"><u>0592-3214399</u></string>
+    <string name="m4399_rec_hotline_dianxin"><u>4008867686</u></string>
+    <string name="m4399_rec_hotline_liantong"><u>4000600611</u></string>
+    <string name="m4399_rec_try_other_payment">其他充值方式</string>
+    <string name="m4399_rec_return">其他充值方式</string>
+    <string name="m4399_rec_previous_step">上一步</string>
+    
+    <!-- For identifying code check dialog -->
+    <string name="m4399_rec_cancel">取消</string>
+    <string name="m4399_rec_ok">确定</string>
+    <string name="m4399_rec_id_refresh">刷新</string>
+    <string name="m4399_rec_pay_hint">充值提示</string>
+    <string name="m4399_rec_next_step">下一步</string>
+    <string name="m4399_rec_id_dialog_title">请输入验证码</string>
+    <string name="m4399_rec_id_message">验证码错误，请重新填写</string>
+    <string name="m4399_rec_id_fail_no_network">不能通过验证，请检查网络状况</string>
+    <string name="m4399_rec_id_refresh_no_network">不能刷新验证码，请检查网络状况</string>
+    
+    <!-- For Dialing phone dialog -->
+    <string name="m4399_rec_call_phone_tips">是否要拨打充值热线</string>
+    <string name="m4399_rec_call_cancel">不用了</string>
+    <string name="m4399_rec_call_ok">现在拨打</string>
+    
+    <!-- For instruction dialog -->
+    <string name="m4399_rec_liantong">联通</string>
+    <string name="m4399_rec_dianxin">电信</string>
+    <string name="m4399_rec_yidongka">移动</string>
+    <string name="m4399_rec_ins_suffix">说明</string>
+    <string name="m4399_rec_ins_link_sms_yidong">移动短信充值</string>
+    <string name="m4399_rec_ins_link_sms_liantong">联通短信充值</string>
+    <string name="m4399_rec_ins_link_sms_dianxin">电信短信充值</string>
+    <string name="m4399_rec_ins_link_junka">骏网一卡通说明</string>
+    <string name="m4399_rec_ins_link_yidongka">移动充值卡说明</string>
+    <string name="m4399_rec_ins_link_liantongka">联通充值卡说明</string>
+    <string name="m4399_rec_ins_link_dianxinka">电信充值卡说明</string>
+    <string name="m4399_rec_ins_link_yikatong">4399一卡通说明</string>
+    <string name="m4399_rec_ins_sms_yidong_title">移动短信充值说明</string>
+    <string name="m4399_rec_ins_sms_liantong_title">联通短信充值说明</string>
+    <string name="m4399_rec_ins_sms_dianxin_title">电信短信充值说明</string>
+    <string name="m4399_rec_ins_junka_title">骏网一卡通充值说明</string>
+    <string name="m4399_rec_ins_yidongka_title">移动充值卡说明</string>
+    <string name="m4399_rec_ins_liantongka_title">联通充值卡说明</string>
+    <string name="m4399_rec_ins_dianxinka_title">电信充值卡说明</string>
+    <string name="m4399_rec_ins_yikatong_title">4399一卡通充值说明</string>
+    <string name="m4399_rec_ins_close">关闭</string>
+    
+    <!-- For youbi fragment -->
+    <string name="m4399_rec_vertical_line"> | </string>
+    <string name="m4399_rec_youbi_inquiring">查询游币中</string>
+    <string name="m4399_rec_youbi_prefix">可用余额 :</string>
+    <string name="m4399_rec_youbi_edittext_hint">输入你要兑换的游币金额</string>
+    <string name="m4399_rec_inquiry_fail">查询游币失败</string>
+    <string name="m4399_rec_youbi_not_sufficient">可用游币余额不足，建议选择其它支付方式进行充值</string>
+    
+    <!-- For progress dialog -->
+    <string name="m4399_rec_on_fetching_config">正在获取充值配置，请稍候</string>
+    <string name="m4399_rec_fetching_youbi_balance">正在查询游币余额</string>
+    <string name="m4399_rec_exchanging_youbi">正在兑换游币</string>
+    <string name="m4399_rec_on_loading">正在加载，请稍候 </string>
+    <string name="m4399_rec_on_processing">正在处理，请稍候 </string>
+    <string name="m4399_rec_on_recharging">正在充值，请稍候 </string>
+    <string name="m4399_rec_on_opening_web">正在打开网页，请稍候</string>
+    <string name="m4399_rec_on_parsing_result">正在解析网页结果，请稍后</string>
+    
+    <!-- For card serial and password area -->
+    <string name="m4399_rec_input_card_serial">请输入充值卡号</string>
+    <string name="m4399_rec_input_card_psword">请输入充值密码</string>
+    <string name="m4399_rec_error_order">订单异常</string>
+    <string name="m4399_rec_empty_serial_passwd">卡号或密码不能为空，请输入正确卡号和密码</string>
+    <string name="m4399_rec_error_serial">卡号长度有误，请仔细核对\n(%1$s卡号为%2$d位, 密码%3$d位)</string>
+    <string name="m4399_rec_error_psword">密码长度有误，请仔细核对\n(%1$s卡号为%2$d位, 密码%3$d位)</string>
+    
+    <!-- For multi-card confirm fragment -->
+    <string name="m4399_rec_multi_card_indicator">您已选择了%s充值卡</string>
+    
+    <!-- For order or input sum checker -->
+    <string name="m4399_rec_amount_illegal">金额必须是整数，且首位不能是0</string>
+    <string name="m4399_rec_amount_exceed">所填金额超出范围 (%1s)，请重新填写</string>
+    
+    <!-- For pay result -->
+    <string name="m4399_rec_result_no_network">网络请求失败, 请检查网络状况</string>
+    <string name="m4399_rec_result_access_rec_config_error">获取充值配置失败，建议退出游戏重新加载</string>
+    <string name="m4399_rec_result_faile_fetch_online_date">获取网络数据失败，请检查网络状况</string>
+    <string name="m4399_rec_result_success">充值成功</string>
+    <string name="m4399_rec_result_on_process">充值处理中，请于一分钟后在游戏内查询。</string>
+    <string name="m4399_rec_result_order_error">充值下单异常，建议稍候再试或者用其他方式充值(%1$s)</string>
+    <string name="m4399_rec_result_system_abnormal">系统异常</string>
+    <string name="m4399_rec_result_error_data">数据格式不正确</string>
+    <string name="m4399_rec_result_inquriying_result">支付结果在确认中</string>
+    <string name="m4399_rec_result_user_canclled">用户中途取消支付操作</string>
+    <string name="m4399_rec_result_failed_pay">订单支付失败</string>
+    <string name="m4399_rec_result_failed_pay_online">网页支付失败</string>
+    <string name="m4399_rec_result_failed_exchange_youbi">兑换游币失败</string>
+    <string name="m4399_rec_result_miss_result">不能获取操作结果,请检查网络状态</string>
+    <string name="m4399_rec_result_send_sms_failed">发送短信失败, 请检查系统是否限制此应用发送短信</string>
+    <string name="m4399_rec_result_order_submitted_tips">订单已提交</string>
+    <string name="m4399_rec_result_failed_unknown">未知原因导致支付失败，请检查网络和是否正常登陆</string>
+    
+    <!-- For sms and its confirm fragment -->
+    <string name="m4399_rec_sms_send_error">短信发送出错，请检查应用是否被允许发送短信，或使用其他方式充值</string>
+    <string name="m4399_rec_sms_yidong_smsorder_error">使用移动短代充值出错，请稍后再试或使用其他方式充值</string>
+    <string name="m4399_rec_sms_good_name">商品名称： %1s</string>
+    <string name="m4399_rec_sms_good_price">订单价格：%1s (不含通信费)</string>
+    <string name="m4399_rec_sms_hotline">%1s</string>
+    <string name="m4399_rec_sms_import_tips_head">特别提示：%1s</string>
+    <string name="m4399_rec_sms_import_tips_content">点击“确认支付”即同意向运营商发送短信以完成支付，费用由本机话费扣除。</string>
+    <string name="m4399_rec_sms_cfm_title">订单支付</string>
+    
+    <!-- For pay result fragment or tips -->
+    <string name="m4399_rec_pay_failed_tips">充值失败</string>
+    <string name="m4399_rec_card_error_tips">温馨提示：请重新尝试充值或联系客服咨询</string>
+    <string name="m4399_rec_card_delay_tips">温馨提示：若未及时到账，请重新尝试充值或联系客服咨询</string>
+    <string name="m4399_rec_pay_eorder_head">订单号：</string>
+    <string name="m4399_rec_eorder_port_formatter">%1s</string>
+    <string name="m4399_rec_eorder_land_formatter">（订单号：%1s）</string>
+    <string name="m439_rec_hotline_prefix">客服热线：</string>
+    <string name="m4399_rec_faq_link"><u>常见问题解决</u></string>
+    
+    <!-- For Sms pay and its timer fragment -->
+    <string name="m4399_rec_duanxin_timer_prefix">正在为您充值，请耐心等候 &#8230;</string>
+    <string name="m4399_rec_duanxin_timer">（%s秒）</string>
+    <string name="m4399_rec_sms_hint_prefix">温馨提示：</string>
+    <string name="m4399_rec_sms_hint_body">充值中，请勿进行其他操作</string>
+    
+    <!-- For sms pay promotion dialog -->
+    <string name="m4399_rec_pro_dialog_title">充值小二</string>
+    <string name="m4399_rec_pro_dialog_msg_rowa">爷请留步！</string>
+    <string name="m4399_rec_pro_dialog_msg_rowb">试试新推出的短信充值方式?</string>
+    <string name="m4399_rec_pro_dialog_quit">放弃充值</string>
+    <string name="m4399_rec_pro_dialog_pay">短信充值</string>
+    
+    <!-- For maintenace dialog -->
+    <string name="m4399_rec_mt_channel">充值渠道</string>
+    <string name="m4399_rec_mt_title">%1s维护中</string>
+
+    <!-- <string name=""></string> -->
+
+</resources>

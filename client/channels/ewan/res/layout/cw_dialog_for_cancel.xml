@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+   >
+
+    <LinearLayout
+        android:layout_width="290.0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dip"
+        android:layout_marginRight="30dip"
+        android:layout_marginTop="30dip"
+        android:background="@drawable/cw_dialog_normal_bg"
+        android:clickable="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/cw_dialog_cancel_title"
+            android:layout_width="fill_parent"
+            android:layout_height="40.0dip"
+            android:gravity="center"
+            android:text="@string/cw_promt"
+            android:textColor="@color/cw_white"
+            android:textSize="20sp" 
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/cw_dialog_cancel_message"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.5"
+            android:minHeight="120.0dip"
+            android:paddingBottom="15.0dip"
+            android:paddingLeft="20.0dip"
+            android:paddingRight="20.0dip"
+            android:paddingTop="15.0dip" 
+            android:singleLine="false"
+            android:textColor="@color/cw_dialog_text"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60.0dip"
+            android:layout_gravity="bottom"            
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/cw_dialog_cancel_positiveButton"
+                android:layout_width="114.0dip"
+                android:layout_height="40.0dip"
+                android:background="@drawable/cw_gray_btn"
+                android:gravity="center"
+                android:text="@string/cw_sure" 
+                android:textColor="@color/cw_black"/>
+            
+            <Button
+                android:id="@+id/cw_dialog_cancel_negativeButton"
+                android:layout_width="114.0dip"
+                android:layout_height="40.0dip"
+                android:layout_marginLeft="20.0dip"
+                android:background="@drawable/cw_gray_btn"
+                android:gravity="center"
+                android:text="@string/cw_cancel" 
+                android:textColor="@color/cw_black"/>
+        </LinearLayout>
+    </LinearLayout>
+    
+<!--     <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dip"
+        android:clickable="true"
+        android:orientation="vertical" >
+    <ImageView
+        android:id="@+id/cw_dialog_close_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"     
+        android:src="@drawable/cw_dialog_back_btn" />
+ </LinearLayout> -->
+</FrameLayout>

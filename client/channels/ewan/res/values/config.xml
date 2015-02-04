@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--是否是预发环境-->
+    <string name="mini_env_pre">false</string>
+    <!--收银台的地址，线上， 预发，日常各不相同-->
+    <string name="mini_http_url">http://mclient.alipay.com/gateway.do</string>
+    <!--是否打开log 这个属性先前未使用 现在使用起来-->
+    <string name="mini_debuglog">false</string>
+    <!--<string name="hide_barcodesech">0</string>
+    <string name="no_sim">0</string>-->
+    <!-- <string name="ttid">600000</string>-->
+    <!--<string name="appkey">12278902</string>-->
+</resources>

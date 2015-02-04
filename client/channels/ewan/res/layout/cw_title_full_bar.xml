@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/cw_title_full_bg" >
+
+    <Button
+        android:id="@+id/cw_title_full_left_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="35dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/cw_back_btn"
+        android:minWidth="90dip"
+        android:text="@string/cw_back"
+        android:textColor="@color/cw_white"
+        android:textSize="18sp"
+        android:paddingLeft="30px"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/cw_title_full_content_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/cw_login"
+        android:textColor="@color/cw_white"
+        android:textSize="22sp" />
+
+    <Button
+        android:id="@+id/cw_title_full_right_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="35dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/cw_back_btn"
+        android:minWidth="90dip"
+        android:text="@string/cw_finish"
+        android:textColor="@color/cw_white"
+        android:textSize="18sp"
+        android:visibility="invisible" />
+
+</RelativeLayout>

@@ -1,0 +1,30 @@
+{
+    "desc": "益玩",
+    "name": "ewan",
+    "chamversion": "1.4.1",
+    "version": "V2.2.0",
+    "cfgitem": [
+        {
+          "name": "appId",
+          "type" : "string",
+          "desc" : "申请的APPID"
+        },
+        {
+          "name": "appKey",
+          "type" : "string",
+          "desc" : "用于充值验证",
+          "ignoreInA" : 1
+        },
+        {
+          "name": "packetId",
+          "type" : "string",
+          "desc" : "渠道ID,接入时分配，区分推广渠道"
+        },
+        {
+          "name": "signKey",
+          "type" : "string",
+          "desc" : "申请接入时分配的Key"
+        }
+    ]
+}
+
