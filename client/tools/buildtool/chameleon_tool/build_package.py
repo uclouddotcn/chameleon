@@ -348,7 +348,7 @@ def procSplashIcons(channelPath, globalcfg):
     splashPath = globalcfg['channel'].get('splashPath')
 
     if splashPath is not None:
-        splashes = __getAllObjFiles(splashPath, '.*\.png')
+        splashes = __getAllObjFiles(splashPath, '.*\.(png|jpg)')
         for (x, y) in splashes:
             shutil.copy(os.path.join(x, y), os.path.join(channelPath, 'assets', 'chameleon'))
             print("copy " + os.path.join(x, y))
@@ -357,16 +357,16 @@ def procSplashIcons(channelPath, globalcfg):
         if not os.path.exists(os.path.join(channelPath, 'res')):
             os.mkdir(os.path.join(channelPath, 'res'))
 
-        icons = __getAllObjFiles(icon, '.*\.png')
+        icons = __getAllObjFiles(icon, '.*\.(png|jpg)')
         for (x, y) in icons:
             name = str(y).replace('-', '_')
-            dest = os.path.join(channelPath, 'res', os.path.split(x)[-1], name)
+            dest = os.path.join(channelPath, 'res', os.path.split(x)[-1], ICON_NAME)
             if not re.match('.*drawable.*', str(os.path.split(x)[-1])):
                 continue
             if not os.path.exists(os.path.join(channelPath, 'res', os.path.split(x)[-1])):
                 os.mkdir(os.path.join(channelPath, 'res', os.path.split(x)[-1]))
             print("copy "+dest)
-            shutil.copy(os.path.join(x, y), os.path.join(dest, ICON_NAME))
+            shutil.copy(os.path.join(x, y), dest)
 
 
 ERR_MSG = {
