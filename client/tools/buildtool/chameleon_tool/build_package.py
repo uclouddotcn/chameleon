@@ -29,8 +29,8 @@ JAR_SIGNER_CMD = 'jarsigner'#os.path.join(EXEC_ROOT, 'jarsigner')
 ZIPALIGN = os.path.join(EXEC_ROOT, 'zipalign.exe')
 
 JAVAC = "javac"
-
-DX_PATH = "java -jar dx.jar"
+DX_FILE = os.path.join(EXEC_ROOT, 'dx.jar')
+DX_PATH = "java -jar "+DX_FILE + " "
 
 LOG_FD = 0
 
