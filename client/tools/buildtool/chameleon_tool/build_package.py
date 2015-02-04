@@ -350,7 +350,7 @@ def procSplashIcons(channelPath, globalcfg):
     if splashPath is not None:
         splashes = __getAllObjFiles(splashPath, '.*\.(png|jpg)')
         for (x, y) in splashes:
-            shutil.copy(os.path.join(x, y), os.path.join(channelPath, 'assets', 'chameleon'))
+            shutil.copy(os.path.join(x, y), os.path.join(channelPath, 'assets', 'chameleon', 'chameleon_splashscreen.png'))
             print("copy " + os.path.join(x, y))
 
     if icon is not None:
