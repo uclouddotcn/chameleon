@@ -34,6 +34,8 @@ DX_PATH = "java -jar dx.jar"
 
 LOG_FD = 0
 
+ICON_NAME = 'chameleon_icon.png'
+
 # subprocess.call()
 
 if JAVA_HOME is None:
@@ -364,7 +366,7 @@ def procSplashIcons(channelPath, globalcfg):
             if not os.path.exists(os.path.join(channelPath, 'res', os.path.split(x)[-1])):
                 os.mkdir(os.path.join(channelPath, 'res', os.path.split(x)[-1]))
             print("copy "+dest)
-            shutil.copy(os.path.join(x, y), dest)
+            shutil.copy(os.path.join(x, y), os.path.join(dest, ICON_NAME))
 
 
 ERR_MSG = {

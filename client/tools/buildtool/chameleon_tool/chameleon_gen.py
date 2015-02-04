@@ -34,7 +34,7 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, global
     if sc is not None or channel == "lenovo":
         manifestInst.replaceEntryActivity(orientation, channel)
     if icons is not None:
-        manifestInst.setIcon('chameleon_icon')
+        manifestInst.setIcon('chameleon_icon.png')
     if channel == 'baidumg':
         manifestInst.replaceApplication('prj.chameleon.channelapi.baidumg.Application')
         manifestInst.replaceTargetSDK('15')
