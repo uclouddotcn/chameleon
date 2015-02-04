@@ -1,5 +1,5 @@
 import xml.dom.minidom as xml
-import tempfile, os, codecs, sys, re, shutil
+import tempfile, os, codecs, sys, re, shutil, yaml
 
 class TempFile(object):
     def __init__(self, finalTargetFilePath):
@@ -36,6 +36,9 @@ class AndroidManifestInst(object):
     def getPkgName(self):
         return self._rootNode.getAttribute('package')
 
+    def getPkgVersionName(self):
+        return self._rootNode.getAttribute('android:versionName')
+
     def replace(self, cfg):
         AndroidManifestInst._walkElementNode(self._rootNode, 
                 lambda node: replaceNodeAttr(node, cfg))
@@ -45,6 +48,7 @@ class AndroidManifestInst(object):
         if len(children) == 0:
             targetNode = self.doc.createElement('use-sdk')
             targetNode.setAttribute('android:minSdkVersion', '7')
+            self._rootNode.appendChild(targetNode)
         else:
             targetNode = children[0] 
         targetNode.setAttribute('android:targetSdkVersion', target)
@@ -131,6 +135,29 @@ class AndroidManifestInst(object):
                 'meta-data', 
                 [('android:name', name)], 
                 [('android:value', value)])
+
+    def addAdditionalInfo(self, yamlPath):
+        if not os.path.exists(yamlPath):
+            return 1
+
+        fd = open(yamlPath, 'r')
+        addInfo = yaml.load(fd)
+        children = AndroidManifestInst._getChildrenNS(self._rootNode, 'uses-sdk')
+        print(len(children))
+        if len(children) == 0:
+            targetNode = self.doc.createElement('uses-sdk')
+            self._rootNode.appendChild(targetNode)
+
+        else:
+            targetNode = children[0]
+
+        for (key, value) in addInfo['sdkInfo'].items():
+            print(key, value)
+            targetNode.setAttribute('android:'+key, value)
+
+        root = self.doc.documentElement
+        for (key,value) in addInfo['versionInfo'].items():
+            root.setAttribute('android:'+key, value)
 
     def _findEntryActivity(self):
         activityNodes = AndroidManifestInst._getChildrenNS(self._applicationNode, 

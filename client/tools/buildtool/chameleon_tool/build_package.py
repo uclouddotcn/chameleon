@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import subprocess, sys, os, re, json, codecs
 import shutil
+import yaml
 from chameleon_gen import *
 from optparse import OptionParser
 import zipfile
@@ -30,6 +31,8 @@ ZIPALIGN = os.path.join(EXEC_ROOT, 'zipalign.exe')
 JAVAC = "javac"
 
 DX_PATH = "java -jar dx.jar"
+
+LOG_FD = 0
 
 # subprocess.call()
 
@@ -66,6 +69,9 @@ def unpackAPK(apkName, apkPath, destPath):
     allRsmaliFiles = __getAllObjFiles(packageSmali, '^(R[\$\.]).*')
     [os.remove(os.path.join(x, y)) for (x, y) in allRsmaliFiles]
 
+    manifestInst.addAdditionalInfo(os.path.join(destPath, 'apktool.yml'))
+    os.remove(os.path.join(destPath, MANIFEST_FILE_NAME))
+    manifestInst.safeDump(os.path.join(destPath, MANIFEST_FILE_NAME))
     return 0
 
 
@@ -360,6 +366,7 @@ def procSplashIcons(channelPath, globalcfg):
             print("copy "+dest)
             shutil.copy(os.path.join(x, y), dest)
 
+
 ERR_MSG = {
     1:'decompress package failed.',
     2:'get sdk failed.',
@@ -371,13 +378,16 @@ ERR_MSG = {
 }
 
 def main():
+    if os.path.exists('log.txt'):
+        os.remove('log.txt')
+    LOG_FD = open('log.txt', 'a')
     u = 0
     parser = OptionParser()
     parser.add_option('-c', '--channel', dest='channel', help='channel name, e.g. xiaomi')
     parser.add_option('-r', '--channelRoot', dest='channelRoot', help='Root directory of the channels')
     parser.add_option('-p', '--package', dest='package', help='APK Package to process')
     parser.add_option('-R', '--packageRoot', dest='packageRoot', help='Root directory where the package in')
-    #parser.add_option('-g', '--generatePkgName', dest='generatePkgName', help='Name of the package to generate.')
+    # parser.add_option('-g', '--generatePkgName', dest='generatePkgName', help='Name of the package to generate.')
     parser.add_option('-P', '--ProjectRoot', dest='projectRoot', help='path of the projects directory')
     parser.add_option('-d', '--decompressOnly', dest='decompressOnly', help="whether need to decompress the package. True/False")
     parser.add_option('-a', '--align', dest='align', help="whether need to align the package. True/False")
@@ -455,11 +465,13 @@ def main():
         print(ERR_MSG[u])
         return u
 
+    manifest = loadManifest(manifestFilePathOrig)
+
+
+    generatePkgName = manifest.getPkgName()+'-'+manifest.getPkgVersionName()+'-'+channel+'-release.apk'
+
     transformCfg(channelPath, globalcfg)
     procSplashIcons(channelPath, globalcfg)
-
-    generatePkgName = channel+'-release.apk'
-
     tempPkgName = generatePkgName+'.tempzipfile'
 
     sdkPaths = [x.path for x in libs]

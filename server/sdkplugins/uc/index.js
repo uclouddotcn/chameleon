@@ -132,7 +132,7 @@ UCChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
         };
         wrapper.userAction.pay(wrapper.channelName, data.ucid, null,
             data.cpOrderId, getPayStatus(data.orderStatus),
-            null, 0, amount, others,
+            null, null, amount, others,
             function (err, result) {
                 if (err) {
                     self._logger.error({err: err}, "fail to pay");

@@ -27,6 +27,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application>
+
         <!-- 登录配置开始 -->
         <meta-data
             android:name="lenovo.open.appid"
@@ -34,7 +35,7 @@
 
         <meta-data
             android:name="lenovo.gamesdk.new"
-            android:value="2.2.2" />
+            android:value="2.1.0" />
 
         <!-- 闪屏界面，默认横屏，通过screenOrientation可以进行修改-->
         <activity
@@ -156,57 +157,15 @@
 
 
         <!-- 支付配置开始 -->
-
-        <!-- 收银台界面，默认横屏，通过screenOrientation可以进行修改  注意必须6个activity同时修改-->
-        <!-- new ui start -->
+        <!-- 收银台界面，默认横屏，通过screenOrientation可以进行修改-->
         <activity
-            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.PayHubActivity"
+            android:name="com.lenovo.mpay.ifmgr.PayManagerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|navigation"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             chameleon:replace="android:screenOrientation=%orientation%"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            >
-        </activity>
-        <activity
-            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.ChargeActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            android:screenOrientation="landscape"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:launchMode="singleTask" >
-        </activity>
-        <activity
-            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.SelectCardAmountActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            android:screenOrientation="landscape"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:launchMode="singleTask" >
-        </activity>
-        <activity
-            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.SelectAmountActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
-            android:screenOrientation="landscape"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:launchMode="singleTask" >
-        </activity>
-        <activity
-            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.AccountCenterActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            android:screenOrientation="landscape"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:launchMode="singleTask" />
-        <activity
-            android:name="com.lenovo.pay.mobile.iapppaysecservice.activity.TradingRecordsActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            android:screenOrientation="landscape"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:launchMode="singleTask" />
-
-        <!-- new ui end -->
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+        <!-- 收银台界面结束-->
         <!-- 银联 -->
         <activity
             android:name="com.unionpay.upomp.bypay.activity.SplashActivity"
@@ -268,6 +227,13 @@
         <activity
             android:name="com.unionpay.upomp.bypay.activity.CardBankResultActivity"
             android:screenOrientation="portrait" />
+        <!-- 一键支付 -->
+        <activity
+            android:name="com.fastpay.sdk.activity.FastPay"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!-- 易联 -->
         <activity
             android:name="com.payeco.android.plugin.PayecoPluginLoadingActivity"

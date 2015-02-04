@@ -33,19 +33,20 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity
-            android:name="com.tencent.tmgp.sanguofire.wxapi.WXEntryActivity"
+            android:name="%packageId%.wxapi.WXEntryActivity"
             android:screenOrientation="landscape"
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="WXEntryActivity"
             android:launchMode="singleTop"
+            android:affinity="%packageId%.chameleon.wx"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:scheme="wx7036e91070e73dea" />
+                <data android:scheme="wxddddddd" chameleon:replace="android:scheme=%wxAppId%"/>
             </intent-filter>
         </activity>
 
