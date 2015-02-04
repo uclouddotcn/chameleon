@@ -18,6 +18,8 @@ var Project = require('./lib/project');
 var Channel = require('./lib/channel');
 
 function ChameleonTool(){
+    this.projectRoot = '../app/projects/';
+    this.configRoot = '../app/chameleon/';
 }
 
 ChameleonTool.prototype.init = function(callback){
@@ -132,7 +134,7 @@ ChameleonTool.prototype.updateProject = function(project, callback){
 ChameleonTool.prototype.getChannelList = function(){
     try {
         var channelList = [];
-        var channelInfo = fs.readJsonFileSync('../../app/chameleon/channelinfo/channellist.json');
+        var channelInfo = fs.readJsonFileSync(this.configRoot + 'channelinfo/channellist.json');
         for (var p in channelInfo) {
             var channel = new Channel();
             channel.channelName = p;
@@ -155,7 +157,7 @@ ChameleonTool.prototype.getChannelList = function(){
 
 ChameleonTool.prototype.getSDKList = function(){
     try {
-        var SDKInfo = fs.readJsonFileSync('../../app/chameleon/info.json');
+        var SDKInfo = fs.readJsonFileSync(this.configRoot + 'info.json');
         var SDKList = SDKInfo.channels;
         for (var i = 0; i < SDKList.length; i++) {
             SDKList[i].checked = false;
@@ -173,7 +175,7 @@ ChameleonTool.prototype.dirName = function(){
 }
 
 ChameleonTool.prototype.createProjectDirectory = function(name){
-    var root = '../../app/projects/';
+    var root = this.projectRoot;
     try{
         var path = root + name;
         fs.mkdirpSync(path);
@@ -186,7 +188,7 @@ ChameleonTool.prototype.createProjectDirectory = function(name){
 }
 
 ChameleonTool.prototype.createChannelDirectory = function(project, channelName){
-    var root = '../../app/projects/' + project.name + '/cfg/';
+    var root = this.projectRoot + project.name + '/cfg/';
     try{
         var path = root + channelName;
         fs.mkdirpSync(path);
@@ -199,7 +201,7 @@ ChameleonTool.prototype.createChannelDirectory = function(project, channelName){
 }
 
 ChameleonTool.prototype.removeProjectDirectory = function(name){
-    var root = '../../app/projects/';
+    var root = this.projectRoot;
     try{
         var path = root + name;
         fs.removeSync(path);
@@ -210,7 +212,7 @@ ChameleonTool.prototype.removeProjectDirectory = function(name){
 }
 
 ChameleonTool.prototype.removeChannelDirectory = function(project, channelName){
-    var root = '../../app/projects/'+ project.name + '/cfg/';
+    var root = this.projectRoot + project.name + '/cfg/';
     try{
         var path = root + channelName;
         fs.removeSync(path);
@@ -221,12 +223,9 @@ ChameleonTool.prototype.removeChannelDirectory = function(project, channelName){
 }
 
 ChameleonTool.prototype.command = function(command, args){
-    var root = '../../../buildtool/chameleon_tool/';
-    var commandContext = {
-        buildPackage: root + 'build_package.py'
-    }
+    var root = '../../tools/buildtool/chameleon_tool/';
     var spawn = childprocess.spawn;
-    var result = spawn(commandContext[command], args);
+    var result = spawn(command, args);
     result.stdout.on('data', function(data){
         console.log(data);
     });
