@@ -100,6 +100,9 @@ chameleonApp = angular.module('chameleonApp', [
                         result.rightUp = fs.existsSync(root + 'icon-decor-rightup.png');
                         return result;
                     };
+                    var nodePath = function(path){
+                        return node_path.join.apply(this, path.split('/'));
+                    }
                     //project manage
                     $scope.project = project;
                     $scope.fileread = project.signConfig.keyStoreFile;
@@ -504,9 +507,18 @@ chameleonApp = angular.module('chameleonApp', [
                         var data = {};
                         data.projectName = project.name;
                         data.landscape = project.landscape;
-                        data.signConfig = project.signConfig;
+                        //data.signConfig = project.signConfig;
+                        data.signConfig = {};
+                        data.signConfig.keystore = project.signConfig.keyStoreFile;
+                        data.signConfig.keypass = project.signConfig.keyStoreSecret;
+                        data.signConfig.alias = project.signConfig.alias;
+                        data.signConfig.storepass = project.signConfig.aliasSecret;
                         if(checkSign()){
-                            data.signConfig = channel.signConfig;
+                            data.signConfig.keystore = channel.signConfig.keyStoreFile;
+                            data.signConfig.keypass = channel.signConfig.keyStoreSecret;
+                            data.signConfig.alias = channel.signConfig.alias;
+                            data.signConfig.storepass = channel.signConfig.aliasSecret;
+                            //data.signConfig = channel.signConfig;
                         }
                         if(channel){
                             data.channel = {};
@@ -514,18 +526,20 @@ chameleonApp = angular.module('chameleonApp', [
                             data.channel.packageName = channel.config.packageName;
                             data.channel.sdks = [];
                             if(channel.config.splash){
-                                data.channel.splashPath =  packingRoot + 'app/projects/' + project.name + '/cfg/' + channel.channelName + '/res/splash.jpg';
+                                data.channel.splashPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/splash/splash.png'));
                                 fs.copySync(channel.config.splash, data.channel.splashPath);
                             }
                             if(channel.config.icon && channel.config.icon.path){
-                                data.channel.iconPath = packingRoot + 'app/projects/' + project.name + '/cfg/' + channel.channelName + '/res/icon.png';
+                                data.channel.iconPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/drawable/icon.png'));
                                 fs.copySync(packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/icon/' + channel.channelName + '.png', data.channel.iconPath);
                             }
+                            data.channel.splashPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
+                            data.channel.iconPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
                             if(channel.sdks && channel.sdks.length>0){
                                 for(var i=0; i<channel.sdks.length; i++){
                                     data.channel.sdks.push({
                                         name: channel.channelName,
-                                        type: 'pay,login',
+                                        type: 'pay,user',
                                         config: channel.sdks[i].config
                                     });
                                 }
