@@ -1,0 +1,6 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:state_pressed="true" android:drawable="@drawable/cw_pay_item_sel" />
+	<item android:state_focused="true" android:state_enabled="true"
+		android:drawable="@drawable/cw_pay_item_sel" />
+	<item android:drawable="@color/cw_translucent" />
+</selector>

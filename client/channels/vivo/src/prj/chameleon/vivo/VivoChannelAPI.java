@@ -89,6 +89,9 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean switchAccount(Activity activity, IDispatcherCb cb) {
+        if (mAccountActionListener != null) {
+            mAccountActionListener.onAccountLogout();
+        }
         Intent swithIntent = new Intent(activity, LoginActivity.class);
         swithIntent.putExtra("switchAccount", true);
         activity.startActivityForResult(swithIntent, REQUEST_CODE_LOGIN);

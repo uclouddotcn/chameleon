@@ -95,19 +95,19 @@ SDKPluginPool.prototype.getNewestPluginPath = function (name) {
 
 SDKPluginPool.prototype.loadUpgradePlugin = function (fileurl, md5value, callback) {
     var self = this;
-    childProcess.execFile('node', [path.join(__dirname, '..', 'upgrade.js'), fileurl, md5value, self.chdir],
+    childProcess.execFile('node', [path.join(__dirname, '..', 'script', 'installSDK.js'), fileurl, md5value, self.chdir],
         {timeout: 10000}, function (err, stdout, stderr) {
             self._logger.debug({stderr: stderr, stdout: stdout}, 'recv');
             if (!err) {
                 try {
                     var upgradeInfo = JSON.parse(stdout.toString());
-                    self.addNewPlugin(upgradeInfo.name, upgradeInfo.version);
+                    var name = upgradeInfo.name.split('-');
+                    self.addNewPlugin(name[2], upgradeInfo.version);
+                    callback(null, name[2], upgradeInfo.version, self.getPluginPath(upgradeInfo.name, upgradeInfo.version));
                 } catch (e) {
                     self._logger.error({err: e});
                     callback(e);
-                    return;
                 }
-                callback(null, upgradeInfo.name, upgradeInfo.version, self.getPluginPath(upgradeInfo.name, upgradeInfo.version));
             } else {
                 var code = err.code;
                 self._logger.error({err: err, stderr: stderr}, 'Fail to load plugin');

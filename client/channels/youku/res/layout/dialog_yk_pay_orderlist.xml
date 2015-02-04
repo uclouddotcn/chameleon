@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+	<LinearLayout android:id="@+id/yk_pay_orderlist_layout"
+	    android:layout_width="@dimen/yk_xh_664px"
+		android:layout_height="@dimen/yk_xh_735px" 
+	    android:background="@color/bg_pay_datail"
+		android:orientation="vertical">
+		<RelativeLayout
+			android:layout_width="match_parent"
+	    	android:layout_height="@dimen/yk_xh_88px"
+			android:orientation="horizontal"
+			android:background="@color/white">
+	     	<ImageView android:id="@+id/yk_pay_icon_back"
+			   	android:layout_width="wrap_content"
+		     	android:layout_height="wrap_content"
+			    android:src="@drawable/yk_pay_back"
+			    android:paddingLeft="@dimen/yk_xh_36px"
+			    android:paddingRight="@dimen/yk_xh_36px"
+			    android:layout_centerVertical="true"/>
+			<TextView
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:layout_gravity="center_vertical"
+				android:textSize="@dimen/yk_xh_44px"
+				android:textColor="@color/text_title"
+				android:layout_toRightOf="@+id/yk_pay_icon_back"
+				android:layout_marginLeft="@dimen/yk_xh_26px"
+				android:text="@string/yk_text_ykgame_paydetails"
+				android:layout_centerVertical="true"/>
+
+	</RelativeLayout>
+	<ImageView android:layout_width="match_parent"
+	    android:layout_height="1px"
+	    android:background="@color/title_line"/>
+	<TabHost android:id="@+id/tabhost"  
+        android:layout_width="fill_parent"  
+        android:layout_height="wrap_content"  
+        >  
+        <LinearLayout  
+            android:orientation="vertical"  
+            android:layout_width="fill_parent"  
+            android:layout_height="fill_parent"
+            android:background="@color/white">  
+            <TabWidget android:id="@android:id/tabs"   
+              android:orientation="horizontal"  
+              android:layout_width="fill_parent"  
+              android:layout_height="wrap_content">  
+            </TabWidget>
+             <FrameLayout android:id="@android:id/tabcontent"  
+                  android:layout_width="fill_parent"  
+                  android:layout_height="fill_parent"
+                  android:visibility="gone">  
+             </FrameLayout>  
+         </LinearLayout>  
+    </TabHost>
+    <ImageView android:layout_width="match_parent"
+	    android:layout_height="1px"
+	    android:background="@color/title_line"/>
+    <android.support.v4.view.ViewPager 
+        android:id="@+id/yk_pay_orderlist_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/yk_xh_14px"
+        android:background="@color/white">
+    </android.support.v4.view.ViewPager>
+	</LinearLayout>
+</LinearLayout>

@@ -102,7 +102,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private static final String WX_PLATFORM = "w";
     private static final String QQ_PLATFORM = "q";
     private static final int INVALID_PLAT = -99999;
-    private static final int LOGIN_TIMEOUT = 10;
+    private static final int LOGIN_TIMEOUT = 30;
     private static final int LOGIN_TIMEOUT_EVT_ID = 0;
     private IAccountActionListener mAccountActionListener;
     private final Config mCfg = new Config();
@@ -140,9 +140,9 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 case CallbackFlag.eFlag_Succ:
                     FillUserInfo(loginRet);
                     String platform = null;
-                    if (loginRet.flag == WeGame.QQPLATID) {
+                    if (loginRet.platform == WeGame.QQPLATID) {
                         platform = QQ_PLATFORM;
-                    } else if (loginRet.flag == WeGame.WXPLATID) {
+                    } else if (loginRet.platform == WeGame.WXPLATID) {
                         platform = WX_PLATFORM;
                     }
                     try {
@@ -258,9 +258,6 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     switch (code) {
                         case 0:
                             if (payState == 0) {
-                                CharSequence text = "游戏币充值成功，请重新购买";
-                                Toast toast = Toast.makeText(activity.getApplicationContext(), text, Toast.LENGTH_SHORT);
-                                toast.show();
                                 mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_PAY_RETRY, null);
                             } else if (payState == 1) {
                                 mPayEnv.mCb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
@@ -309,7 +306,6 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     .show();
         }
     }
-
    /**
      * init the SDK
      * @param activity the activity to give the real SDK
@@ -536,7 +532,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 mUniPay.SaveGameCoinsWithNum(mUserInfo.mOpenId.substring(1), mUserInfo.mPayToken,
                         sessionid, sessiontype, serverId, mUserInfo.mPf,
                         mUserInfo.mPfKey, UnipayPlugAPI.ACCOUNT_TYPE_COMMON,
-                        String.valueOf(rest), true,
+                        String.valueOf(rest), false,
                         mMoneyIcon);
                 mPayEnv = new PaymentEnv(activity, cb);
             }

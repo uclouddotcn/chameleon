@@ -15,18 +15,18 @@ import prj.chameleon.channelapi.IDispatcherCb;
 
 public class LoginGuestCallback implements IDispatcherCb {
 
-	private static String TAG = LoginGuestCallback.class.getSimpleName();
-	
+    private static String TAG = LoginGuestCallback.class.getSimpleName();
+
     private MainActivity mActivity;
 
-	public  LoginGuestCallback(MainActivity activity) {
+    public  LoginGuestCallback(MainActivity activity) {
         mActivity = activity;
     }
 
     @Override
     public void onFinished(int retCode, final JSONObject data) {
         Log.i(TAG, "mlogin data is: " + data);
-        
+
         RequestParams req = new RequestParams();
         try {
             int guest = data.getInt("guest");

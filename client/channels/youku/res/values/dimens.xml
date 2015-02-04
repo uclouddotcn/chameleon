@@ -1,0 +1,101 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <dimen name="yk_title_icon_margin_left">8dp</dimen>
+    <dimen name="yk_title_icon_margin_right">8dp</dimen>
+    <dimen name="yk_title_back_margin_right">5dp</dimen>
+    <dimen name="yk_title_back_announcement_margin_right">3dp</dimen>
+     <dimen name="yk_title_margin_left">8dp</dimen>
+    <dimen name="yk_title_margin_right">40dp</dimen>
+    <dimen name="yk_title_margin_top">9dp</dimen>
+    <dimen name="yk_title_text_height">21dp</dimen>
+    <dimen name="yk_title_height">41dp</dimen>
+    <dimen name="yk_tv_error_margin_left">21dp</dimen>
+    <dimen name="yk_tv_title_font_size">13sp</dimen>
+	<dimen name="yk_tv_error_font_size">10sp</dimen>
+	<dimen name="yk_tv_error_margin_top">2dp</dimen>
+	
+	<dimen name="yk_ed_margin_left">14dp</dimen>
+	<dimen name="yk_ed_text_margin_left">6dp</dimen>
+	<dimen name="yk_ed_margin_right">14dp</dimen>
+	<dimen name="yk_ed_margin_top">14dp</dimen>
+	<dimen name="yk_ed_margin_top_witherr">2dp</dimen>
+	<dimen name="yk_ed_font_size">13sp</dimen>
+	<dimen name="yk_ed_line_margin_top">14dp</dimen>
+	
+	
+	<dimen name="yk_btn_font_size">13sp</dimen>
+	<dimen name="yk_hink_info_font_size">11sp</dimen>
+	<dimen name="yk_hink_info_margin_top">6dp</dimen>
+	<dimen name="yk_btn_height">35dp</dimen>
+	<dimen name="yk_btn_other_height">51dp</dimen>
+	<dimen name="yk_btn_margin_left">15dp</dimen>
+	<dimen name="yk_btn_margin_right">15dp</dimen>
+	<dimen name="yk_btn_first_margintop">18dp</dimen>
+	<dimen name="yk_btn_second_margintop">12dp</dimen>
+	<dimen name="yk_btn_two_margin">13dp</dimen>
+	<dimen name="yk_btn_last_margin_bottom">20dp</dimen>
+	
+	
+	<dimen name="yk_tv_update_msg_height">80dp</dimen>
+	<dimen name="yk_tv_update_msg_margin_top">9dp</dimen>
+	
+	<dimen name="yk_loading_bar_height">20dp</dimen>
+	<dimen name="yk_loading_tv_progress_margintop">12dp</dimen>
+	<dimen name="yk_loading_tv_progress_height">28dp</dimen>
+	
+	<dimen name="yk_loading_tv_progress_bar_height">25dp</dimen>
+	<dimen name="yk_loading_tv_progress_bar_margin_left">30dp</dimen>
+	<dimen name="yk_loading_tv_progress_title_height">60dp</dimen>
+	
+	<dimen name="yk_loading_title_height">50dp</dimen>
+	
+	<dimen name="yk_loading_btn_height">37dp</dimen>
+	<dimen name="yk_update_msg_margintop">16dp</dimen>
+	<dimen name="yk_update_msg_marginleft">19dp</dimen>
+	<dimen name="yk_update_msg_fontsize">11sp</dimen>
+	
+	<dimen name="yk_dlg_width">225px</dimen>
+	<dimen name="yk_find_pwd_margin_left">155dp</dimen>
+	<dimen name="yk_find_pwd_margin_bottom">16dp</dimen>
+	<dimen name="yk_dlg_progress_width">230dp</dimen>
+	<dimen name="yk_re_send_margin_left">8dp</dimen>
+	<dimen name="yk_re_send_width">80dp</dimen>
+	<dimen name="yk_verify_no_wdith">115dp</dimen>
+	
+	
+	<dimen name="yk_xh_664px">295px</dimen>
+	<dimen name="yk_xh_44px">20px</dimen>
+	<dimen name="yk_xh_44px_iconhigh">20px</dimen>
+	<dimen name="yk_xh_10px">4px</dimen>
+	<dimen name="yk_xh_6px">3px</dimen>
+	<dimen name="yk_xh_f6px">-3px</dimen>
+	<dimen name="yk_xh_200px">89px</dimen>
+	<dimen name="yk_xh_300px">133px</dimen>
+	<dimen name="yk_xh_350px">147px</dimen>
+	<dimen name="yk_xh_18px">8px</dimen>
+	<dimen name="yk_xh_26px">12px</dimen>
+	<dimen name="yk_xh_20px">9px</dimen>
+	<dimen name="yk_xh_f20px">-9px</dimen>
+	<dimen name="yk_xh_24px">11px</dimen>
+	<dimen name="yk_xh_70px">31px</dimen>
+	<dimen name="yk_xh_474px">211px</dimen>
+	<dimen name="yk_xh_50px">22px</dimen>
+	<dimen name="yk_xh_592px">263px</dimen>
+	<dimen name="yk_xh_100px">44px</dimen>
+	<dimen name="yk_xh_57px">25px</dimen>
+	<dimen name="yk_xh_36px">16px</dimen>
+	<dimen name="yk_xh_14px">6px</dimen>
+	<dimen name="yk_xh_658px">292px</dimen>
+	<dimen name="yk_xh_58px">26px</dimen>
+	<dimen name="yk_xh_427px">190px</dimen>
+	<dimen name="yk_xh_550px">232px</dimen>
+	<dimen name="yk_xh_88px">39px</dimen>
+	<dimen name="yk_xh_88px_iconwidth">39px</dimen>
+	<dimen name="yk_xh_150px">66px</dimen>
+	<dimen name="yk_xh_75px">33px</dimen>
+	<dimen name="yk_xh_75px_resend_height">33px</dimen>
+</resources>

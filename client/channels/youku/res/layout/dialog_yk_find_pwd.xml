@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_height="300dp" 
+  android:layout_width="@dimen/yk_dlg_width"
+  android:background="@color/ykbgColor"
+   android:orientation="vertical">
+   
+   <include layout="@layout/yk_title_include"/>  
+   
+  <LinearLayout 
+     android:layout_height="1dp"
+    android:layout_width="fill_parent"
+    android:background="@color/title_line"></LinearLayout>
+  
+  
+   <LinearLayout
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_width="fill_parent">
+  <include layout="@layout/yk_tv_error_include"/>
+  
+  <LinearLayout
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginLeft="@dimen/yk_ed_margin_left"
+    android:layout_marginRight="@dimen/yk_ed_margin_right"
+    android:layout_width="fill_parent" >
+    <RelativeLayout
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1.6"
+               android:layout_marginTop="@dimen/yk_ed_margin_top">
+               
+        <com.youku.gamesdk.widget.EditTextWithErr
+        android:id="@+id/et_user"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/yk_ed_text_margin_left"
+        android:tag="user#30"
+        android:contentDescription="@string/yk_text_hint_phone_or_username"/>
+     </RelativeLayout>
+  </LinearLayout>
+  </LinearLayout>
+  
+     <LinearLayout
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:background="@color/ykbgColor" >
+  
+         <Button
+      android:layout_height="@dimen/yk_btn_height"
+      android:layout_width="fill_parent"
+      android:background="@drawable/yk_btn_blue_selector"
+      android:text="@string/yk_btn_text_yzsf"
+      android:textColor="@color/btn_text_white"
+      android:textSize="@dimen/yk_btn_font_size"
+      android:layout_marginTop="@dimen/yk_btn_first_margintop"
+      android:layout_marginLeft="@dimen/yk_btn_margin_left"
+      android:layout_marginRight="@dimen/yk_btn_margin_right"
+      android:layout_marginBottom="@dimen/yk_btn_last_margin_bottom"
+      android:id="@+id/btn_find_pwd" />
+         
+  </LinearLayout>
+</LinearLayout>

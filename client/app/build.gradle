@@ -11,7 +11,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -95,6 +95,18 @@ android {
         }
         coolpad {
         }
+        mzw {
+        }
+        m4399 {
+        }
+        vivo {
+        }
+        dianxin {
+        }
+        youku {
+        }
+        ewan {
+        }
         p_getui {
 
         }
@@ -104,7 +116,6 @@ android {
         p_umeng {
 
         }
-
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
@@ -132,11 +143,11 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.1.0'
     compile files('libs/android-async-http-1.4.4.jar')
     compile project(':chameleon')
     qqmobCompile project(':channels:qqmob')
     qqmsdkCompile project(':channels:qqmsdk')
+//    anzhiCompile project(':channels:anzhi')
     nd91Compile project(':channels:nd91')
     qihuCompile project(':channels:qihu')
     chinamobCompile project(':channels:chinamob')
@@ -146,23 +157,29 @@ dependencies {
     ucCompile project(':channels:uc')
     oppoCompile project(':channels:oppo')
     dangleCompile project(':channels:dangle')
-    anzhiCompile project(':channels:anzhi')
     huaweiCompile project(':channels:huawei')
     meizuCompile project(':channels:meizu')
     gfanCompile project(':channels:gfan')
     lenovoCompile project(':channels:lenovo')
     gioneeCompile project(':channels:gionee')
     htcCompile project(':channels:htc')
+    coolpadCompile project(':channels:coolpad')
+    m4399Compile project(':channels:m4399')
+    mzwCompile  project(':channels:mzw')
+    vivoCompile project(':channels:vivo')
+    dianxinCompile project(':channels:dianxin')
+    youkuCompile project(':channels:youku')
+    ewanCompile project(':channels:ewan')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')
-    coolpadCompile project(':channels:coolpad')
     // generate the compile dependency
+
     /*
-    platformFlavors.each {x ->
-        "${x.productFlavor}Compile" project(":channels:${x.productFlavor}")
-    }
-    */
+            platformFlavors.each {x ->
+                "${x.productFlavor}Compile" project(":channels:${x.productFlavor}")
+            }
+            */
 }
 
 

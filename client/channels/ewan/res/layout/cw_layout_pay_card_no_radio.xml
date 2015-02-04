@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"  
+ android:layout_width="fill_parent"  
+ android:layout_height="fill_parent"  
+ android:fadingEdge="vertical">  
+ 
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+   <LinearLayout
+        android:id="@+id/cw_pay_card_no_radio_sel_btn_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:checkedButton="@id/cw_pay_card_10_rb"
+        android:orientation="horizontal" >
+        
+        <Button
+            android:id="@+id/cw_pay_cmcc_btn"
+            android:button="@null"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_pay_phonecard_btn_nor"
+            android:gravity="center"
+            android:text="@string/cw_title_pay_cmcc"  
+            android:textColor="@color/cw_black"/>
+
+        <Button
+            android:id="@+id/cw_pay_cucc_btn"
+            android:button="@null"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_pay_phonecard_btn_nor"
+            android:gravity="center"
+            android:text="@string/cw_title_pay_cucc" 
+            android:textColor="@color/cw_black"/>
+       </LinearLayout> 
+       
+
+    <TextView
+        android:id="@+id/cw_pay_card_choose_type_tip_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:layout_marginLeft="20dip"
+        android:layout_below="@id/cw_pay_card_no_radio_sel_btn_layout"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/cw_pay_card_pay_money_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cw_pay_card_choose_type_tip_tv"
+        android:layout_marginLeft="20dip"
+        android:layout_marginTop="15dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color" 
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/cw_pay_card_pay_product_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dip"
+        android:layout_below="@id/cw_pay_card_pay_money_tv"
+        android:layout_marginLeft="20dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/cw_pay_card_pay_note_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dip"
+        android:layout_below="@id/cw_pay_card_pay_product_tv"
+        android:layout_marginLeft="20dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color" 
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/cw_pay_card_nofo_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dip"
+        android:layout_below="@id/cw_pay_card_pay_note_tv"
+        android:layout_marginLeft="20dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:id="@+id/cw_pay_card_cardno_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dip"
+        android:layout_below="@id/cw_pay_card_nofo_tv"
+        android:gravity="center_vertical" >
+
+        <EditText
+            android:id="@+id/cw_pay_card_serial_et"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_marginRight="100dip"
+            android:layout_marginTop="4dip"
+            android:background="@drawable/cw_pay_input_eg"
+            android:digits="@string/cw_limit_account"
+            android:hint="@string/cw_input_card"
+            android:maxLength="30"
+            android:paddingLeft="5dip"
+            android:singleLine="true"
+            android:textColor="@color/cw_black"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cw_pay_card_cardpsd_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="15dip"
+        android:layout_below="@id/cw_pay_card_cardno_layout" >
+
+
+        <EditText
+            android:id="@+id/cw_pay_card_pwd_et"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_marginRight="100dip"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/cw_pay_input_eg"
+            android:digits="@string/cw_limit_account"
+            android:hint="@string/cw_input_pwd"
+            android:maxLength="30"
+            android:paddingLeft="5dip"
+            android:singleLine="true"
+            android:textColor="@color/cw_black"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dip"
+        android:layout_marginTop="20dip"
+        android:id="@+id/cw_pay_card_no_radio_btn_layout"
+        android:layout_below="@id/cw_pay_card_cardpsd_layout">
+
+        <Button
+            android:id="@+id/cw_pay_card_go_pay_btn"
+            style="@style/cw_button_blod_white_text"
+            android:layout_width="150dip"
+            android:layout_height="40dip"
+            android:background="@drawable/cw_tip_dialog_btn"
+            android:shadowColor="#ff891f02"
+            android:shadowDy="1"
+            android:text="@string/cw_pay"
+            android:textColor="@color/cw_white" />
+    </LinearLayout>
+    
+    <TextView
+        android:id="@+id/cw_pay_card_intro_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="15dip"
+        android:layout_marginTop="30dip"
+        android:paddingBottom="5dip"
+        android:layout_below="@id/cw_pay_card_no_radio_btn_layout"  
+        android:text="@string/cw_pay_intro"
+        android:textColor="@color/cw_black" />
+    
+            <TextView
+        android:id="@+id/cw_pay_card_choose_tip_tv"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cw_pay_card_intro_tv"
+        android:layout_marginLeft="15dip"
+        android:layout_marginTop="5dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_black"/>
+            
+</RelativeLayout>
+</ScrollView>

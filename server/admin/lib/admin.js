@@ -1,6 +1,11 @@
 var restify = require('restify');
+var child_process = require('child_process');
+var versionParser = require('./versionparser');
+var VError = require('verror');
 var fs = require('fs');
+var path = require('path');
 var workerMgr = require('./worker_mgr');
+var constants = require('./constants');
 
 /**
  * 
@@ -21,17 +26,67 @@ var Admin = function(pluginMgr, options, logger) {
     self.logger = logger;
 
     self.pluginMgr = pluginMgr;
-    self.server.use(restify.bodyParser());
-    self.server.use(restify.queryParser());
+    self.server.use(restify.bodyParser({
+        mapParams: true
+    }));
+    self.server.use(restify.queryParser({
+        mapParams: true
+    }));
     var requestPoster = options.requestPoster || workerMgr;
 
     self.server.post('/admin', function (req, res, next) {
         try {
-            switch (req.body.action) {
+            switch (req.params.action) {
+                case 'start':
+                    if (workerMgr.status !== 'stop') {
+                        return next(new restify.InvalidArgumentError('worker may be already started, ' +
+                        'using restart if you really know what you are doing'));
+                    } else {
+                        if (req.params.cfg) {
+                            self.startWorkerAndSave(req.params.cfg, function (err) {
+                                if (err) {
+                                    return next(new restify.InvalidArgumentError(err.message));
+                                } else {
+                                    res.send(workerMgr.info);
+                                }
+                                return next();
+                            });
+                        } else {
+                            self.startWorkerFromFile(function (err) {
+                                if (err) {
+                                    return next(new restify.InvalidArgumentError(err.message));
+                                } else {
+                                    res.send(workerMgr.info);
+                                }
+                                return next();
+                            })
+                        }
+                    }
+                    break;
                 case 'restart':
-                    workerMgr.restartWorker(req.body.cfg, function () {
-                        res.send({code: 0});
+                    workerMgr.restartWorker(req.params.cfg, function (err) {
+                        if (err) {
+                            return next(new restify.InvalidArgumentError(err.message));
+                        } else {
+                            saveWorkerCfg(req.params.cfg);
+                            res.send(workerMgr.info);
+                        }
+                        return next();
                     });
+                    break;
+                case 'stop':
+                    workerMgr.stop(function () {
+                        res.send();
+                        return next();
+                    });
+                    break;
+                case 'info':
+                    var msg = workerMgr.info;
+                    if (!res) {
+                        msg = 'worker is no started';
+                    }
+                    res.send(msg);
+                    return next();
                     break;
                 default:
                     return next(new restify.InvalidArgumentError(''));
@@ -40,6 +95,49 @@ var Admin = function(pluginMgr, options, logger) {
             logger.error({err: e, req: req}, 'Fail to handle admin request');
             return next(new restify.InvalidArgumentError(e.message));
         }
+    });
+
+    self.server.post('/worker/install', function (req, res, next) {
+        var s = req.params.workerzipFile;
+        child_process.exec('node ' + path.join(__dirname, '..', 'script', 'installworker.js') + ' ' + s, function (err, stdout, stderr) {
+            if (err) {
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.send();
+            return next();
+        });
+    });
+
+    self.server.post('/worker/start', function (req, res, next) {
+        var cfg = versionParser.genDefaultWorkerCfg(req.params.version);
+        if (workerMgr.status === 'running') {
+            workerMgr.restartWorker(cfg, function (err) {
+                if (err) {
+                    return next(new restify.InvalidArgumentError(err.message));
+                } else {
+                    saveWorkerCfg(cfg);
+                    res.send(workerMgr.info);
+                }
+                return next();
+            });
+        } else {
+            self.startWorkerAndSave(cfg, function (err) {
+                if (err) {
+                    return next(new restify.InvalidArgumentError(err.message));
+                }
+                res.send(workerMgr.info);
+                return next();
+            });
+        }
+    });
+
+    self.server.get('/worker/info', function (req, res, next) {
+        var msg = workerMgr.info;
+        if (!res) {
+            msg = 'worker is no started';
+        }
+        res.send(msg);
+        return next();
     });
 
     self.server.get('/monitor', function (req, res, next) {
@@ -53,21 +151,25 @@ var Admin = function(pluginMgr, options, logger) {
     });
 
     // path for get all plugins
-    self.server.get('/plugins', function (req, res, next) {
+    self.server.get('/sdk', function (req, res, next) {
         var infos = pluginMgr.getAllPluginInfos().map(formatPluginInfo);
         res.send(infos);
         return next();
     });
 
     // path for adding a plugin 
-    self.server.post('/plugin', function(req, res, next) {
-        self.pluginMgr.upgradePlugin(req.params.fileurl, req.params.md5value, function(err, info) {
+    self.server.post('/sdk', function(req, res, next) {
+        self.pluginMgr.upgradePlugin(req.params.fileurl, req.params.md5value, function(err, info, version, path) {
             if (err) {
                 req.log.info({err:err}, 'fail to add plugin');
                 return next(new restify.InvalidArgumentError(err.message));
             }
-            var showChannelInfo = doFormatPluginInfo(info);
-            res.send({code: 0, channel: showChannelInfo});
+            var showChannelInfo = {
+                name: info,
+                version: version,
+                path: path
+            };
+            res.send(showChannelInfo);
             return next();
         });
     });
@@ -77,7 +179,7 @@ var Admin = function(pluginMgr, options, logger) {
         if (newInst instanceof Error) {
             return next(new restify.InvalidArgumentError(newInst.message));
         } else {
-            res.send({code: 0});
+            res.send();
             return next();
         }
     });
@@ -94,28 +196,25 @@ var Admin = function(pluginMgr, options, logger) {
     });
 
     // path for add a product
-    self.server.post('/product/:name', function (req, res, next) {
-        requestPoster.request('product.new', {product: req.params.name, cfg: req.body}, function (err, rsp) {
-            console.log(err);
+    self.server.post('/product', function (req, res, next) {
+        req.log.info({params: req.params}, 'recv products');
+        var zipfile = req.params.zipfile;
+        child_process.exec('node ' + path.join(__dirname, '..', 'script', 'installProducts.js') + ' ' + zipfile, function (err, stdout, stderr) {
             if (err) {
                 return next(new restify.InvalidArgumentError(err.message));
             }
-            res.send(rsp);
-            return next();
+            workerMgr.restartWorker(null, function (err) {
+                req.log.debug({err: err}, 'worker restarted');
+                if (err) {
+                    return next(new restify.InternalError('Fail to restart worker: ' + err.message));
+                }
+                res.send('');
+                return next();
+            });
         });
     });
 
-    self.server.put('/product/:name', function (req, res, next) {
-        requestPoster.request('product.update', {product: req.params.name, cfg: req.body}, function (err, rsp) {
-            if (err) {
-                return next(new restify.InvalidArgumentError(err.message));
-            }
-            res.send(rsp);
-            return next();
-        });
-    });
-
-
+    /*
     // path for add a plugin instance
     self.server.post('/product/:name/:channelName', function(req, res, next) {
         requestPoster.request('product.addchannel', {
@@ -160,6 +259,7 @@ var Admin = function(pluginMgr, options, logger) {
             return next();
         });
     });
+    */
 
     self.server.on('uncaughtException', function (req, res, route, error) {
         req.log.error({route: route, err: error}, 'on uncaught exception');
@@ -188,7 +288,7 @@ Admin.prototype.exit = function () {
     if (this.exitFunc) {
         this.exitFunc();
     }
-}
+};
 
 Admin.prototype.close = function (callback) {
     this.logger.info('admin server exit');
@@ -198,6 +298,62 @@ Admin.prototype.close = function (callback) {
 
 Admin.prototype.registerExitFunc = function (func) {
     this.exitFunc = func;
+};
+
+Admin.prototype.startWorkerFromFile = function (callback) {
+    var cfgpath = getWorkerCfgPath();
+    var self = this;
+    fs.exists(cfgpath, function (exists) {
+        if (exists) {
+            fs.readFile(cfgpath, 'utf8', function (err, content) {
+                if (err) {
+                    callback(new VError(err, 'Fail to read config from ' + cfgpath));
+                    self.logger.error({err: err}, 'Fail to read config');
+                    return;
+                }
+                try {
+                    var workerCfg = JSON.parse(content);
+                } catch (e) {
+                    self.logger.error({err: e}, 'Fail to read config');
+                    return callback(new VError(err, 'Fail to parse json'))
+                }
+                self.startWorker(workerCfg, callback);
+            });
+        } else {
+            setImmediate(callback);
+        }
+    });
+};
+
+Admin.prototype.startWorkerAndSave = function (workercfg, callback) {
+    this.startWorker(workercfg, function (err) {
+        if (err) {
+            return callback(err);
+        }
+        saveWorkerCfg(workercfg);
+        callback();
+    });
+};
+
+function saveWorkerCfg(cfg) {
+    var cfgpath = getWorkerCfgPath();
+    fs.writeFile(cfgpath, JSON.stringify(cfg, null, '\t'));
+}
+
+Admin.prototype.startWorker = function (workercfg, callback) {
+    var self = this;
+    workerMgr.init(self.logger, self.pluginMgr.pluginInfos, workercfg, function (err) {
+        if (err) {
+            self.logger.error({err: err}, "Fail to init worker");
+            callback(err);
+            return;
+        }
+        callback(null, null);
+    });
+};
+
+function getWorkerCfgPath () {
+    return path.join(constants.baseDir, 'config', 'worker.json');
 }
 
 module.exports.createAdmin = function(pluginMgr, options, logger) {

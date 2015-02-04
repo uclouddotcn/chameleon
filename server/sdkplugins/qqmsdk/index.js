@@ -19,8 +19,10 @@ var cfgDesc = {
     timeout: '?integer'
 };
 
-var QQ_MSDK_URL = "http://opensdk.tencent.com";
-var QQ_MSDK_DEBUG_URL = "http://opensdktest.tencent.com";
+//var QQ_MSDK_URL = "http://opensdk.tencent.com";
+//var QQ_MSDK_DEBUG_URL = "http://opensdktest.tencent.com";
+var QQ_MSDK_URL = "http://msdk.qq.com";
+var QQ_MSDK_DEBUG_URL = "http://msdktest.qq.com";
 
 var QQ_PAY_URL_DEV = "http://119.147.19.43";
 var QQ_PAY_URL = "http://openapi.tencentyun.com";
@@ -238,7 +240,7 @@ QQMsdkChannel.prototype.verifyQQLogin = function(wrapper, token, openid, callbac
             result = {
                 code: 0,
                 loginInfo: {
-                    uid: openid,
+                    uid: 'q'+openid,
                     token: token,
                     channel: wrapper.channelName
                 }
@@ -278,7 +280,7 @@ QQMsdkChannel.prototype.verifyWXLogin = function(wrapper, token, openid, callbac
             result = {
                 code: 0,
                 loginInfo: {
-                    uid: openid,
+                    uid: 'w'+openid,
                     token: token,
                     channel: wrapper.channelName
                 }
@@ -293,7 +295,7 @@ QQMsdkChannel.prototype.verifyLogin = function(wrapper, token, others, callback)
     try {
         var otherObj = JSON.parse(others);
         var pl = otherObj.pl;
-        var openid = otherObj.uid;
+        var openid = otherObj.uid.substr(1);
         if (pl === 'w') {
             self.verifyWXLogin(wrapper, token, openid, callback);
         } else {
@@ -358,7 +360,8 @@ QQMsdkChannel.prototype.pendingPay = function (wrapper, params, infoFromSDK, cal
         var accessToken = infoFromSDK.t;
         var payToken = infoFromSDK.pt;
         var platform = infoFromSDK.pl;
-        self.requestSaving(wrapper, params.uid, accessToken, payToken, pf, pfKey, params.serverId, platform, function (err, obj) {
+        var uid = params.uid.substr(1);
+        self.requestSaving(wrapper, uid, accessToken, payToken, pf, pfKey, params.serverId, platform, function (err, obj) {
             if (err) {
                 self._logger.debug({err: err}, 'return from channel');
                 callback(err);
@@ -372,7 +375,7 @@ QQMsdkChannel.prototype.pendingPay = function (wrapper, params, infoFromSDK, cal
                 }
                 if (obj.balance >= params.realPayMoney) {
                     // 二级货币的存款多于所需要付款的数额，直接开始调用扣款
-                    self.requestPay(wrapper, params.uid, accessToken, payToken, pf, pfKey, params.serverId,
+                    self.requestPay(wrapper, uid, accessToken, payToken, pf, pfKey, params.serverId,
                         params.realPayMoney, params.productId, platform, function (err, obj) {
                             if (err) {
                                 callback(err);
@@ -488,6 +491,7 @@ QQMsdkChannel.prototype.requestSaving = function (wrapper, openid, openkey, payT
             pfkey: pfkey,
             zoneid: zoneid
         };
+        self._logger.debug({req: req}, 'request balance');
         var u = '/mpay/get_balance_m';
         req.sig = calcPaySign(wrapper.cfg.qqAppKey+'&', 'GET', u, req);
         var q =  u + '?' + querystring.stringify(req);

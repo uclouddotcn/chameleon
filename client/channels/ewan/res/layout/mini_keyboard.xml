@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" 
+    android:id="@+id/keyboard_layout" 
+    android:gravity="center" 
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/keyboard_desc"
+        android:text="@string/alipay_keyboard"
+        android:textColor="#ffffffff"
+        android:background="#ff202020"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="80px" /> 
+
+    <com.alipay.android.mini.keyboard.MiniKeyboard
+        android:id="@+id/keyboard_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff202020"  
+        android:focusable="true"  
+        android:focusableInTouchMode="true"
+        android:keyBackground="@drawable/mini_keyboard_key"
+        android:keyPreviewLayout="@layout/mini_keyboard_preview"
+        android:keyTextColor="#ffffffff" 
+        android:visibility="gone" >
+    </com.alipay.android.mini.keyboard.MiniKeyboard>
+
+</LinearLayout>

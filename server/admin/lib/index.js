@@ -13,8 +13,8 @@ var workerMgr = require('./worker_mgr');
 
 function defaultAdminLoggerCfg(level) {
     var infoLv = 'info';
-    if (level) {
-        infoLv = level;
+    if (process.env.NODE_ENV === 'development') {
+        infoLv = 'debug';
     }
     return bunyan.createLogger({
         name: 'admin',
@@ -45,7 +45,6 @@ function ensureBaseDirReady() {
 }
 
 exports.main = function (cfg, options) {
-    assert(cluster.isMaster, "should only run in master mode");
     if (options.debug) {
         constants.debug = options.debug;
     }
@@ -60,36 +59,33 @@ exports.main = function (cfg, options) {
     var localSettings = new LocalSettings(path.dirname(cfg._path), adminLogger);
 
     var pluginMgr = createPluginMgr(localSettings, adminLogger);
+    var admin = null;
     async.waterfall([
         function (callback) {
             pluginMgr.loadAllPlugins(callback);
         },
-        function (data, callback) {
+        function (callback) {
             if (options.singleProcess) {
-                var main = require('../worker/lib/index').init;
+                var main = require(path.join(__dirname, '../../worker')).init;
                 var requestPoster = new (require('./inproc_requestposter'))();
-                main(path.join(constants.baseDir, './server/config/svr.json'), constants.baseDir, data, requestPoster, function (err) {
+                main(constants.baseDir, ['./worker/config/svr.json'], pluginMgr.pluginInfos, requestPoster, function (err) {
                     if (err) {
                         return callback(err);
                     }
                     callback(null, requestPoster);
                 });
-            } else {
-                workerMgr.init(adminLogger, data, cfg.worker, function (err) {
-                    if (err) {
-                        adminLogger.error({err: err}, "Fail to init worker");
-                        callback(err);
-                        return;
-                    }
-                    callback(null, null);
-                });
             }
-        },
-        function (requestPoster, callback) {
-            var admin = createAdmin(pluginMgr, {requestPoster:requestPoster}, adminLogger);
+            admin = createAdmin(pluginMgr, {requestPoster:requestPoster}, adminLogger);
             admin.listen(cfg.admin.port, cfg.admin.host, function (err) {
                 callback(err);
             });
+        },
+        function (callback) {
+            if (options.singleProcess) {
+                setImmediate(callback)
+            } else {
+                admin.startWorkerFromFile(callback);
+            }
         }
     ], function (err) {
         if (err) {

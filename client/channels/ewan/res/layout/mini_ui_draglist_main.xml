@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.alipay.android.mini.widget.DragSortListView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dslv="http://schemas.android.com/apk/res/com.alipay.android.app"
+    android:id="@android:id/list"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingTop="10dp"
+    android:paddingBottom="0dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_margin="0dp"
+    android:dividerHeight="0dp"
+    android:fastScrollEnabled="true" />

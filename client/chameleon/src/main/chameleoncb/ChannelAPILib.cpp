@@ -66,6 +66,7 @@ enum {
     FUNC_ID_ONLOGINRSP,
     FUNC_ID_SUBMIT_PLAYER_INFO,
     FUNC_ID_INIT,
+    FUNC_ID_IS_SUPPORT_PROTOCOL,
     FUNC_ID_COUNT
 };
 
@@ -91,7 +92,8 @@ static const char *FUNC_TYPE[][2] = {
     {"getPayToken", "()[B"},
     {"onLoginRsp", "([B)Z"},
     {"submitPlayerInfo", "([B[B[BI[B)V"},
-    {"init", "()V"}
+    {"init", "()V"},
+    {"isSupportProtocol", "([B)Z"},
 };
 
 template<typename T>
@@ -355,6 +357,40 @@ int logout() {
         return -1;
     }
     return callJniMethod(env, FUNC_ID_LOGOUT, result);
+}
+
+bool isSupportProtocol(const std::string & funcName) {
+    JNIEnv * env = g_apiLib.GetEnv();
+    if (env == NULL) {
+        return "";
+    }
+    bool result = false;
+    JniHelper::LocalByteArray jFuncName = 
+        JniHelper::ConvertToByteArray(env, funcName.c_str(), funcName.size());
+    int ret = callJniMethod(env, FUNC_ID_IS_SUPPORT_PROTOCOL, &result, jFuncName.Ref());
+    if (ret == 0) {
+        return result;
+    } else {
+        return "";
+    }
+}
+
+int runProtocol(int id, const std::string & protocol, const std::string & message) {
+    void * result = NULL;
+    JNIEnv * env = g_apiLib.GetEnv();
+    if (env == NULL) {
+        return -1;
+    }
+    JniHelper::LocalByteArray jProtocol = 
+        JniHelper::ConvertToByteArray(env, protocol.c_str(), protocol.size());
+    JniHelper::LocalByteArray jMessage = 
+        JniHelper::ConvertToByteArray(env, message.c_str(), message.size());
+    return callJniMethod(env,
+                         FUNC_ID_RUN_PROTOCOL, 
+                         result, 
+                         (jint)id,
+                         jProtocol.Ref(), 
+                         jMessage.Ref());
 }
 
 int charge(int id, 

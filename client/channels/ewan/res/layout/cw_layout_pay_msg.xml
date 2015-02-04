@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"  
+ android:layout_width="fill_parent"  
+ android:layout_height="fill_parent"  
+ android:fadingEdge="vertical">  
+ 
+<RelativeLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/cw_pay_msg_choose_type_tip_tv"
+        style="@style/cw_normal_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="32dip"
+        android:layout_marginLeft="15dip"
+        android:gravity="center_vertical"
+        android:textColor="@color/cw_tip_color" />
+
+    <LinearLayout
+        android:id="@+id/cw_pay_msg_first_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cw_pay_msg_choose_type_tip_tv"
+        android:layout_marginLeft="15dip"
+        android:layout_marginRight="15dip"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_5_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_weight="1"
+            android:checked="true"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_5_yuan" 
+            android:textColor="@color/cw_black"/>
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_10_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_10_yuan" 
+            android:textColor="@color/cw_black"/>
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_20_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_20_yuan" 
+            android:textColor="@color/cw_black"/>
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_30_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_30_yuan" 
+            android:textColor="@color/cw_black"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cw_pay_msg_second_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cw_pay_msg_first_layout"
+        android:layout_marginLeft="15dip"
+        android:layout_marginRight="15dip"
+        android:layout_marginTop="10dip"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_50_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_50_yuan" 
+            android:textColor="@color/cw_black"/>
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_100_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_100_yuan"
+            android:textColor="@color/cw_black" />
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_200_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_200_yuan" 
+            android:textColor="@color/cw_black"/>
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_300_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_300_yuan"
+            android:textColor="@color/cw_black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cw_pay_msg_third_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cw_pay_msg_second_layout"
+        android:layout_marginLeft="15dip"
+        android:layout_marginRight="15dip"
+        android:layout_marginTop="10dip"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_500_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_500_yuan"
+            android:textColor="@color/cw_black" />
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_1000_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_1000_yuan" 
+            android:textColor="@color/cw_black"/>
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_1500_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_1500_yuan"
+            android:textColor="@color/cw_black" />
+
+        <RadioButton
+            android:id="@+id/cw_pay_msg_2000_rb"
+            android:button="@null"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1"
+            android:background="@drawable/cw_radio"
+            android:gravity="center"
+            android:text="@string/cw_2000_yuan"
+            android:textColor="@color/cw_black" />
+    </LinearLayout>
+
+<!--     <EditText
+        android:id="@+id/cw_pay_msg_custom_et"
+        android:layout_width="wrap_content"
+        android:layout_height="30dip"
+        android:layout_below="@id/cw_pay_msg_third_layout"
+        android:layout_marginLeft="15dip"
+        android:layout_marginTop="5dip"
+        android:inputType="number"
+        android:textSize="13sp"
+        android:background="@drawable/cw_pay_input_eg"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
+        android:singleLine="true"
+        android:maxLength="5"
+        android:textColor="@color/cw_black"
+        android:drawableRight="@drawable/cw_yuan"
+        android:hint="@string/cw_hint_amount" /> -->
+
+    <TextView
+        android:id="@+id/cw_pay_msg_rate_tip_tv"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cw_pay_msg_third_layout"
+        android:layout_marginLeft="15dip"
+        android:layout_marginTop="10dip"
+        android:textColor="@color/cw_tip_color" />
+
+    <LinearLayout
+        android:layout_width="180dip"
+        android:layout_height="60dip"
+        android:layout_marginLeft="15dip"
+        android:layout_marginTop="10dip"
+        android:id="@+id/cw_pay_msg_btn_layout"
+        android:layout_below="@id/cw_pay_msg_rate_tip_tv">
+
+        <Button
+            android:id="@+id/cw_pay_msg_go_pay_btn"
+            style="@style/cw_button_blod_white_text"
+            android:layout_width="160dip"
+            android:layout_height="40dip"
+            android:layout_marginTop="5dip"
+            android:background="@drawable/cw_tip_dialog_btn"
+            android:shadowColor="#ff891f02"
+            android:shadowDy="1"
+            android:text="@string/cw_pay"
+            android:textColor="@color/cw_white" />
+    </LinearLayout>
+    
+   <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="15dip"
+        android:layout_marginRight="15dip"
+        android:layout_marginBottom="15dip"
+        android:layout_marginTop="5dip"
+        android:gravity="center_vertical"
+        android:layout_below="@id/cw_pay_msg_btn_layout">
+       
+       <TextView
+        android:id="@+id/cw_pay_msg_tip_tv"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textColor="@color/cw_black" />
+	</LinearLayout>
+</RelativeLayout>
+</ScrollView>

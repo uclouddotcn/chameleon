@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="45dp"
+    android:minHeight="45dp" >
+
+    <ImageView
+        android:id="@id/drag_handle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:paddingBottom="6dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="10dp"
+        android:paddingTop="6dp"
+        android:src="@drawable/drag" />
+
+    <TextView
+        android:id="@+id/drag_text"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_centerVertical="true"
+        android:paddingLeft="8dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:layout_toLeftOf="@id/drag_handle"
+        android:layout_alignParentLeft="true"
+        android:singleLine="true"
+        android:ellipsize="end"/>
+
+</RelativeLayout>

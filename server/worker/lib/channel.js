@@ -30,7 +30,6 @@ Channel.prototype.reload = function (sdkcfgs) {
                 apis[t] = inst;
             })
         } catch (e) {
-            console.log('Fail to create api ' + cfg.name + ' for channel ' + self.name);
             self._logger.error({err: e, channel: cfg.name}, 'Fail to create apis for channel ');
         }
     });
