@@ -192,8 +192,10 @@ ChameleonTool.prototype.createChannelDirectory = function(project, channelName){
     try{
         var path = root + channelName;
         fs.mkdirpSync(path);
-        path += '/res';
-        fs.mkdirpSync(path);
+        path1 = path + '/res/splash';
+        path2 = path + '/res/drawable';
+        fs.mkdirpSync(path1);
+        fs.mkdirpSync(path2);
     }catch (e){
         console.log(e);
         Logger.log(e.message, e);

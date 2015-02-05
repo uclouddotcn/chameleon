@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os, shutil, codecs, json, subprocess, sys, zipfile
 from collections import namedtuple
-#from buildtool.chameleon_tool import build_channel
 
 BASEDIR = os.path.split(os.path.realpath(__file__))[0]
 BASEDIR = os.path.join(BASEDIR, '..')
@@ -81,7 +80,6 @@ def copyChannel(buildchannel, channel, channelPath,  targetPath,  versionInfo):
     if not os.path.exists(targetPath):
         os.makedirs(targetPath)
     genCmd(buildchannel, channel, channelPath, targetPath)
-    #build_channel.channel_Build(channel, channelPath, targetPath)
 
 def genCmd(buildchannel, channel, channelPath,  targetPath):
     paras = []
@@ -201,32 +199,17 @@ def unzipFiles(zf, targetDir):
     with zipfile.ZipFile(zf) as zipf:
         zipf.extractall(targetDir)
 
-def exportChamleonClient(clientZipTarget):
-    oldpath = os.getcwd()
-    try:
-        os.chdir('chameleon_client')
-        ret = subprocess.call(['git', 'archive', '--format',
-            'zip', '-o', clientZipTarget, 'HEAD'])
-    finally:
-        os.chdir(oldpath)
-    if ret != 0:
-        raise RuntimeError('fail to export chameleon_client')
-
-def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
+def buildChameleonClient(chameleonFolder, targetFolder, place):
     os.mkdir(targetFolder)
     os.mkdir(os.path.join(targetFolder, 'app'))
-    unzipFiles(zf, os.path.join(targetFolder, 'app'))
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'app', 'chameleon'))
-    downloadDependency(os.path.join(targetFolder, 'app'))
     placePlatformStartScript(targetFolder)
     if place is not None:
         place(os.path.join(targetFolder, 'nw'))
 
-def buildChameleonClientMacOS(zf, chameleonFolder, targetFolder, place):
+def buildChameleonClientMacOS(chameleonFolder, targetFolder, place):
     os.mkdir(targetFolder)
-    unzipFiles(zf, targetFolder)
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
-    downloadDependency(targetFolder)
     if place is not None:
         place(targetFolder)
 
@@ -246,29 +229,12 @@ def placeNodeWebkitOsx(targetFolder):
     src = os.path.join('nodewebkit-bin', 'node-webkit.app')
     shutil.copytree(src, os.path.join(targetFolder, 'node-webkit.app'))
 
-def downloadDependency(targetFolder):
-    olddir = os.getcwd()
-    try:
-        os.chdir(targetFolder)
-        ret = subprocess.check_call([NPM_CMD, 'install', '--production'])
-        if ret != 0:
-            raise RuntimeError('Fail to download dependency for %s' %targetFolder)
-        ret = subprocess.check_call([BOWER_CMD, 'install'])
-        if ret != 0:
-            raise RuntimeError('Fail to download dependency for %s' %targetFolder)
-    finally:
-        os.chdir(olddir)
-
-
-def mergeToNodewebkit(targetFolder):
-    clientZipTarget = os.path.join(targetFolder, 'chameleon_client.zip')
+def addNodeWebkit(targetFolder):
     chameleonFolder = os.path.join(targetFolder, 'chameleon')
-    exportChamleonClient(clientZipTarget)
     if sys.platform == 'win32':
-        buildChameleonClient(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_win'), placeNodeWebkitWin)
+        buildChameleonClient(chameleonFolder, os.path.join(targetFolder, 'chameleon_client_win'), placeNodeWebkitWin)
     else:
-        buildChameleonClientMacOS(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
-
+        buildChameleonClientMacOS(chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
 
 def build():
     targetFolder = os.path.join(BASEDIR, 'chameleon_build')
@@ -283,8 +249,8 @@ def build():
     print('start initing build folder...')
     initProjectFolder(chameleonTarget, version)
 
-    print('build chameleon client...')
-    mergeToNodewebkit(targetFolder)
+    print('build chameleon client node-webkit nw.exe...')
+    addNodeWebkit(targetFolder)
 
     print('done')
 
