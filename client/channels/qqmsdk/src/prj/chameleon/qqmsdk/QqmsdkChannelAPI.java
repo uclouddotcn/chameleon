@@ -688,6 +688,7 @@ public final class QqmsdkChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     case TokenType.eToken_WX_Access:
                         mUserInfo.mAccessToken = tr.value;
                         mUserInfo.mAccessTokenExpire = tr.expiration;
+                        mUserInfo.mPayToken = mUserInfo.mAccessToken;
                         break;
                     case TokenType.eToken_WX_Refresh:
                         mUserInfo.mRefreshToken = tr.value;
