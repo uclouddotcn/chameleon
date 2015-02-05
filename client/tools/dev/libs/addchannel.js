@@ -37,6 +37,12 @@ AddChannel.prototype.doit = function (argv, cb) {
             var amTargetPath = pathLib.join(channelDir, amfile);
             replaceTemplateFile(amSrcPath, amTargetPath, args);
 
+            var amfile = 'build.xml';
+            var amSrcPath = pathLib.join(self.prjtemplate, amfile);
+            var amTargetPath = pathLib.join(channelDir, amfile);
+            replaceTemplateFile(amSrcPath, amTargetPath, args);
+
+
             var cfgJsonSrc = pathLib.join(self.prjtemplate, 'chameleon_build', 'cfg.json');
             var cfgJsonTarget = 
                 pathLib.join(channelDir, 'chameleon_build', 'cfg.json');
