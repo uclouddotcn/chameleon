@@ -200,7 +200,8 @@ def unzipFiles(zf, targetDir):
         zipf.extractall(targetDir)
 
 def buildChameleonClient(chameleonFolder, targetFolder, place):
-    os.mkdir(targetFolder)
+    if not os.path.exists(targetFolder):
+        os.mkdir(targetFolder)
     os.mkdir(os.path.join(targetFolder, 'app'))
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'app', 'chameleon'))
     placePlatformStartScript(targetFolder)
@@ -208,7 +209,8 @@ def buildChameleonClient(chameleonFolder, targetFolder, place):
         place(os.path.join(targetFolder, 'nw'))
 
 def buildChameleonClientMacOS(chameleonFolder, targetFolder, place):
-    os.mkdir(targetFolder)
+    if not os.path.exists(targetFolder):
+        os.mkdir(targetFolder)
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
     if place is not None:
         place(targetFolder)
@@ -236,6 +238,12 @@ def addNodeWebkit(targetFolder):
     else:
         buildChameleonClientMacOS(chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
 
+def gruntNode():
+    print(os.getcwd())
+    os.chdir('chameleon_client')
+    print(os.getcwd())
+    os.system('grunt pack --force')
+
 def build():
     targetFolder = os.path.join(BASEDIR, 'chameleon_build')
     cleanOldBuild(targetFolder)
@@ -251,6 +259,10 @@ def build():
 
     print('build chameleon client node-webkit nw.exe...')
     addNodeWebkit(targetFolder)
+
+    #execute grunt
+    print('build chameleon client execute grunt...')
+    gruntNode()
 
     print('done')
 
