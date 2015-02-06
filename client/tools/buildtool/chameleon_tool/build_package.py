@@ -14,8 +14,8 @@ JAVA_HOME = os.getenv('JAVA_HOME')
 DEST_DIR = ''
 
 EXEC_ROOT = os.path.dirname(__file__)
-APK_TOOL_PATH = os.path.join(EXEC_ROOT, 'apktool')
-AAPT_PATH = os.path.join(EXEC_ROOT, 'aapt')
+APK_TOOL_PATH = os.path.join(EXEC_ROOT, 'apktool.bat')
+AAPT_PATH = os.path.join(EXEC_ROOT, 'aapt.exe')
 BAKSMALI_PATH = os.path.join(EXEC_ROOT, 'baksmali.jar')
 SMALI_PATH = os.path.join(EXEC_ROOT, 'smali.jar')
 
@@ -32,11 +32,11 @@ JAVAC = "javac"
 DX_FILE = os.path.join(EXEC_ROOT, 'dx.jar')
 DX_PATH = "java -jar "+DX_FILE + " "
 
+if os.path.exists('log.txt'):
+    os.remove('log.txt')
+
 LOG_FD = 0
-
 ICON_NAME = 'chameleon_icon.png'
-
-# subprocess.call()
 
 if JAVA_HOME is None:
     print('Can\'t find JAVA_HOME, Please install JDK first')
@@ -58,8 +58,11 @@ def unpackAPK(apkPath, destPath):
     paras.append(('d', fullPath))
     paras.append(('-o', destPath))
     paras.append(('-f', ''))
-
-    u = os.system(genCmd(paras))
+    cmd = genCmd(paras)
+    LOG_FD = open("log.txt", "a")
+    LOG_FD.write(cmd)
+    u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    LOG_FD.close()
     if u != 0:
         return u
 
@@ -104,7 +107,10 @@ def buildClassesDex(channelName, projRoot, oriUnpackPath):
     smaliCmd = genCmd(paras)
 
     print(smaliCmd)
-    u = os.system(smaliCmd)
+    LOG_FD = open("log.txt", "a")
+    LOG_FD.write(smaliCmd)
+    u = subprocess.call(smaliCmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    LOG_FD.close()
     if u != 0:
         print(smaliCmd + " failed.")
 
@@ -120,7 +126,10 @@ def buildDex(smalidirs, destDir):
     smaliCmd = genCmd(paras)
 
     print(smaliCmd)
-    u = os.system(smaliCmd)
+    LOG_FD = open("log.txt", "a")
+    LOG_FD.write(smaliCmd)
+    u = subprocess.call(smaliCmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    LOG_FD.close()
     if u != 0:
         print(smaliCmd + " failed.")
 
@@ -135,7 +144,10 @@ def baksmali(dexfile, destdir):
     paras.append(('', dexfile))
     cmd = genCmd(paras)
     print(cmd)
-    u = os.system(cmd)
+    LOG_FD = open("log.txt", "a")
+    LOG_FD.write(cmd)
+    u = subprocess.call(cmd, stdout=LOG_FD, stdin=LOG_FD, shell=False)
+    LOG_FD.close()
     if u != 0:
         print(cmd + " failed.")
     return u
@@ -212,7 +224,10 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
     aaptExecCmd = genCmd(paras)
     print(aaptExecCmd)
-    r = os.system(aaptExecCmd)
+    LOG_FD = open("log.txt", "a")
+    LOG_FD.write(aaptExecCmd)
+    r = subprocess.call(aaptExecCmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    LOG_FD.close()
     if r != 0:
         return r
 
@@ -226,7 +241,10 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     paras.append(('', os.path.join(tempRPath, 'R.java')))
     cmd = genCmd(paras)
     print(cmd)
-    r = os.system(cmd)
+    LOG_FD = open("log.txt", "a")
+    LOG_FD.write(cmd)
+    r = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    LOG_FD.close()
     if r != 0:
         return r
 
@@ -238,7 +256,10 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     paras.append(('', os.path.join(tempRPath, 'bin')))
     cmd = genCmd(paras)
     print(cmd)
-    r = os.system(cmd)
+    LOG_FD = open("log.txt", "a")
+    LOG_FD.write(cmd)
+    r = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    LOG_FD.close()
     if r != 0:
         print(cmd + " failed")
         return r
@@ -323,7 +344,11 @@ def sign_pkg(cfg, preName, afterName):
     paras.append(('', cfg['alias']))
 
     cmd = genCmd(paras)
-    return os.system(cmd)
+    LOG_FD = open("log.txt", "a")
+    LOG_FD.write(cmd)
+    u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    LOG_FD.close()
+    return u
 
 def pkgAlign(pkgPath, pkgAlignedPath):
     if pkgPath == pkgAlignedPath:
@@ -340,7 +365,11 @@ def pkgAlign(pkgPath, pkgAlignedPath):
 
     cmd = genCmd(paras)
     print(cmd)
-    return os.system(cmd)
+    LOG_FD = open("log.txt", "a")
+    LOG_FD.write(cmd)
+    u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    LOG_FD.close()
+    return u
 
 
 def procSplashIcons(channelPath, globalcfg):
@@ -382,14 +411,12 @@ ERR_MSG = {
 }
 
 def main():
-    if os.path.exists('log.txt'):
-        os.remove('log.txt')
-    LOG_FD = open('log.txt', 'a')
     u = 0
     parser = OptionParser()
     parser.add_option('-c', '--channel', dest='channel', help='channel name, e.g. xiaomi')
     parser.add_option('-r', '--channelRoot', dest='channelRoot', help='Root directory of the channels')
     parser.add_option('-p', '--package', dest='package', help='APK Package to process')
+    parser.add_option('-V', '--version', dest='version', help='APK version name')
     # parser.add_option('-R', '--packageRoot', dest='packageRoot', help='Root directory where the package in')
     # parser.add_option('-g', '--generatePkgName', dest='generatePkgName', help='Name of the package to generate.')
     parser.add_option('-P', '--ProjectRoot', dest='projectRoot', help='path of the projects directory')
@@ -412,11 +439,24 @@ def main():
         os.makedirs(proj)
 
     if options.decompressOnly.casefold() in ['true', 't']:
-        u = unpackAPK(options.package, unpackDest)
+        tempUnpackDest = os.path.join(unpackDest, '__TempUnpack__')
+        u = unpackAPK(options.package, tempUnpackDest)
+        manifest = loadManifest(os.path.join(tempUnpackDest, MANIFEST_FILE_NAME))
+        versionName = manifest.getPkgVersionName()
+        unpackDest = os.path.join(unpackDest, versionName)
+        if os.path.exists(unpackDest):
+            shutil.rmtree(unpackDest)
+        shutil.move(tempUnpackDest, unpackDest)
+
+        print (versionName)
+
         if u != 0:
             u = 1
             print(ERR_MSG[u])
         return u
+
+    if options.version is not None:
+        unpackDest = os.path.join(unpackDest, options.version)
 
     globalcfg = getCommCfg(os.path.join(options.projectRoot, 'cfg', channel))
     libs = getDependLibs(proj, globalcfg)
