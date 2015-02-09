@@ -92,6 +92,7 @@ chameleonApp = angular.module('chameleonApp', [
                         return node_path.join.apply(this, path.split('/'));
                     }
                     //project manage
+                    var APKVersion = '';
                     $scope.project = project;
                     $scope.fileread = project.signConfig.keyStoreFile;
                     $scope.isProjectUnchanged = true;
@@ -126,8 +127,8 @@ chameleonApp = angular.module('chameleonApp', [
                                 false
                             ]);
                             var promise = WaitingDlg.wait(install, '解压APK母包');
-                            promise.then(function(err, data){
-                                if(err){
+                            promise.then(function(data){
+                                if(data.err){
                                     $scope.message.installAPK = "unzip APK failed.";
                                     return;
                                 }
@@ -515,7 +516,7 @@ chameleonApp = angular.module('chameleonApp', [
                         }
                     }
                     $scope.hasIcon = function(){
-                        if($scope.selectedChannel.config && $scope.selectedChannel.config.icon && $scope.selectedChannel.iconFlag){
+                        if($scope.selectedChannel.config && $scope.selectedChannel.config.icon && $scope.selectedChannel.config.iconFlag){
                             return true;
                         }else{
                             false;
@@ -533,7 +534,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 cellTemplate: '<div ng-class="ngCellText">{{row.getProperty(col.field)}}</div>'
                             },
                             {
-                                cellTemplate: '<div class="progress" ><div class="progress-bar" role="progressbar" style="width:0%;" ng-class="row.rowIndex()">{{row.getProperty("progress")}}+"%"</div></div>'
+                                cellTemplate: '<div class="progress" ><div class="progress-bar" role="progressbar" style="width:0%;" ng-class="row.rowIndex">{{row.getProperty("progress")}}+"%"</div></div>'
                             }
                         ]
                     }
@@ -605,6 +606,8 @@ chameleonApp = angular.module('chameleonApp', [
                             false,
                             '-a',
                             true,
+                            '-V',
+                            APKVersion,
                             '-P',
                             node_path.normalize(projectRoot)
                         ], callback, process);
