@@ -596,6 +596,7 @@ chameleonApp = angular.module('chameleonApp', [
                         var configRoot = packingRoot + 'app/chameleon/';
                         $scope.apkFilePath = $scope.fileread.path;
                         ProjectMgr.command('python', [
+                            '-u',
                             node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
                             '-c',
                             $scope.selectedChannel.channelName,
@@ -612,12 +613,15 @@ chameleonApp = angular.module('chameleonApp', [
                     $scope.pack = function(){
                         var channelToPack = $scope.gridOptions9.selectedItems;
                         _.each(channelToPack, function(channel, index){
+                            channel.progress = 0;
                             packChannel(project, channel,
                                 function(data){
                                 },
                                 function(data){
                                     if(data){
-                                        channel.progress += 20;
+                                        var reg = new RegExp("\r\n", "g");
+                                        var num = data.match(reg).length;
+                                        channel.progress += 20*num;
                                         $('.'+index).prop({'width': channel.progress + '%'});
                                     }
                                 }

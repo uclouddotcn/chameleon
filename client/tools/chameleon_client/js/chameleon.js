@@ -235,7 +235,7 @@ ChameleonTool.prototype.command = function(command, args, callback, process){
         console.log(data);
         message += data;
         if(process){
-            process(data);
+            process(data.toString());
         }
     });
     result.stderr.on('data', function(data){
