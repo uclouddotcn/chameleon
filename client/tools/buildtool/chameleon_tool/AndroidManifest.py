@@ -143,7 +143,6 @@ class AndroidManifestInst(object):
         fd = open(yamlPath, 'r')
         addInfo = yaml.load(fd)
         children = AndroidManifestInst._getChildrenNS(self._rootNode, 'uses-sdk')
-        print(len(children))
         if len(children) == 0:
             targetNode = self.doc.createElement('uses-sdk')
             self._rootNode.appendChild(targetNode)
@@ -152,7 +151,6 @@ class AndroidManifestInst(object):
             targetNode = children[0]
 
         for (key, value) in addInfo['sdkInfo'].items():
-            print(key, value)
             targetNode.setAttribute('android:'+key, value)
 
         root = self.doc.documentElement
