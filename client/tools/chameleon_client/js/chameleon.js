@@ -141,8 +141,10 @@ ChameleonTool.prototype.getChannelList = function(){
             channel.desc = channelInfo[p].name;
             channel.checked = false;
             channel.config.pkgsuffix = channelInfo[p].pkgsuffix;
-            channel.config.splashPath = channelInfo[p].splashscreen == 1 ? '' : undefined;
+            if(channelInfo[p].splashscreen == 1) channel.config.splash = '1';
+            if(channelInfo[p].splashscreen == 2) channel.config.splash = true;
             channel.config.icon = channelInfo[p].icon == 1 ? {} : undefined;
+            channel.config.iconFlag = channelInfo[p].icon;
             channel.config.SDKName = channelInfo[p].sdk;
 
             channelList.push(channel);
@@ -224,18 +226,26 @@ ChameleonTool.prototype.removeChannelDirectory = function(project, channelName){
     }
 }
 
-ChameleonTool.prototype.command = function(command, args){
+ChameleonTool.prototype.command = function(command, args, callback, process){
     var spawn = childprocess.spawn;
     var result = spawn(command, args);
+    var message = '';
     console.log(command, args.join(" "));
     result.stdout.on('data', function(data){
         console.log(data);
+        message += data;
+        if(process){
+            process(data);
+        }
     });
     result.stderr.on('data', function(data){
-        console.log(data);
+        callback(data);
+        return ;
     });
     result.on('close', function (code) {
         console.log('child process exited with code ' + code);
+        callback(null, message);
+        return ;
     });
 }
 
