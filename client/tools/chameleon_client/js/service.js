@@ -165,14 +165,29 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
     }
 
     ProjectMgr.prototype.command = function(command, args){
-        return this.tool.command(command, args);
+        var defered = $q.defer();
+        try{
+            this.tool.command(command, args, function(err, data){
+                if(err) throw err;
+                defered.resolve(data);
+            });
+        }catch (e){
+            $log.log('Fail to command: ' + command);
+            global.setImmediate(function(){
+                defered.resolve(e);
+            });
+        }
+        return defered.promise;
+    }
+
+    ProjectMgr.prototype.commandOnProcess = function(command, args, callback, process){
+        return this.tool.command(command, args, callback, process);
     }
 
     return new ProjectMgr();
 }])
     .factory('WaitingDlg', ['$q', '$modal', function ($q, $modal) {
         var WaitingDlg = function () {
-            var self = this;
             this.controller = function ($scope, $modalInstance, data) {
                 $scope.tips = data.tips;
                 data.p.then(function (x) {
