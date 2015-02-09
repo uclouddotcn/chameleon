@@ -567,7 +567,7 @@ chameleonApp = angular.module('chameleonApp', [
                             data.channel.sdks = [];
                             if(channel.config.splash){
                                 data.channel.splashPath = channel.config.splash;
-                                if(channel.config.splash == '1'){
+                                if(channel.config.splash === '1'){
                                     data.channel.splashPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/splash/splash'));
                                     var source = node_path.join(packingRoot, 'chameleon/channelinfo', channel.channelName, 'drawable/splashscreen', channel.config.landscape ? 'lanscape' : 'portait');
                                     fs.copySync(source, data.channel.splashPath);
@@ -599,7 +599,7 @@ chameleonApp = angular.module('chameleonApp', [
                         ProjectMgr.command('python', [
                             node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
                             '-c',
-                            $scope.selectedChannel.channelName,
+                            channel.channelName,
                             '-r',
                             node_path.normalize(configRoot + 'sdk'),
                             '-d',
@@ -607,16 +607,17 @@ chameleonApp = angular.module('chameleonApp', [
                             '-a',
                             true,
                             '-V',
-                            APKVersion,
+                            APKVersion.trim(),
                             '-P',
                             node_path.normalize(projectRoot)
                         ], callback, process);
                     }
                     $scope.pack = function(){
-                        var channelToPack = $scope.gridOptions9.selectedItems;
+                        var channelToPack = $scope.gridOptions9.$gridScope.selectedItems;
                         _.each(channelToPack, function(channel, index){
                             packChannel(project, channel,
                                 function(data){
+                                    console.log(data);
                                 },
                                 function(data){
                                     if(data){
