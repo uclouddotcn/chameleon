@@ -92,6 +92,7 @@ chameleonApp = angular.module('chameleonApp', [
                         return node_path.join.apply(this, path.split('/'));
                     }
                     //project manage
+                    var APKVersion = '';
                     $scope.project = project;
                     $scope.fileread = project.signConfig.keyStoreFile;
                     $scope.isProjectUnchanged = true;
@@ -126,8 +127,8 @@ chameleonApp = angular.module('chameleonApp', [
                                 false
                             ]);
                             var promise = WaitingDlg.wait(install, '解压APK母包');
-                            promise.then(function(err, data){
-                                if(err){
+                            promise.then(function(data){
+                                if(data.err){
                                     $scope.message.installAPK = "unzip APK failed.";
                                     return;
                                 }
@@ -515,7 +516,7 @@ chameleonApp = angular.module('chameleonApp', [
                         }
                     }
                     $scope.hasIcon = function(){
-                        if($scope.selectedChannel.config && $scope.selectedChannel.config.icon && $scope.selectedChannel.iconFlag){
+                        if($scope.selectedChannel.config && $scope.selectedChannel.config.icon && $scope.selectedChannel.config.iconFlag){
                             return true;
                         }else{
                             false;
@@ -533,7 +534,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 cellTemplate: '<div ng-class="ngCellText">{{row.getProperty(col.field)}}</div>'
                             },
                             {
-                                cellTemplate: '<div class="progress" ><div class="progress-bar" role="progressbar" style="width:0%;" ng-class="row.rowIndex()">{{row.getProperty("progress")}}+"%"</div></div>'
+                                cellTemplate: '<div class="progress" ><div class="progress-bar" role="progressbar" style="width:0%;" ng-class="row.rowIndex">{{row.getProperty("progress")}}+"%"</div></div>'
                             }
                         ]
                     }
@@ -566,7 +567,7 @@ chameleonApp = angular.module('chameleonApp', [
                             data.channel.sdks = [];
                             if(channel.config.splash){
                                 data.channel.splashPath = channel.config.splash;
-                                if(channel.config.splash == '1'){
+                                if(channel.config.splash === '1'){
                                     data.channel.splashPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/splash/splash'));
                                     var source = node_path.join(packingRoot, 'chameleon/channelinfo', channel.channelName, 'drawable/splashscreen', channel.config.landscape ? 'lanscape' : 'portait');
                                     fs.copySync(source, data.channel.splashPath);
@@ -598,22 +599,25 @@ chameleonApp = angular.module('chameleonApp', [
                         ProjectMgr.command('python', [
                             node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
                             '-c',
-                            $scope.selectedChannel.channelName,
+                            channel.channelName,
                             '-r',
                             node_path.normalize(configRoot + 'sdk'),
                             '-d',
                             false,
                             '-a',
                             true,
+                            '-V',
+                            APKVersion.trim(),
                             '-P',
                             node_path.normalize(projectRoot)
                         ], callback, process);
                     }
                     $scope.pack = function(){
-                        var channelToPack = $scope.gridOptions9.selectedItems;
+                        var channelToPack = $scope.gridOptions9.$gridScope.selectedItems;
                         _.each(channelToPack, function(channel, index){
                             packChannel(project, channel,
                                 function(data){
+                                    console.log(data);
                                 },
                                 function(data){
                                     if(data){
