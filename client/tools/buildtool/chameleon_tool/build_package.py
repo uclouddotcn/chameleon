@@ -448,7 +448,7 @@ def main():
             shutil.rmtree(unpackDest)
         shutil.move(tempUnpackDest, unpackDest)
 
-        print (versionName)
+        print(versionName)
 
         if u != 0:
             u = 1
