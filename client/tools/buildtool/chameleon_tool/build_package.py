@@ -158,8 +158,8 @@ def relateCopy(src, dest, rejectRegex):
         allTarLibFilePath = __getAllObjFiles(src, rejectRegex, True)
         for (x, y) in allTarLibFilePath:
             pt = os.path.join(dest, os.path.relpath(x, src))
-            print(x)
-            print(os.path.join(pt, y))
+            # print(x)
+            # print(os.path.join(pt, y))
             if not os.path.exists(pt):
                 os.makedirs(pt)
             if not os.path.exists(os.path.join(pt, y)):
@@ -381,7 +381,7 @@ def procSplashIcons(channelPath, globalcfg):
         i = 0
         for (x, y) in splashes:
             shutil.copy(os.path.join(x, y), os.path.join(channelPath, 'assets', 'chameleon', 'chameleon_splashscreen_'+str(i)+'.png'))
-            print("copy " + os.path.join(x, y))
+            # print("copy " + os.path.join(x, y))
             i += 1
 
     if icon is not None:
@@ -396,7 +396,7 @@ def procSplashIcons(channelPath, globalcfg):
                 continue
             if not os.path.exists(os.path.join(channelPath, 'res', os.path.split(x)[-1])):
                 os.mkdir(os.path.join(channelPath, 'res', os.path.split(x)[-1]))
-            print("copy "+dest)
+            # print("copy "+dest)
             shutil.copy(os.path.join(x, y), dest)
 
 
