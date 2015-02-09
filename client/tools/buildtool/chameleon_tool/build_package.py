@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import subprocess, sys, os, re, json, codecs
 import shutil
-import yaml
 from chameleon_gen import *
 from optparse import OptionParser
 import zipfile
+import modifyWx
 
 CHANNEL_ROOT = ''
 
@@ -458,6 +458,11 @@ def main():
     if options.version is not None:
         unpackDest = os.path.join(unpackDest, options.version)
 
+    channelPath = os.path.join(proj, channel)
+
+    manifestFilePathOrig = os.path.join(unpackDest, MANIFEST_FILE_NAME)
+    manifestFilePath = os.path.join(channelPath, MANIFEST_FILE_NAME)
+
     globalcfg = getCommCfg(os.path.join(options.projectRoot, 'cfg', channel))
     libs = getDependLibs(proj, globalcfg)
 
@@ -475,6 +480,18 @@ def main():
         with zipfile.ZipFile(os.path.join(channelRoot, sdk+'.zip'), 'r') as sdkFile:
             sdkFile.extractall(sdkinfo.path)
             sdkFile.close()
+
+    u = modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg)
+    if u != 0 and u is not None:
+        print(u)
+        u = 4
+        print(ERR_MSG[u])
+        return u
+
+    manifest = loadManifest(manifestFilePathOrig)
+#    add an additional class for some special sdk.
+    modifyWx.makeWXEntryActivity(os.path.join(channelPath, 'smali'), channel, manifest.getPkgName())
+
 
     dexPaths = [os.path.join(x.path, 'smali') for x in libs]
 
@@ -496,21 +513,6 @@ def main():
         u = 3
         print(ERR_MSG[u])
         return u
-
-    channelPath = os.path.join(proj, channel)
-
-    manifestFilePathOrig = os.path.join(unpackDest, MANIFEST_FILE_NAME)
-    manifestFilePath = os.path.join(channelPath, MANIFEST_FILE_NAME)
-
-    u = modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg)
-    if u != 0 and u is not None:
-        print(u)
-        u = 4
-        print(ERR_MSG[u])
-        return u
-
-    manifest = loadManifest(manifestFilePathOrig)
-
 
     generatePkgName = manifest.getPkgName()+'-'+manifest.getPkgVersionName()+'-'+channel+'-release.apk'
 
