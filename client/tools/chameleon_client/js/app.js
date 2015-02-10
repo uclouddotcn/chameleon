@@ -534,7 +534,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 cellTemplate: '<div ng-class="ngCellText">{{row.getProperty(col.field)}}</div>'
                             },
                             {
-                                cellTemplate: '<div class="progress" ><div class="progress-bar" role="progressbar" style="width:0%;" ng-class="row.rowIndex">{{row.getProperty("progress")}}+"%"</div></div>'
+                                cellTemplate: '<div class="progress"><div class="progress-bar" role="progressbar" style="width:0%;"></div></div>'
                             }
                         ]
                     }
@@ -615,7 +615,11 @@ chameleonApp = angular.module('chameleonApp', [
                     }
                     $scope.pack = function(){
                         var channelToPack = $scope.gridOptions9.$gridScope.selectedItems;
-                        _.each(channelToPack, function(channel, index){
+                        $('.progress-bar').css({'width': '0%'});
+                        _.each($scope.selectedChannels, function(element, index){
+                            element.index = index;
+                        });
+                        _.each(channelToPack, function(channel){
                             channel.progress = 0;
                             packChannel(project, channel,
                                 function(data){
@@ -625,8 +629,8 @@ chameleonApp = angular.module('chameleonApp', [
                                     if(data){
                                         var reg = new RegExp("\r\n", "g");
                                         var num = data.match(reg).length;
-                                        channel.progress += 20*num;
-                                        $('.'+index).prop({'width': channel.progress + '%'});
+                                        channel.progress += 20 * num;
+                                        $('.progress-bar')[channel.index].css({'width': channel.progress + '%'});
                                     }
                                 }
                             )
