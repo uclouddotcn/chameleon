@@ -407,7 +407,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 $scope.pictureToDraw = undefined;
                             }
                             if(!$scope.hasIcon()){
-                                $scope.projectIcon = channel.config.icon.path;
+                                //$scope.projectIcon = ;
                             }
 
                             //empty file selection
@@ -432,7 +432,9 @@ chameleonApp = angular.module('chameleonApp', [
                         //save image
                         if(!$scope.hasIcon()){
                             var path = packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/icon/' + channel.channelName + '.png';
-                            fs.createFileSync($scope.projectIcon, path);
+                            fs.copySync($scope.projectIcon, path);
+                            channel.config.icon = {};
+                            channel.config.icon.path = path;
                             ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
                             return;
                         }
@@ -577,14 +579,14 @@ chameleonApp = angular.module('chameleonApp', [
                                     var source = node_path.join(packingRoot, 'chameleon/channelinfo', channel.channelName, 'drawable/splashscreen', channel.config.landscape ? 'lanscape' : 'portait');
                                     fs.copySync(source, data.channel.splashPath);
                                 }
-
+                                data.channel.splashPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
                             }
                             if(channel.config.icon && channel.config.icon.path){
                                 data.channel.iconPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/drawable/icon.png'));
                                 fs.copySync(packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/icon/' + channel.channelName + '.png', data.channel.iconPath);
+                                data.channel.iconPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
                             }
-                            data.channel.splashPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
-                            data.channel.iconPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
+
                             if(channel.sdks && channel.sdks.length>0){
                                 for(var i=0; i<channel.sdks.length; i++){
                                     data.channel.sdks.push({
