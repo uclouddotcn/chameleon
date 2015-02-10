@@ -596,7 +596,7 @@ chameleonApp = angular.module('chameleonApp', [
                         var projectRoot = packingRoot + 'app/projects/' + $scope.project.name + '/';
                         var configRoot = packingRoot + 'app/chameleon/';
                         $scope.apkFilePath = $scope.fileread.path;
-                        ProjectMgr.command('python', [
+                        ProjectMgr.commandOnProcess('python', [
                             '-u',
                             node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
                             '-c',
@@ -614,23 +614,25 @@ chameleonApp = angular.module('chameleonApp', [
                         ], callback, process);
                     }
                     $scope.pack = function(){
-                        var channelToPack = $scope.gridOptions9.$gridScope.selectedItems;
-                        $('.progress-bar').css({'width': '0%'});
                         _.each($scope.selectedChannels, function(element, index){
                             element.index = index;
                         });
+                        var channelToPack = $scope.gridOptions9.$gridScope.selectedItems;
+                        $('.progress-bar').css({'width': '0%'});
                         _.each(channelToPack, function(channel){
                             channel.progress = 0;
                             packChannel(project, channel,
-                                function(data){
-                                    console.log(data);
+                                function(err){
+                                    if(err){
+                                        alert('Pack channel ' + channel.channelName + ' failed.');
+                                    }
                                 },
                                 function(data){
                                     if(data){
                                         var reg = new RegExp("\r\n", "g");
                                         var num = data.match(reg).length;
                                         channel.progress += 20 * num;
-                                        $('.progress-bar')[channel.index].css({'width': channel.progress + '%'});
+                                        $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
                                     }
                                 }
                             )

@@ -244,6 +244,9 @@ ChameleonTool.prototype.command = function(command, args, callback, process){
     });
     result.on('close', function (code) {
         console.log('child process exited with code ' + code);
+        if(code !== 0){
+            callback({message : 'failed.'});
+        }
         callback(null, message);
         return ;
     });
