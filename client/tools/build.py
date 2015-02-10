@@ -185,7 +185,7 @@ def buildChameleonLib():
 def cleanOldBuild(targetFolder):
     if os.path.exists(targetFolder):
         print('cleaning existing build folder %s ...' %(targetFolder))
-        shutil.rmtree(targetFolder, ignore_errors=True)
+        shutil.rmtree(targetFolder)
 
 def getversion():
     versionFolder = os.path.join(BASEDIR, '..', 'version')
@@ -202,7 +202,9 @@ def unzipFiles(zf, targetDir):
 def buildChameleonClient(chameleonFolder, targetFolder, place):
     if not os.path.exists(targetFolder):
         os.mkdir(targetFolder)
-    os.mkdir(os.path.join(targetFolder, 'app'))
+    appPath = os.path.join(targetFolder, 'app')
+    if not os.path.exists(appPath):
+        os.mkdir(appPath)
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'app', 'chameleon'))
     placePlatformStartScript(targetFolder)
     if place is not None:
