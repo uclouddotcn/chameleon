@@ -632,6 +632,7 @@ chameleonApp = angular.module('chameleonApp', [
                                     if(err){
                                         channel.packingMessage = '打包失败';
                                         $($('.message')[channel.index]).css({'color': 'red'});
+                                        $($('.message')[channel.index]).trigger('click');
                                     }
                                 },
                                 function(data){
@@ -643,6 +644,7 @@ chameleonApp = angular.module('chameleonApp', [
                                                 if(channel.progress >= 100){
                                                     channel.packingMessage = '打包成功';
                                                     $($('.message')[channel.index]).css({'color': 'green'});
+                                                    $($('.message')[channel.index]).trigger('click');
                                         }
                                     }
                                 }
