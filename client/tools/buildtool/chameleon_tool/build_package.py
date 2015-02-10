@@ -32,10 +32,12 @@ JAVAC = "javac"
 DX_FILE = os.path.join(EXEC_ROOT, 'dx.jar')
 DX_PATH = "java -jar "+DX_FILE + " "
 
-if os.path.exists('log.txt'):
-    os.remove('log.txt')
+LOG_PATH = os.path.join(EXEC_ROOT, 'log.txt')
+if os.path.exists(LOG_PATH):
+    os.remove(LOG_PATH)
 
-LOG_FD = 0
+LOG_FD = open(LOG_PATH, "w", buffering=1)
+
 ICON_NAME = 'chameleon_icon.png'
 
 if JAVA_HOME is None:
@@ -59,10 +61,8 @@ def unpackAPK(apkPath, destPath):
     paras.append(('-o', destPath))
     paras.append(('-f', ''))
     cmd = genCmd(paras)
-    LOG_FD = open("log.txt", "a")
-    LOG_FD.write(cmd)
+    LOG_FD.write(cmd+"\n")
     u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
-    LOG_FD.close()
     if u != 0:
         return u
 
@@ -107,10 +107,8 @@ def buildClassesDex(channelName, projRoot, oriUnpackPath):
     smaliCmd = genCmd(paras)
 
     print(smaliCmd)
-    LOG_FD = open("log.txt", "a")
-    LOG_FD.write(smaliCmd)
+    LOG_FD.write(smaliCmd+"\n")
     u = subprocess.call(smaliCmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
-    LOG_FD.close()
     if u != 0:
         print(smaliCmd + " failed.")
 
@@ -126,10 +124,8 @@ def buildDex(smalidirs, destDir):
     smaliCmd = genCmd(paras)
 
     print(smaliCmd)
-    LOG_FD = open("log.txt", "a")
-    LOG_FD.write(smaliCmd)
+    LOG_FD.write(smaliCmd+"\n")
     u = subprocess.call(smaliCmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
-    LOG_FD.close()
     if u != 0:
         print(smaliCmd + " failed.")
 
@@ -144,10 +140,8 @@ def baksmali(dexfile, destdir):
     paras.append(('', dexfile))
     cmd = genCmd(paras)
     print(cmd)
-    LOG_FD = open("log.txt", "a")
-    LOG_FD.write(cmd)
+    LOG_FD.write(cmd+"\n")
     u = subprocess.call(cmd, stdout=LOG_FD, stdin=LOG_FD, shell=False)
-    LOG_FD.close()
     if u != 0:
         print(cmd + " failed.")
     return u
@@ -224,10 +218,8 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
     aaptExecCmd = genCmd(paras)
     print(aaptExecCmd)
-    LOG_FD = open("log.txt", "a")
-    LOG_FD.write(aaptExecCmd)
+    LOG_FD.write(aaptExecCmd+"\n")
     r = subprocess.call(aaptExecCmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
-    LOG_FD.close()
     if r != 0:
         return r
 
@@ -241,10 +233,8 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     paras.append(('', os.path.join(tempRPath, 'R.java')))
     cmd = genCmd(paras)
     print(cmd)
-    LOG_FD = open("log.txt", "a")
-    LOG_FD.write(cmd)
+    LOG_FD.write(cmd+"\n")
     r = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
-    LOG_FD.close()
     if r != 0:
         return r
 
@@ -256,10 +246,8 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     paras.append(('', os.path.join(tempRPath, 'bin')))
     cmd = genCmd(paras)
     print(cmd)
-    LOG_FD = open("log.txt", "a")
-    LOG_FD.write(cmd)
+    LOG_FD.write(cmd+"\n")
     r = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
-    LOG_FD.close()
     if r != 0:
         print(cmd + " failed")
         return r
@@ -315,12 +303,17 @@ def transformCfg(channelPath, globalcfg):
     p['cfg']['channel'] = globalcfg['channel']['channelName']
     p['cfg']['isLandscape'] = globalcfg['landscape']
     p['cfg']['isDebug'] = False
+
     sdks = list()
     for item in globalcfg['channel']['sdks']:
         sdk = dict()
         sdk['apiName'] = item['name'].capitalize()+'ChannelAPI'
         sdk['type'] = sum([SDK_TYPES[k] for k in str(item['type']).lower().split(',')])
         sdk['sdkCfg'] = item['config']
+        if str(globalcfg['landscape']).casefold() in ['true', '1']:
+            sdk['sdkCfg']['orientation'] = "landscape"
+        else:
+            sdk['sdkCfg']['orientation'] = "portrait"
         sdks.append(sdk)
     p['sdks'] = sdks
     if not os.path.exists(os.path.join(channelPath, 'assets', 'chameleon')):
@@ -344,10 +337,8 @@ def sign_pkg(cfg, preName, afterName):
     paras.append(('', cfg['alias']))
 
     cmd = genCmd(paras)
-    LOG_FD = open("log.txt", "a")
-    LOG_FD.write(cmd)
+    LOG_FD.write(cmd+"\n")
     u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
-    LOG_FD.close()
     return u
 
 def pkgAlign(pkgPath, pkgAlignedPath):
@@ -365,10 +356,8 @@ def pkgAlign(pkgPath, pkgAlignedPath):
 
     cmd = genCmd(paras)
     print(cmd)
-    LOG_FD = open("log.txt", "a")
-    LOG_FD.write(cmd)
+    LOG_FD.write(cmd+"\n")
     u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
-    LOG_FD.close()
     return u
 
 
