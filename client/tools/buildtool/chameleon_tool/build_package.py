@@ -32,11 +32,9 @@ JAVAC = "javac"
 DX_FILE = os.path.join(EXEC_ROOT, 'dx.jar')
 DX_PATH = "java -jar "+DX_FILE + " "
 
-LOG_PATH = os.path.join(EXEC_ROOT, 'log.txt')
-if os.path.exists(LOG_PATH):
-    os.remove(LOG_PATH)
+LOG_PATH = EXEC_ROOT
 
-LOG_FD = open(LOG_PATH, "w", buffering=1)
+LOG_FD = 0
 
 ICON_NAME = 'chameleon_icon.png'
 
@@ -310,10 +308,6 @@ def transformCfg(channelPath, globalcfg):
         sdk['apiName'] = item['name'].capitalize()+'ChannelAPI'
         sdk['type'] = sum([SDK_TYPES[k] for k in str(item['type']).lower().split(',')])
         sdk['sdkCfg'] = item['config']
-        if str(globalcfg['landscape']).casefold() in ['true', '1']:
-            sdk['sdkCfg']['orientation'] = "landscape"
-        else:
-            sdk['sdkCfg']['orientation'] = "portrait"
         sdks.append(sdk)
     p['sdks'] = sdks
     if not os.path.exists(os.path.join(channelPath, 'assets', 'chameleon')):
@@ -426,6 +420,9 @@ def main():
 
     if not os.path.exists(proj):
         os.makedirs(proj)
+
+    global LOG_FD
+    LOG_FD = open(os.path.join(proj, channel+'_log.txt'), "w", buffering=1)
 
     if options.decompressOnly.casefold() in ['true', 't']:
         tempUnpackDest = os.path.join(unpackDest, '__TempUnpack__')
