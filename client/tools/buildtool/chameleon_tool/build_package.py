@@ -422,9 +422,9 @@ def main():
         os.makedirs(proj)
 
     global LOG_FD
-    LOG_FD = open(os.path.join(proj, channel+'_log.txt'), "w", buffering=1)
 
     if options.decompressOnly.casefold() in ['true', 't']:
+        LOG_FD = open(os.path.join(proj, 'log.txt'), "w", buffering=1)
         tempUnpackDest = os.path.join(unpackDest, '__TempUnpack__')
         u = unpackAPK(options.package, tempUnpackDest)
         manifest = loadManifest(os.path.join(tempUnpackDest, MANIFEST_FILE_NAME))
@@ -441,6 +441,7 @@ def main():
             print(ERR_MSG[u])
         return u
 
+    LOG_FD = open(os.path.join(proj, channel+'_log.txt'), "w", buffering=1)
     if options.version is not None:
         unpackDest = os.path.join(unpackDest, options.version)
 
