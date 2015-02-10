@@ -535,6 +535,11 @@ chameleonApp = angular.module('chameleonApp', [
                             },
                             {
                                 cellTemplate: '<div class="progress"><div class="progress-bar" role="progressbar" style="width:0%;"></div></div>'
+                            },
+                            {
+                                field: 'packingMessage',
+                                width: '20%',
+                                cellTemplate: '<div ng-class="ngCellText">{{row.getProperty(col.field)}}</div>'
                             }
                         ]
                     }
@@ -616,6 +621,7 @@ chameleonApp = angular.module('chameleonApp', [
                     $scope.pack = function(){
                         _.each($scope.selectedChannels, function(element, index){
                             element.index = index;
+                            element.packingMessage = '';
                         });
                         var channelToPack = $scope.gridOptions9.$gridScope.selectedItems;
                         $('.progress-bar').css({'width': '0%'});
@@ -624,7 +630,7 @@ chameleonApp = angular.module('chameleonApp', [
                             packChannel(project, channel,
                                 function(err){
                                     if(err){
-                                        alert('Pack channel ' + channel.channelName + ' failed.');
+                                        channel.packingMessage = 'Pack channel ' + channel.channelName + ' failed.';
                                     }
                                 },
                                 function(data){
@@ -633,10 +639,16 @@ chameleonApp = angular.module('chameleonApp', [
                                         var num = data.match(reg).length;
                                         channel.progress += 20 * num;
                                         $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
+                                        if(channel.progress >= 100){
+                                            channel.packingMessage = 'Pack channel ' + channel.channelName + ' success.';
+                                        }
                                     }
                                 }
                             )
                         });
+                    }
+                    $scope.openOutputFolder = function(){
+                        require('nw.gui').Shell.openItem(node_path.join(packingRoot, nodePath('app/projects/'), project.name, 'output'));
                     }
                 }]
             })

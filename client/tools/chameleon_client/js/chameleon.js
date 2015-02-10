@@ -246,6 +246,7 @@ ChameleonTool.prototype.command = function(command, args, callback, process){
         console.log('child process exited with code ' + code);
         if(code !== 0){
             callback({message : 'failed.'});
+            return;
         }
         callback(null, message);
         return ;
