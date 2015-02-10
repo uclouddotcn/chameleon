@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="anfan_pay_titles">
+        <item>支付宝一键支付</item>
+        <item>银联卡快键支付</item>
+        <item>手机充值卡支付</item>
+        <item>游戏点卡支付</item>
+        <item>先玩后付</item>
+        <item>F币余额支付</item>
+        <item>安锋游戏人工充值</item>
+    </string-array>
+    <string-array name="anfan_pay_desc">
+        <item>推荐有支付宝账号的用户使用</item>
+        <item>推荐银行储蓄卡、信用卡持有者使用</item>
+        <item>移动、联通、电信充值卡支付</item>
+        <item>无需安装插件、可直接支付</item>
+        <item>您玩好了再来付</item>
+        <item>您有0.00F币可用</item>
+        <item>省心省力态度好</item>
+    </string-array>
+
+    <array name="anfan_pay_icons">
+        <item>@drawable/anfan_pay_type_01</item>
+        <item>@drawable/anfan_pay_type_02</item>
+        <item>@drawable/anfan_pay_type_03</item>
+        <item>@drawable/anfan_pay_type_04</item>
+        <item>@drawable/anfan_pay_type_05</item>
+        <item>@drawable/anfan_icon</item>
+        <item>@drawable/anfan_rg_pay</item>
+    </array>
+    
+  
+
+</resources>

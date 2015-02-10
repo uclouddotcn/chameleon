@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/anfan_float_menu"
+    android:layout_width="wrap_content"
+    android:layout_height="38dp"
+    android:background="@drawable/anfan_float_menu_bg_left"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/anfan_menu_center"
+        style="@style/anfan_float_menu" >
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/anfan_float_icon1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/anfan_float_menu_center"
+            android:textColor="#ffffff"
+            android:textSize="9dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/anfan_menu_gift"
+        style="@style/anfan_float_menu" >
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/anfan_float_icon2"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/anfan_float_menu_gift"
+            android:textColor="#ffffff"
+            android:textSize="9dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        
+        android:id="@+id/anfan_menu_bbs"
+        style="@style/anfan_float_menu" >
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_gravity="center_horizontal"
+             android:src="@drawable/anfan_float_icon3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/anfan_float_menu_bbs"
+             android:textColor="#ffffff"
+            android:textSize="9dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/anfan_menu_service"
+        style="@style/anfan_float_menu" >
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/anfan_float_icon4"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/anfan_float_menu_service"
+            android:textColor="#ffffff"
+            android:textSize="9dp" />
+    </LinearLayout>
+
+</LinearLayout>

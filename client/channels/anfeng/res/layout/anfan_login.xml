@@ -1,0 +1,189 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EDEFF1"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+        tools:context=".AFLogin" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/anfan_logo" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="@string/anfan_account_login"
+            android:textColor="#000000"
+            android:textSize="23dp" />
+
+        <com.anfeng.pay.widget.ClearEditText
+            android:id="@+id/anfan_login_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignLeft="@+id/imageView1"
+            android:layout_below="@+id/textView1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="20dp"
+            android:background="#ffffff"
+            android:digits="@string/anfan_input_digits"
+            android:drawableLeft="@drawable/anfan_ico_user"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="@string/anfan_email_or_phone"
+            android:maxLength="20"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="#CCCCCC"
+            android:textCursorDrawable="@null" />
+
+        <com.anfeng.pay.widget.SeePWDEditText
+            android:id="@+id/anfan_login_pass"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignLeft="@+id/imageView1"
+            android:layout_below="@+id/anfan_login_name"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
+            android:digits="@string/anfan_input_digits"
+            android:drawableLeft="@drawable/anfan_ico_lock"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="@string/anfan_pwd"
+            android:inputType="textPassword"
+            android:maxLength="20"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="#CCCCCC"
+            android:textCursorDrawable="@null" />
+
+        <CheckBox
+            android:id="@+id/anfan_login_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/anfan_login_pass"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:button="@drawable/anfan_checkbox_selector"
+            android:checked="true"
+            android:paddingLeft="20dp"
+            android:text="@string/anfan_save_login_status"
+            android:textColor="#8f8b92" />
+
+        <Button
+            android:id="@+id/anfan_login_loginbtn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/anfan_login_status"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/anfan_button_bg_blue"
+            android:text="@string/anfan_login_new"
+            android:textColor="#ffffff"
+            android:textSize="18dp" />
+
+        <RelativeLayout
+            android:id="@+id/anfan_login_RL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/anfan_login_pass"
+            android:layout_below="@+id/anfan_login_loginbtn"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal" >
+
+            <TextView
+                android:id="@+id/anfan_login_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/anfan_login_6"
+                android:textColor="#CCCCCC" />
+
+            <TextView
+                android:id="@+id/anfan_protocol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/anfan_login_info"
+                android:text="@string/anfan_login_7"
+                android:textColor="#999999" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/anfan_RL_reg_and_missPWD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/anfan_login_RL"
+            android:layout_below="@+id/anfan_login_RL"
+            android:layout_marginTop="15dp" >
+
+            <TextView
+                android:id="@+id/anfan_login_misspass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/anfan_forgot_pwd"
+                android:textColor="#39C5A9"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/anfan_login_regist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/anfan_reg_new_user"
+                android:textColor="#39C5A9"
+                android:textSize="18dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/anfan_third_party_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/anfan_RL_reg_and_missPWD"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/anfan_login_by_qq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/anfan_login_by_qq" />
+
+            <Button
+                android:id="@+id/anfan_login_by_weibo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/anfan_login_by_weibo" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</ScrollView>

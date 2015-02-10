@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ 	<!-- 支付包相关 -->
+    <color name="TextColorBlack">#FF000000</color>
+    <color name="TextColorWhite">#FFFFFFFF</color>
+    <color name="TextColorGray">#FF505050</color>
+    <color name="ToastBgColor">#FF424242</color>
+    <color name="btnColor">#FFFFFF</color>
+    <color name="textColorforItemTitle">#FF666666</color>
+    <color name="secondbtntextColor">#FF496ea3</color>
+    <color name="textColorforCheckBox">#FF333333</color>
+    <color name="bgColor">#FFF2F2F2</color>
+    <color name="downLoadTextNomal">#FF3366CC</color>
+    <color name="downLoadTextPressed">#FFFFFFFF</color>
+    <color name="downLoadBackNomal">#FFFFFFFF</color>
+    <color name="downLoadBackFocus">#FF6698E7</color>
+    <color name="downLoadBackPressed">#FF3366CC</color>
+    <color name="dialog_tiltle_blue">#2277BB</color>
+   
+    
+    <color name="progressdialog_background">#50000000</color>
+    <color name="anfan_float_menu_selected">#39C5A9</color>
+    <color name="anfan_green_btn_bg_normal">#39C5A9</color>
+    <color name="anfan_green_btn_bg_pressed">#16A085</color>
+    <color name="anfan_c999999">#999999</color>
+     <color name="anfan_cF0F0F0">#F0F0F0</color>
+     <color name="anfan_c2C3E50">#2C3E50</color>
+     <color name="anfan_cDEDEDE">#DEDEDE</color>
+     <color name="anfan_cEDEFF1">#EDEFF1</color>
+     <color name="anfan_cD9DDE1">#D9DDE1</color>
+     
+
+</resources>
