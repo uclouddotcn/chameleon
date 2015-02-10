@@ -539,7 +539,7 @@ chameleonApp = angular.module('chameleonApp', [
                             {
                                 field: 'packingMessage',
                                 width: '20%',
-                                cellTemplate: '<div ng-class="ngCellText">{{row.getProperty(col.field)}}</div>'
+                                cellTemplate: '<div ng-class="ngCellText" class="message">{{row.getProperty(col.field)}}</div>'
                             }
                         ]
                     }
@@ -630,17 +630,19 @@ chameleonApp = angular.module('chameleonApp', [
                             packChannel(project, channel,
                                 function(err){
                                     if(err){
-                                        channel.packingMessage = 'Pack channel ' + channel.channelName + ' failed.';
+                                        channel.packingMessage = '打包失败';
+                                        $($('.message')[channel.index]).css({'color': 'red'});
                                     }
                                 },
                                 function(data){
                                     if(data){
-                                        var reg = new RegExp("\r\n", "g");
-                                        var num = data.match(reg).length;
-                                        channel.progress += 20 * num;
-                                        $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
-                                        if(channel.progress >= 100){
-                                            channel.packingMessage = 'Pack channel ' + channel.channelName + ' success.';
+                                                var reg = new RegExp("\r\n", "g");
+                                                var num = data.match(reg).length;
+                                                channel.progress += 20 * num;
+                                                $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
+                                                if(channel.progress >= 100){
+                                                    channel.packingMessage = '打包成功';
+                                                    $($('.message')[channel.index]).css({'color': 'green'});
                                         }
                                     }
                                 }
