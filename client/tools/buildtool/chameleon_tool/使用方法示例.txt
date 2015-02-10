@@ -1,3 +1,0 @@
-﻿编译channel：> build_channel.py -c xiaomi -r E:\chameleon\client\channels -g E:\newclient\channels
-只是解压目标apk：>build_package.py -p COTKExport.apk -P E:\newclient\Projects\NewCOTTest -d true -R E:\渠道接入\COTKExprt\bin -a false
-编译大包： >build_package.py -c xiaomi -r E:\newclient\channels -g xiaomi.apk -d false -a false -P E:\newclient\Projects\NewCOTTest
