@@ -32,7 +32,7 @@ ChameleonTool.prototype.init = function(callback){
             }
             console.log('Table project created.')
         });
-        dbContext.run("create table if not exists 'channel' ( 'id' integer PRIMARY KEY AUTOINCREMENT NOT NULL, 'projectID' int not null, 'channelName' varchar(50), 'config' text, 'desc' varchar(50), 'signConfig' text, 'sdks' text)", function(err) {
+        dbContext.run("create table if not exists 'channel' ('id' integer PRIMARY KEY AUTOINCREMENT NOT NULL, 'projectID' int not null, 'channelName' varchar(50), 'config' text, 'desc' varchar(50), 'signConfig' text, 'sdks' text)", function(err) {
             if(err) {
                 Logger.log('Create table channel failed.', err);
                 return;
@@ -44,7 +44,7 @@ ChameleonTool.prototype.init = function(callback){
                 Logger.log('Create table history failed.', err);
                 return;
             }
-            console.log('Table history created..');
+            console.log('Table history created.');
             callback(null, "success");
         });
     });
@@ -251,6 +251,14 @@ ChameleonTool.prototype.generateServerConfig = function(project){
         result[channel.channelName + '.json'] = config;
     }
     return result;
+}
+
+ChameleonTool.prototype.checkJavaHome = function(){
+    if(process.env.JAVA_HOME){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 ChameleonTool.prototype.command = function(command, args, callback, process){

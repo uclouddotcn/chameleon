@@ -192,6 +192,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.generateServerConfig(project);
     }
 
+    ProjectMgr.prototype.checkJavaHome = function(){
+        return this.tool.checkJavaHome();
+    }
+
     return new ProjectMgr();
 }])
     .factory('WaitingDlg', ['$q', '$modal', function ($q, $modal) {

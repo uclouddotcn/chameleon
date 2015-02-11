@@ -34,7 +34,6 @@ chameleonApp = angular.module('chameleonApp', [
             project: '',
             allsdks: ''
         }
-
         return globalCache;
     }])
     .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
