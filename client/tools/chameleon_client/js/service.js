@@ -168,7 +168,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         var defered = $q.defer();
         try{
             this.tool.command(command, args, function(err, data){
-                if(err) throw err;
+                if(err) {
+                    defered.resolve(err);
+                    return;
+                }
                 defered.resolve(data);
             });
         }catch (e){

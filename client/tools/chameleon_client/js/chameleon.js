@@ -65,7 +65,7 @@ ChameleonTool.prototype.getAllProjects = function(callback){
             var row = rows[i];
             project.id = row.id;
             project.name = row.name;
-            project.landscape = row.landscape;
+            project.landscape = row.landscape == 0 ? false : true;
             project.version = row.version;
             project.path = row.path;
             project.signConfig = JSON.parse(row.signConfig);
