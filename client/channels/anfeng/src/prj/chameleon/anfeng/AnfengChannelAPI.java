@@ -38,6 +38,7 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     private Config mCfg;
     private UserInfo mUserInfo;
+    public String mAppName;
 
     private IAccountActionListener mAccountActionListener;
     private IDispatcherCb loginCb;
@@ -51,6 +52,7 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfg.privateKey = cfg.getString("privateKey");
         mCfg.notifyUri = cfg.getString("notifyUri");
         mChannel = commCfg.mChannel;
+        mAppName = commCfg.mAppName;
     }
 
     @Override
@@ -59,7 +61,7 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         CPInfo info = new CPInfo();
         info.setAppId(mCfg.appId);
         info.setAppKey(mCfg.privateKey);
-        info.setGameName(activity.getResources().getString(R.string.app_name));
+        info.setGameName(mAppName);
         mAnfengPaySDK = AnFengPaySDK.getInstance();
         mAnfengPaySDK.setCPInfo(info);
 
