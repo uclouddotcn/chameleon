@@ -8,6 +8,9 @@ import com.anfeng.pay.AnFengPaySDK;
 import com.anfeng.pay.entity.CPInfo;
 import com.anfeng.pay.entity.OrderInfo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 
 import prj.chameleon.channelapi.ApiCommonCfg;
@@ -183,9 +186,16 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             if (loginCb == null)
                 return;
             mUserInfo = new UserInfo();
-            mUserInfo.mUserId = uid;
+            mUserInfo.mUserId = ucid;
             mUserInfo.mUserToken = uuid;
-            loginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(uuid, uid, mChannel));
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("uid", uid);
+                jsonObject.put("ucid", ucid);
+            } catch (JSONException e) {
+            }
+            String others = jsonObject.toString();
+            loginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(uuid, others, mChannel));
             loginCb = null;
         }
 

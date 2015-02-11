@@ -123,6 +123,11 @@
         "name": "电信爱游戏",
         "sdk": "dianxin",
         "splashscreen": 2
+    },
+    "anfeng": {
+        "name": "安峰",
+        "sdk": "anfeng",
+        "icon": "1"
     }
 }
 
