@@ -126,7 +126,7 @@ public final class QihuChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfgLandscape = commCfg.mIsLandscape;
-        mCfgBGTransparent = cfg.getBoolean("bgTransparent");
+        mCfgBGTransparent = Boolean.valueOf(cfg.getString("bgTransparent"));
         mCfgUri = cfg.getString("uri");
         mCfgAppName = commCfg.mAppName;
         mChannel = commCfg.mChannel;

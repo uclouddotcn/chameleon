@@ -15,8 +15,6 @@ import com.baidu.platformsdk.PayOrderInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Field;
-
 import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
@@ -139,8 +137,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Cfg();
-        mCfg.mAppID = (int) cfg.getLong("appId");
-        Log.e("appID" , Integer.toString(mCfg.mAppID));
+        mCfg.mAppID = Integer.valueOf(cfg.getString("appId"));
         mCfg.mAppKey = cfg.getString("appKey");
         mCfg.mScreenOrientation = commCfg.mIsLandscape ? BDGameSDKSetting.Orientation.LANDSCAPE:
                 BDGameSDKSetting.Orientation.PORTRAIT;

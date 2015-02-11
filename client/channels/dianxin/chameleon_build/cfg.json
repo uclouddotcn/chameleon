@@ -12,7 +12,7 @@
     {
       "name": "clientSecret",
       "type": "string",
-      "desc": "ClientSecret  ",
+      "desc": "ClientSecret",
       "ignoreInA": 1
     },
     {

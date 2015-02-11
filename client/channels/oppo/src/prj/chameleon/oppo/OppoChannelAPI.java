@@ -44,12 +44,12 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private boolean mIsLandscape;
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
-        mIsLandscape = cfg.getBoolean("landscape");
+        mIsLandscape = commCfg.mIsLandscape;
         mGameId = cfg.getString("gameId");
         mAppKey = cfg.getString("appKey");
         mAppSecret = cfg.getString("appSecret");
         mCallbackUrl = cfg.getString("payCallback");
-        mAllowSwitchAccount = cfg.getBoolean("allowSwitchAccount");
+        mAllowSwitchAccount = Boolean.valueOf(cfg.getString("allowSwitchAccount"));
         mChannel = commCfg.mChannel;
         mIsDebug = commCfg.mIsDebug;
     }

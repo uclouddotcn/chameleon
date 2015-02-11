@@ -17,8 +17,8 @@
         },
         {
           "name": "debug",
-          "type" : "string",
-          "desc" : "debug : true or false"
+          "type" : "boolean",
+          "desc" : "是否使用debug模式"
         }
 
     ]
