@@ -242,7 +242,7 @@ ChameleonTool.prototype.generateServerConfig = function(project){
         var config = {};
         config.sdks = [];
         for(var j=0; j<channel.sdks.length; j++){
-            config.push({
+            config.sdks.push({
                 name: channel.channelName,
                 type: 'pay,user',
                 cfg: channel.sdks[i].config
