@@ -71,7 +71,7 @@ chameleonApp = angular.module('chameleonApp', [
                             return JSON.parse($stateParams.project);
                         }]
                 },
-                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, globalCache) {
+                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'fileDialog', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, fileDialog) {
                     var _ = require('underscore');
                     var fs = require('fs-extra');
                     var node_path = require('path');
@@ -114,7 +114,7 @@ chameleonApp = angular.module('chameleonApp', [
                         }
                         if(element[0].name == "apk") {
                             var projectRoot = packingRoot + 'app/projects/' + $scope.project.name + '/';
-                            $scope.message.installAPK = '';
+                            $scope.installAPKMessage = '';
                             $scope.apkFilePath = $scope.fileread.path;
                             var install = ProjectMgr.command('python', [
                                 node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
@@ -130,7 +130,7 @@ chameleonApp = angular.module('chameleonApp', [
                             var promise = WaitingDlg.wait(install, '解压APK母包');
                             promise.then(function(data){
                                 if(data.err){
-                                    $scope.message.installAPK = "解压APK母包失败";
+                                    $scope.installAPKMessage = "解压APK母包失败";
                                     return;
                                 }
                                 APKVersion = data;
