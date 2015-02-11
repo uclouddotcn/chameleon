@@ -16,7 +16,7 @@
         },
         {
             "name": "loginRedirctUrl",
-            "type": "string",
+            "type": "url",
             "desc": "用户系统回调地址",
             "ignoreInA": 1
         },
@@ -37,7 +37,7 @@
         },
         {
             "name": "notifyurl",
-            "type": "string",
+            "type": "url",
             "desc": "支付回调地址"
         }
     ]

@@ -7,23 +7,23 @@
         {
           "name": "appId",
           "type" : "string",
-          "desc" : "申请的APPID"
+          "desc" : "APPID"
         },
         {
           "name": "appKey",
           "type" : "string",
-          "desc" : "用于充值验证",
+          "desc" : "appKey",
           "ignoreInA" : 1
         },
         {
           "name": "packetId",
           "type" : "string",
-          "desc" : "渠道ID,接入时分配，区分推广渠道"
+          "desc" : "渠道ID"
         },
         {
           "name": "signKey",
           "type" : "string",
-          "desc" : "申请接入时分配的Key"
+          "desc" : "signKey"
         }
     ]
 }

@@ -29,7 +29,7 @@
         },
         {
             "name": "payUrl",
-            "type": "string",
+            "type": "url",
             "desc": "支付回调url",
             "ignoreInA": 1
         }
