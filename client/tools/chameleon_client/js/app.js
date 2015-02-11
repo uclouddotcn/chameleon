@@ -114,6 +114,7 @@ chameleonApp = angular.module('chameleonApp', [
                         }
                         if(element[0].name == "apk") {
                             var projectRoot = packingRoot + 'app/projects/' + $scope.project.name + '/';
+                            $scope.message.installAPK = '';
                             $scope.apkFilePath = $scope.fileread.path;
                             var install = ProjectMgr.command('python', [
                                 node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
@@ -129,7 +130,7 @@ chameleonApp = angular.module('chameleonApp', [
                             var promise = WaitingDlg.wait(install, '解压APK母包');
                             promise.then(function(data){
                                 if(data.err){
-                                    $scope.message.installAPK = "unzip APK failed.";
+                                    $scope.message.installAPK = "解压APK母包失败";
                                     return;
                                 }
                                 APKVersion = data;
@@ -630,23 +631,27 @@ chameleonApp = angular.module('chameleonApp', [
                         _.each(channelToPack, function(channel){
                             channel.progress = 0;
                             packChannel(project, channel,
-                                function(err){
+                                function(err, data){
                                     if(err){
                                         channel.packingMessage = '打包失败';
                                         $($('.message')[channel.index]).css({'color': 'red'});
                                         $($('.message')[channel.index]).trigger('click');
                                     }
+                                    $($('.progress-bar')[channel.index]).css({'width': '100%'});
+                                    channel.packingMessage = '打包成功';
+                                    $($('.message')[channel.index]).css({'color': 'green'});
+                                    $($('.message')[channel.index]).trigger('click');
                                 },
                                 function(data){
                                     if(data){
-                                                var reg = new RegExp("\r\n", "g");
-                                                var num = data.match(reg).length;
-                                                channel.progress += 20 * num;
-                                                $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
-                                                if(channel.progress >= 100){
-                                                    channel.packingMessage = '打包成功';
-                                                    $($('.message')[channel.index]).css({'color': 'green'});
-                                                    $($('.message')[channel.index]).trigger('click');
+                                        var reg = new RegExp("\r\n", "g");
+                                        var num = data.match(reg).length;
+                                        channel.progress += 10 * num;
+                                        $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
+                                        if(channel.progress >= 100){
+                                            channel.packingMessage = '打包成功';
+                                            $($('.message')[channel.index]).css({'color': 'green'});
+                                            $($('.message')[channel.index]).trigger('click');
                                         }
                                     }
                                 }

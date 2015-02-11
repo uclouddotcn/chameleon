@@ -169,7 +169,8 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         try{
             this.tool.command(command, args, function(err, data){
                 if(err) {
-                    defered.resolve(err);
+                    console.log(err);
+                    defered.resolve({err: err});
                     return;
                 }
                 defered.resolve(data);
