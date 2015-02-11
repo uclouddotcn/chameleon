@@ -656,6 +656,31 @@ chameleonApp = angular.module('chameleonApp', [
                     $scope.openOutputFolder = function(){
                         require('nw.gui').Shell.openItem(node_path.join(packingRoot, nodePath('app/projects/'), project.name, 'output'));
                     }
+                    $scope.dumpServerConfig = function(){
+                        var AdmZip = require('adm-zip');
+                        var id = $scope.project.config.code;
+                        if(!id){
+                            alert(" 请配置游戏在Server中的名称");
+                            return;
+                        }
+                        try{
+                            var zip = new AdmZip();
+                            var config = ProjectMgr.generateServerConfig($scope.project);
+                            for(var p in config){
+                                zip.addFile(id + '/' + p, new Buffer(JSON.stringify(config[p])), "");
+                            }
+                            zip.addFile('manifest.json', new Buffer(JSON.stringify({
+                                'product': id
+                            })));
+                            fileDialog.saveAs(function(fileName){
+                                zip.writeZip(fileName + '.zip');
+                                alert('保存成功');
+                            }, id + '.zip');
+                        }catch(e){
+                            console.log(e);
+                            alert('导出失败： 未知错误');
+                        }
+                    }
                 }]
             })
             .state('loadsdk', {

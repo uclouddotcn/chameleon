@@ -187,6 +187,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.command(command, args, callback, process);
     }
 
+    ProjectMgr.prototype.generateServerConfig = function(project){
+        return this.tool.generateServerConfig(project);
+    }
+
     return new ProjectMgr();
 }])
     .factory('WaitingDlg', ['$q', '$modal', function ($q, $modal) {
