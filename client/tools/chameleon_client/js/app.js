@@ -320,6 +320,7 @@ chameleonApp = angular.module('chameleonApp', [
                         $scope.fileread = channel.signConfig.keyStoreFile;
                         $scope.selectedSDKs = channel.sdks;
                         $scope.selectedSDK = {};
+                        $scope.SDKConfigHtml = "";
                         //refresh config view
                         $('#SDKConfigView').empty();
                     }
