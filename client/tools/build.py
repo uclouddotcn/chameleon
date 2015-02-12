@@ -188,8 +188,12 @@ def cleanOldBuild(targetFolder):
         try:
             shutil.rmtree(targetFolder)
         except Exception:
-            rmPath = '//?/' + targetFolder
-            shutil.rmtree(rmPath)
+            if sys.platform == 'win32':
+                print('windows path too long FileNotFoundError %s ... ' %(targetFolder))
+                targetFolder = os.path.realpath(targetFolder)
+                rmPath = '\\\\?\\' + targetFolder
+                print('now forcibly remove  %s ... ' %(rmPath))
+                shutil.rmtree(rmPath)
 
 def getversion():
     versionFolder = os.path.join(BASEDIR, '..', 'version')
