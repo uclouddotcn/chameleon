@@ -10,7 +10,7 @@ var ChameleonError = require('./chameleonError');
 function Project(){
     this.id = 0;
     this.name = '';
-    this.landscape = false;
+    this.landscape = true;
     this.version = '';
     this.path = '';
     this.signConfig ={};
