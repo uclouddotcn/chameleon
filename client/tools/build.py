@@ -199,21 +199,51 @@ def unzipFiles(zf, targetDir):
     with zipfile.ZipFile(zf) as zipf:
         zipf.extractall(targetDir)
 
-def buildChameleonClient(chameleonFolder, targetFolder, place):
-    if not os.path.exists(targetFolder):
-        os.mkdir(targetFolder)
-    appPath = os.path.join(targetFolder, 'app')
-    if not os.path.exists(appPath):
-        os.mkdir(appPath)
+
+def exportChamleonClient(clientZipTarget):
+    oldpath = os.getcwd()
+    try:
+        os.chdir('chameleon_client')
+        ret = subprocess.call(['git', 'archive', '--format',
+            'zip', '-o', clientZipTarget, 'HEAD'])
+    finally:
+        os.chdir(oldpath)
+    if ret != 0:
+        raise RuntimeError('fail to export chameleon_client')
+
+def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
+    os.mkdir(targetFolder)
+    clientPath = os.path.join(targetFolder, 'chameleon_client')
+    os.mkdir(clientPath)
+    unzipFiles(zf, os.path.join(targetFolder, 'chameleon_client'))
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'app', 'chameleon'))
+    downloadDependency(os.path.join(targetFolder, 'chameleon_client'))
     placePlatformStartScript(targetFolder)
+
+    print('unzip sqlite3')
+    sqlitePath = os.path.join(clientPath, 'node_modules', 'sqlite3')
+    if os.path.exists(sqlitePath):
+        shutil.rmtree(sqlitePath)
+    unzipFiles(os.path.join(clientPath, 'sqlite', 'windows', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
+
     if place is not None:
         place(os.path.join(targetFolder, 'nw'))
 
-def buildChameleonClientMacOS(chameleonFolder, targetFolder, place):
-    if not os.path.exists(targetFolder):
-        os.mkdir(targetFolder)
+def buildChameleonClientMacOS(zf, chameleonFolder, targetFolder, place):
+    os.mkdir(targetFolder)
+    clientPath = os.path.join(targetFolder, 'chameleon_client')
+    os.mkdir(clientPath)
+    unzipFiles(zf, os.path.join(targetFolder, 'chameleon_client'))
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
+    downloadDependency(os.path.join(targetFolder, 'chameleon_client'))
+
+    print('unzip sqlite3')
+    clientPath = os.path.join(targetFolder, 'chameleon_client')
+    sqlitePath = os.path.join(clientPath, 'node_modules', 'sqlite3')
+    if os.path.exists(sqlitePath):
+        shutil.rmtree(sqlitePath)
+    unzipFiles(os.path.join(clientPath, 'sqlite', 'macos', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
+
     if place is not None:
         place(targetFolder)
 
@@ -233,18 +263,29 @@ def placeNodeWebkitOsx(targetFolder):
     src = os.path.join('nodewebkit-bin', 'node-webkit.app')
     shutil.copytree(src, os.path.join(targetFolder, 'node-webkit.app'))
 
-def addNodeWebkit(targetFolder):
-    chameleonFolder = os.path.join(targetFolder, 'chameleon')
-    if sys.platform == 'win32':
-        buildChameleonClient(chameleonFolder, os.path.join(targetFolder, 'chameleon_client_win'), placeNodeWebkitWin)
-    else:
-        buildChameleonClientMacOS(chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
+def downloadDependency(targetFolder):
+    olddir = os.getcwd()
+    try:
+        os.chdir(targetFolder)
+        ret = subprocess.check_call([NPM_CMD, 'install', '--production'])
+        if ret != 0:
+            raise RuntimeError('Fail to download dependency for %s' %targetFolder)
+        ret = subprocess.check_call([BOWER_CMD, 'install'])
+        if ret != 0:
+            raise RuntimeError('Fail to download dependency for %s' %targetFolder)
+    finally:
+        os.chdir(olddir)
 
-def gruntNode():
-    print(os.getcwd())
-    os.chdir('chameleon_client')
-    print(os.getcwd())
-    os.system('grunt pack --force')
+
+def mergeToNodewebkit(targetFolder):
+    clientZipTarget = os.path.join(targetFolder, 'chameleon_client.zip')
+    chameleonFolder = os.path.join(targetFolder, 'chameleon')
+    exportChamleonClient(clientZipTarget)
+    if sys.platform == 'win32':
+        buildChameleonClient(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_win'), placeNodeWebkitWin)
+    else:
+        buildChameleonClientMacOS(clientZipTarget, chameleonFolder, os.path.join(targetFolder, 'chameleon_client_osx'), placeNodeWebkitOsx)
+
 
 def build():
     targetFolder = os.path.join(BASEDIR, 'chameleon_build')
@@ -259,12 +300,8 @@ def build():
     print('start initing build folder...')
     initProjectFolder(chameleonTarget, version)
 
-    print('build chameleon client node-webkit nw.exe...')
-    addNodeWebkit(targetFolder)
-
-    #execute grunt
-    print('build chameleon client execute grunt...')
-    gruntNode()
+    print('build chameleon client...')
+    mergeToNodewebkit(targetFolder)
 
     print('done')
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PaySDKDemo</string>
     <!-- 复制以下内容到strings文件 -->
     <string name="anfan_phone_num">手机号</string>
     <string name="anfan_sms_auth_code">短信验证码</string>

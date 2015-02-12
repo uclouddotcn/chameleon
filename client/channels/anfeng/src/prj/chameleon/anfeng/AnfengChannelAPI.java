@@ -8,6 +8,9 @@ import com.anfeng.pay.AnFengPaySDK;
 import com.anfeng.pay.entity.CPInfo;
 import com.anfeng.pay.entity.OrderInfo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 
 import prj.chameleon.channelapi.ApiCommonCfg;
@@ -35,6 +38,7 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     private Config mCfg;
     private UserInfo mUserInfo;
+    public String mAppName;
 
     private IAccountActionListener mAccountActionListener;
     private IDispatcherCb loginCb;
@@ -48,6 +52,7 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCfg.privateKey = cfg.getString("privateKey");
         mCfg.notifyUri = cfg.getString("notifyUri");
         mChannel = commCfg.mChannel;
+        mAppName = commCfg.mAppName;
     }
 
     @Override
@@ -56,7 +61,7 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         CPInfo info = new CPInfo();
         info.setAppId(mCfg.appId);
         info.setAppKey(mCfg.privateKey);
-        info.setGameName(activity.getResources().getString(R.string.app_name));
+        info.setGameName(mAppName);
         mAnfengPaySDK = AnFengPaySDK.getInstance();
         mAnfengPaySDK.setCPInfo(info);
 
@@ -183,9 +188,16 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             if (loginCb == null)
                 return;
             mUserInfo = new UserInfo();
-            mUserInfo.mUserId = uid;
+            mUserInfo.mUserId = ucid;
             mUserInfo.mUserToken = uuid;
-            loginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(uuid, uid, mChannel));
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("uid", uid);
+                jsonObject.put("ucid", ucid);
+            } catch (JSONException e) {
+            }
+            String others = jsonObject.toString();
+            loginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(uuid, others, mChannel));
             loginCb = null;
         }
 
