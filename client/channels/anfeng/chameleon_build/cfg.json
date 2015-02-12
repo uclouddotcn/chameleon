@@ -15,11 +15,6 @@
             "desc": "private key"
         },
         {
-            "name": "privateKey",
-            "type": "string",
-            "desc": "private key"
-        },
-        {
             "name": "signKey",
             "type": "string",
             "desc": "sign key",
