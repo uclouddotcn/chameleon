@@ -16,9 +16,9 @@
     "fs-extra": "~0.11.1",
     "nedb": "~0.11.1",
     "underscore": "*"
+    "sqlite3": "*",
   },
   "devDependencies": {
-    "sqlite3": "*",
     "grunt": "^0.4.5",
     "grunt-bower-install-task": "0.0.4",
     "grunt-contrib-jshint": "~0.10.0",

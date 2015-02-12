@@ -185,7 +185,11 @@ def buildChameleonLib():
 def cleanOldBuild(targetFolder):
     if os.path.exists(targetFolder):
         print('cleaning existing build folder %s ...' %(targetFolder))
-        shutil.rmtree(targetFolder)
+        try:
+            shutil.rmtree(targetFolder)
+        except Exception:
+            rmPath = '//?/' + targetFolder
+            shutil.rmtree(rmPath)
 
 def getversion():
     versionFolder = os.path.join(BASEDIR, '..', 'version')
@@ -223,7 +227,7 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
     print('unzip sqlite3')
     sqlitePath = os.path.join(clientPath, 'node_modules', 'sqlite3')
     if os.path.exists(sqlitePath):
-        shutil.rmtree(sqlitePath)
+        cleanOldBuild(sqlitePath)
     unzipFiles(os.path.join(clientPath, 'sqlite', 'windows', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
 
     if place is not None:
@@ -241,7 +245,7 @@ def buildChameleonClientMacOS(zf, chameleonFolder, targetFolder, place):
     clientPath = os.path.join(targetFolder, 'chameleon_client')
     sqlitePath = os.path.join(clientPath, 'node_modules', 'sqlite3')
     if os.path.exists(sqlitePath):
-        shutil.rmtree(sqlitePath)
+        cleanOldBuild(sqlitePath)
     unzipFiles(os.path.join(clientPath, 'sqlite', 'macos', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
 
     if place is not None:
