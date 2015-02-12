@@ -110,7 +110,9 @@
     },
     "m4399": {
         "name": "4399",
-        "sdk": "m4399"
+        "sdk": "m4399",
+        "splashscreen": 1,
+        "icon": "1"
     },
     "ewan": {
         "name": "益玩",
