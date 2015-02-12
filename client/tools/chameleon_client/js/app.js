@@ -22,7 +22,7 @@ chameleonApp = angular.module('chameleonApp', [
                 ' ' + toParams + ' ' + fromState + ' ' + fromParams);
 
             });
-            createMenu($modal);
+            //createMenu($modal);
         }
     ])
     .factory('globalCache', [function () {
