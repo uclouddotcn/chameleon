@@ -114,7 +114,7 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             return;
         int money = realPayMoney / 100;
         DecimalFormat df = new DecimalFormat("0.00");
-        OrderInfo info = new OrderInfo(orderId, df.format(money), currencyName, payInfo);
+        OrderInfo info = new OrderInfo(orderId, df.format(money), currencyName, currencyName);
         AnFengPaySDK.anFanPay(activity, info, mCfg.notifyUri);
         payCb = cb;
     }
@@ -136,7 +136,7 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             return;
         int money = realPayMoney / 100;
         DecimalFormat df = new DecimalFormat("0.00");
-        OrderInfo info = new OrderInfo(orderId, df.format(money), productName, payInfo);
+        OrderInfo info = new OrderInfo(orderId, df.format(money), productName, productName);
         AnFengPaySDK.anFanPay(activity, info, mCfg.notifyUri);
         payCb = cb;
 
