@@ -12,7 +12,7 @@ var SDKPluginBase = commonLib.SDKPluginBase;
 var cfgDesc = {
     clientId: 'string',
     clientSecret: 'string',
-    numId: 'string',
+    digitId: 'string',
     cpId: 'string',
     appKey: 'string'
 };

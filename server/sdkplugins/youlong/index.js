@@ -13,8 +13,8 @@ var ErrorCode = commonLib.ErrorCode;
 var SDKPluginBase = commonLib.SDKPluginBase;
 
 var cfgDesc = {
-    pid: 'string',
-    pkey: 'string'
+    pId: 'string',
+    pKey: 'string'
 };
 
 var YoulongChannel = function(logger, cfgChecker) {
@@ -33,10 +33,10 @@ util.inherits(YoulongChannel, SDKPluginBase);
 YoulongChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
     var q = '/validation.do';
-    var sign = this.calcSign(token+wrapper.cfg.pid+wrapper.cfg.pkey);
+    var sign = this.calcSign(token+wrapper.cfg.pId+wrapper.cfg.pKey);
     var postObj = {
         UserName: token,
-        PID: wrapper.cfg.pid,
+        PID: wrapper.cfg.pId,
         flag: sign
     };
     this._logger.debug({token: token}, "receive request");
@@ -94,7 +94,7 @@ YoulongChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
     var sign = params['flag'];
     req.log.debug({req: req, params: params}, 'recv pay rsp');
     try {
-        var expectSign = self.calcSign(params.orderId+params.userName+params.amount+params.extra+wrapper.cfg.pkey);
+        var expectSign = self.calcSign(params.orderId+params.userName+params.amount+params.extra+wrapper.cfg.pKey);
         if (expectSign !== sign) {
             self._logger.warn({e: expectSign, r: sign}, "unmatched sign");
             return next(new restify.InvalidArgumentError("error"));
