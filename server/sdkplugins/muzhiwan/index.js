@@ -151,7 +151,7 @@ MzwChannel.prototype.reply = function (res, result) {
 
 module.exports =
 {
-    name: 'mzw',
+    name: 'muzhiwan',
     cfgDesc: cfgDesc,
     createSDK: function (logger, checker, debug) {
         return new MzwChannel(logger, checker, debug);
