@@ -40,7 +40,7 @@ function main() {
         return pat.exec(entry.entryName) != null;
     });
     if (!packageEntry || packageEntry.length === 0) {
-        throw new Error('could not find package.json');
+        throw new Error('could not find package.json: ' + sdkzip);
     }
     packageEntry = packageEntry[0];
     var obj = JSON.parse(zipf.readAsText(packageEntry));
