@@ -172,17 +172,17 @@ DianxinChannel.prototype.if1 = function (params, res, next, wrapper) {
     var self = this;
     params.appKey = wrapper.cfg.appKey;
     var sign =
-        this.calcMd5(wrapper, params, ['cp_order_id', 'correlator', 'result_code', 'fee', 'pay_type', 'method', 'appKey']);
+        this.calcMd5(wrapper, params, ['cp_order_id', 'correlator', 'order_time', 'method', 'appKey']);
     if (sign !== params.sign) {
         this._logger.error({sign: sign, expect: params.sign}, 'sign not match');
         return next(new restify.InvalidArgumentError('error'));
     }
     wrapper.userAction.requestOrderInfo(params.cp_order_id, function (err, record) {
         if (err || record) {
-            res.send(res, self.respToIf1(params, '', 0, -1));
+            self.send(res, self.respToIf1(params, '', 0, -1));
             return next();
         }
-        res.send(res, self.respToIf1(params, record.uid, record.rmb, 0));
+        self.send(res, self.respToIf1(params, record.uid, record.rmb, 0));
         return next();
     });
 };

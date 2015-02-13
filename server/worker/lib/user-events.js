@@ -60,14 +60,16 @@ function(m, token, others, channel, callback) {
                 return callback(
                     new SdkError({code:-1, message:'internal error'}));
             }
+            if (result.loginInfo) {
+                result.loginInfo.channel = channel;
+            }
+            callback(null, result);
             if (result.code === 0) {
                 self._eventCenter.emit('login', self.productName, channel,
                     result.loginInfo.uid, result.loginInfo.others);
-                result.loginInfo.channel = channel;
             } else {
                 self._eventCenter.emit('login-fail', self.productName, channel, null, result.code);
             }
-            return callback(null, result);
         });
     return self;
 };
@@ -109,6 +111,10 @@ UserAction.prototype.payFail = function (channel, orderId, reason) {
     })
 };
 
+UserAction.prototype.requestOrderInfo = function (orderId, callback) {
+    this.pendingOrderStore.getPendingOrder(orderId, callback);
+};
+
 
 
 /**
@@ -135,7 +141,7 @@ function(channel, uid, appUid, cpOrderId, payStatus,
 
     if (options instanceof Function) {
         callback = options;
-        other = null;
+        options = null;
     }
 
     var self = this;

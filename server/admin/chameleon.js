@@ -7,7 +7,6 @@ var fs = require('fs');
 var http = require('http');
 var child_process = require('child_process');
 var util = require('util');
-var Zip = require('adm-zip');
 
 var PROC_NAME = 'chameleon_admin';
 var BASE_DIR = path.join(__dirname, '..');
@@ -316,16 +315,16 @@ function main() {
                     if (err) {
                         error('Fail to close admin server, the server maybe not in right state' + err.message);
                         error('forcing close');
-                    }
-                    pm2.stop(PROC_NAME, function (err) {
-                        if (err) {
-                            error('Fail to close admin server, the server maybe not in right state' + err.message);
-                        } else {
-                            info('Chameleon server is closed');
-                        }
-                        return pm2.disconnect();
+                        pm2.stop(PROC_NAME, function (err) {
+                            if (err) {
+                                error('Fail to close admin server, the server maybe not in right state' + err.message);
+                            } else {
+                                info('Chameleon server is closed');
+                            }
+                            return pm2.disconnect();
 
-                    });
+                        });
+                    }
                 });
             });
         }));

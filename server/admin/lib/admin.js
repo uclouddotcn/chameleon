@@ -292,8 +292,7 @@ Admin.prototype.exit = function () {
 
 Admin.prototype.close = function (callback) {
     this.logger.info('admin server exit');
-    setImmediate(callback);
-    return this.server.close();
+    return this.server.close(callback);
 };
 
 Admin.prototype.registerExitFunc = function (func) {

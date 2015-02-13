@@ -80,6 +80,10 @@ YoulongChannel.prototype.getPayUrlInfo=function(){
         {
             method: 'post',
             path:'/pay'
+        },
+        {
+            method: 'get',
+            path:'/pay'
         }
     ]
 };
