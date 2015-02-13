@@ -603,7 +603,7 @@ chameleonApp = angular.module('chameleonApp', [
                                         var sdkConfig = {
                                             name: channel.channelName,
                                             type: 'pay,user',
-                                            config: channel.sdks[i].config
+                                            config: _.extend({}, channel.sdks[i].config)
                                         };
                                         for(var j=0; j<channel.sdks[i].cfgitem.length; j++){
                                             if(channel.sdks[i].cfgitem[j].ignoreInA){
