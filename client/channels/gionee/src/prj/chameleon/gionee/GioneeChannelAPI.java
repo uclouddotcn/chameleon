@@ -175,8 +175,12 @@ public final class GioneeChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     //以下为辅助方法
     private void onStartPay(String orderId, String payInfo, IDispatcherCb cb){
-        if (mGamePayer == null || mPayCb != null)
+        if (mUserInfo == null) {
+            cb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
             return;
+        }
+        if (mGamePayer == null || mPayCb != null)
+            cb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_PROGRESS, null);
         GamePayer.GamePayCallback mGamePayCallback = mGamePayer.new GamePayCallback(){
             @Override
             public void onPaySuccess() {

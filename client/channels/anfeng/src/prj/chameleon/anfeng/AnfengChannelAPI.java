@@ -66,12 +66,14 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mAnfengPaySDK.setCPInfo(info);
 
         AnFengPaySDK.getInstance().setCallback(mCallback);
+
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
     @Override
     public void login(final Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
         if (loginCb != null)
-            return;
+            cb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_PROGRESS, null);
         AnFengPaySDK.anfanLogin(activity);
         mAccountActionListener = accountActionListener;
         loginCb = cb;
@@ -84,11 +86,17 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean switchAccount(Activity activity, IDispatcherCb cb) {
-        if (loginCb != null)
-            return super.switchAccount(activity, cb);
+        if (loginCb != null){
+            cb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_PROGRESS, null);
+            return true;
+        }
+        if (mAccountActionListener != null) {
+            mAccountActionListener.onAccountLogout();
+            mUserInfo = null;
+        }
         AnFengPaySDK.changeUser(activity);
         loginCb = cb;
-        return super.switchAccount(activity, cb);
+        return true;
     }
 
     @Override
@@ -109,9 +117,12 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,//总价
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-
-        if (payCb != null)
+        if (mUserInfo == null) {
+            cb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
             return;
+        }
+        if (payCb != null)
+            cb.onFinished(Constants.ErrorCode.ERR_PAY_IN_PROGRESS, null);
         int money = realPayMoney / 100;
         DecimalFormat df = new DecimalFormat("0.00");
         OrderInfo info = new OrderInfo(orderId, df.format(money), currencyName, currencyName);
@@ -131,9 +142,12 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,//个数
                     int realPayMoney,
                     IDispatcherCb cb) {
-
-        if (payCb != null)
+        if (mUserInfo == null) {
+            cb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
             return;
+        }
+        if (payCb != null)
+            cb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_PROGRESS, null);
         int money = realPayMoney / 100;
         DecimalFormat df = new DecimalFormat("0.00");
         OrderInfo info = new OrderInfo(orderId, df.format(money), productName, productName);
@@ -184,7 +198,7 @@ public final class AnfengChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
         @Override
         public void onLoginSuccessCallback(String uid, String uuid, String ucid) {
-            //"用户登陆成功:uid=>" + uid + "\nuuid=>" + uuid + "\nucid=>" + ucid, Toast.LENGTH_LONG).show();
+            //"用户登陆成功:uid=>" + uid + "\nuuid=>" + uuid + "\nucid=>" + ucid,
             if (loginCb == null)
                 return;
             mUserInfo = new UserInfo();
