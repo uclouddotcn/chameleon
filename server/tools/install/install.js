@@ -135,6 +135,10 @@ function installAdmin(installPath, callback) {
                 fs.writeFileSync(adminCfgPath, JSON.stringify(ADMIN_DEFAULT_CFG, null, '\t'));
             }
             setImmediate(cb);
+        },
+        function (cb) {
+            var chameleonPath = path.join(dstpath, 'admin', 'chameleon.js');
+            fs.chmod(chameleonPath, 'a+x', cb);
         }
     ], function (err) {
         if (err) {
