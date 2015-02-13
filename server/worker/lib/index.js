@@ -136,7 +136,8 @@ function _init(baseDir, argv, pluginInfos, cmdEmitter, callback) {
         },
         // init the sdk svr
         sdkSvr.listen.bind(
-            sdkSvr, cfg.sdkSvr.port, cfg.sdkSvr.host)
+            sdkSvr, cfg.sdkSvr.port, cfg.sdkSvr.host),
+        channelCbSvr.listen.bind(channelCbSvr)
     ], function (err) {
         if (err) {
             return callback(err);

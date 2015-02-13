@@ -30,13 +30,27 @@ function (productMgr, port, host, options, logger) {
     self.server.on('uncaughtException', function (req, res, route, error) {
         req.log.error({err: error}, 'uncaughtException')
     });
+    self.port = port;
+    self.host = host;
+    self.options = options;
     this.server.listen(port, host, options);
     this.subDirs = {};
     productMgr.on('start-inst', self._onStartChannel.bind(self));
     productMgr.on('end-inst', self._onRemoveChannel.bind(self));
     self.logger = logger;
+    this.server.on('error', function (err) {
+        logger.error({err: err}, 'channel callback server encounter unexptected error');
+        // give the logger a chance to log the error message
+        setTimeout(function() {
+            // just die !
+            throw err;
+        }, 1000);
+    });
 };
 
+ChannelCallbackSvr.prototype.listen = function (callback){
+    this.server.listen(this.port, this.host, this.options, callback);
+};
 
 /**
  * install the path for the plugin

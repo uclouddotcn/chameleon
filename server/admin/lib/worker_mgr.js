@@ -114,6 +114,7 @@ WorkerMgr.prototype.stop = function (callback) {
     var self = this;
     var h = setTimeout(function () {
         self.forceClose();
+        callback();
     }, 30000);
     this._doClose(this.worker.wid, function () {
         clearTimeout(h);

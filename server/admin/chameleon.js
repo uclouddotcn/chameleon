@@ -230,7 +230,16 @@ function main() {
                                             setTimeout(fetchInfo(), 1100);
                                         }
                                     } else {
-                                        info('Admin started');
+                                        if (obj.worker.forkScripts && obj.status !== 'running') {
+                                            retrytimes--;
+                                            if (retrytimes < 0) {
+                                                error('successfully start admin server, however worker fails to start');
+                                            } else {
+                                                setTimeout(fetchInfo(), 1100);
+                                            }
+                                        } else {
+                                            info('Admin started');
+                                        }
                                     }
                                 });
                             }
@@ -251,6 +260,21 @@ function main() {
                     return error('Fail to start worker: ' + err.message);
                 }
                 info("Successful start worker: " + JSON.stringify(obj, null, '\t'));
+            });
+        });
+
+    program
+        .command('restart-worker')
+        .action(function () {
+            var postData = {
+                action: 'restart'
+            };
+            postRequest(program.host, program.port, '/admin', postData, function (err) {
+                if (err) {
+                    error('Fail to connect to admin server, the server maybe not in right state' + err.message);
+                    return;
+                }
+                info('Done');
             });
         });
 
@@ -315,16 +339,16 @@ function main() {
                     if (err) {
                         error('Fail to close admin server, the server maybe not in right state' + err.message);
                         error('forcing close');
-                        pm2.stop(PROC_NAME, function (err) {
-                            if (err) {
-                                error('Fail to close admin server, the server maybe not in right state' + err.message);
-                            } else {
-                                info('Chameleon server is closed');
-                            }
-                            return pm2.disconnect();
-
-                        });
                     }
+                    pm2.stop(PROC_NAME, function (err) {
+                        if (err) {
+                            error('Fail to close admin server, the server maybe not in right state' + err.message);
+                        } else {
+                            info('Chameleon server is closed');
+                        }
+                        return pm2.disconnect();
+
+                    });
                 });
             });
         }));
