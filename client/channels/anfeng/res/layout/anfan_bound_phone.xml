@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EDEFF1"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
+    tools:context=".AFLogin" >
+
+    <com.anfeng.pay.widget.ClearEditText
+        android:id="@+id/anfan_bound_phone_phone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#ffffff"
+        android:ems="10"
+        android:hint="@string/anfan_phone_num"
+         android:textColor="#000000"
+        android:textCursorDrawable="@null"
+        android:inputType="phone"
+        android:paddingLeft="20dp"
+        android:singleLine="true"
+        android:maxLength="20"
+        android:textColorHint="#CCCCCC" />
+
+ 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp" >
+
+        <EditText
+            android:id="@+id/anfan_bound_phone_code"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+              android:textCursorDrawable="@null"
+            android:ems="10"
+            android:hint="@string/anfan_sms_auth_code"
+            android:paddingLeft="20dp"
+            android:textColor="#000000"
+            android:singleLine="true"
+            android:inputType="number"
+            android:maxLength="10"
+            android:textColorHint="#CCCCCC" >
+        </EditText>
+
+        <Button
+            android:id="@+id/anfan_bound_phone_button1"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="#BBC2CA"
+            android:text="@string/anfan_get_auth_code"
+            android:textColor="#ffffff"
+            android:textSize="12dp" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/anfan_bound_phone_boundbtn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/anfan_button_bg_blue"
+        android:text="@string/anfan_bound_now"
+        android:textSize="18dp"
+        android:textColor="#ffffff" />
+
+</LinearLayout>

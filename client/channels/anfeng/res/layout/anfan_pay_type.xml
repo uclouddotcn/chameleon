@@ -1,0 +1,31 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EDEFF1"
+    android:orientation="vertical"
+    tools:context=".AFLogin" >
+
+    
+
+    <View
+        android:id="@+id/line12"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#C5CBD1" />
+
+    <ListView
+        android:id="@+id/lv_pay_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@android:color/transparent"
+        android:dividerHeight="1dp"
+        android:divider="@drawable/anfan_list_divider"
+   
+       >
+  </ListView>
+
+    
+   
+</LinearLayout>

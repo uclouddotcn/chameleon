@@ -100,7 +100,8 @@
         <activity
             android:name="com.xianyugame.sanguofire.qh.wxapi.WXEntryActivity"
             android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            chameleon:replace="android:name=%packageId%.wxapi.WXEntryActivity"/>
 
         <!-- 从微信开放平台申请的appid，游戏需要去申请自己的appid -->
         <meta-data

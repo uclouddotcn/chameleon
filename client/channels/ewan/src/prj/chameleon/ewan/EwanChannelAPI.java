@@ -56,6 +56,8 @@ public final class EwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void login(final Activity activity, final IDispatcherCb cb, final IAccountActionListener accountActionListener) {
+        if (mLoginCb != null)
+            cb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_PROGRESS, null);
         CwPlatform.getInstance().cwLoginView(activity);
         mLoginCb = cb;
         mAccountActionListener = accountActionListener;
@@ -81,8 +83,12 @@ public final class EwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        int realPayMoney,//总价
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
-        if (mPayCb != null)
+        if (mUserInfo == null) {
+            cb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
             return;
+        }
+        if (mPayCb != null)
+            cb.onFinished(Constants.ErrorCode.ERR_PAY_IN_PROGRESS, null);
         CwPlatform.getInstance().enterPayCenterView(activity,
                 Integer.valueOf(serverId),//充值服务器标识
                 orderId,//游戏方自定义字段，一般为CP的订单号
@@ -103,8 +109,12 @@ public final class EwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int productCount,//个数
                     int realPayMoney,
                     IDispatcherCb cb) {
-        if (mPayCb != null)
+        if (mUserInfo == null) {
+            cb.onFinished(Constants.ErrorCode.ERR_PAY_SESSION_INVALID, null);
             return;
+        }
+        if (mPayCb != null)
+            cb.onFinished(Constants.ErrorCode.ERR_LOGIN_IN_PROGRESS, null);
         CwPlatform.getInstance().enterPayCenterView(activity,
                 Integer.valueOf(serverId),//充值服务器标识
                 orderId,//游戏方自定义字段，一般为CP的订单号
@@ -231,6 +241,7 @@ public final class EwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                                                 mUserInfo.mUserId = cwLogin.getOpenId();
                                                 mUserInfo.mUserToken = cwLogin.getToken();
                                                 mLoginCb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(cwLogin.getToken(), cwLogin.getOpenId(), mChannel));
+                                                mLoginCb = null;
                                             }
                                         });
 
@@ -244,6 +255,7 @@ public final class EwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                                                         return;
                                                     }
                                                     mLoginCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                                                    mLoginCb = null;
                                                 }
                                             }
                                         });
@@ -287,7 +299,7 @@ public final class EwanChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                                                         mPayCb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
                                                         break;
                                                 }
-
+                                                mPayCb = null;
                                             }
                                         });
                                 cb.onFinished(Constants.ErrorCode.ERR_OK, null);

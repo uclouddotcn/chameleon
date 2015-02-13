@@ -105,12 +105,14 @@
         "name": "拇指玩",
         "sdk": "muzhiwan",
         "pkgsuffix": ".muwan$",
-        "splashscreen": 1,
+        "splashscreen": 2,
         "icon": "1"
     },
     "m4399": {
         "name": "4399",
-        "sdk": "m4399"
+        "sdk": "m4399",
+        "splashscreen": 1,
+        "icon": "1"
     },
     "ewan": {
         "name": "益玩",
@@ -122,7 +124,12 @@
     "dianxin": {
         "name": "电信爱游戏",
         "sdk": "dianxin",
-        "splashscreen": 1
+        "splashscreen": 2
+    },
+    "anfeng": {
+        "name": "安峰",
+        "sdk": "anfeng",
+        "icon": "1"
     }
 }
 

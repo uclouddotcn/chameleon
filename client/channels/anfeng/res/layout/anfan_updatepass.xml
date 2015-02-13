@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EDEFF1"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
+    tools:context=".AFLogin" >
+
+    <com.anfeng.pay.widget.ClearEditText
+        android:id="@+id/anfan_uppassa_old"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#ffffff"
+        android:ems="10"
+         android:textColor="#000000"
+        android:textCursorDrawable="@null"
+        android:hint="@string/anfan_old_pwd"
+        android:paddingLeft="20dp"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:maxLength="20"
+        android:digits="@string/anfan_input_digits"
+        android:textColorHint="#CCCCCC" />
+	    
+        
+   
+
+    <com.anfeng.pay.widget.ClearEditText
+        android:id="@+id/anfan_uppassa_new_1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:background="#ffffff"
+         android:textColor="#000000"
+        android:textCursorDrawable="@null"
+        android:ems="10"
+        android:maxLength="20"
+        android:hint="@string/anfan_new_pwd"
+        android:paddingLeft="20dp"
+         android:digits="@string/anfan_input_digits"
+       android:inputType="textPassword"
+        android:singleLine="true"
+        android:textColorHint="#CCCCCC" />
+   
+
+    <com.anfeng.pay.widget.SeePWDEditText
+        android:id="@+id/anfan_uppassa_new_2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:background="#ffffff"
+        android:ems="10"
+         android:textColor="#000000"
+        android:textCursorDrawable="@null"
+        android:hint="@string/anfan_confirm_new_pwd"
+        android:paddingLeft="20dp"
+        android:inputType="textPassword"
+        android:singleLine="true"
+         android:digits="@string/anfan_input_digits"
+         android:maxLength="20"
+        android:textColorHint="#CCCCCC" />
+  
+
+    <Button
+        android:id="@+id/anfan_uppass_updatebtn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/anfan_button_bg_blue"
+           android:textSize="18dp"
+        android:text="@string/anfan_modify_pwd_new"
+        android:textColor="#ffffff" />
+
+</LinearLayout>

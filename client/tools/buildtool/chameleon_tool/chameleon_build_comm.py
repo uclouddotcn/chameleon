@@ -28,6 +28,10 @@ def _mergeCfg(to, f):
 
 
 def _loadDependLibInfo(globalcfg, info, libPath):
+    if str(globalcfg['landscape']).casefold() in ['true', '1']:
+        info["config"]['orientation'] = "landscape"
+    else:
+        info["config"]['orientation'] = "portrait"
     cfg = info["config"]
     return LibInfo(info['name'], os.path.join(libPath, info['name']), 
             cfg, info['type'])

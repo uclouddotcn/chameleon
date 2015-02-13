@@ -8,7 +8,7 @@
                 <li role="presentation"><a href="#channelManager" >渠道管理</a></li>
                 <li role="presentation"><a href="#SDKManager" >SDK管理</a></li>
                 <li role="presentation"><a href="#SDKConfig" >SDK配置</a></li>
-                <li role="presentation" ng-hide="!hasIcon()"><a href="#iconManager" >icon管理</a></li>
+                <li role="presentation"><a href="#iconManager" >icon管理</a></li>
                 <li role="presentation"><a href="#pack" >打包</a></li>
             </ul>
 
@@ -31,6 +31,20 @@
                                     <label class="btn btn-primary" ng-model="project.landscape" btn-radio="false">PORTRAIT</label>
                                 </div>
                             </div>
+                            <div class="row row-plus" >
+                                <div class="col-md-3">
+                                    <label>选择icon</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{project.config.icon}}</label><input type="file" accept="image/png" fileread="project.config.icon" name="projectIcon" class="custom-file-input"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>游戏在server中的英文代号</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" ng-model="project.config.code">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="panel panel-default">
@@ -41,7 +55,7 @@
                                     <label>Keystore文件</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <label>{{project.signConfig.keyStoreFile}}</label><input type="file" accept="keystore/*" fileread="project.signConfig.keyStoreFile" name="project" />
+                                    <label>{{project.signConfig.keyStoreFile}}</label><input type="file" accept="keystore/*" fileread="project.signConfig.keyStoreFile" name="project" class="custom-file-input"/>
                                 </div>
                                 <div class="col-md-3">
                                     <label>Alias</label>
@@ -99,7 +113,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div><button class="btn-large btn-success has-spinner" ng-click="saveProjectConfig()" ng-disabled="isProjectUnchanged">保存</button></div>
                 </div>
                 <div class="tab-pane fade" id="channelManager" role="tabpanel" >
@@ -140,19 +153,16 @@
                                     <div>
                                         <label>渠道包名</label><input type="text" ng-model="selectedChannel.config.packageName" />
                                     </div>
-                                    <div>
-                                        <div ng-hide="!hasSplash">
-                                            <label>Splash</label><label>{{selectedChannel.config.splashPath}}</label>
-                                        </div>
-                                        <div>
-                                            <input type="file" fileread="selectedChannel.config.splash" name="splash"/>
-                                        </div>
-                                    </div>
+<!--                                    <div ng-hide="!hasSplash">
+                                        <label>Splash</label><label>{{selectedChannel.config.splashPath}}</label><input type="button" ng-click="selectSplashScreen()" value="选择"/>
+                                    </div>-->
+                                    <div><input type="checkbox" ng-click="useGlobalSignConfig()" id="globalSignConfig" checked="true"><label>使用全局配置</label></div>
+                                    <div ng-hide="hideSignConfig">
                                     <div>
                                         <label>Keystore文件</label><label>{{selectedChannel.signConfig.keyStoreFile}}</label>
                                     </div>
                                     <div>
-                                        <input type="file" accept="keystore/*" fileread="selectedChannel.signConfig.keyStoreFile" name="channel"/>
+                                        <input type="file" accept="keystore/*" fileread="selectedChannel.signConfig.keyStoreFile" name="channel" class="custom-file-input"/>
                                     </div>
                                     <div>
                                         <label>Keystore密码</label><input type="text" ng-model="selectedChannel.signConfig.keyStoreSecret"/>
@@ -162,6 +172,7 @@
                                     </div>
                                     <div>
                                         <label>Alias密码</label><input type="text" ng-model="selectedChannel.signConfig.aliasSecret"/>
+                                    </div>
                                     </div>
                                 </div>
                                 <div class="panel-heading">SDK配置</div>
@@ -181,7 +192,7 @@
                             <div class="gridStyle" ng-grid="gridOptions8"></div>
                         </div>
                         <div class="col-md-6">
-                            <div class="row">
+                            <div class="row" ng-hide="!hasIcon()">
                                 <label>角标位置</label>
                                 <div class="btn-group" >
                                     <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="1" ng-hide="!iconPosition.leftUp" >左上</label>
@@ -195,12 +206,15 @@
                                 <label>{{selectedChannel.config.icon.path}}</label>
                             </div>
                             <div class="row">
-                                <input type="file" fileread="selectedChannel.config.icon.path" name="icon"/>
+                                <input type="file" fileread="selectedChannel.config.icon.path" name="icon" class="custom-file-input"/>
                             </div>
-                            <div class="row">
+                            <div class="row" ng-hide="!hasIcon()">
                                 <canvas width="96", height="96" drawing-icon id="drawingIcon"></canvas>
                             </div>
-                            <div class="row">
+                            <div class="row" ng-hide="hasIcon()">
+                                <image width="96", height="96" ng-src={{projectIcon}} id="projectIcon"></image>
+                            </div>
+                            <div class="row" ng-hide="!hasIcon()">
                                 <label>应用到全部</label>
                                 <input type="checkbox" ng-model="applyPositionToAll">
                             </div>
@@ -211,13 +225,18 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="pack" role="tabpanel">
-                    <div>
-                        <label>Keystore文件</label><label>{{apkFilePath}}</label>
+                    <div class="row">
+                        <label>选择APK母包</label><label>{{apkFilePath}}</label><label style="margin-left: 10px; color: red;">{{installAPKMessage}}</label>
                     </div>
                     <div>
-                        <input type="file" accept="apk/*" fileread="apkFilePath" name="apk"/>
+                        <input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/>
                     </div>
-                    <input class="btn-large btn-success has-spinner" type="button" ng-click="pack()" value="打包" />
+                    <div class="gridStyle" ng-grid="gridOptions9" style="max-height: 300px;"></div>
+                    <div class="row">
+                        <input class="btn-large btn-success has-spinner" type="button" ng-click="pack()" value="打包" />
+                        <input class="btn-large btn-success has-spinner" type="button" ng-click="openOutputFolder()" value="打开输出文件夹" />
+                        <input class="btn-large btn-success has-spinner" type="button" ng-click="dumpServerConfig()" value="生成Server配置文件" />
+                    </div>
                 </div>
             </div>
 

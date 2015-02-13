@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:textColor="#000000"
+            android:text="@string/anfan_pop_fpay_1" />
+
+        <TextView
+            android:id="@+id/pop_fpay_fnum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/anfan_pop_fpay_2"
+            android:textColor="#FF0000" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/anfan_pop_fpay_3"
+            android:textColor="#FF0000" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:background="#00000f" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:textColor="#000000"
+            android:text="@string/anfan_pop_fpay_4" />
+
+        <TextView
+            android:id="@+id/pop_fpay_fname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:textColor="#000000"
+            android:text="@string/anfan_pop_fpay_5" />
+
+        <TextView
+            android:id="@+id/pop_fpay_fy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:textColor="#000000"
+            android:text="@string/anfan_pop_fpay_3" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:textColor="#000000"
+            android:text="@string/anfan_pop_fpay_6" />
+
+        <TextView
+            android:id="@+id/pop_fpay_fsum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/anfan_pop_fpay_7"
+            android:textColor="#FF0000" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/anfan_pop_fpay_3"
+            android:textColor="#FF0000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:textColor="#000000"
+            android:text="@string/anfan_pop_fpay_8" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/pop_fpay_btn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/anfan_button_bg_blue"
+        android:gravity="center"
+           android:textSize="18dp"
+        android:textColor="#ffffff"
+        android:text="@string/anfan_pop_fpay_9" />
+
+</LinearLayout>

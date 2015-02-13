@@ -23,7 +23,6 @@ import cn.uc.gamesdk.info.PaymentInfo;
 import prj.chameleon.channelapi.ApiCommonCfg;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
-import prj.chameleon.channelapi.IChannelUserAPI;
 import prj.chameleon.channelapi.IDispatcherCb;
 import prj.chameleon.channelapi.JsonMaker;
 import prj.chameleon.channelapi.SingleSDKChannelAPI;
@@ -96,8 +95,8 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         } else {
             mOrientation = UCOrientation.PORTRAIT;
         }
-        mCpId = cfg.getLong("cpId");
-        mGameID = cfg.getLong("gameId");
+        mCpId = Long.valueOf(cfg.getString("cpId"));
+        mGameID = Long.valueOf(cfg.getString("gameId"));
         mChannel = commCfg.mChannel;
         mIsDebug = commCfg.mIsDebug;
     }

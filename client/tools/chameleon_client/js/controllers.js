@@ -1071,6 +1071,9 @@ chameleonControllers
     .controller('InitController', function ($scope, $state, $modal, ProjectMgr, WaitingDlg) {
         var promise = ProjectMgr.init();
         promise.then(function(){
+            if(!ProjectMgr.checkJavaHome()){
+                alert("JAVA环境不存在，请安装JDK");
+            }
             $state.go('projectlist');
         });
     })

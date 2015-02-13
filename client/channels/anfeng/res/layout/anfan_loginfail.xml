@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_gravity="center_horizontal" >
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#000000"
+        android:text="@string/anfan_loginfail_1"
+        android:textSize="18sp"
+        />
+    <TextView 
+        android:id="@+id/loginfail_status"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/anfan_loginfail_2"
+          android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="#999999"
+        android:layout_marginRight="20dp"
+        />
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        >
+        
+        <Button 
+            android:id="@+id/loginfail_find"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:textColor="#333333"
+            android:layout_weight="1"
+            android:background="#cccccc"
+            android:textSize="16dp"
+            android:text="@string/anfan_find_pwd"
+            />
+        <Button 
+            android:id="@+id/loginfail_input"
+            android:layout_width="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="#39C5A9"
+             android:textSize="16dp"
+            android:text="@string/anfan_input_again"
+            android:textColor="#ffffff"
+            />
+        
+        
+    </LinearLayout>
+    
+
+</LinearLayout>

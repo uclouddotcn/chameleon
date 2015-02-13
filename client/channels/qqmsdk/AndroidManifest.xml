@@ -33,13 +33,14 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity
-            android:name="%packageId%.wxapi.WXEntryActivity"
+            android:name="com.tencent.tmgp.sanguofire.wxapi.WXEntryActivity"
             android:screenOrientation="landscape"
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="WXEntryActivity"
             android:launchMode="singleTop"
-            android:affinity="%packageId%.chameleon.wx"
+            android:taskAffinity="com.tencent.tmgp.sanguofire.wxapi.chameleon.wx"
+            chameleon:replace="android:name=%packageId%.wxapi.WXEntryActivity;;android:taskAffinity=%packageId%.chameleon.wx"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

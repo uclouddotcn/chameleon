@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import subprocess, sys, os, re, json, codecs
 import shutil
-import yaml
 from chameleon_gen import *
 from optparse import OptionParser
 import zipfile
+import modifyWx
 
 CHANNEL_ROOT = ''
 
@@ -14,8 +14,8 @@ JAVA_HOME = os.getenv('JAVA_HOME')
 DEST_DIR = ''
 
 EXEC_ROOT = os.path.dirname(__file__)
-APK_TOOL_PATH = os.path.join(EXEC_ROOT, 'apktool')
-AAPT_PATH = os.path.join(EXEC_ROOT, 'aapt')
+APK_TOOL_PATH = os.path.join(EXEC_ROOT, 'apktool.bat')
+AAPT_PATH = os.path.join(EXEC_ROOT, 'aapt.exe')
 BAKSMALI_PATH = os.path.join(EXEC_ROOT, 'baksmali.jar')
 SMALI_PATH = os.path.join(EXEC_ROOT, 'smali.jar')
 
@@ -29,12 +29,14 @@ JAR_SIGNER_CMD = 'jarsigner'#os.path.join(EXEC_ROOT, 'jarsigner')
 ZIPALIGN = os.path.join(EXEC_ROOT, 'zipalign.exe')
 
 JAVAC = "javac"
+DX_FILE = os.path.join(EXEC_ROOT, 'dx.jar')
+DX_PATH = "java -jar "+DX_FILE + " "
 
-DX_PATH = "java -jar dx.jar"
+LOG_PATH = EXEC_ROOT
 
 LOG_FD = 0
 
-# subprocess.call()
+ICON_NAME = 'chameleon_icon.png'
 
 if JAVA_HOME is None:
     print('Can\'t find JAVA_HOME, Please install JDK first')
@@ -43,8 +45,8 @@ if JAVA_HOME is None:
 def genCmd(paras):
     return ' '.join([x+' '+y for (x,y) in paras])
 
-def unpackAPK(apkName, apkPath, destPath):
-    fullPath = os.path.join(apkPath, apkName)
+def unpackAPK(apkPath, destPath):
+    fullPath = apkPath
     if not os.path.exists(fullPath):
         print(fullPath+' does not exist.')
         return False
@@ -56,8 +58,9 @@ def unpackAPK(apkName, apkPath, destPath):
     paras.append(('d', fullPath))
     paras.append(('-o', destPath))
     paras.append(('-f', ''))
-
-    u = os.system(genCmd(paras))
+    cmd = genCmd(paras)
+    LOG_FD.write(cmd+"\n")
+    u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if u != 0:
         return u
 
@@ -102,7 +105,8 @@ def buildClassesDex(channelName, projRoot, oriUnpackPath):
     smaliCmd = genCmd(paras)
 
     print(smaliCmd)
-    u = os.system(smaliCmd)
+    LOG_FD.write(smaliCmd+"\n")
+    u = subprocess.call(smaliCmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if u != 0:
         print(smaliCmd + " failed.")
 
@@ -118,7 +122,8 @@ def buildDex(smalidirs, destDir):
     smaliCmd = genCmd(paras)
 
     print(smaliCmd)
-    u = os.system(smaliCmd)
+    LOG_FD.write(smaliCmd+"\n")
+    u = subprocess.call(smaliCmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if u != 0:
         print(smaliCmd + " failed.")
 
@@ -133,7 +138,8 @@ def baksmali(dexfile, destdir):
     paras.append(('', dexfile))
     cmd = genCmd(paras)
     print(cmd)
-    u = os.system(cmd)
+    LOG_FD.write(cmd+"\n")
+    u = subprocess.call(cmd, stdout=LOG_FD, stdin=LOG_FD, shell=False)
     if u != 0:
         print(cmd + " failed.")
     return u
@@ -144,8 +150,8 @@ def relateCopy(src, dest, rejectRegex):
         allTarLibFilePath = __getAllObjFiles(src, rejectRegex, True)
         for (x, y) in allTarLibFilePath:
             pt = os.path.join(dest, os.path.relpath(x, src))
-            print(x)
-            print(os.path.join(pt, y))
+            # print(x)
+            # print(os.path.join(pt, y))
             if not os.path.exists(pt):
                 os.makedirs(pt)
             if not os.path.exists(os.path.join(pt, y)):
@@ -210,7 +216,8 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
     aaptExecCmd = genCmd(paras)
     print(aaptExecCmd)
-    r = os.system(aaptExecCmd)
+    LOG_FD.write(aaptExecCmd+"\n")
+    r = subprocess.call(aaptExecCmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if r != 0:
         return r
 
@@ -224,7 +231,8 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     paras.append(('', os.path.join(tempRPath, 'R.java')))
     cmd = genCmd(paras)
     print(cmd)
-    r = os.system(cmd)
+    LOG_FD.write(cmd+"\n")
+    r = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if r != 0:
         return r
 
@@ -236,7 +244,8 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     paras.append(('', os.path.join(tempRPath, 'bin')))
     cmd = genCmd(paras)
     print(cmd)
-    r = os.system(cmd)
+    LOG_FD.write(cmd+"\n")
+    r = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if r != 0:
         print(cmd + " failed")
         return r
@@ -292,6 +301,7 @@ def transformCfg(channelPath, globalcfg):
     p['cfg']['channel'] = globalcfg['channel']['channelName']
     p['cfg']['isLandscape'] = globalcfg['landscape']
     p['cfg']['isDebug'] = False
+
     sdks = list()
     for item in globalcfg['channel']['sdks']:
         sdk = dict()
@@ -321,7 +331,9 @@ def sign_pkg(cfg, preName, afterName):
     paras.append(('', cfg['alias']))
 
     cmd = genCmd(paras)
-    return os.system(cmd)
+    LOG_FD.write(cmd+"\n")
+    u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    return u
 
 def pkgAlign(pkgPath, pkgAlignedPath):
     if pkgPath == pkgAlignedPath:
@@ -338,7 +350,9 @@ def pkgAlign(pkgPath, pkgAlignedPath):
 
     cmd = genCmd(paras)
     print(cmd)
-    return os.system(cmd)
+    LOG_FD.write(cmd+"\n")
+    u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
+    return u
 
 
 def procSplashIcons(channelPath, globalcfg):
@@ -346,24 +360,28 @@ def procSplashIcons(channelPath, globalcfg):
     splashPath = globalcfg['channel'].get('splashPath')
 
     if splashPath is not None:
-        splashes = __getAllObjFiles(splashPath, '.*\.png')
+        splashes = __getAllObjFiles(splashPath, '.*\.(png|jpg)')
+        i = 0
         for (x, y) in splashes:
-            shutil.copy(os.path.join(x, y), os.path.join(channelPath, 'assets', 'chameleon'))
-            print("copy " + os.path.join(x, y))
+            if not re.match('.*splash.*', str(os.path.split(x)[-1])):
+                continue
+            shutil.copy(os.path.join(x, y), os.path.join(channelPath, 'assets', 'chameleon', 'chameleon_splashscreen_'+str(i)+'.png'))
+            # print("copy " + os.path.join(x, y))
+            i += 1
 
     if icon is not None:
         if not os.path.exists(os.path.join(channelPath, 'res')):
             os.mkdir(os.path.join(channelPath, 'res'))
 
-        icons = __getAllObjFiles(icon, '.*\.png')
+        icons = __getAllObjFiles(icon, '.*\.(png|jpg)')
         for (x, y) in icons:
             name = str(y).replace('-', '_')
-            dest = os.path.join(channelPath, 'res', os.path.split(x)[-1], name)
+            dest = os.path.join(channelPath, 'res', os.path.split(x)[-1], ICON_NAME)
             if not re.match('.*drawable.*', str(os.path.split(x)[-1])):
                 continue
             if not os.path.exists(os.path.join(channelPath, 'res', os.path.split(x)[-1])):
                 os.mkdir(os.path.join(channelPath, 'res', os.path.split(x)[-1]))
-            print("copy "+dest)
+            # print("copy "+dest)
             shutil.copy(os.path.join(x, y), dest)
 
 
@@ -378,15 +396,13 @@ ERR_MSG = {
 }
 
 def main():
-    if os.path.exists('log.txt'):
-        os.remove('log.txt')
-    LOG_FD = open('log.txt', 'a')
     u = 0
     parser = OptionParser()
     parser.add_option('-c', '--channel', dest='channel', help='channel name, e.g. xiaomi')
     parser.add_option('-r', '--channelRoot', dest='channelRoot', help='Root directory of the channels')
     parser.add_option('-p', '--package', dest='package', help='APK Package to process')
-    parser.add_option('-R', '--packageRoot', dest='packageRoot', help='Root directory where the package in')
+    parser.add_option('-V', '--version', dest='version', help='APK version name')
+    # parser.add_option('-R', '--packageRoot', dest='packageRoot', help='Root directory where the package in')
     # parser.add_option('-g', '--generatePkgName', dest='generatePkgName', help='Name of the package to generate.')
     parser.add_option('-P', '--ProjectRoot', dest='projectRoot', help='path of the projects directory')
     parser.add_option('-d', '--decompressOnly', dest='decompressOnly', help="whether need to decompress the package. True/False")
@@ -407,12 +423,34 @@ def main():
     if not os.path.exists(proj):
         os.makedirs(proj)
 
+    global LOG_FD
+
     if options.decompressOnly.casefold() in ['true', 't']:
-        u = unpackAPK(options.package, options.packageRoot, unpackDest)
+        LOG_FD = open(os.path.join(proj, 'log.txt'), "w", buffering=1)
+        tempUnpackDest = os.path.join(unpackDest, '__TempUnpack__')
+        u = unpackAPK(options.package, tempUnpackDest)
+        manifest = loadManifest(os.path.join(tempUnpackDest, MANIFEST_FILE_NAME))
+        versionName = manifest.getPkgVersionName()
+        unpackDest = os.path.join(unpackDest, versionName)
+        if os.path.exists(unpackDest):
+            shutil.rmtree(unpackDest)
+        shutil.move(tempUnpackDest, unpackDest)
+
+        print(versionName)
+
         if u != 0:
             u = 1
             print(ERR_MSG[u])
         return u
+
+    LOG_FD = open(os.path.join(proj, channel+'_log.txt'), "w", buffering=1)
+    if options.version is not None:
+        unpackDest = os.path.join(unpackDest, options.version)
+
+    channelPath = os.path.join(proj, channel)
+
+    manifestFilePathOrig = os.path.join(unpackDest, MANIFEST_FILE_NAME)
+    manifestFilePath = os.path.join(channelPath, MANIFEST_FILE_NAME)
 
     globalcfg = getCommCfg(os.path.join(options.projectRoot, 'cfg', channel))
     libs = getDependLibs(proj, globalcfg)
@@ -431,6 +469,18 @@ def main():
         with zipfile.ZipFile(os.path.join(channelRoot, sdk+'.zip'), 'r') as sdkFile:
             sdkFile.extractall(sdkinfo.path)
             sdkFile.close()
+
+    u = modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg)
+    if u != 0 and u is not None:
+        print(u)
+        u = 4
+        print(ERR_MSG[u])
+        return u
+
+    manifest = loadManifest(manifestFilePathOrig)
+#    add an additional class for some special sdk.
+    modifyWx.makeWXEntryActivity(os.path.join(channelPath, 'smali'), channel, manifest.getPkgName())
+
 
     dexPaths = [os.path.join(x.path, 'smali') for x in libs]
 
@@ -452,21 +502,6 @@ def main():
         u = 3
         print(ERR_MSG[u])
         return u
-
-    channelPath = os.path.join(proj, channel)
-
-    manifestFilePathOrig = os.path.join(unpackDest, MANIFEST_FILE_NAME)
-    manifestFilePath = os.path.join(channelPath, MANIFEST_FILE_NAME)
-
-    u = modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg)
-    if u != 0 and u is not None:
-        print(u)
-        u = 4
-        print(ERR_MSG[u])
-        return u
-
-    manifest = loadManifest(manifestFilePathOrig)
-
 
     generatePkgName = manifest.getPkgName()+'-'+manifest.getPkgVersionName()+'-'+channel+'-release.apk'
 

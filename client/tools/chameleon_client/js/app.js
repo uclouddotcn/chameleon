@@ -22,7 +22,7 @@ chameleonApp = angular.module('chameleonApp', [
                 ' ' + toParams + ' ' + fromState + ' ' + fromParams);
 
             });
-            createMenu($modal);
+            //createMenu($modal);
         }
     ])
     .factory('globalCache', [function () {
@@ -34,7 +34,6 @@ chameleonApp = angular.module('chameleonApp', [
             project: '',
             allsdks: ''
         }
-
         return globalCache;
     }])
     .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
@@ -68,68 +67,73 @@ chameleonApp = angular.module('chameleonApp', [
                 templateUrl: 'partials/projectManager.html',
                 resolve: {
                     project: ['$stateParams', function ($stateParams) {
-                            return JSON.parse($stateParams.project);
-                        }]
+                        return JSON.parse($stateParams.project);
+                    }]
                 },
-                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'globalCache', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, globalCache) {
+                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'fileDialog', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, fileDialog) {
                     var _ = require('underscore');
                     var fs = require('fs-extra');
+                    var node_path = require('path');
+                    var dirName = ProjectMgr.dirName();
+                    var packingRoot = dirName.substr(0, dirName.length-19);
+                    var APKVersion = '';
                     //functions
-                    var checkSplash = function(){
-                        if(typeof $scope.selectedChannel.config.splashPath !== "undefined"){
-                            return true
-                        } else{
-                            return false;
-                        }
-                    }
-                    $scope.hasIcon = function(){
-                        if($scope.selectedChannel.config&&$scope.selectedChannel.config.icon){
-                            return true
-                        }
-                        return false;
-                    }
                     var checkIconPosition = function(){
                         var result = {};
-                        var root = '../../app/chameleon/channelinfo/' + $scope.selectedChannel.channelName + '/drawable/drawable-xhdpi/';
+                        var root = '../app/chameleon/channelinfo/' + $scope.selectedChannel.channelName + '/drawable/drawable-xhdpi/';
                         result.leftDown = fs.existsSync(root + 'icon-decor-leftdown.png');
                         result.leftUp = fs.existsSync(root + 'icon-decor-leftup.png');
                         result.rightDown = fs.existsSync(root + 'icon-decor-rightdown.png');
                         result.rightUp = fs.existsSync(root + 'icon-decor-rightup.png');
                         return result;
                     };
+                    var nodePath = function(path){
+                        return node_path.join.apply(this, path.split('/'));
+                    }
                     //project manage
+                    var APKVersion = '';
                     $scope.project = project;
                     $scope.fileread = project.signConfig.keyStoreFile;
                     $scope.isProjectUnchanged = true;
+                    if(project.config.icon){
+                        $scope.projectIcon = project.config.icon;
+                    }
                     $scope.setFiles = function(element){
                         if(element[0].name == "channel") $scope.selectedChannel.signConfig.keyStoreFile = $scope.fileread.path;
                         if(element[0].name == "project") $scope.project.signConfig.keyStoreFile = $scope.fileread.path;
-                        if(element[0].name == "splash") $scope.selectedChannel.config.splash = $scope.fileread.path;
+                        if(element[0].name == "projectIcon") $scope.project.config.icon = $scope.fileread.path;
                         if(element[0].name == "icon") {
                             if(!$scope.selectedChannel.config.icon) $scope.selectedChannel.config.icon = {};
                             $scope.selectedChannel.config.icon.path = $scope.fileread.path;
+                            $scope.projectIcon = $scope.fileread.path;
                             $scope.pictureToDraw = {
                                 base: $scope.selectedChannel.config.icon.path,
                                 overlay: $scope.selectedChannel.config.icon.position
                             }
                         }
                         if(element[0].name == "apk") {
-                            var dirName = ProjectMgr.dirName();
-                            var projectRoot = dirName.substr(0, dirName.length-25) + 'app/projects/' + $scope.project.name + '/';
-                            var configRoot = dirName.substr(0, dirName.length-25) + 'app/chameleon/';
+                            var projectRoot = packingRoot + 'app/projects/' + $scope.project.name + '/';
+                            $scope.installAPKMessage = '';
                             $scope.apkFilePath = $scope.fileread.path;
-                            ProjectMgr.command('buildPackage', [
+                            var install = ProjectMgr.command('python', [
+                                node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
                                 '-p',
                                 $scope.apkFilePath,
                                 '-P',
                                 projectRoot,
                                 '-d',
                                 true,
-                                '-R',
-                                projectRoot + 'build',
                                 '-a',
                                 false
                             ]);
+                            var promise = WaitingDlg.wait(install, '解压APK母包');
+                            promise.then(function(data){
+                                if(data.err){
+                                    $scope.installAPKMessage = "解压APK母包失败";
+                                    return;
+                                }
+                                APKVersion = data;
+                            });
                         }
                     }
                     $scope.saveProjectConfig = function(){
@@ -140,11 +144,15 @@ chameleonApp = angular.module('chameleonApp', [
                             }
                             $scope.isProjectUnchanged = true;
                         });
+                        if($scope.project.config.icon){
+                            var destiny = '../app/projects/' + $scope.project.name + '/cfg/icon.png';
+                            fs.copySync($scope.project.config.icon, destiny);
+                            $scope.projectIcon = $scope.project.config.icon;
+                        }
                     };
                     $scope.$watch('project', function(newValue, oldValue) {
                         if(newValue !== oldValue) $scope.isProjectUnchanged = false;
                     }, true);
-
                     //channel manage
                     $scope.selectedChannels = { };
                     $scope.channelList = { };
@@ -215,8 +223,6 @@ chameleonApp = angular.module('chameleonApp', [
                             $scope.hideGridOptions4 = false;
                         }, 500);
                     };
-
-
                     //sdk manage
                     $scope.selectedChannel = { };
                     $scope.SDKList = ProjectMgr.getSDKList();
@@ -249,6 +255,8 @@ chameleonApp = angular.module('chameleonApp', [
                     $scope.toggleSDK = function(event, sdk){
                         if(event.target.checked){
                             sdk.config = {};
+                            $scope.selectedChannel.sdks = [];
+                            $('.sdkList').not(event.target).prop({'checked':false});
                             $scope.selectedChannel.sdks.push(sdk);
                             (_.findWhere($scope.project.channels, {channelName: $scope.selectedChannel.channelName})).sdks = $scope.selectedChannel.sdks;
                             $scope.selectedSDKs = $scope.selectedChannel.sdks;
@@ -274,8 +282,8 @@ chameleonApp = angular.module('chameleonApp', [
                             $('#' + $scope.selectedSDKs[i].name).prop({'checked': true});
                         }
                     }
-
                     //sdk config
+                    $scope.hideSignConfig = true;
                     $scope.gridOptions6 = {
                         data: 'selectedChannels',
                         multiSelect: false,
@@ -285,7 +293,6 @@ chameleonApp = angular.module('chameleonApp', [
                             $scope.fileread = channel.signConfig.keyStoreFile;
                             $scope.selectedSDKs = channel.sdks;
                             $scope.selectedSDK = {};
-                            $scope.hasSplash = checkSplash();
                             $('#SDKConfigView').empty();
                         },
                         columnDefs: [{
@@ -313,6 +320,7 @@ chameleonApp = angular.module('chameleonApp', [
                         $scope.fileread = channel.signConfig.keyStoreFile;
                         $scope.selectedSDKs = channel.sdks;
                         $scope.selectedSDK = {};
+                        $scope.SDKConfigHtml = "";
                         //refresh config view
                         $('#SDKConfigView').empty();
                     }
@@ -373,12 +381,19 @@ chameleonApp = angular.module('chameleonApp', [
                     $scope.setSDKConfig = function(){
                         ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
                     }
-
+                    $scope.useGlobalSignConfig = function(){
+                        var isGlobalSignConfig = $('#globalSignConfig').prop('checked');
+                        if(isGlobalSignConfig){
+                            $scope.hideSignConfig = true;
+                        }else{
+                            $scope.hideSignConfig = false;
+                        }
+                    }
                     //icon config
                     $scope.applyPositionToAll = false;
                     $scope.iconPosition = {};
                     $scope.gridOptions8 ={
-                        data: 'selectedChannelsHasIcon',
+                        data: 'selectedChannels',
                         multiSelect: false,
                         afterSelectionChange: function(rowItem){
                             var channel = rowItem.entity;
@@ -391,6 +406,9 @@ chameleonApp = angular.module('chameleonApp', [
                                 }
                             }else{
                                 $scope.pictureToDraw = undefined;
+                            }
+                            if(!$scope.hasIcon()){
+                                //$scope.projectIcon = ;
                             }
 
                             //empty file selection
@@ -411,8 +429,18 @@ chameleonApp = angular.module('chameleonApp', [
                         }
                     });
                     $scope.saveIcon = function(){
-                        var canvas = $('#drawingIcon')[0];
                         var channel = $scope.selectedChannel;
+                        //save image
+                        if(!$scope.hasIcon()){
+                            var path = packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/icon/' + channel.channelName + '.png';
+                            fs.copySync($scope.projectIcon, path);
+                            channel.config.icon = {};
+                            channel.config.icon.path = path;
+                            ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
+                            return;
+                        }
+                        //draw and save
+                        var canvas = $('#drawingIcon')[0];
                         var saveImage = function(canvas, path){
                             var dataURL = canvas.toDataURL();
                             var data = dataURL.replace(/^data:image\/\w+;base64,/, "");
@@ -463,12 +491,11 @@ chameleonApp = angular.module('chameleonApp', [
                                 return path + '.png';
                             }
                             var b = base;
-                            var o = dirname.substr(0, dirname.length-25) + 'app/chameleon/channelinfo/' + channel.channelName + '/drawable/drawable-xhdpi/' + getOverlayPath(overlay);
+                            var o = packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/drawable/drawable-xhdpi/' + getOverlayPath(overlay);
                             if(!fs.existsSync(o)) return;
                             drawImage(canvas, b, o, path);
                         }
-                        var dirname = ProjectMgr.dirName();
-                        var path = dirname.substr(0, dirname.length-25) + 'app/chameleon/channelinfo/' + channel.channelName + '/icon/' + channel.channelName + '.png';
+                        var path = packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/icon/' + channel.channelName + '.png';
                         saveImage(canvas, path);
                         ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
                         //if 'apply to all' is selected.
@@ -480,7 +507,7 @@ chameleonApp = angular.module('chameleonApp', [
                                     config.icon.position = position;
                                     ProjectMgr.setChannel($scope.project, $scope.selectedChannels[i]);
                                     if(config.icon.path){
-                                        var savePath = dirname.substr(0, dirname.length-25) + 'app/chameleon/channelinfo/' + $scope.selectedChannels[i].channelName + '/icon/' + $scope.selectedChannels[i].channelName + '.png';
+                                        var savePath = packingRoot + 'app/chameleon/channelinfo/' + $scope.selectedChannels[i].channelName + '/icon/' + $scope.selectedChannels[i].channelName + '.png';
                                         saveImageWithoutDisplay(canvas, config.icon.path, config.icon.position, savePath, $scope.selectedChannels[i]);
                                     }
                                 }
@@ -491,67 +518,194 @@ chameleonApp = angular.module('chameleonApp', [
                             }
                         }
                     }
-
+                    $scope.hasIcon = function(){
+                        if($scope.selectedChannel.config && $scope.selectedChannel.config.icon && $scope.selectedChannel.config.iconFlag){
+                            return true;
+                        }else{
+                            false;
+                        }
+                    }
                     //pack
-                    $scope.pack = function(){
-                        //functions
-                        var checkSign = function(){
-                            return channel.signConfig.keyStoreFile && channel.signConfig.keyStoreSecret && channel.signConfig.alias && channel.signConfig.aliasSecret;
-                        }
-                        //generate config.json file
-                        var dirName = ProjectMgr.dirName();
-                        var root = dirName.substr(0, dirName.length-32);
-                        var project = $scope.project||{};
-                        var channel = $scope.selectedChannel;
-                        var data = {};
-                        data.projectName = project.name;
-                        data.landscape = project.landscape;
-                        data.signConfig = project.signConfig;
-                        if(checkSign()){
-                            data.signConfig = channel.signConfig;
-                        }
-                        if(channel){
-                            data.channel = {};
-                            data.channel.channelName = channel.channelName;
-                            data.channel.packageName = channel.config.packageName;
-                            data.channel.sdks = [];
-                            if(channel.config.splash){
-                                data.channel.splashPath =  root + 'client/app/projects/' + project.name + '/cfg/' + channel.channelName + '/res/splash.jpg';
-                                fs.copySync(channel.config.splash, data.channel.splashPath);
+                    $scope.gridOptions9 = {
+                        data: 'selectedChannels',
+                        multiSelect: true,
+                        columnDefs: [
+                            {
+                                field: 'desc',
+                                displayName: '渠道',
+                                width: '20%',
+                                cellTemplate: '<div ng-class="ngCellText">{{row.getProperty(col.field)}}</div>'
+                            },
+                            {
+                                cellTemplate: '<div class="progress"><div class="progress-bar" role="progressbar" style="width:0%;"></div></div>'
+                            },
+                            {
+                                field: 'packingMessage',
+                                width: '20%',
+                                cellTemplate: '<div ng-class="ngCellText" class="message">{{row.getProperty(col.field)}}</div>'
                             }
-                            if(channel.config.icon && channel.config.icon.path){
-                                data.channel.iconPath = root + 'client/app/projects/' + project.name + '/cfg/' + channel.channelName + '/res/icon.png';
-                                fs.copySync(root + 'client/app/chameleon/channelinfo/' + channel.channelName + '/icon/' + channel.channelName + '.png', data.channel.iconPath);
+                        ]
+                    }
+                    var packChannel = function(project, channel, callback, process){
+                        try{
+                            //functions
+                            var checkSign = function(){
+                                return channel.signConfig.keyStoreFile && channel.signConfig.keyStoreSecret && channel.signConfig.alias && channel.signConfig.aliasSecret;
                             }
-                            if(channel.sdks && channel.sdks.length>0){
-                                for(var i=0; i<channel.sdks.length; i++){
-                                    data.channel.sdks.push({
-                                        name: channel.channelName,
-                                        type: 'pay,login',
-                                        config: channel.sdks[i].config
-                                    });
+                            //generate config.json file
+                            var data = {};
+                            data.projectName = project.name;
+                            data.landscape = project.landscape;
+                            //data.signConfig = project.signConfig;
+                            data.signConfig = {};
+                            data.signConfig.keystore = project.signConfig.keyStoreFile;
+                            data.signConfig.keypass = project.signConfig.keyStoreSecret;
+                            data.signConfig.alias = project.signConfig.alias;
+                            data.signConfig.storepass = project.signConfig.aliasSecret;
+                            if(checkSign()){
+                                data.signConfig.keystore = channel.signConfig.keyStoreFile;
+                                data.signConfig.keypass = channel.signConfig.keyStoreSecret;
+                                data.signConfig.alias = channel.signConfig.alias;
+                                data.signConfig.storepass = channel.signConfig.aliasSecret;
+                                //data.signConfig = channel.signConfig;
+                            }
+                            if(channel){
+                                data.channel = {};
+                                data.channel.channelName = channel.channelName;
+                                data.channel.packageName = channel.config.packageName;
+                                data.channel.sdks = [];
+                                if(channel.config.splash){
+                                    data.channel.splashPath = channel.config.splash;
+                                    if(channel.config.splash === '1'){
+                                        var destiney = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/splash/splash'));
+                                        var source = node_path.join(packingRoot, 'app/chameleon/channelinfo', channel.channelName, 'drawable/splashscreen', $scope.project.landscape ? 'landscape' : 'portrait');
+                                        var fso = require('fs');
+                                        if(fso.existsSync(source + '.png')){
+                                            source += '.png';
+                                            destiney += '.png';
+                                        }else{
+                                            source += '.jpg';
+                                            source += '.jpg';
+                                        }
+                                        data.channel.splashPath = destiney;
+                                        fs.copySync(source, data.channel.splashPath);
+                                    }
+                                    data.channel.splashPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
+                                }
+                                if(channel.config.icon && channel.config.icon.path){
+                                    data.channel.iconPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/drawable/icon.png'));
+                                    fs.copySync(packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/icon/' + channel.channelName + '.png', data.channel.iconPath);
+                                    data.channel.iconPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
+                                }
+
+                                if(channel.sdks && channel.sdks.length>0){
+                                    for(var i=0; i<channel.sdks.length; i++){
+                                        var sdkConfig = {
+                                            name: channel.channelName,
+                                            type: 'pay,user',
+                                            config: channel.sdks[i].config
+                                        };
+                                        for(var j=0; j<channel.sdks[i].cfgitem.length; j++){
+                                            if(channel.sdks[i].cfgitem[j].ignoreInA){
+                                                delete sdkConfig.config[channel.sdks[i].cfgitem[j].name];
+                                            }
+                                        }
+                                        data.channel.sdks.push(sdkConfig);
+                                    }
                                 }
                             }
+                            var buf = new Buffer(JSON.stringify(data));
+                            fs.writeFileSync(packingRoot + 'app/projects/' + project.name + '/cfg/' + channel.channelName + '/config.json', buf);
+                            //pack process
+                            var projectRoot = packingRoot + 'app/projects/' + $scope.project.name + '/';
+                            var configRoot = packingRoot + 'app/chameleon/';
+                            $scope.apkFilePath = $scope.fileread.path;
+                        }catch (e){
+                            callback(e);
                         }
-                        var buf = new Buffer(JSON.stringify(data));
-                        fs.writeFileSync(root + 'client/app/projects/' + project.name + '/cfg/' + channel.channelName + '/config.json', buf);
-                        //pack process
-                        var dirName = ProjectMgr.dirName();
-                        var projectRoot = dirName.substr(0, dirName.length-25) + 'app/projects/' + $scope.project.name + '/';
-                        var configRoot = dirName.substr(0, dirName.length-25) + 'app/chameleon/';
-                        $scope.apkFilePath = $scope.fileread.path;
-                        ProjectMgr.command('buildPackage', [
+                        ProjectMgr.commandOnProcess('python', [
+                            '-u',
+                            node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
                             '-c',
-                            $scope.selectedChannel.channelName,
+                            channel.channelName,
                             '-r',
-                            configRoot + 'sdk',
+                            node_path.normalize(configRoot + 'sdk'),
                             '-d',
                             false,
                             '-a',
                             true,
+                            '-V',
+                            APKVersion.trim(),
                             '-P',
-                            projectRoot
-                        ]);
+                            node_path.normalize(projectRoot)
+                        ], callback, process);
+                    }
+                    $scope.pack = function(){
+                        _.each($scope.selectedChannels, function(element, index){
+                            element.index = index;
+                            element.packingMessage = '';
+                        });
+                        var channelToPack = $scope.gridOptions9.$gridScope.selectedItems;
+                        $('.progress-bar').css({'width': '0%'});
+                        _.each(channelToPack, function(channel){
+                            channel.progress = 0;
+                            packChannel(project, channel,
+                                function(err, data){
+                                    if(err){
+                                        channel.packingMessage = '打包失败';
+                                        $($('.message')[channel.index]).css({'color': 'red'});
+                                        $scope.$apply();
+                                        return ;
+                                        //$($('.message')[channel.index]).trigger('click');
+                                    }
+                                    $($('.progress-bar')[channel.index]).css({'width': '100%'});
+                                    channel.packingMessage = '打包成功';
+                                    $($('.message')[channel.index]).css({'color': 'green'});
+                                    $scope.$apply();
+                                },
+                                function(data){
+                                    if(data){
+                                        var reg = new RegExp("\r\n", "g");
+                                        var num = data.match(reg).length;
+                                        channel.progress += 10 * num;
+                                        $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
+                                        if(channel.progress >= 100){
+                                            channel.packingMessage = '打包成功';
+                                            $($('.message')[channel.index]).css({'color': 'green'});
+                                            $scope.$apply();
+                                        }
+                                    }
+                                }
+                            )
+                        });
+                    }
+                    $scope.openOutputFolder = function(){
+                        require('nw.gui').Shell.openItem(node_path.join(packingRoot, nodePath('app/projects/'), project.name, 'output'));
+                    }
+                    $scope.dumpServerConfig = function(){
+                        var AdmZip = require('adm-zip');
+                        var id = $scope.project.config.code;
+                        if(!id){
+                            alert(" 请配置游戏在Server中的名称");
+                            return;
+                        }
+                        try{
+                            var zip = new AdmZip();
+                            var config = ProjectMgr.generateServerConfig($scope.project);
+                            for(var p in config){
+                                zip.addFile(id + '/' + p, new Buffer(JSON.stringify(config[p])), "");
+                            }
+                            zip.addFile('manifest.json', new Buffer(JSON.stringify({
+                                'product': id
+                            })));
+                            fileDialog.saveAs(function(fileName){
+                                zip.writeZip(fileName + '.zip');
+                                alert('保存成功');
+                            }, id + '.zip');
+                        }catch(e){
+                            console.log(e);
+                            alert('导出失败： 未知错误');
+                        }
                     }
                 }]
             })
@@ -597,7 +751,6 @@ chameleonApp = angular.module('chameleonApp', [
                         $scope.show.index = false;
                         $scope.show.header = 'loadSdk';
                         $state.go('project.globalsdk', {projectId: globalCache.projectId});
-
                     }
 
                     //测试数据
@@ -1361,6 +1514,8 @@ chameleonApp = angular.module('chameleonApp', [
             restrict: 'A',
             link: function(scope, element){
                 var fs = require('fs');
+                var dirName = ProjectMgr.dirName();
+                var packingRoot = dirName.substr(0, dirName.length-19);
                 var drawImage = function(canvas, base, overlay){
                     var context = canvas.getContext('2d');
                     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -1405,12 +1560,10 @@ chameleonApp = angular.module('chameleonApp', [
                     if(!scope.pictureToDraw.overlay) return;
                     var channel = scope.selectedChannel;
                     var base = scope.pictureToDraw.base;
-                    var dirname = ProjectMgr.dirName();
-                    var overlay = dirname.substr(0, dirname.length-25) + 'app/chameleon/channelinfo/' + channel.channelName + '/drawable/drawable-xhdpi/' + getOverlayPath(scope.pictureToDraw.overlay);
+                    var overlay = packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/drawable/drawable-xhdpi/' + getOverlayPath(scope.pictureToDraw.overlay);
                     if(!fs.existsSync(overlay)) return;
                     drawImage(canvas, base, overlay);
                 }
-
                 scope.$watch('pictureToDraw', renderIcon);
             }
         }

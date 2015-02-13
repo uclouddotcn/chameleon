@@ -53,7 +53,7 @@ public class UpdateManager
         this.mDownloadUrl = downloadUrl;
         this.mMd5 = md5;
         this.mThreadCount = threadCount;
-        this.mApkName = this.getPathName(downloadUrl);
+        this.mApkName = context.getPackageName()+".apk";
     }
 
     //正常下载开放接口
@@ -307,11 +307,6 @@ public class UpdateManager
                     break;
             }
         }
-    }
-
-    private String getPathName(String url){
-        int index = url.lastIndexOf('/');
-        return url.substring(index + 1);
     }
 
     //md5校验

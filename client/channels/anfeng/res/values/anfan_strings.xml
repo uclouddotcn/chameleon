@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 复制以下内容到strings文件 -->
+    <string name="anfan_phone_num">手机号</string>
+    <string name="anfan_sms_auth_code">短信验证码</string>
+    <string name="anfan_bound_now">立即绑定</string>
+    <string name="anfan_new_pwd">新密码</string>
+    <string name="anfan_confirm">确认</string>
+    <string name="anfan_get_auth_code">获取验证码</string>
+    <string name="anfan_float_menu_center">个人中心</string>
+    <string name="anfan_float_menu_gift">游戏礼包</string>
+    <string name="anfan_float_menu_bbs">游戏论坛</string>
+    <string name="anfan_float_menu_service">客服中心</string>
+    <string name="anfan_game_record">游戏内消费记录</string>
+    
+    <string name="anfan_login_toast">欢迎您回到安锋游戏</string>
+    <string name="anfan_account_login">安锋账号登录</string>
+    <string name="anfan_email_or_phone">Email/手机号</string>
+    <string name="anfan_pwd">密码</string>
+    <string name="anfan_save_login_status">记住登录状态</string>
+    <string name="anfan_login_new">立即登录</string>
+    <string name="anfan_login_6">登录安锋游戏账号表示您同意</string>
+    <string name="anfan_login_7">最终用户协议</string>
+    <string name="anfan_reg_new_user">新用户注册</string>
+    <string name="anfan_forgot_pwd">忘记密码？</string>
+    <string name="anfan_login_by_qq">QQ登录</string>
+     <string name="anfan_login_by_weibo">微博登录</string>
+    <string name="anfan_loginfail_1">登录失败</string>
+    <string name="anfan_loginfail_2">您输入的账号和密码不匹配，请核对账号或者尝试找回密码</string>
+    <string name="anfan_find_pwd">找回密码</string>
+    <string name="anfan_input_again">重新输入</string>
+    
+    <string name="anfan_account">账号</string>
+    <string name="anfan_no_bound">未绑定</string>
+    <string name="anfan_update_pwd">修改密码</string>
+    <string name="anfan_balance">余额</string>
+    <string name="anfan_fmoney">F币</string>
+    <string name="anfan_pay_record">消费记录</string>
+    <string name="anfan_change_account">切换账号</string>
+    
+    <string name="anfan_buy_goods">购买:\t%1$s</string>
+    <string name="anfan_buy_amount">%1$s元</string>
+    <string name="anfan_cur_account">当前安锋账户 :%1$s</string>
+    <string name="anfan_cur_account_balance">余额:%1$sF币</string>
+    <string name="anfan_pay_centet_3">01.卡面金额大于应支付金额时，将扣除卡面全部余额，多余的部分不退款。</string>
+    <string name="anfan_pay_centet_4">02.卡面小于应支付金额时，我们将暂扣您的交易款项，并提示交易失败。</string>
+    <string name="anfan_pay_centet_5">03.如遇交易失败问题，您可以记下本次交易订单号，通过安锋网《玩家游戏支付失败反馈通知》页面进行反馈，我们第一时间帮您解决</string>
+    <string name="anfan_pay_centet_6">04.因用户充卡面额小于应支付金额导致交易失败的，一律不退还通道费。</string>
+    <string name="anfan_pay_type_21">安锋游戏人工充值</string>
+    <string name="anfan_pay_type_22">省心省力态度好</string>
+    
+    <string name="anfan_pop_fpay_1">共需支付：</string>
+    <string name="anfan_pop_fpay_2">30</string>
+    <string name="anfan_pop_fpay_3">F币</string>
+    <string name="anfan_pop_fpay_4">当前安锋账户 : </string>
+    <string name="anfan_pop_fpay_5">余额：</string>
+    <string name="anfan_pop_fpay_6">您还需要充值\t</string>
+    <string name="anfan_pop_fpay_7">20</string>
+    <string name="anfan_pop_fpay_8">即可购买成功</string>
+    <string name="anfan_pop_fpay_9">立即充值</string>
+    
+    <string name="anfan_choose_card_type">请选择充值卡类别：</string>
+    <string name="anfan_recharge_dianka_3">请选择充值卡面额，填写卡号、密码完成支付，超出金额以F币的形式充值进你的安锋账户。</string>
+    <string name="anfan_recharge_dianka_4">充值卡卡号</string>
+    <string name="anfan_recharge_dianka_5">密码</string>
+    <string name="anfan_recharge_dianka_6">立即支付</string>
+    <string name="anfan_recharge_shouji_2">请选择充值卡类别：</string>
+    <string name="anfan_recharge_shouji_3">请选择充值卡面额，填写卡号、密码完成支付，超出金额以F币的形式充值进你的安锋账户。</string>
+    <string name="anfan_recharge_shouji_4">立即支付</string>
+    
+    <string name="anfan_regist_account">注册安锋账号</string>
+    <string name="anfan_regist_onekey">一键注册</string>
+    
+    <string name="anfan_regist_4">注册安锋游戏账号表示您同意</string>
+    <string name="anfan_regist_5">最终用户协议</string>
+    <string name="anfan_havebeen_account_login">已有账号登陆</string>
+    <string name="anfan_regist_email">使用Email注册？</string>
+    <string name="anfan_register_phone">使用手机注册？</string>
+    
+    <string name="anfan_old_pwd">原密码</string>
+    <string name="anfan_confirm_new_pwd">确认新密码</string>
+    <string name="anfan_modify_pwd_new">立即修改</string>
+    <string name="anfan_xlistview_footer_1">查看更多</string>
+    <string name="anfan_xlistview_header_1">下拉刷新</string>
+    <string name="anfan_xlistview_header_2">上次更新时间：</string>
+    <string name="anfan_pay_card_hint">提示：\n1.一卡通不能多卡组合购买。\n2.当购买金额低于卡面值时，支付会全额扣除卡面金额。\n3.当购买金额高于卡面值时，支付会扣除卡面金额并支付失败，请特别注意。</string>
+    <string name="anfan_pay_hint">温馨提示：\n充值成功后,会有5-10分钟延迟,若有问题请联系客服。客服电话：4000274365 (周一到周五9:30-21:30)</string>
+    <string name="anfan_input_digits">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ?._~,!@#$%^*\':;`-|\/</string>
+   
+    <!-- 支付包相关 -->
+    <string name="anfan_confirm_title">提示</string>
+    <string name="anfan_ensure">确定</string>
+    <string name="anfan_cancel">取消</string>
+    <string name="anfan_content_description_icon">icon</string>
+    <string name="anfan_refresh">刷新</string>
+    <string name="anfan_processing">加载中</string>
+    <string name="anfan_download">下载</string>
+    <string name="anfan_download_fail">下载安装包失败</string>
+    <string name="anfan_cancel_install_msp">你已取消安装移动快捷支付服务</string>
+    <string name="anfan_cancel_install_alipay">你已取消安装支付宝钱包</string>
+    <string name="anfan_redo">重试</string>
+    <string name="anfan_install_msp">你尚未安装支付宝移动快捷支付服务，请立即安装</string>
+    <string name="anfan_install_alipay">你尚未安装支付宝钱包，请立即安装</string>
+     
+    
+
+</resources>

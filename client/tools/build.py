@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os, shutil, codecs, json, subprocess, sys, zipfile
 from collections import namedtuple
-#from buildtool.chameleon_tool import build_channel
 
 BASEDIR = os.path.split(os.path.realpath(__file__))[0]
 BASEDIR = os.path.join(BASEDIR, '..')
@@ -81,7 +80,6 @@ def copyChannel(buildchannel, channel, channelPath,  targetPath,  versionInfo):
     if not os.path.exists(targetPath):
         os.makedirs(targetPath)
     genCmd(buildchannel, channel, channelPath, targetPath)
-    #build_channel.channel_Build(channel, channelPath, targetPath)
 
 def genCmd(buildchannel, channel, channelPath,  targetPath):
     paras = []
@@ -187,7 +185,15 @@ def buildChameleonLib():
 def cleanOldBuild(targetFolder):
     if os.path.exists(targetFolder):
         print('cleaning existing build folder %s ...' %(targetFolder))
-        shutil.rmtree(targetFolder)
+        try:
+            shutil.rmtree(targetFolder)
+        except Exception:
+            if sys.platform == 'win32':
+                print('windows path too long FileNotFoundError %s ... ' %(targetFolder))
+                targetFolder = os.path.realpath(targetFolder)
+                rmPath = '\\\\?\\' + targetFolder
+                print('now forcibly remove  %s ... ' %(rmPath))
+                shutil.rmtree(rmPath)
 
 def getversion():
     versionFolder = os.path.join(BASEDIR, '..', 'version')
@@ -200,6 +206,7 @@ def getversion():
 def unzipFiles(zf, targetDir):
     with zipfile.ZipFile(zf) as zipf:
         zipf.extractall(targetDir)
+
 
 def exportChamleonClient(clientZipTarget):
     oldpath = os.getcwd()
@@ -214,29 +221,47 @@ def exportChamleonClient(clientZipTarget):
 
 def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
     os.mkdir(targetFolder)
-    os.mkdir(os.path.join(targetFolder, 'app'))
-    unzipFiles(zf, os.path.join(targetFolder, 'app'))
+    clientPath = os.path.join(targetFolder, 'chameleon_client')
+    os.mkdir(clientPath)
+    unzipFiles(zf, os.path.join(targetFolder, 'chameleon_client'))
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'app', 'chameleon'))
-    downloadDependency(os.path.join(targetFolder, 'app'))
+    downloadDependency(os.path.join(targetFolder, 'chameleon_client'))
     placePlatformStartScript(targetFolder)
+
+    print('unzip sqlite3')
+    sqlitePath = os.path.join(clientPath, 'node_modules', 'sqlite3')
+    if os.path.exists(sqlitePath):
+        cleanOldBuild(sqlitePath)
+    unzipFiles(os.path.join(clientPath, 'sqlite', 'windows', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
+
     if place is not None:
         place(os.path.join(targetFolder, 'nw'))
 
 def buildChameleonClientMacOS(zf, chameleonFolder, targetFolder, place):
     os.mkdir(targetFolder)
-    unzipFiles(zf, targetFolder)
+    clientPath = os.path.join(targetFolder, 'chameleon_client')
+    os.mkdir(clientPath)
+    unzipFiles(zf, os.path.join(targetFolder, 'chameleon_client'))
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
-    downloadDependency(targetFolder)
+    downloadDependency(os.path.join(targetFolder, 'chameleon_client'))
+
+    print('unzip sqlite3')
+    clientPath = os.path.join(targetFolder, 'chameleon_client')
+    sqlitePath = os.path.join(clientPath, 'node_modules', 'sqlite3')
+    if os.path.exists(sqlitePath):
+        cleanOldBuild(sqlitePath)
+    unzipFiles(os.path.join(clientPath, 'sqlite', 'macos', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
+
     if place is not None:
         place(targetFolder)
 
 def placePlatformStartScript(targetFolder):
     if sys.platform == 'win32':
         with open(os.path.join(targetFolder, 'chameleon.bat'), 'w') as f:
-            f.write('start nw\\nw.exe app')
+            f.write('start nw\\nw.exe chameleon_client')
     else:
         with open(os.path.join(targetFolder, 'chameleon.bat'), 'w') as f:
-            f.write('open nw\\nw.app app')
+            f.write('open nw\\nw.app chameleon_client')
 
 def placeNodeWebkitWin(targetFolder):
     src = os.path.join('nodewebkit-bin', 'nodewebkit-win.zip')

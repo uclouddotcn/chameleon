@@ -1,0 +1,30 @@
+{
+    "desc": "安锋",
+    "name": "anfeng",
+    "chamversion": "1.4.1",
+    "version": "V2.2",
+    "cfgitem": [
+        {
+            "name": "appId",
+            "type": "string",
+            "desc": "APP ID"
+        },
+        {
+            "name": "privateKey",
+            "type": "string",
+            "desc": "private key"
+        },
+        {
+            "name": "notifyUri",
+            "type": "url",
+            "desc": "notify Url"
+        },
+        {
+            "name": "signKey",
+            "type": "string",
+            "desc": "sign key",
+            "ignoreInA": 1
+        }
+    ]
+}
+
