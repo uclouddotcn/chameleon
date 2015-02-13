@@ -15,6 +15,11 @@
             "desc": "private key"
         },
         {
+            "name": "notifyUri",
+            "type": "url",
+            "desc": "notify Url"
+        },
+        {
             "name": "signKey",
             "type": "string",
             "desc": "sign key",
