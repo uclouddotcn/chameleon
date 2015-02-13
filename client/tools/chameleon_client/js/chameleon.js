@@ -237,7 +237,7 @@ ChameleonTool.prototype.generateServerConfig = function(project){
             payCbUrl: pathName
         }
     }
-    for(var i=0; i<project.channels; i++){
+    for(var i=0; i<project.channels.length; i++){
         var channel = project.channels[i];
         var config = {};
         config.sdks = [];
@@ -245,7 +245,7 @@ ChameleonTool.prototype.generateServerConfig = function(project){
             config.sdks.push({
                 name: channel.channelName,
                 type: 'pay,user',
-                cfg: channel.sdks[i].config
+                cfg: channel.sdks[j].config
             });
         }
         result[channel.channelName + '.json'] = config;

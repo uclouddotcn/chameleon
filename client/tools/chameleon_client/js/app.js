@@ -600,11 +600,17 @@ chameleonApp = angular.module('chameleonApp', [
 
                                 if(channel.sdks && channel.sdks.length>0){
                                     for(var i=0; i<channel.sdks.length; i++){
-                                        data.channel.sdks.push({
+                                        var sdkConfig = {
                                             name: channel.channelName,
                                             type: 'pay,user',
                                             config: channel.sdks[i].config
-                                        });
+                                        };
+                                        for(var j=0; j<channel.sdks[i].cfgitem.length; j++){
+                                            if(channel.sdks[i].cfgitem[j].ignoreInA){
+                                                delete sdkConfig.config[channel.sdks[i].cfgitem[j].name];
+                                            }
+                                        }
+                                        data.channel.sdks.push(sdkConfig);
                                     }
                                 }
                             }
