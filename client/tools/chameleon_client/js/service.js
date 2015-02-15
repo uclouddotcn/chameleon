@@ -14,9 +14,15 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
 
     ProjectMgr.prototype.init = function(){
         var defered = $q.defer();
+
         try{
             this.tool.init(function(err, data){
-                if(err) throw err;
+                if(err) {
+                    console.log(err);
+                    defered.resolve({err: err});
+                    return;
+                }
+
                 defered.resolve(data);
             });
         }catch (e){
@@ -25,14 +31,21 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
                 defered.resolve(null);
             });
         }
+
         return defered.promise;
     }
 
     ProjectMgr.prototype.getProjectList = function(){
         var defered = $q.defer();
+
         try{
             this.tool.getAllProjects(function(err, data){
-                if(err) throw err;
+                if(err) {
+                    console.log(err);
+                    defered.resolve({err: err});
+                    return;
+                }
+
                 defered.resolve(data);
             });
         }catch (e){
@@ -46,10 +59,15 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
 
     ProjectMgr.prototype.createProject = function(project){
         if(!project) return this.tool.createEmptyProject();
+
         var defered = $q.defer();
         try{
             this.tool.createProject(project, function(err, data){
-                if(err) throw err;
+                if(err) {
+                    console.log(err);
+                    defered.resolve({err: err});
+                    return;
+                }
                 defered.resolve(data);
             });
         }catch (e){
@@ -86,7 +104,12 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         try{
             var projectInstance = this.tool.initProject(project);
             projectInstance.getAllChannels(project.id, function(err, data){
-                if(err) throw err;
+                if(err) {
+                    console.log(err);
+                    defered.resolve({err: err});
+                    return;
+                }
+
                 project.channels = data;
                 defered.resolve(project);
             });
@@ -104,7 +127,12 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         try{
             var projectInstance = this.tool.initProject(project);
             projectInstance.setChannel(project.id, channel, function(err, data){
-                if(err) throw err;
+                if(err) {
+                    console.log(err);
+                    defered.resolve({err: err});
+                    return;
+                }
+
                 if(channel.id == 0){
                     channel.id = data;
                 }

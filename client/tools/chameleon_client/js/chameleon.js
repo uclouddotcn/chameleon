@@ -6,9 +6,7 @@ var childprocess = require("child_process");
 var pathLib = require("path");
 var os = require('os');
 var async = require('async');
-var xml2js = require('xml2js');
 var util = require('util');
-var  AdmZip = require('adm-zip');
 var urlLib = require('url');
 var _ = require('underscore');
 var sqlite3 = require('sqlite3').verbose();
@@ -24,6 +22,7 @@ function ChameleonTool(){
 
 ChameleonTool.prototype.init = function(callback){
     var dbContext = new sqlite3.Database('data/chameleon');
+
     dbContext.serialize(function () {
         dbContext.run("create table if not exists 'project' ('id' integer PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' varchar(50), 'landscape' boolean, 'version' varchar(50), 'path' text, 'signConfig' text, 'config' text)", function(err) {
             if(err) {
@@ -48,12 +47,14 @@ ChameleonTool.prototype.init = function(callback){
             callback(null, "success");
         });
     });
+
     dbContext.close();
 }
 
 ChameleonTool.prototype.getAllProjects = function(callback){
-    var projects = [];
-    var dbContext = new sqlite3.Database('data/chameleon');
+    var projects = [],
+        dbContext = new sqlite3.Database('data/chameleon');
+
     dbContext.all("select * from project", function(err, rows){
         if(err) {
             Logger.log("getAllProject() failed.", err);
@@ -74,6 +75,7 @@ ChameleonTool.prototype.getAllProjects = function(callback){
         }
         callback(null, projects);
     });
+
     dbContext.close();
 }
 
@@ -88,6 +90,7 @@ ChameleonTool.prototype.createEmptyProject = function(){
 
 ChameleonTool.prototype.createProject = function(project, callback){
     var dbContext = new sqlite3.Database('data/chameleon');
+
     dbContext.run("insert into project (name, landscape, version, path, signConfig, config) values ($name, $landscape, $version, $path, $signConfig, $config)", {
         $name: project.name,
         $landscape: project.landscape,
@@ -102,17 +105,21 @@ ChameleonTool.prototype.createProject = function(project, callback){
         }
         callback(null, this.lastID);
     });
+
     dbContext.close();
 }
 
 ChameleonTool.prototype.deleteProject = function(id){
     var dbContext = new sqlite3.Database('data/chameleon');
+
     dbContext.run("delete from project where id=$id", {$id: id});
+
     dbContext.close();
 }
 
 ChameleonTool.prototype.updateProject = function(project, callback){
     var dbContext = new sqlite3.Database('data/chameleon');
+
     dbContext.run("update project set name=$name, landscape=$landscape, version=$version, path=$path, signConfig=$signConfig, config=$config where id=$id", {
         $id: project.id,
         $name: project.name,
@@ -128,6 +135,7 @@ ChameleonTool.prototype.updateProject = function(project, callback){
         }
         callback(null, this.changes);
     });
+
     dbContext.close();
 }
 
@@ -137,6 +145,7 @@ ChameleonTool.prototype.getChannelList = function(){
         var channelInfo = fs.readJsonFileSync(this.configRoot + 'channelinfo/channellist.json');
         for (var p in channelInfo) {
             var channel = new Channel();
+
             channel.channelName = p;
             channel.desc = channelInfo[p].name;
             channel.checked = false;
@@ -191,6 +200,7 @@ ChameleonTool.prototype.createProjectDirectory = function(name){
 
 ChameleonTool.prototype.createChannelDirectory = function(project, channelName){
     var root = this.projectRoot + project.name + '/cfg/';
+
     try{
         var path = root + channelName;
         fs.mkdirpSync(path);
@@ -206,6 +216,7 @@ ChameleonTool.prototype.createChannelDirectory = function(project, channelName){
 
 ChameleonTool.prototype.removeProjectDirectory = function(name){
     var root = this.projectRoot;
+
     try{
         var path = root + name;
         fs.removeSync(path);
@@ -217,6 +228,7 @@ ChameleonTool.prototype.removeProjectDirectory = function(name){
 
 ChameleonTool.prototype.removeChannelDirectory = function(project, channelName){
     var root = this.projectRoot + project.name + '/cfg/';
+
     try{
         var path = root + channelName;
         fs.removeSync(path);
@@ -231,6 +243,7 @@ ChameleonTool.prototype.generateServerConfig = function(project){
     var url = urlLib.parse(project.config.payCallbackUrl);
     var host = url.protocol + '//' + url.host;
     var pathName = url.pathname;
+
     result['_product.json'] = {
         appcb: {
             host: host,
@@ -250,6 +263,7 @@ ChameleonTool.prototype.generateServerConfig = function(project){
         }
         result[channel.channelName + '.json'] = config;
     }
+
     return result;
 }
 
@@ -262,10 +276,12 @@ ChameleonTool.prototype.checkJavaHome = function(){
 }
 
 ChameleonTool.prototype.command = function(command, args, callback, process){
-    var spawn = childprocess.spawn;
-    var result = spawn(command, args);
-    var message = '';
+    var spawn = childprocess.spawn,
+        message = '';
+
     console.log(command, args.join(" "));
+    var result = spawn(command, args);
+
     result.stdout.on('data', function(data){
         console.log(data.toString());
         message += data;
@@ -273,18 +289,20 @@ ChameleonTool.prototype.command = function(command, args, callback, process){
             process(data.toString());
         }
     });
+
     result.stderr.on('data', function(data){
-        callback(data);
-        return ;
+        return callback(data);
     });
+
     result.on('close', function (code) {
         console.log('child process exited with code ' + code);
         if(code !== 0){
-            callback({message : 'failed.'});
-            return;
+            return callback({message : 'failed.'});
+
         }
-        callback(null, message);
-        return ;
+
+        return callback(null, message);
+
     });
 }
 
