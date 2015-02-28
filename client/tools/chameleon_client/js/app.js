@@ -524,7 +524,7 @@ chameleonApp = angular.module('chameleonApp', [
                                     config.icon.position = position;
                                     ProjectMgr.setChannel($scope.project, $scope.selectedChannels[i]);
                                     if(config.icon.path){
-                                        var savePath = node_path(packingRoot, nodePath('app/chameleon/channelinfo/'), $scope.selectedChannels[i].channelName, 'icon', $scope.selectedChannels[i].channelName, '.png');
+                                        var savePath = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), $scope.selectedChannels[i].channelName, 'icon', $scope.selectedChannels[i].channelName, '.png');
                                         saveImageWithoutDisplay(canvas, config.icon.path, config.icon.position, savePath, $scope.selectedChannels[i]);
                                     }
                                 }
