@@ -627,7 +627,7 @@ chameleonApp = angular.module('chameleonApp', [
                             '-c',
                             channel.channelName,
                             '-r',
-                            node_path.normalize(node_path(configRoot, 'sdk')),
+                            node_path.normalize(node_path.join(configRoot, 'sdk')),
                             '-d',
                             false,
                             '-a',
