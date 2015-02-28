@@ -87,10 +87,10 @@ chameleonApp = angular.module('chameleonApp', [
                     var iconPosition = function(){
                         var result = {};
                         var root = node_path.join(packingRoot,  nodePath('app/chameleon/channelinfo/'), $scope.selectedChannel.channelName, nodePath('/drawable/drawable-xhdpi/'));
-                        result.leftDown = fse.existsSync(root + 'icon-decor-leftdown.png');
-                        result.leftUp = fse.existsSync(root + 'icon-decor-leftup.png');
-                        result.rightDown = fse.existsSync(root + 'icon-decor-rightdown.png');
-                        result.rightUp = fse.existsSync(root + 'icon-decor-rightup.png');
+                        result.leftDown = fs.existsSync(root + 'icon-decor-leftdown.png');
+                        result.leftUp = fs.existsSync(root + 'icon-decor-leftup.png');
+                        result.rightDown = fs.existsSync(root + 'icon-decor-rightdown.png');
+                        result.rightUp = fs.existsSync(root + 'icon-decor-rightup.png');
                         return result;
                     };
 
