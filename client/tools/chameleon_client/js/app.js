@@ -616,7 +616,7 @@ chameleonApp = angular.module('chameleonApp', [
                             fs.writeFileSync(node_path.join(packingRoot, nodePath('app/projects/'), project.name, 'cfg', channel.channelName, 'config.json'), buf);
                             //pack process
                             var projectRoot = node_path.join(packingRoot, nodePath('app/projects/'), $scope.project.name);
-                            var configRoot = node_path(packingRoot, nodePath('app/chameleon/'));
+                            var configRoot = node_path.join(packingRoot, nodePath('app/chameleon/'));
                             $scope.apkFilePath = $scope.fileread.path;
                         }catch (e){
                             callback(e);
