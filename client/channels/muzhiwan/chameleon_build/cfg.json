@@ -5,20 +5,20 @@
     "version": "V2.0.7.1",
     "cfgitem": [
         {
-          "name": "appId",
+          "name": "payKey",
           "type" : "string",
-          "desc" : "APPID",
+          "desc" : "payKey",
           "ignoreInA" : 1
         },
         {
           "name": "appKey",
           "type" : "string",
-          "desc" : "申请的appKey"
+          "desc" : "appKey"
         },
         {
           "name": "debug",
           "type" : "boolean",
-          "desc" : "是否使用debug模式"
+          "desc" : "debug"
         }
 
     ]
