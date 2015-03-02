@@ -204,7 +204,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 ProjectMgr.createChannelDirectory($scope.project, channel.channelName);
                             });
                         }else{
-                            var channelToDelete = _.findWhere($scope.project, {channelName: channel.channelName});
+                            var channelToDelete = _.findWhere($scope.project.channels, {channelName: channel.channelName});
                             var promise = ProjectMgr.deleteChannel($scope.project, channelToDelete);
                             promise.then(function(){
                                 $scope.project.channels = _.reject($scope.project.channels, function(element){
