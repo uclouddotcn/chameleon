@@ -68,7 +68,7 @@ function calcMd5(params) {
     var md5sum = crypto.createHash('md5');
     for (var i = 0; i < params.length; ++i) {
         if (params[i]) {
-            md5sum.update(params[i]);
+            md5sum.update(params[i], 'utf8');
         }
     }
     return md5sum.digest('hex');
