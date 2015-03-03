@@ -86,9 +86,9 @@ AnfengChannel.prototype.calcSecret = function (params, signKey) {
     var md5sum = crypto.createHash('md5');
     for (var i = 0; i < sortedKeys.length; i++) {
         var key = sortedKeys[i];
-        md5sum.update(key+'='+params[key]+'&');
+        md5sum.update(key+'='+params[key]+'&', 'utf8');
     }
-    md5sum.update('signKey='+signKey);
+    md5sum.update('signKey='+signKey, 'utf8');
     return md5sum.digest('hex');
 };
 
