@@ -84,13 +84,17 @@ function installProduct(p, callback) {
     });
 }
 
-function postRequest (host, port, url, data, callback) {
+function postRequest (host, port, url, data, method, callback) {
     var s = JSON.stringify(data);
+    if (typeof method === 'function') {
+        callback = method;
+        method = 'POST'
+    }
     var req = http.request({
         port: port,
         hostname: host,
         path: url,
-        method: 'POST',
+        method: method,
         headers: {
             'Content-type': 'application/json',
             'Content-Length': s.length
@@ -447,6 +451,19 @@ function main() {
             } catch (e) {
                 error("invalid zip file: " + e.message);
             }
+        });
+
+    program
+        .command('use-sdk <name> <version>')
+        .description('add sdk')
+        .action(function (name, version) {
+            postRequest(program.host, program.port, '/sdk/'+name, {version: version}, 'PUT', function (err) {
+                if (err) {
+                    error('Fail to use sdk: ' + err.message);
+                    process.exit(-1);
+                }
+                info('successful add sdk: ' + JSON.stringify(obj));
+            });
         });
 
     program

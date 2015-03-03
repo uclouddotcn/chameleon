@@ -45,11 +45,12 @@ function main() {
     packageEntry = packageEntry[0];
     var obj = JSON.parse(zipf.readAsText(packageEntry));
     var packageInfo = extractInfo(obj);
-    var tmpFolder = path.join(__dirname, 'tmp-'+packageInfo.name+packageInfo.versionCode);
+    var tmpFolder = path.join(__dirname, 'tmp-'+packageInfo.sdkname+packageInfo.versionCode);
     var targetFolder = path.join(sdkpluginFolder, packageInfo.sdkname+'-'+packageInfo.versionCode.toString());
     zipf.extractAllTo(tmpFolder, true);
     fs.renameSync(path.join(tmpFolder, packageInfo.sdkname), targetFolder);
     fs.rmdirSync(tmpFolder);
+    obj.versionCode = packageInfo.versionCode;
     process.stdout.write(JSON.stringify(obj));
 }
 
