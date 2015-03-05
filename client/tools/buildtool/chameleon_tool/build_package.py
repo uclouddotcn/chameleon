@@ -288,6 +288,12 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
         os.chdir(desDir)
         pkgfile.write('classes.dex')
+
+        for x in os.listdir(desDir):
+            if os.path.isfile(x):
+                if x != MANIFEST_FILE_NAME:
+                    pkgfile.write(x)
+        
         os.chdir(pwd)
         pkgfile.close()
 
@@ -363,8 +369,6 @@ def procSplashIcons(channelPath, globalcfg):
         splashes = __getAllObjFiles(splashPath, '.*\.(png|jpg)')
         i = 0
         for (x, y) in splashes:
-            if not re.match('.*splash.*', str(os.path.split(x)[-1])):
-                continue
             shutil.copy(os.path.join(x, y), os.path.join(channelPath, 'assets', 'chameleon', 'chameleon_splashscreen_'+str(i)+'.png'))
             # print("copy " + os.path.join(x, y))
             i += 1
