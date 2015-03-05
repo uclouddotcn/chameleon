@@ -10,9 +10,12 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Xml;
+import android.view.Gravity;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -153,10 +156,24 @@ public class SplashScreenActivity extends Activity {
                     imgView.setBackgroundColor(mBgColor);
                     if (mIsFillParent) {
                         imgView.setScaleType(ImageView.ScaleType.FIT_XY);
+                        this.setContentView(imgView);
                     } else {
-                        imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                        LinearLayout layout = new LinearLayout(this);
+                        layout.setBackgroundColor(mBgColor);
+                        layout.setGravity(Gravity.CENTER);
+                        layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));//设置宽、高
+                        DisplayMetrics dm = getResources().getDisplayMetrics();
+                        int height = 400;
+                        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+                            height = dm.heightPixels / amDrawable.getIntrinsicWidth() * amDrawable.getIntrinsicHeight();
+                        } else {
+                            height = dm.widthPixels / amDrawable.getIntrinsicWidth() * amDrawable.getIntrinsicHeight();
+                        }
+                        Log.e(Constants.TAG,"the splash imageview height"+height);
+                        imgView.setLayoutParams(new LinearLayout.LayoutParams(dm.widthPixels, height));
+                        layout.addView(imgView);
+                        this.setContentView(layout);
                     }
-                    this.setContentView(imgView);
                 }
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
