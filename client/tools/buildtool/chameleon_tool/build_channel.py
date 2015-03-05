@@ -112,8 +112,10 @@ def getFullAssetsAndUnknownfiles(apkfilepath, zipfile):
     [zipfile.write(os.path.join(x, y)) for (x, y) in assetsf]
     if os.path.exists('unknown'):
         unkownf = __getAllObjFiles('unknown', '.*')
+        pwdunknown = os.getcwd()
         os.chdir('unknown')
         [zipfile.write(y) for (x, y) in unkownf]
+        os.chdir(pwdunknown)
     shutil.rmtree(decodeDir)
     os.chdir(pwd)
 
