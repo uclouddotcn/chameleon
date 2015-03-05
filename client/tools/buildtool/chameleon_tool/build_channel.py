@@ -98,6 +98,8 @@ def getFullAssetsAndUnknownfiles(apkfilepath, zipfile):
     destpath = os.path.dirname(apkfilepath)
 
     os.chdir(destpath)
+    if not os.path.exists(decodeDir):
+        os.mkdir(decodeDir)
     paras = []
     paras.append((APK_TOOL_PATH, ''))
     paras.append(('d', os.path.basename(apkfilepath)))
@@ -107,6 +109,7 @@ def getFullAssetsAndUnknownfiles(apkfilepath, zipfile):
     decodeCmd = genCmd(paras)
     print(decodeCmd)
     os.system(decodeCmd)
+    pwd3 = os.getcwd()
     os.chdir(decodeDir)
     assetsf = __getAllObjFiles('assets', '.*')
     [zipfile.write(os.path.join(x, y)) for (x, y) in assetsf]
@@ -116,6 +119,7 @@ def getFullAssetsAndUnknownfiles(apkfilepath, zipfile):
         os.chdir('unknown')
         [zipfile.write(y) for (x, y) in unkownf]
         os.chdir(pwdunknown)
+    os.chdir(pwd3)
     shutil.rmtree(decodeDir)
     os.chdir(pwd)
 
