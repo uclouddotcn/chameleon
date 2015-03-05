@@ -204,7 +204,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 ProjectMgr.createChannelDirectory($scope.project, channel.channelName);
                             });
                         }else{
-                            var channelToDelete = _.findWhere($scope.project, {channelName: channel.channelName});
+                            var channelToDelete = _.findWhere($scope.project.channels, {channelName: channel.channelName});
                             var promise = ProjectMgr.deleteChannel($scope.project, channelToDelete);
                             promise.then(function(){
                                 $scope.project.channels = _.reject($scope.project.channels, function(element){
@@ -446,7 +446,7 @@ chameleonApp = angular.module('chameleonApp', [
                         var channel = $scope.selectedChannel;
                         //save image
                         if(!$scope.hasIcon()){
-                            var path = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, 'icon', channel.channelName, '.png');
+                            var path = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, 'icon', channel.channelName + '.png');
                             fse.copySync($scope.projectIcon, path);
                             channel.config.icon = {};
                             channel.config.icon.path = path;
@@ -511,7 +511,7 @@ chameleonApp = angular.module('chameleonApp', [
                             drawImage(canvas, b, o, path);
                         }
 
-                        var path = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, 'icon', channel.channelName, '.png');
+                        var path = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, 'icon', channel.channelName + '.png');
                         saveImage(canvas, path);
                         ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
 
@@ -524,7 +524,7 @@ chameleonApp = angular.module('chameleonApp', [
                                     config.icon.position = position;
                                     ProjectMgr.setChannel($scope.project, $scope.selectedChannels[i]);
                                     if(config.icon.path){
-                                        var savePath = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), $scope.selectedChannels[i].channelName, 'icon', $scope.selectedChannels[i].channelName, '.png');
+                                        var savePath = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), $scope.selectedChannels[i].channelName, 'icon', $scope.selectedChannels[i].channelName + '.png');
                                         saveImageWithoutDisplay(canvas, config.icon.path, config.icon.position, savePath, $scope.selectedChannels[i]);
                                     }
                                 }
