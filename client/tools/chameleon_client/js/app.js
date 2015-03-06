@@ -512,6 +512,8 @@ chameleonApp = angular.module('chameleonApp', [
                         }
 
                         var path = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, 'icon', channel.channelName + '.png');
+                        var iconFolder = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, 'icon');
+                        fs.mkdirSync(iconFolder);
                         saveImage(canvas, path);
                         ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
 
@@ -525,6 +527,8 @@ chameleonApp = angular.module('chameleonApp', [
                                     ProjectMgr.setChannel($scope.project, $scope.selectedChannels[i]);
                                     if(config.icon.path){
                                         var savePath = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), $scope.selectedChannels[i].channelName, 'icon', $scope.selectedChannels[i].channelName + '.png');
+                                        var iconFolder = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), $scope.selectedChannels[i].channelName, 'icon');
+                                        fs.mkdirSync(iconFolder);
                                         saveImageWithoutDisplay(canvas, config.icon.path, config.icon.position, savePath, $scope.selectedChannels[i]);
                                     }
                                 }
@@ -583,7 +587,7 @@ chameleonApp = angular.module('chameleonApp', [
                                             destiney += '.png';
                                         }else{
                                             source += '.jpg';
-                                            source += '.jpg';
+                                            destiney += '.jpg';
                                         }
                                         data.channel.splashPath = destiney;
                                         fse.copySync(source, data.channel.splashPath);
