@@ -293,7 +293,7 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
             if os.path.isfile(x):
                 if x != MANIFEST_FILE_NAME:
                     pkgfile.write(x)
-        
+
         os.chdir(pwd)
         pkgfile.close()
 
@@ -413,7 +413,7 @@ def main():
 
     (options, values) = parser.parse_args()
 
-    if options.channel is None or options.channelRoot is None or options.projectRoot is None or options.decompressOnly is None:
+    if options.projectRoot is None or options.decompressOnly is None:
         parser.print_help()
         return
 
@@ -450,6 +450,9 @@ def main():
             print(ERR_MSG[u])
         return u
 
+    if options.channel is None or options.channelRoot is None:
+        parser.print_help()
+        return
     LOG_FD = open(os.path.join(proj, channel+'_log.txt'), "w", buffering=1)
     if options.version is not None:
         unpackDest = os.path.join(unpackDest, options.version)
