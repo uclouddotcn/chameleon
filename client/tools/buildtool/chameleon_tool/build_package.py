@@ -288,12 +288,13 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
         os.chdir(desDir)
         pkgfile.write('classes.dex')
-
-        for x in os.listdir(desDir):
-            if os.path.isfile(x):
-                if x != MANIFEST_FILE_NAME and x != 'classes.dex' and x!= genPkgName:
-                    print(x)
-                    pkgfile.write(x)
+        if os.path.exist('unknown'):
+            precwd = os.getcwd()
+            unknownF = __getAllObjFiles('unknown')
+            os.chdir('unknown')
+            for (x, y) in unknownF:
+                pkgfile.write(os.path.relpath(os.path.join(x, y), 'unknown'))
+            os.chdir(precwd)
 
         os.chdir(pwd)
         pkgfile.close()
