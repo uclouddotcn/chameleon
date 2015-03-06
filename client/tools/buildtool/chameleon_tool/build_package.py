@@ -291,7 +291,7 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
         for x in os.listdir(desDir):
             if os.path.isfile(x):
-                if x != MANIFEST_FILE_NAME:
+                if x != MANIFEST_FILE_NAME and x != 'classes.dex':
                     pkgfile.write(x)
 
         os.chdir(pwd)
