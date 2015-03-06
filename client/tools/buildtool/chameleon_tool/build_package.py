@@ -78,7 +78,7 @@ def unpackAPK(apkPath, destPath):
     return 0
 
 
-def __getAllObjFiles(rootpath, regex, isReverseCondition=False):
+def __getAllObjFiles(rootpath, regex='.*', isReverseCondition=False):
     objs = []
 
     if not os.path.exists(rootpath):
@@ -288,7 +288,7 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
         os.chdir(desDir)
         pkgfile.write('classes.dex')
-        if os.path.exist('unknown'):
+        if os.path.exists('unknown'):
             precwd = os.getcwd()
             unknownF = __getAllObjFiles('unknown')
             os.chdir('unknown')
