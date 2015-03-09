@@ -78,7 +78,7 @@ def unpackAPK(apkPath, destPath):
     return 0
 
 
-def __getAllObjFiles(rootpath, regex, isReverseCondition=False):
+def __getAllObjFiles(rootpath, regex='.*', isReverseCondition=False):
     objs = []
 
     if not os.path.exists(rootpath):
@@ -288,6 +288,14 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
         os.chdir(desDir)
         pkgfile.write('classes.dex')
+        if os.path.exists('unknown'):
+            precwd = os.getcwd()
+            unknownF = __getAllObjFiles('unknown')
+            os.chdir('unknown')
+            for (x, y) in unknownF:
+                pkgfile.write(os.path.relpath(os.path.join(x, y), 'unknown'))
+            os.chdir(precwd)
+
         os.chdir(pwd)
         pkgfile.close()
 
@@ -363,8 +371,6 @@ def procSplashIcons(channelPath, globalcfg):
         splashes = __getAllObjFiles(splashPath, '.*\.(png|jpg)')
         i = 0
         for (x, y) in splashes:
-            if not re.match('.*splash.*', str(os.path.split(x)[-1])):
-                continue
             shutil.copy(os.path.join(x, y), os.path.join(channelPath, 'assets', 'chameleon', 'chameleon_splashscreen_'+str(i)+'.png'))
             # print("copy " + os.path.join(x, y))
             i += 1
@@ -402,17 +408,16 @@ def main():
     parser.add_option('-r', '--channelRoot', dest='channelRoot', help='Root directory of the channels')
     parser.add_option('-p', '--package', dest='package', help='APK Package to process')
     parser.add_option('-V', '--version', dest='version', help='APK version name')
-    # parser.add_option('-R', '--packageRoot', dest='packageRoot', help='Root directory where the package in')
-    # parser.add_option('-g', '--generatePkgName', dest='generatePkgName', help='Name of the package to generate.')
+
     parser.add_option('-P', '--ProjectRoot', dest='projectRoot', help='path of the projects directory')
     parser.add_option('-d', '--decompressOnly', dest='decompressOnly', help="whether need to decompress the package. True/False")
     parser.add_option('-a', '--align', dest='align', help="whether need to align the package. True/False")
 
     (options, values) = parser.parse_args()
 
-    if len(sys.argv) < 2:
+    if options.projectRoot is None or options.decompressOnly is None:
         parser.print_help()
-        return 1
+        return
 
     channel = options.channel
     channelRoot = options.channelRoot
@@ -426,6 +431,10 @@ def main():
     global LOG_FD
 
     if options.decompressOnly.casefold() in ['true', 't']:
+        if options.package is None:
+            parser.print_help()
+            return
+
         LOG_FD = open(os.path.join(proj, 'log.txt'), "w", buffering=1)
         tempUnpackDest = os.path.join(unpackDest, '__TempUnpack__')
         u = unpackAPK(options.package, tempUnpackDest)
@@ -443,6 +452,9 @@ def main():
             print(ERR_MSG[u])
         return u
 
+    if options.channel is None or options.channelRoot is None:
+        parser.print_help()
+        return
     LOG_FD = open(os.path.join(proj, channel+'_log.txt'), "w", buffering=1)
     if options.version is not None:
         unpackDest = os.path.join(unpackDest, options.version)
@@ -529,7 +541,7 @@ def main():
         print(ERR_MSG[u])
         return u
 
-    if str(options.align).casefold() in ['true']:
+    if options.align is not None and str(options.align).casefold() in ['true']:
         u = pkgAlign(tempForAlighPkgName, generatePkgName)
         if u != 0:
             u = 7

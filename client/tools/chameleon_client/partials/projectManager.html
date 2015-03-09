@@ -231,7 +231,7 @@
                     <div>
                         <input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/>
                     </div>
-                    <div class="gridStyle" ng-grid="gridOptions9" style="max-height: 300px;"></div>
+                    <div class="gridStyle" ng-grid="gridOptions9" style="height: 300px; overflow-y: auto"></div>
                     <div class="row">
                         <input class="btn-large btn-success has-spinner" type="button" ng-click="pack()" value="打包" />
                         <input class="btn-large btn-success has-spinner" type="button" ng-click="openOutputFolder()" value="打开输出文件夹" />

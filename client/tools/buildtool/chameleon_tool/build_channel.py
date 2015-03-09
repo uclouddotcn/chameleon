@@ -92,6 +92,37 @@ def compileChannel(channelName, channelRootPath):
     # [os.remove(os.path.join(x, y)) for (x, y) in allRsmaliFiles]
 
 
+def getFullAssetsAndUnknownfiles(apkfilepath, zipfile):
+    pwd = os.getcwd()
+    decodeDir = '_decode_package_'
+    destpath = os.path.dirname(apkfilepath)
+
+    os.chdir(destpath)
+    if not os.path.exists(decodeDir):
+        os.mkdir(decodeDir)
+    paras = []
+    paras.append((APK_TOOL_PATH, ''))
+    paras.append(('d', os.path.basename(apkfilepath)))
+    paras.append(('-o', decodeDir))
+    paras.append(('-f', ' '))
+
+    decodeCmd = genCmd(paras)
+    print(decodeCmd)
+    os.system(decodeCmd)
+    pwd3 = os.getcwd()
+    os.chdir(decodeDir)
+    assetsf = __getAllObjFiles('assets', '.*')
+    [zipfile.write(os.path.join(x, y)) for (x, y) in assetsf]
+    if os.path.exists('unknown'):
+        unkownf = __getAllObjFiles('unknown', '.*')
+        pwdunknown = os.getcwd()
+        [zipfile.write(os.path.join(x,y)) for (x, y) in unkownf]
+        
+    os.chdir(pwd3)
+    shutil.rmtree(decodeDir)
+    os.chdir(pwd)
+
+
 def main():
     parser = OptionParser()
     parser.add_option('-c', '--channel', dest='channel', help='channel name, e.g. xiaomi')
@@ -101,7 +132,7 @@ def main():
 
     (options, values) = parser.parse_args()
 
-    if len(sys.argv) < 4:
+    if options.channel is None or options.channelRoot is None or options.generatePath is None:
         parser.print_help()
         return
 
@@ -125,9 +156,9 @@ def main():
 
         libsf = __getAllObjFiles('libs', '.*\.jar$', True)
         [pkgFile.write(os.path.join(x, y)) for (x, y) in libsf]
-
-        assetsf = __getAllObjFiles('assets', '.*')
-        [pkgFile.write(os.path.join(x, y)) for (x, y) in assetsf]
+        apkfiles= __getAllObjFiles('bin', '.*release.*\.apk$')
+        if apkfiles is not None:
+            getFullAssetsAndUnknownfiles(os.path.join(os.path.join(apkfiles[0][0], apkfiles[0][1])), pkgFile)
 
         pkgFile.write('AndroidManifest.xml')
 
