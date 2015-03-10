@@ -82,10 +82,14 @@ exports.main = function (cfg, options) {
         },
         function (callback) {
             if (options.singleProcess) {
-                setImmediate(callback)
             } else {
-                admin.startWorkerFromFile(callback);
+                admin.startWorkerFromFile(function (err) {
+                    if (err) {
+                        console.error('Fail to start worker ' + err.messgae);
+                    }
+                });
             }
+            setImmediate(callback)
         }
     ], function (err) {
         if (err) {

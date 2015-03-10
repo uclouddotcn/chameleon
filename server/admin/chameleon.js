@@ -7,7 +7,6 @@ var fs = require('fs');
 var http = require('http');
 var child_process = require('child_process');
 var util = require('util');
-var Zip = require('adm-zip');
 
 var PROC_NAME = 'chameleon_admin';
 var BASE_DIR = path.join(__dirname, '..');
@@ -85,13 +84,17 @@ function installProduct(p, callback) {
     });
 }
 
-function postRequest (host, port, url, data, callback) {
+function postRequest (host, port, url, data, method, callback) {
     var s = JSON.stringify(data);
+    if (typeof method === 'function') {
+        callback = method;
+        method = 'POST'
+    }
     var req = http.request({
         port: port,
         hostname: host,
         path: url,
-        method: 'POST',
+        method: method,
         headers: {
             'Content-type': 'application/json',
             'Content-Length': s.length
@@ -231,7 +234,16 @@ function main() {
                                             setTimeout(fetchInfo(), 1100);
                                         }
                                     } else {
-                                        info('Admin started');
+                                        if (obj.worker.forkScripts && obj.status !== 'running') {
+                                            retrytimes--;
+                                            if (retrytimes < 0) {
+                                                error('successfully start admin server, however worker fails to start');
+                                            } else {
+                                                setTimeout(fetchInfo(), 1100);
+                                            }
+                                        } else {
+                                            info('Admin started');
+                                        }
                                     }
                                 });
                             }
@@ -252,6 +264,21 @@ function main() {
                     return error('Fail to start worker: ' + err.message);
                 }
                 info("Successful start worker: " + JSON.stringify(obj, null, '\t'));
+            });
+        });
+
+    program
+        .command('restart-worker')
+        .action(function () {
+            var postData = {
+                action: 'restart'
+            };
+            postRequest(program.host, program.port, '/admin', postData, function (err) {
+                if (err) {
+                    error('Fail to connect to admin server, the server maybe not in right state' + err.message);
+                    return;
+                }
+                info('Done');
             });
         });
 
@@ -424,6 +451,19 @@ function main() {
             } catch (e) {
                 error("invalid zip file: " + e.message);
             }
+        });
+
+    program
+        .command('use-sdk <name> <version>')
+        .description('add sdk')
+        .action(function (name, version) {
+            postRequest(program.host, program.port, '/sdk/'+name, {version: version}, 'PUT', function (err) {
+                if (err) {
+                    error('Fail to use sdk: ' + err.message);
+                    process.exit(-1);
+                }
+                info('successful add sdk: ' + JSON.stringify(obj));
+            });
         });
 
     program

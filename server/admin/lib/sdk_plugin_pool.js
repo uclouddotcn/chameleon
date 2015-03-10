@@ -9,10 +9,12 @@ function SDKPluginInfo (name) {
 }
 
 SDKPluginInfo.prototype.addVersion = function (ver, p) {
+    console.log(ver)
     if (typeof ver === 'string') {
         ver = parseInt(ver);
     }
     this.versions[ver] = p;
+    console.log(ver)
     if (!(this.newest > ver)) {
         this.newest = ver;
     }
@@ -102,7 +104,7 @@ SDKPluginPool.prototype.loadUpgradePlugin = function (fileurl, md5value, callbac
                 try {
                     var upgradeInfo = JSON.parse(stdout.toString());
                     var name = upgradeInfo.name.split('-');
-                    self.addNewPlugin(name[2], upgradeInfo.version);
+                    self.addNewPlugin(name[2], upgradeInfo.versionCode);
                     callback(null, name[2], upgradeInfo.version, self.getPluginPath(upgradeInfo.name, upgradeInfo.version));
                 } catch (e) {
                     self._logger.error({err: e});

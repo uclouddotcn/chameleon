@@ -100,15 +100,12 @@ function _init(baseDir, argv, pluginInfos, cmdEmitter, callback) {
             for (var i = 0; i < svrs.length; ++i) {
                 svrs[i].close(closeServerCb);
             }
+            logger.svrLog().info('svr have all been closed now. Callback now');
+            callback();
+            isCallbackDone = true;
         };
         var isCallbackDone = false;
         async.series([closeSvr,
-                function (cb) {
-                    logger.svrLog().info('svr have all been closed now. Callback now');
-                    isCallbackDone = true;
-                    callback();
-                    setImmediate(cb);
-                },
                 pendingOrderStore.close.bind(pendingOrderStore),
                 eventStorageEng.close.bind(eventStorageEng)],
             function (err) {
@@ -139,7 +136,8 @@ function _init(baseDir, argv, pluginInfos, cmdEmitter, callback) {
         },
         // init the sdk svr
         sdkSvr.listen.bind(
-            sdkSvr, cfg.sdkSvr.port, cfg.sdkSvr.host)
+            sdkSvr, cfg.sdkSvr.port, cfg.sdkSvr.host),
+        channelCbSvr.listen.bind(channelCbSvr)
     ], function (err) {
         if (err) {
             return callback(err);

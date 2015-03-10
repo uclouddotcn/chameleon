@@ -135,6 +135,10 @@ function installAdmin(installPath, callback) {
                 fs.writeFileSync(adminCfgPath, JSON.stringify(ADMIN_DEFAULT_CFG, null, '\t'));
             }
             setImmediate(cb);
+        },
+        function (cb) {
+            var chameleonPath = path.join(dstpath, 'admin', 'chameleon.js');
+            fs.chmod(chameleonPath, 504, cb);
         }
     ], function (err) {
         if (err) {
@@ -150,7 +154,7 @@ function installAdmin(installPath, callback) {
 }
 
 function installWorker(version, installPath, installcfg, callback) {
-    var scriptPath = path.join(installPath, 'admin', 'script', 'installWorker.js');
+    var scriptPath = path.join(installPath, 'admin', 'script', 'installworker.js');
     var workerPath = path.join(__dirname, 'worker_' + version.replace()+'.zip');
     var toInstallCfg = installcfg ? 'true' : 'false';
     child_process.exec('node ' + scriptPath + ' ' + workerPath + ' ' + toInstallCfg, {
@@ -169,7 +173,7 @@ function installAllSDKs(installPath, callback) {
         var targetSDKPath = path.join(installPath, 'sdkplugins');
         var scriptPath = path.join(installPath, 'admin', 'script', 'installSDK.js');
         commonZip.extractAllTo(targetSDKPath, true);
-        var pat = /^[a-z].+\.zip$/g
+        var pat = /^[a-z].+\.zip$/
         var items = fs.readdirSync(sdkpluginPath).filter(function (item) {
             return pat.exec(item) != null;
         });

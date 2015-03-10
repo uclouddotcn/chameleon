@@ -60,7 +60,7 @@ function zipAll(version, dirToZip, callback) {
     info('zip all');
     var sversion = version.replace(/\./g, '_');
     var dest = path.join(__dirname, 'chameleon_'+sversion+'.zip');
-    child_process.exec('zip -r '+dest+ ' *', {
+    child_process.exec('rm -f ' +dest + '&& zip -r '+dest+ ' *', {
         cwd: dirToZip
     }, callback);
 }
@@ -70,6 +70,8 @@ function buildAll(version) {
     if (!fs.existsSync(outputPath)) {
         fs.mkdirSync(outputPath);
     } else {
+        fs.removeSync(outputPath);
+        fs.mkdirSync(outputPath);
     }
     var adminFileName = 'admin'+'.zip';
     var workerFileName = 'worker_'+version+'.zip';

@@ -43,6 +43,10 @@ Worker.prototype.onHeartBeat = function (rsp) {
     this.lastack = rsp.seq;
 };
 
+Worker.prototype.isDead = function () {
+    return !this.dead;
+};
+
 var WorkerMgr = function (logger, options) {
     this.status = 'stop';
     var self = this;
@@ -110,6 +114,7 @@ WorkerMgr.prototype.stop = function (callback) {
     var self = this;
     var h = setTimeout(function () {
         self.forceClose();
+        callback();
     }, 30000);
     this._doClose(this.worker.wid, function () {
         clearTimeout(h);
@@ -117,9 +122,25 @@ WorkerMgr.prototype.stop = function (callback) {
     });
 };
 
+WorkerMgr.prototype.exit = function (callback) {
+    var self = this;
+    function checkChildIfDead () {
+        if (self.worker.isDead()) {
+            return callback();
+        }
+        setTimeout(checkChildIfDead, 1000);
+    }
+    this.stop(function () {
+        setTimeout(checkChildIfDead, 1000);
+    });
+};
 
 WorkerMgr.prototype.forceClose = function () {
-
+    if (!this.worker) {
+        return;
+    }
+    var wid = this.worker.wid;
+    cluster.workers[wid] && cluster.workers[wid].kill('SIGKILL')
 };
 
 WorkerMgr.prototype.restartWorker = function (workerCfg, callback) {
@@ -236,6 +257,12 @@ WorkerMgr.prototype._forceRestartWorker = function () {
 
 WorkerMgr.prototype._onWorkerExit = function (worker, code, signal) {
     this._logger.info({wid: worker.id, code: code, signal: signal}, 'worker finished');
+    // when waiting for exit, set worker to dead
+    if (this.status === 'stop' && worker.id === this.worker.wid) {
+        this.worker.dead = true;
+        return;
+    }
+
     if (this.status !== 'running') {
         return;
     }

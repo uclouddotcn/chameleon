@@ -67,6 +67,9 @@ WandoujiaChannel.prototype.verifyLogin = function(wrapper, token, others, callba
 
 
 WandoujiaChannel.prototype.verify = function (content, publickey, sign) {
+    if (!content || !publickey || !sign) {
+        return false;
+    }
     var verify = crypto.createVerify('RSA-SHA1');
     verify.write(content, 'utf-8');
     return verify.verify(publickey, sign, 'base64');

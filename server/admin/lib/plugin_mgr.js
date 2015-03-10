@@ -52,31 +52,15 @@ PluginMgr.prototype.loadAllPlugins = function (callback) {
         var pluginInfos = [];
         for (var i = 0; i < availPluginNames.length; ++i) {
             var name = availPluginNames[i];
-            var pluginPath = null;
-            var ver = self.sdkPluginSetting[name];
-            if (ver) {
-                pluginPath = self.pluginPool.getPluginPath(name, ver);
-            }
-            if (!pluginPath) {
-                // the last loading plugin is missing, use newest as default
-                var pluginInfo = self.pluginPool.getNewestPluginPath(name);
-                self.logger.info({ver: pluginInfo.ver}, 'loading newest plugin for ' + name);
-                pluginPath = pluginInfo.p;
-                ver = pluginInfo.ver;
-            }
-            self.logger.info({ver: ver}, 'loading plugin for ' + name);
+            var info = self.getVersionInfo(name);
             try {
-                pluginInfos.push({
-                    name: name,
-                    ver: ver,
-                    p: pluginPath
-                });
-                if (ver !== self.sdkPluginSetting[name]) {
-                    self.sdkPluginSetting[name] = ver;
+                pluginInfos.push(info);
+                if (info.ver !== self.sdkPluginSetting[name]) {
+                    self.sdkPluginSetting[name] = info.ver;
                 }
                 self.logger.info({ver: self.sdkPluginSetting[name]}, 'successfully loaded plugin for ' + name);
             } catch (e) {
-                self.logger.error( {err: e, name: pluginPath}, 'invalid plugin module');
+                self.logger.error( {err: e}, 'invalid plugin module');
             }
         }
         self.pluginInfos = pluginInfos;
@@ -115,8 +99,36 @@ PluginMgr.prototype.upgradePlugin = function(fileurl, md5value, callback) {
         if (err) {
             return callback(err);
         }
+        for (var i = 0; i < self.pluginInfos.length; ++i) {
+            var info = self.pluginInfos[i];
+            if (info.name === name) {
+                self.pluginInfos[i] = self.getVersionInfo(name);
+            }
+        }
         callback(null, name, ver, path);
     })
+};
+
+PluginMgr.prototype.getVersionInfo = function (name) {
+    var self = this;
+    var pluginPath = null;
+    var ver = self.sdkPluginSetting[name];
+    if (ver) {
+        pluginPath = self.pluginPool.getPluginPath(name, ver);
+    }
+    if (!pluginPath) {
+        // the last loading plugin is missing, use newest as default
+        var pluginInfo = self.pluginPool.getNewestPluginPath(name);
+        self.logger.info({ver: pluginInfo.ver}, 'loading newest plugin for ' + name);
+        pluginPath = pluginInfo.p;
+        ver = pluginInfo.ver;
+    }
+    self.logger.info({ver: ver}, 'loading plugin for ' + name);
+    return {
+        name: name,
+        ver: ver,
+        p: pluginPath
+    }
 };
 
 PluginMgr.prototype.usePluginAtVersion = function (name, version, callback) {

@@ -68,7 +68,9 @@ var Admin = function(pluginMgr, options, logger) {
                         if (err) {
                             return next(new restify.InvalidArgumentError(err.message));
                         } else {
-                            saveWorkerCfg(req.params.cfg);
+                            if (req.params.cfg) {
+                                saveWorkerCfg(req.params.cfg);
+                            }
                             res.send(workerMgr.info);
                         }
                         return next();
@@ -174,14 +176,15 @@ var Admin = function(pluginMgr, options, logger) {
         });
     });
 
-    self.server.put('/plugin/:name', function(req, res, next) {
-        var newInst = self.pluginMgr.usePluginAtVersion(name, req.params.version);
-        if (newInst instanceof Error) {
-            return next(new restify.InvalidArgumentError(newInst.message));
-        } else {
-            res.send();
-            return next();
-        }
+    self.server.put('/sdk/:name', function(req, res, next) {
+        var newInst = self.pluginMgr.usePluginAtVersion(req.params.name,
+            req.params.version, function (err) {
+                if (err) {
+                    return next(new restify.InvalidArgumentError(err.message));
+                }
+                res.send({});
+                return next();
+            });
     });
 
     // path for getting all product instance
@@ -292,8 +295,7 @@ Admin.prototype.exit = function () {
 
 Admin.prototype.close = function (callback) {
     this.logger.info('admin server exit');
-    setImmediate(callback);
-    return this.server.close();
+    return this.server.close(callback);
 };
 
 Admin.prototype.registerExitFunc = function (func) {
