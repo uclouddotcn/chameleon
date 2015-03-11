@@ -9,8 +9,8 @@
     "bunyan": "0.22.1",
     "adm-zip": "0.4.4",
     "commander": "2.3.0",
-    "levelup": "~0.18.2",
-    "leveldown": "~0.10.2",
+    "levelup": "^0.18.2",
+    "leveldown": "^0.10.2",
     "pm2": "^0.12.3",
     "axon": "^2.0.1",
     "colors": "^1.0.3"
