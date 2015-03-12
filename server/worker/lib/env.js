@@ -18,7 +18,7 @@ module.exports.initFromBaseDir = function (baseDir) {
     module.exports.baseDir = baseDir;
     module.exports.billDir = path.join(baseDir, 'bill');
     module.exports.logDir = path.join(baseDir, 'log');
-    module.exports.productDir = path.join(baseDir, 'products');
+    module.exports.productDir = path.join(baseDir, '..', 'products');
 }
 
 
