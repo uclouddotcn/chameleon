@@ -13,11 +13,35 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 
+import prj.chameleon.channelapi.ActivityInterface;
 import prj.chameleon.channelapi.ChannelInterface;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IDispatcherCb;
 
 public class NativeChannelInterface {
+
+    static {
+        ActivityInterface.registerCallback(new ActivityInterface.Callback() {
+            @Override
+            public void onInitFinished(int retCode) {
+                mRetCode = retCode;
+                Log.d(Constants.TAG, String.format("on init finished %d", retCode));
+                mRequestProxy.setInitDone(mActivity);
+            }
+
+            @Override
+            public void onResumeFinished(int retCode) {
+                Runnable callbackFunc = new Runnable() {
+                    @Override
+                    public void run() {
+                        ChannelAPINative.onPause();
+                    }
+                };
+                runInRunEnv(callbackFunc);
+            }
+        });
+    }
+
     public static interface IRunEnv {
         public void run(Runnable runnable);
     }

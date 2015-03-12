@@ -32,6 +32,7 @@ def _loadDependLibInfo(globalcfg, info, libPath):
         info["config"]['orientation'] = "landscape"
     else:
         info["config"]['orientation'] = "portrait"
+    info["config"]["packageId"] = globalcfg["channel"]["packageName"]
     cfg = info["config"]
     return LibInfo(info['name'], os.path.join(libPath, info['name']), 
             cfg, info['type'])

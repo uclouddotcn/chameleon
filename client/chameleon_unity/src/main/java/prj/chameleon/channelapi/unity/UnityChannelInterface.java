@@ -12,12 +12,29 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 
+import prj.chameleon.channelapi.ActivityInterface;
 import prj.chameleon.channelapi.ChannelInterface;
 import prj.chameleon.channelapi.Constants;
-import prj.chameleon.channelapi.DummyChannelAPI;
 import prj.chameleon.channelapi.IDispatcherCb;
 
 public class UnityChannelInterface {
+
+    static {
+        ActivityInterface.registerCallback(new ActivityInterface.Callback() {
+            @Override
+            public void onInitFinished(int retCode) {
+                mRetCode = retCode;
+                Log.d(Constants.TAG, String.format("on init finished %d", retCode));
+                mRequestProxy.setInitDone();
+            }
+
+            @Override
+            public void onResumeFinished(int retCode) {
+                U3DHelper.SendMessage("onPause", Constants.ErrorCode.ERR_OK, null);
+            }
+        });
+    }
+
     private static AccountActionListener mAccountActionListener = new AccountActionListener();
     private static class RequestProxy {
         private LinkedList<Runnable> mPendingQueue = new LinkedList<Runnable>();

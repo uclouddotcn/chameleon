@@ -12,13 +12,13 @@ import android.widget.TextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import prj.chameleon.channelapi.ChannelInterface;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IAccountActionListener;
 import prj.chameleon.channelapi.IDispatcherCb;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class MainActivity extends Activity implements IAccountActionListener {
@@ -194,19 +194,19 @@ public class MainActivity extends Activity implements IAccountActionListener {
     ////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         ChannelInterface.onStart(this);
     }
 
     @Override
-    public void onStop() {
+    protected void onStop() {
         super.onStop();
         ChannelInterface.onStop(this);
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         ChannelInterface.onNewIntent(this, intent);
     }
@@ -270,14 +270,14 @@ public class MainActivity extends Activity implements IAccountActionListener {
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
         ChannelInterface.onPause(this);
         Log.i(Constants.TAG, "on pause");
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         ChannelInterface.onResume(this, new IDispatcherCb() {
             @Override
@@ -447,7 +447,17 @@ public class MainActivity extends Activity implements IAccountActionListener {
         if (isGuest) {
             ChannelInterface.loginGuest(this, new LoginGuestCallback(this), this);
         } else {
-            ChannelInterface.login(this, mLoginCallback, this);
+            if (ChannelInterface.isSupportProtocol("qqmsdk_setplat")) {
+                ChannelInterface.runProtocol(this, "qqmsdk_setplat", "qq", new IDispatcherCb() {
+                    @Override
+                    public void onFinished(int retCode, JSONObject data) {
+                        ChannelInterface.login(MainActivity.this, mLoginCallback, MainActivity.this);
+                    }
+                });
+            } else {
+                ChannelInterface.login(this, mLoginCallback, this);
+            }
+
         }
 	}
 

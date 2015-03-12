@@ -5,6 +5,7 @@ from chameleon_gen import *
 from optparse import OptionParser
 import zipfile
 import modifyWx
+import modifyMainActivity
 
 CHANNEL_ROOT = ''
 
@@ -489,10 +490,11 @@ def main():
         print(ERR_MSG[u])
         return u
 
-    manifest = loadManifest(manifestFilePathOrig)
 #    add an additional class for some special sdk.
-    modifyWx.makeWXEntryActivity(os.path.join(channelPath, 'smali'), channel, manifest.getPkgName())
-
+    modifyWx.makeWXEntryActivity(os.path.join(channelPath, 'smali'), channel, globalcfg['channel']['packageName'])
+    #TODO make MainActivity
+    manifest = loadManifest(manifestFilePathOrig)
+    modifyMainActivity.makeMainActivity(os.path.join(channelPath, 'smali'), manifest, globalcfg)
 
     dexPaths = [os.path.join(x.path, 'smali') for x in libs]
 
