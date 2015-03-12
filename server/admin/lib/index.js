@@ -65,30 +65,17 @@ exports.main = function (cfg, options) {
             pluginMgr.loadAllPlugins(callback);
         },
         function (callback) {
-            if (options.singleProcess) {
-                var main = require(path.join(__dirname, '../../worker')).init;
-                var requestPoster = new (require('./inproc_requestposter'))();
-                main(constants.baseDir, ['./worker/config/svr.json'], pluginMgr.pluginInfos, requestPoster, function (err) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    callback(null, requestPoster);
-                });
-            }
-            admin = createAdmin(pluginMgr, {requestPoster:requestPoster}, adminLogger);
+            admin = createAdmin(pluginMgr, {}, adminLogger);
             admin.listen(cfg.admin.port, cfg.admin.host, function (err) {
                 callback(err);
             });
         },
         function (callback) {
-            if (options.singleProcess) {
-            } else {
-                admin.startWorkerFromFile(function (err) {
-                    if (err) {
-                        console.error('Fail to start worker ' + err.messgae);
-                    }
-                });
-            }
+            admin.startWorkerFromFile(function (err) {
+                if (err) {
+                    console.error('Fail to start worker ' + err.messgae);
+                }
+            });
             setImmediate(callback)
         }
     ], function (err) {

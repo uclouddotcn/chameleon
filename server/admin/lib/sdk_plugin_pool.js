@@ -9,12 +9,10 @@ function SDKPluginInfo (name) {
 }
 
 SDKPluginInfo.prototype.addVersion = function (ver, p) {
-    console.log(ver)
     if (typeof ver === 'string') {
         ver = parseInt(ver);
     }
     this.versions[ver] = p;
-    console.log(ver)
     if (!(this.newest > ver)) {
         this.newest = ver;
     }

@@ -47,7 +47,7 @@ Worker.prototype.isDead = function () {
     return !this.dead;
 };
 
-var WorkerMgr = function (logger, options) {
+var WorkerMgr = function () {
     this.status = 'stop';
     var self = this;
     Object.defineProperty(this, "info", {
@@ -74,8 +74,14 @@ WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
     this.num = 0;
     this.pluginInfos = pluginInfos;
     this._resetWorkerCfg(workerCfg);
+    var a = process.execArgv.filter(function(a) {return a.substr(0, 11) != '--debug-brk';});
+    if (a.length != process.execArgv) {
+        console.log('using debug mode for worker process. open port at 7788')
+        a.push('--debug=7788');
+    }
     cluster.setupMaster({
-        exec: path.join(__dirname, '..', 'worker', 'worker.js')
+        exec: path.join(__dirname, '..', 'worker', 'worker.js'),
+        execArgv: a
     });
     this._startWorker(callback);
 };

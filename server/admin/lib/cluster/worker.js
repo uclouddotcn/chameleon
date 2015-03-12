@@ -15,8 +15,6 @@ MasterStub.prototype.__send = function (r) {
 };
 
 function startPlugin(p, arg, stub) {
-    console.log(p);
-    console.log(arg);
     var m = require(p);
     var rsp = m.start(arg, stub);
     process.send({
@@ -32,7 +30,6 @@ function startPlugin(p, arg, stub) {
 function main() {
     var stub = new MasterStub(null);
     process.on('message', function (msg) {
-        console.log(msg)
         try {
             switch (msg.header.msg) {
                 case '__start':
@@ -42,7 +39,6 @@ function main() {
                     stub.__onMsg(msg);
             }
         } catch (e) {
-            console.log(e.stack)
             if (e instanceof Error) {
                 process.send({
                     header: {

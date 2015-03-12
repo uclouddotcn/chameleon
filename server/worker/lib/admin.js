@@ -38,7 +38,7 @@ Admin.prototype.init = function (emitter) {
          callback(null, products);
     });
 
-    this._logger.info('regiser product.new');
+    /*this._logger.info('regiser product.new');
     emitter.register('product.new', function (req, callback) {
         if (!req.product || !req.cfg) {
             callback(new Error("Invalid Arguments"));
@@ -52,7 +52,7 @@ Admin.prototype.init = function (emitter) {
         self.productMgr.addProduct(req.product, req.cfg, function (err) {
             callback(err);
         });
-    });
+    });*/
 
     this._logger.info('regiser product.update');
     emitter.register('product.update', function (req, callback) {

@@ -3,7 +3,10 @@ var child_process = require('child_process');
 var versionParser = require('./versionparser');
 var VError = require('verror');
 var fs = require('fs');
+var fse = require('fs-extra');
+var async = require('async');
 var path = require('path');
+var Encryption = require('./encryption');
 var workerMgr = require('./worker_mgr');
 var constants = require('./constants');
 
@@ -18,6 +21,7 @@ var constants = require('./constants');
  */
 var Admin = function(pluginMgr, options, logger) {
     var self = this;
+
     self.server = restify.createServer({
         name: 'Admin',
         version: '0.0.1',
@@ -199,7 +203,7 @@ var Admin = function(pluginMgr, options, logger) {
     });
 
     // path for add a product
-    self.server.post('/product', function (req, res, next) {
+    /*self.server.post('/product', function (req, res, next) {
         req.log.info({params: req.params}, 'recv products');
         var zipfile = req.params.zipfile;
         child_process.exec('node ' + path.join(__dirname, '..', 'script', 'installProducts.js') + ' ' + zipfile, function (err, stdout, stderr) {
@@ -215,6 +219,56 @@ var Admin = function(pluginMgr, options, logger) {
                 return next();
             });
         });
+    });*/
+
+    //path for update server config
+    //var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
+    self.server.post('/product/:product', function(req, res, next){
+        var product;
+        try{
+            req.log.info({params: req.params}, 'receive product config');
+            //product = JSON.parse(req.params.product);
+            //product = encryption.decrypt(req.params.product);
+            product = JSON.parse(req.params.product);
+        }catch (e){
+            return next(new restify.InvalidArgumentError("Decrypt product failed."));
+        }
+
+        var productConfigPath = path.join(constants.productDir, product['name']);
+        console.log(productConfigPath);
+        async.series([
+            function(callback){
+                if(fs.existsSync(productConfigPath)){
+                    fse.move(productConfigPath, productConfigPath + '-backup', true, function(err){
+                        if(err) {
+                            return next(new restify.InvalidArgumentError(err.message));
+                        }
+                        callback(null);
+                    });
+                }
+                callback(null);
+            },
+            function(callback){
+                fse.outputFile(productConfigPath, product, function(err){
+                    if(err){
+                        return next(new restify.InvalidArgumentError(err.message));
+                    }
+                    callback(null);
+                });
+            },
+            function(callback){
+                workerMgr.restartWorker(null, function (err) {
+                    req.log.debug({err: err}, 'worker restarted');
+                    if (err) {
+                        return next(new restify.InternalError('Fail to restart worker: ' + err.message));
+                    }
+                    res.send('Update product success.');
+                    next();
+                    callback(null);
+                });
+            }
+        ]);
+
     });
 
     /*

@@ -120,7 +120,7 @@ BaidumgChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
             status = ErrorCode.ERR_FAIL;
         }
         var amount = Math.round(parseFloat(obj.OrderMoney) * 100);
-        wrapper.pay(wrapper.channelName, obj.UID.toString(), null,
+        wrapper.userAction.pay(wrapper.channelName, obj.UID.toString(), null,
             params.CooperatorOrderSerial, status,
             null, null, amount, other,
             function (err, result) {
