@@ -220,6 +220,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.generateServerConfig(project);
     }
 
+    ProjectMgr.prototype.generateProductForServer = function(project){
+        return this.tool.generateProductForServer(project);
+    }
+
     ProjectMgr.prototype.checkJavaHome = function(){
         return this.tool.checkJavaHome();
     }

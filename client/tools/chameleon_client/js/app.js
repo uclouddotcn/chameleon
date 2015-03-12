@@ -74,7 +74,9 @@ chameleonApp = angular.module('chameleonApp', [
                     var _ = require('underscore'),
                         fse = require('fs-extra'),
                         fs = require('fs'),
-                        node_path = require('path');
+                        http = require('http'),
+                        node_path = require('path'),
+                        env = require('../env.json');
 
                     var dirName = ProjectMgr.dirName(),
                         packingRoot = dirName.substr(0, dirName.length-19),
@@ -726,6 +728,37 @@ chameleonApp = angular.module('chameleonApp', [
                             console.log(e);
                             alert('导出失败： 未知错误');
                         }
+                    }
+                    $scope.pushServerConfig = function(){
+                        var product = ProjectMgr.generateProductForServer($scope.project);
+                        product = JSON.stringify(product);
+                        console.log(product);
+                        var result = '';
+                        var req = http.request({
+                            hostname: env.server.test.url,
+                            port: env.server.test.port,
+                            path: '/product/' + product,
+                            method: 'POST'
+                        }, function(res){
+                            res.on('error', function(e){
+                                console.log(e);
+                                return;
+                            });
+                            res.on('data', function(chunk){
+                                result += chunk;
+                            });
+                        });
+                        req.on('error', function(e){
+                            alert(e.message);
+                        });
+                        req.on('end', function(){
+                            console.log(result);
+                            if(result.error){
+                                alert('推送服务器配置错误');
+                            }else{
+                                alert('推送服务器配置成功');
+                            }
+                        });
                     }
                 }]
             })

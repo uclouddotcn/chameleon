@@ -267,6 +267,36 @@ ChameleonTool.prototype.generateServerConfig = function(project){
     return result;
 }
 
+ChameleonTool.prototype.generateProductForServer = function(project){
+    var result = {};
+    var url = urlLib.parse(project.config.payCallbackUrl);
+    var host = url.protocol + '//' + url.host;
+    var pathName = url.pathname;
+
+    result['name'] = project.name;
+    result['appcb'] = {
+        host: host,
+        payCbUrl: pathName
+    };
+    result['channels'] = {};
+    for(var i=0; i<project.channels.length; i++){
+        var channel = project.channels[i];
+        var config = {};
+        config.sdks = [];
+        for(var j=0; j<channel.sdks.length; j++){
+            config.sdks.push({
+                name: channel.channelName,
+                type: 'pay,user',
+                cfg: channel.sdks[j].config
+            });
+        }
+        //config['name'] = channel.channelName;
+        result.channels[channel.channelName] = config;
+    }
+
+    return result;
+}
+
 ChameleonTool.prototype.checkJavaHome = function(){
     if(process.env.JAVA_HOME){
         return true;
