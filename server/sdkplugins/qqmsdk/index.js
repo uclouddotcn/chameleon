@@ -16,7 +16,8 @@ var cfgDesc = {
     qqAppKey: 'string',
     wxAppId: 'string',
     wxAppKey: 'string',
-    timeout: '?integer'
+    timeout: '?integer',
+    ratio: '?integer'
 };
 
 //var QQ_MSDK_URL = "http://opensdk.tencent.com";
@@ -361,6 +362,8 @@ QQMsdkChannel.prototype.pendingPay = function (wrapper, params, infoFromSDK, cal
         var payToken = infoFromSDK.pt;
         var platform = infoFromSDK.pl;
         var uid = params.uid.substr(1);
+        var payRatio = 100/(wrapper.cfg.ratio || 100);
+        var money = params.realPayMoney / payRatio;
         self.requestSaving(wrapper, uid, accessToken, payToken, pf, pfKey, params.serverId, platform, function (err, obj) {
             if (err) {
                 self._logger.debug({err: err}, 'return from channel');
@@ -373,10 +376,10 @@ QQMsdkChannel.prototype.pendingPay = function (wrapper, params, infoFromSDK, cal
                     callback(e);
                     return;
                 }
-                if (obj.balance >= params.realPayMoney) {
+                if (obj.balance >= money) {
                     // 二级货币的存款多于所需要付款的数额，直接开始调用扣款
                     self.requestPay(wrapper, uid, accessToken, payToken, pf, pfKey, params.serverId,
-                        params.realPayMoney, params.productId, platform, function (err, obj) {
+                        money, params.productId, platform, function (err, obj) {
                             if (err) {
                                 callback(err);
                                 return;
@@ -389,7 +392,7 @@ QQMsdkChannel.prototype.pendingPay = function (wrapper, params, infoFromSDK, cal
                                 callback(null, orderId, params, {ignorePending: true}, payInfo);
                                 // 扣款成功，发起异步的推送支付成功的流程
                                 self.pay(wrapper, orderId, params.uid, accessToken, payToken, pf, pfKey, params.appUid,
-                                params.serverId, params.productId, params.productCount, params.ext, params.realPayMoney, obj.billno, platform);
+                                params.serverId, params.productId, params.productCount, params.ext, money, obj.billno, platform);
                                 // 提示CP服务器，这里已经成功扣款了，只需等待发货推送即可
                             } else if (obj.ret == 1004) {
                                 // 之间一定是有另外一个扣款已经运行过了，所以这里直接报错
@@ -402,7 +405,7 @@ QQMsdkChannel.prototype.pendingPay = function (wrapper, params, infoFromSDK, cal
                 } else {
                     // 没有足够的存款，计算出需要充值的数额，然后提示玩家去充值
                     var payInfo = {
-                        rest: params.realPayMoney - obj.balance
+                        rest: money - obj.balance
                     };
                     callback(null, wrapper.userAction.genOrderId(), params, {ignorePending: true}, payInfo);
                 }
