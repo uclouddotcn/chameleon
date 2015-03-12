@@ -16,7 +16,8 @@ var cfgDesc = {
     qqAppKey: 'string',
     wxAppId: 'string',
     wxAppKey: 'string',
-    timeout: '?integer'
+    timeout: '?integer',
+    ratio: '?integer'
 };
 
 //var QQ_MSDK_URL = "http://opensdk.tencent.com";
