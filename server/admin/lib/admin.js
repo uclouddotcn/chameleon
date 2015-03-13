@@ -239,7 +239,7 @@ var Admin = function(pluginMgr, options, logger) {
         async.series([
             function(callback){
                 if(fs.existsSync(productConfigPath)){
-                    fse.move(productConfigPath, productConfigPath + '-backup', true, function(err){
+                    fse.move(productConfigPath, productConfigPath + '.backup', true, function(err){
                         if(err) {
                             return callback(new restify.InvalidArgumentError(err.message));
                         }
