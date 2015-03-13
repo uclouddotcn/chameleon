@@ -222,14 +222,14 @@ var Admin = function(pluginMgr, options, logger) {
     });*/
 
     //path for update server config
-    //var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
-    self.server.post('/product/:product', function(req, res, next){
+    var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
+    self.server.post('/product', function(req, res, next){
         var product;
         try{
             req.log.info({params: req.params}, 'receive product config');
             //product = JSON.parse(req.params.product);
-            //product = encryption.decrypt(req.params.product);
-            product = JSON.parse(req.params.product);
+            product = encryption.decrypt(decodeURIComponent(req.params.product));
+            product = JSON.parse(product);
         }catch (e){
             return next(new restify.InvalidArgumentError("Decrypt product failed."));
         }

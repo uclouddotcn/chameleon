@@ -5,19 +5,25 @@
 
 var fs = require('fs'),
     path = require('path'),
-    ursa = require('ursa');
+    crypto = require('crypto');
 
 function Encryption(keyDir) {
-    this.key = ursa.createPrivateKey(fs.readFileSync(path.join(keyDir, 'chameleon-server.key.pem')));
-    this.crt = ursa.createPublicKey(fs.readFileSync(path.join(keyDir, 'chameleon-server.pub')));
+    var pem = fs.readFileSync(path.join(keyDir, 'chameleon-server.key.pem'));
+    this.key = pem.toString('ascii');
 }
 
 Encryption.prototype.encrypt = function(input){
-    return this.crt.encrypt(input, 'utf8', 'base64');
+    var cipher = crypto.createCipher('aes-256-cbc', this.key);
+    var encrypted = cipher.update(input, 'utf8', 'base64');
+    encrypted += cipher.final('base64');
+    return encrypted;
 }
 
 Encryption.prototype.decrypt = function(input){
-    return this.key.decrypt(input, 'base64', 'utf8');
+    var decipher = crypto.createDecipher('aes-256-cbc', this.key);
+    var decrypted = decipher.update(input, 'base64', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
 }
 
 module.exports = Encryption;

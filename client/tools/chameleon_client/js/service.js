@@ -224,6 +224,14 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.generateProductForServer(project);
     }
 
+    ProjectMgr.prototype.getEnv = function(){
+        return this.tool.env();
+    }
+
+    ProjectMgr.prototype.encrypt = function(input){
+        return this.tool.encrypt(input);
+    }
+
     ProjectMgr.prototype.checkJavaHome = function(){
         return this.tool.checkJavaHome();
     }

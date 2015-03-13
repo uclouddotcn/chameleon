@@ -70,15 +70,16 @@ chameleonApp = angular.module('chameleonApp', [
                         return JSON.parse($stateParams.project);
                     }]
                 },
-                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'fileDialog', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, fileDialog) {
+                controller: ['$scope', '$log', '$stateParams', '$state', '$modal', 'project', 'ProjectMgr', 'WaitingDlg', 'fileDialog', '$http', function ($scope, $log, $stateParams, $state, $modal, project, ProjectMgr, WaitingDlg, fileDialog, $http) {
                     var _ = require('underscore'),
                         fse = require('fs-extra'),
                         fs = require('fs'),
                         http = require('http'),
-                        node_path = require('path'),
-                        env = require('../env.json');
+                        node_path = require('path');
+                    //env = require('../env.json'),
 
                     var dirName = ProjectMgr.dirName(),
+                        env = ProjectMgr.getEnv(),
                         packingRoot = dirName.substr(0, dirName.length-19),
                         APKVersion = '';
 
@@ -733,31 +734,15 @@ chameleonApp = angular.module('chameleonApp', [
                         var product = ProjectMgr.generateProductForServer($scope.project);
                         product = JSON.stringify(product);
                         console.log(product);
-                        var result = '';
-                        var req = http.request({
-                            hostname: env.server.test.url,
-                            port: env.server.test.port,
-                            path: '/product/' + product,
-                            method: 'POST'
-                        }, function(res){
-                            res.on('error', function(e){
-                                console.log(e);
-                                return;
-                            });
-                            res.on('data', function(chunk){
-                                result += chunk;
-                            });
-                        });
-                        req.on('error', function(e){
-                            alert(e.message);
-                        });
-                        req.on('end', function(){
-                            console.log(result);
-                            if(result.error){
-                                alert('推送服务器配置错误');
-                            }else{
-                                alert('推送服务器配置成功');
-                            }
+                        product = ProjectMgr.encrypt(product);
+                        console.log(product);
+                        var url = env.server.test + '/product';
+                        $http.post(url, {product : encodeURIComponent(product)}).success(function(data){
+                            console.log(data);
+                            alert('推送服务器配置成功');
+                        }).error(function(err){
+                            console.log(err);
+                            alert('推送服务器失败');
                         });
                     }
                 }]

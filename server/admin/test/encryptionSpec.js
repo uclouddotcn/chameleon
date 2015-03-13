@@ -7,10 +7,12 @@ describe("Make sure functions in encryption.js work.", function(){
         constants = require('../lib/constants');
 
     var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
-    it("test encode()", function(){
+    it("test encrypt() and decrypt()", function(){
         var message = "hello world";
-        var result = encryption.encrypt(message);
-        console.log(result);
-        expect(true).toBe(true);
+        var encrypted = encryption.encrypt(message);
+        console.log(encrypted);
+        var decrypted = encryption.decrypt(encrypted);
+        console.log(decrypted);
+        expect(message === decrypted).toBe(true);
     });
 });

@@ -2,6 +2,7 @@
  * Created by Administrator on 2015/1/12.
  */
 var fs = require('fs-extra');
+var fso = require('fs');
 var childprocess = require("child_process");
 var pathLib = require("path");
 var os = require('os');
@@ -9,11 +10,13 @@ var async = require('async');
 var util = require('util');
 var urlLib = require('url');
 var _ = require('underscore');
+var crypto = require('crypto');
 var sqlite3 = require('sqlite3').verbose();
 
 var Logger = require('./lib/logger');
 var Project = require('./lib/project');
 var Channel = require('./lib/channel');
+var env = require('../env.json');
 
 function ChameleonTool(){
     this.projectRoot = '../app/projects/';
@@ -295,6 +298,19 @@ ChameleonTool.prototype.generateProductForServer = function(project){
     }
 
     return result;
+}
+
+ChameleonTool.prototype.env = function(){
+    return env;
+}
+
+ChameleonTool.prototype.encrypt = function(input){
+    var pem = fso.readFileSync(pathLib.join(env.keyPath, 'chameleon-server.key.pem'));
+    var key = pem.toString('ascii');
+    var cipher = crypto.createCipher('aes-256-cbc', key);
+    var encrypted = cipher.update(input, 'utf8', 'base64');
+    encrypted += cipher.final('base64');
+    return encrypted;
 }
 
 ChameleonTool.prototype.checkJavaHome = function(){
