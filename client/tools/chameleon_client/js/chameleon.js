@@ -276,10 +276,12 @@ ChameleonTool.prototype.generateProductForServer = function(project){
     var host = url.protocol + '//' + url.host;
     var pathName = url.pathname;
 
-    result['name'] = project.name;
-    result['appcb'] = {
-        host: host,
-        payCbUrl: pathName
+    result['name'] = project.config.code;
+    result['settings'] ={
+        appcb: {
+            host: host,
+            payCbUrl: pathName
+        }
     };
     result['channels'] = {};
     for(var i=0; i<project.channels.length; i++){

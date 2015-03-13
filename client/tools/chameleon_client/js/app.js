@@ -733,9 +733,7 @@ chameleonApp = angular.module('chameleonApp', [
                     $scope.pushServerConfig = function(){
                         var product = ProjectMgr.generateProductForServer($scope.project);
                         product = JSON.stringify(product);
-                        console.log(product);
                         product = ProjectMgr.encrypt(product);
-                        console.log(product);
                         var url = env.server.test + '/product';
                         $http.post(url, {product : encodeURIComponent(product)}).success(function(data){
                             console.log(data);
