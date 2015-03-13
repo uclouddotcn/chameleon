@@ -106,13 +106,13 @@ def makeWXEntryActivity(smaliRoot, channel, newPackage):
 
     smaliPath = os.path.join(smaliPath, 'wxapi')
 
-    print('this dir will be make：' + smaliPath)
+    #print('this dir will be make：' + smaliPath)
 
     #判断文件夹是否存在  不存在就创建相关文件夹
     if not os.path.exists(smaliPath):
         os.makedirs(smaliPath)
 
-    print('make dir : ' + smaliPath)
+    #print('make dir : ' + smaliPath)
 
     smaliFile = os.path.join(smaliPath, 'WXEntryActivity.smali')
     fp = open(smaliFile, mode = 'w')
