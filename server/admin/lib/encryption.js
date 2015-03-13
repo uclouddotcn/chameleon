@@ -8,7 +8,13 @@ var fs = require('fs'),
     crypto = require('crypto');
 
 function Encryption(keyDir) {
-    var pem = fs.readFileSync(path.join(keyDir, 'chameleon-server.key.pem'));
+    var keyPath = path.join(keyDir, 'chameleon-server.key.pem');
+    if(!fs.existsSync(keyPath)){
+        var diffHelm = crypto.createDiffieHellman(60);
+        var newKey = diffHelm.generateKeys('base64');
+        fs.writeFileSync(keyPath, newKey);
+    }
+    var pem = fs.readFileSync(keyPath);
     this.key = pem.toString('ascii');
 }
 

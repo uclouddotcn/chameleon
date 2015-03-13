@@ -26,10 +26,11 @@ ProductMgr.prototype.loadProductsSync = function () {
     var cfgpath = env.productDir;
     var self = this;
     fs.readdirSync(cfgpath).forEach(function (fileName) {
+        //miss fileName with '-backup'.
+        var reg = new RegExp('-backup$');
+        if(reg.test(fileName)) return;
+
         var p = pathLib.join(cfgpath, fileName);
-        if (!fs.statSync(p).isDirectory()) {
-            return;
-        }
         try {
             self._loadProductSync(fileName, p);
         } catch (err) {

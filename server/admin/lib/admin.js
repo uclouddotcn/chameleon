@@ -241,17 +241,18 @@ var Admin = function(pluginMgr, options, logger) {
                 if(fs.existsSync(productConfigPath)){
                     fse.move(productConfigPath, productConfigPath + '-backup', true, function(err){
                         if(err) {
-                            return next(new restify.InvalidArgumentError(err.message));
+                            return callback(new restify.InvalidArgumentError(err.message));
                         }
                         callback(null);
                     });
+                }else{
+                    callback(null);
                 }
-                callback(null);
             },
             function(callback){
-                fse.outputFile(productConfigPath, product, function(err){
+                fse.outputJSON(productConfigPath, product, function(err){
                     if(err){
-                        return next(new restify.InvalidArgumentError(err.message));
+                        return callback(new restify.InvalidArgumentError(err.message));
                     }
                     callback(null);
                 });
@@ -260,14 +261,18 @@ var Admin = function(pluginMgr, options, logger) {
                 workerMgr.restartWorker(null, function (err) {
                     req.log.debug({err: err}, 'worker restarted');
                     if (err) {
-                        return next(new restify.InternalError('Fail to restart worker: ' + err.message));
+                        return callback(new restify.InternalError('Fail to restart worker: ' + err.message));
                     }
-                    res.send('Update product success.');
-                    next();
                     callback(null);
                 });
             }
-        ]);
+        ], function(err){
+            if(err){
+                return next(err);
+            }
+            res.send('Update product success.');
+            next();
+        });
 
     });
 
