@@ -4,14 +4,18 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    >
+    android:background="@android:color/white" >
 
     <ListView
         android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/listview_dropdown_shape"
+        android:scrollbars="none"
         android:cacheColorHint="#00000000"
-        android:divider="#ccc"
+        android:paddingLeft="58dp"
+        android:paddingRight="18dp"
+        android:divider="@color/login_et_line"
         android:dividerHeight="1dp"
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="true" >

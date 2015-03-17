@@ -1,34 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/FrameLayout1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-	android:layout_gravity="center"
-	android:background="#ffffff">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/reloadlayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" 
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="加载失败" 
-            android:textColor="#2b2b2b"/>
-        <TextView
-            android:id="@+id/tv_reload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="点击屏幕重新加载" 
-            android:textColor="#2b2b2b"/>
-        
-    </LinearLayout>
-     <WebView
-            android:id="@+id/webView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical" >
+
+        <WebView
+            android:id="@+id/frag_card_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none" />
-</FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>

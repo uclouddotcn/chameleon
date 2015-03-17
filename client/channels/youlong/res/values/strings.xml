@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 添加  作者：尤婉莉 2014.8.25 -->
-    <string name="link_website19196">官网首页 </string>
-    <string name="link_gameBBS">游戏论坛 </string>
+
+    <string name="password_pattern_error">密码为6-20位数字或字母</string>
+    <string name="username_hint">账号Account</string>
+    <string name="username_set_hint">请输入账号</string>
+    <string name="pwd_hint">密码Password</string>
+    <string name="pwd_set_hint">设置密码</string>
+    <string name="link_website19196">平台首页</string>
+    <string name="registerByPhone">手机注册</string>
+    <string name="agree_http_label">已阅读并同意：</string>
+    <string name="agree_http_content">19196网络使用协议、隐私条款</string>
+    
+    <string name="find_pwd_introduce1">1.请电脑访问</string>
+    <string name="find_pwd_19196link">19196.com</string>
+    <string name="find_pwd_introduce2">，点击“忘记密码”后，</string>
+    <string name="find_pwd_introduce3">通过手机或其他方式找回密码</string>
+    <string name="find_pwd_introduce4">2.请联系平台客服找回密码</string>
+    <string name="find_pwd_introduce5">客服1-小鹿QQ：2850897144</string>
+    <string name="find_pwd_introduce6">客服2-暖暖QQ：2851092137</string>
+    <string name="find_pwd_introduce9">客服3-筱雨QQ：2851380797</string>
+    <string name="find_pwd_introduce7">若手机已更换，请</string>
+    <string name="find_pwd_introduce8">点此修改密码</string>
+    
+    <string name="to_yl_hint">确认无误后去盛付通付款</string>
+    <string name="to_zfb_hint">确认无误后去支付宝付款</string>
+	<string name="to_lb_hint">确认无误后使用龙币付款</string>
+	<string name="to_card_hint">支持移动，联通，电信充值卡</string>
+    
+   	<string name="network_confirm">请开启GPRS或WIFI网络！</string>
+    <string name="app_name">新版SDK_demo</string>
+    <string name="notice">提示信息</string>
+    <string name="yes">确定</string>
+    <string name="confirm">确认</string>
+    <string name="no">取消</string>
 </resources>

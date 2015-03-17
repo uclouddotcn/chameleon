@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="gray">#BFBFBF</color>
+    <color name="_gray">#f7f7f7</color>
+    <color name="_gray2">#969696</color>
+    <color name="blue">#87CEEB</color>
+    <color name="_blue">#0087d1</color>
+    <color name="dark_blue">#006fbb</color>
+    
+    <color name="hint_text_color">#717071</color>
+    <color name="textColorHint">#c6c6ca</color>
+    <color name="textColor">#727171</color>
+    <color name="textBlue">#3fa5dc</color>
+    <color name="detail_line">#c0e1f4</color>
+    <color name="login_et_line">#dcdbdb</color>
+    
+    
+    <color name="website_text_nomal">#727171</color>
+    <color name="skin_blue_btn_normal">#0087d1</color>
+    <color name="skin_blue_btn_press">#e63462</color>
+    <color name="skin_blue_btn_unclick">#9e9e9f</color>
+    <color name="skin_blue_btn_normal_press">#0197e9</color>
+    <color name="skin_blue_btn_unclick_press">#b2b2b2</color>
+   	<color name="light_gray">#AFFFFFFF</color>
+	<color name="skin_blue_tab_normal">#898989</color>
+    <color name="skin_blue_tab_press">#f7f7f7</color>
+</resources>
