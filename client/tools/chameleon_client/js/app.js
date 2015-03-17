@@ -740,7 +740,7 @@ chameleonApp = angular.module('chameleonApp', [
                             alert('推送服务器配置成功');
                         }).error(function(err){
                             console.log(err);
-                            alert('推送服务器失败');
+                            alert('推送服务器配置失败');
                         });
                     }
                 }]

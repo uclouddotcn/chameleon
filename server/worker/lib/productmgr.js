@@ -26,7 +26,7 @@ ProductMgr.prototype.loadProductsSync = function () {
     var cfgpath = env.productDir;
     var self = this;
     fs.readdirSync(cfgpath).forEach(function (fileName) {
-        //miss fileName with '-backup'.
+        //miss fileName with '.backup'.
         var reg = new RegExp('.backup$');
         if(reg.test(fileName)) return;
 
