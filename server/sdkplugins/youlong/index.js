@@ -32,11 +32,11 @@ util.inherits(YoulongChannel, SDKPluginBase);
 
 YoulongChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
-    var q = '/validation.do';
+    var q = '/Api/checkToken';
     var sign = this.calcSign(token+wrapper.cfg.pId+wrapper.cfg.pKey);
     var postObj = {
-        UserName: token,
-        PID: wrapper.cfg.pId,
+        Token: token,
+        pid: wrapper.cfg.pId,
         flag: sign
     };
     this._logger.debug({token: token}, "receive request");
