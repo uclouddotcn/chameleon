@@ -1,38 +1,38 @@
 {
     "cfgitem": [
         {
-            "desc": "APP KEY", 
-            "name": "appKey", 
+            "desc": "APP KEY",
+            "name": "appKey",
             "type": "string"
-        }, 
+        },
         {
-            "desc": "SECRET KEY", 
-            "ignoreInA": 1, 
-            "name": "secretKey", 
+            "desc": "SECRET KEY",
+            "ignoreInA": 1,
+            "name": "secretKey",
             "type": "string"
-        }, 
+        },
         {
-            "desc": "PUBLIC KEY", 
-            "ignoreInA": 1, 
-            "name": "publicKey", 
+            "desc": "PUBLIC KEY",
+            "ignoreInA": 1,
+            "name": "publicKey",
             "type": "string"
-        }, 
+        },
         {
-            "desc": "PRIVATE KEY", 
-            "ignoreInA": 1, 
-            "name": "privateKey", 
+            "desc": "PRIVATE KEY",
+            "ignoreInA": 1,
+            "name": "privateKey",
             "type": "string"
-        }, 
+        },
         {
-            "desc": "支付回调url", 
-            "ignoreInA": 1, 
-            "name": "payUrl", 
+            "desc": "支付回调url",
+            "ignoreInA": 1,
+            "name": "payUrl",
             "type": "url"
         }
-    ], 
-    "chamversion": "1.3.3", 
-    "desc": "金立", 
-    "name": "gionee", 
-    "svrver": "1.4.1", 
-    "version": "2.1.8.d"
+    ],
+    "chamversion": "1.3.3",
+    "desc": "金立",
+    "name": "gionee",
+    "svrver": "1.4.1",
+    "version": "2.2.0"
 }
