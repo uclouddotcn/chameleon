@@ -2,17 +2,19 @@
   "name": "sdk",
   "version": "1.4.1",
   "dependencies": {
-    "restify": "*",
-    "verror": "1.4.0",
-    "validator": "3.5.0",
-    "async": "0.2.10",
-    "bunyan": "0.22.1",
     "adm-zip": "0.4.4",
-    "commander": "2.3.0",
-    "levelup": "^0.18.2",
-    "leveldown": "^0.10.2",
-    "pm2": "^0.12.3",
+    "async": "0.2.10",
     "axon": "^2.0.1",
-    "colors": "^1.0.3"
+    "bunyan": "0.22.1",
+    "colors": "^1.0.3",
+    "commander": "2.3.0",
+    "fs-extra": "^0.16.5",
+    "leveldown": "~0.10.2",
+    "levelup": "~0.18.2",
+    "pm2": "^0.12.3",
+    "restify": "*",
+    "ursa": "0.8.1",
+    "validator": "3.5.0",
+    "verror": "1.4.0"
   }
 }

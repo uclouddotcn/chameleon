@@ -1,20 +1,20 @@
 {
-    "desc": "4399平台",
-    "name": "m4399",
-    "chamversion": "1.4.1",
-    "version": "V2.2.0.2",
     "cfgitem": [
         {
-            "name": "appKey",
-            "type": "string",
-            "desc": "APP KEY"
-        },
+            "desc": "APP KEY", 
+            "name": "appKey", 
+            "type": "string"
+        }, 
         {
-            "name": "appSecret",
-            "type": "string",
-            "desc": "APP SECRET",
-            "ignoreInA": 1
+            "desc": "APP SECRET", 
+            "ignoreInA": 1, 
+            "name": "appSecret", 
+            "type": "string"
         }
-    ]
+    ], 
+    "chamversion": "1.4.1", 
+    "desc": "4399平台", 
+    "name": "m4399", 
+    "svrver": "1.4.1", 
+    "version": "V2.2.0.2"
 }
-

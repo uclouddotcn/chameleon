@@ -31,8 +31,14 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, global
         orientation = 'landscape'
     else:
         orientation = 'portrait'
-    if sc is not None or channel == "lenovo":
-        manifestInst.replaceEntryActivity(orientation, channel)
+    #if sc is not None or channel == "lenovo":
+        #manifestInst.replaceEntryActivity(orientation, channel)
+
+    #TODO replace the MainActivity to ChameleonMainActivity
+    manifestInst.replaceEntryActivityNew(orientation, channel, oldPkgName)
+    if sc is not None:
+        manifestInst.addSplashScreenActivity(orientation)
+
     if icons is not None:
         manifestInst.setIcon('chameleon_icon')
     if channel == 'baidumg':
@@ -194,5 +200,5 @@ def main():
     error(pkgName)
     globalcfg = getCommCfg()
     libs = getDependLibs(channel, globalcfg)   
-    modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg) 
+    modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg)
     genInstantializer(channel, genPath, globalcfg, libs, debug)

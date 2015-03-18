@@ -4,7 +4,6 @@ package prj.chameleon.channelapi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -28,7 +27,7 @@ public class SplashScreenActivity extends Activity {
     private ArrayList<Drawable> mListImages;
     private ArrayList<Integer> mListDurations;
     private int mBgColor = Color.BLACK;
-    private String mMainActivity;
+    //private String mMainActivity;
     private boolean mIsFillParent = false;
 
     private int loadSingleItem(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -99,7 +98,7 @@ public class SplashScreenActivity extends Activity {
         return 0;
     }
 
-    private void startRealMainAndKillSelf() {
+    /*private void startRealMainAndKillSelf() {
         Intent intent = new Intent();
         try {
             intent.setClass(getApplicationContext(), Class.forName(mMainActivity));
@@ -108,11 +107,11 @@ public class SplashScreenActivity extends Activity {
             throw new RuntimeException("Fail to get the main activity of the game " + mMainActivity);
         }
         finish();
-    }
+    }*/
 
     private void onTimeout() {
         Log.d(Constants.TAG, "on timeout");
-        startRealMainAndKillSelf();
+        //startRealMainAndKillSelf();
         this.finish();
     }
 
@@ -128,7 +127,7 @@ public class SplashScreenActivity extends Activity {
         if (totalTime < 0) {
             totalTime = initFromAsset();
         }
-        try {
+        /*try {
             ActivityInfo app = getPackageManager().getActivityInfo(this.getComponentName(),
                     PackageManager.GET_ACTIVITIES|PackageManager.GET_META_DATA);
             if (app.metaData != null) {
@@ -140,7 +139,7 @@ public class SplashScreenActivity extends Activity {
 
         if (mMainActivity == null) {
             throw new RuntimeException("Fail to get the main activity meta data");
-        }
+        }*/
         if (totalTime > 0) {
             Log.d(Constants.TAG, "after setting the splash activity");
             if (mListImages.size() > 0) {

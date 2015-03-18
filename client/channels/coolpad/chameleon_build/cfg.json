@@ -1,44 +1,45 @@
 {
-    "desc": "酷派",
-    "name": "coolpad",
-    "chamversion": "1.3.1",
-    "version": "V1.2.1",
     "cfgitem": [
         {
-            "name": "loginAppId",
-            "type": "string",
-            "desc": "用户系统APP ID"
-        },
+            "desc": "用户系统APP ID", 
+            "name": "loginAppId", 
+            "type": "string"
+        }, 
         {
-            "name": "loginAppKey",
-            "type": "string",
-            "desc": "用户系统APP KEY"
-        },
+            "desc": "用户系统APP KEY", 
+            "name": "loginAppKey", 
+            "type": "string"
+        }, 
         {
-            "name": "loginRedirctUrl",
-            "type": "url",
-            "desc": "用户系统回调地址",
-            "ignoreInA": 1
-        },
+            "desc": "用户系统回调地址", 
+            "ignoreInA": 1, 
+            "name": "loginRedirctUrl", 
+            "type": "url"
+        }, 
         {
-            "name": "payAppId",
-            "type": "string",
-            "desc": "支付系统APP ID"
-        },
+            "desc": "支付系统APP ID", 
+            "name": "payAppId", 
+            "type": "string"
+        }, 
         {
-            "name": "payAppKey",
-            "type": "string",
-            "desc": "支付系统APP KEY"
-        },
+            "desc": "支付系统APP KEY", 
+            "name": "payAppKey", 
+            "type": "string"
+        }, 
         {
-            "name": "payPlatKey",
-            "type": "string",
-            "desc": "支付系统公钥"
-        },
+            "desc": "支付系统公钥", 
+            "name": "payPlatKey", 
+            "type": "string"
+        }, 
         {
-            "name": "notifyurl",
-            "type": "url",
-            "desc": "支付回调地址"
+            "desc": "支付回调地址", 
+            "name": "notifyurl", 
+            "type": "url"
         }
-    ]
+    ], 
+    "chamversion": "1.3.1", 
+    "desc": "酷派", 
+    "name": "coolpad", 
+    "svrver": "1.4.1", 
+    "version": "V1.2.1"
 }

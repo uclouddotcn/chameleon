@@ -26,10 +26,11 @@ ProductMgr.prototype.loadProductsSync = function () {
     var cfgpath = env.productDir;
     var self = this;
     fs.readdirSync(cfgpath).forEach(function (fileName) {
+        //miss fileName with '.backup'.
+        var reg = new RegExp('.backup$');
+        if(reg.test(fileName)) return;
+
         var p = pathLib.join(cfgpath, fileName);
-        if (!fs.statSync(p).isDirectory()) {
-            return;
-        }
         try {
             self._loadProductSync(fileName, p);
         } catch (err) {
@@ -40,7 +41,7 @@ ProductMgr.prototype.loadProductsSync = function () {
     });
 };
 
-ProductMgr.prototype.addProduct = function (name, productCfg, cb) {
+/*ProductMgr.prototype.addProduct = function (name, productCfg, cb) {
     var cfgpath = env.productDir;
     var p = pathLib.join(cfgpath, name);
     var self = this;
@@ -58,9 +59,9 @@ ProductMgr.prototype.addProduct = function (name, productCfg, cb) {
     } catch (e) {
         cb(new restify.InvalidArgumentError(e.message));
     }
-};
+};*/
 
-ProductMgr.prototype._newProductDir = function (name, productPath, productCfg, cb) {
+/*ProductMgr.prototype._newProductDir = function (name, productPath, productCfg, cb) {
     fs.mkdir(productPath, function (err) {
         if (err) {
             return cb(new restify.InternalError(err.message));
@@ -74,7 +75,7 @@ ProductMgr.prototype._newProductDir = function (name, productPath, productCfg, c
                 cb(err);
             });
     });
-};
+};*/
 
 
 /**
@@ -88,18 +89,25 @@ ProductMgr.prototype._loadProductSync = function (productName, cfgpath) {
     var self = this;    
     var productCfg = null;
     var channelCfg = {};
-    fs.readdirSync(cfgpath).forEach(function (fileName) {
-        var p = cfgpath + '/' + fileName;
-        if (!fs.statSync(p).isFile() || pathLib.extname(fileName) !== '.json') {
-            return;
-        }
-        if (fileName === '_product.json') {
-            productCfg = env.loadJsonCfgSync(p);
-        } else {
-            var name = pathLib.basename(fileName, '.json');
-            channelCfg[name] = env.loadJsonCfgSync(p);
-        }
-    });
+    if(!self._isConfigDir(productName)){
+        var config = JSON.parse(fs.readFileSync(cfgpath));
+        productCfg = config['settings'];
+        channelCfg = config['channels'];
+    }else{
+        fs.readdirSync(cfgpath).forEach(function (fileName) {
+            var p = cfgpath + '/' + fileName;
+            if (!fs.statSync(p).isFile() || pathLib.extname(fileName) !== '.json') {
+                return;
+            }
+            if (fileName === '_product.json') {
+                productCfg = env.loadJsonCfgSync(p);
+            } else {
+                var name = pathLib.basename(fileName, '.json');
+                channelCfg[name] = env.loadJsonCfgSync(p);
+            }
+        });
+    }
+
     if (!productCfg) {
         throw new Error('Product '+productName+
         ' must have "product.json" under the config');
@@ -110,6 +118,11 @@ ProductMgr.prototype._loadProductSync = function (productName, cfgpath) {
     self.products[productName] = product;
     self.emit('start-product', {name: productName, product: product});
 };
+
+ProductMgr.prototype._isConfigDir = function(productName){
+    var p = pathLib.join(env.productDir, productName);
+    return fs.lstatSync(p).isDirectory();
+}
 
 module.exports = ProductMgr;
 

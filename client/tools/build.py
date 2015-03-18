@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os, shutil, codecs, json, subprocess, sys, zipfile
 from collections import namedtuple
+from sync_server_version import syncServerVer
 
 BASEDIR = os.path.split(os.path.realpath(__file__))[0]
 BASEDIR = os.path.join(BASEDIR, '..')
@@ -296,6 +297,9 @@ def mergeToNodewebkit(targetFolder):
 
 
 def build():
+    print ('start syncing the server version')
+    syncServerVer(os.path.join(BASEDIR, '..'))
+
     targetFolder = os.path.join(BASEDIR, 'chameleon_build')
     cleanOldBuild(targetFolder)
     version = getversion()
