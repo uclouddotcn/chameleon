@@ -31,6 +31,12 @@
             "desc": "qq支付时候所需要的支付图标，必须是48*48的"
         },
         {
+            "name": "ratio",
+            "type": "int",
+            "desc": "支付中配置的游戏币和q点的比例",
+            "ignoreInA": 1
+        },
+        {
             "name": "test",
             "type": "boolean",
             "default": "false",
