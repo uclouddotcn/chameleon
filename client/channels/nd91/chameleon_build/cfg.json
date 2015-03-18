@@ -1,25 +1,26 @@
 {
-    "desc": "91手机助手",
-    "name": "nd91",
-    "chamversion": "1.0",
-    "version": "3.2.6.4",
-    "enableWrapPackage": 0,
     "cfgitem": [
         {
-            "name": "appId",
-            "type": "int",
-            "desc": "APP ID"
-        },
+            "desc": "APP ID", 
+            "name": "appId", 
+            "type": "int"
+        }, 
         {
-            "name": "appKey",
-            "type": "string",
-            "desc": "APP KEY"
-        },
+            "desc": "APP KEY", 
+            "name": "appKey", 
+            "type": "string"
+        }, 
         {
-            "name": "isForceUpdate",
-            "type": "boolean",
-            "desc": "是否强制升级",
-            "default": "false"
+            "default": "false", 
+            "desc": "是否强制升级", 
+            "name": "isForceUpdate", 
+            "type": "boolean"
         }
-    ]
+    ], 
+    "chamversion": "1.0", 
+    "desc": "91手机助手", 
+    "enableWrapPackage": 0, 
+    "name": "nd91", 
+    "svrver": "1.4.1", 
+    "version": "3.2.6.4"
 }

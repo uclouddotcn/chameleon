@@ -1,49 +1,50 @@
 {
-    "desc": "华为",
-    "name": "huawei",
-    "chamversion": "1.3.1",
-    "version": "1.3.1",
     "cfgitem": [
         {
-            "name": "appId",
-            "type": "string",
-            "desc": "APP ID"
-        },
+            "desc": "APP ID", 
+            "name": "appId", 
+            "type": "string"
+        }, 
         {
-            "name": "cpId",
-            "type": "string",
-            "desc": "CP ID"
-        },
+            "desc": "CP ID", 
+            "name": "cpId", 
+            "type": "string"
+        }, 
         {
-            "name": "privateKey",
-            "type": "string",
-            "desc": "PRIVATE KEY"
-        },
+            "desc": "PRIVATE KEY", 
+            "name": "privateKey", 
+            "type": "string"
+        }, 
         {
-            "name": "payId",
-            "type": "string",
-            "desc": "PAY ID"
-        },
+            "desc": "PAY ID", 
+            "name": "payId", 
+            "type": "string"
+        }, 
         {
-            "name": "cpName",
-            "type": "string",
-            "desc": "CP NAME"
-        },
+            "desc": "CP NAME", 
+            "name": "cpName", 
+            "type": "string"
+        }, 
         {
-            "name": "payUrl",
-            "type": "url",
-            "desc": "支付回调URL"
-        },
+            "desc": "支付回调URL", 
+            "name": "payUrl", 
+            "type": "url"
+        }, 
         {
-            "name": "payRsaPubKey",
-            "type": "string",
-            "desc": "pay Rsa Pub Key"
-        },
+            "desc": "pay Rsa Pub Key", 
+            "name": "payRsaPubKey", 
+            "type": "string"
+        }, 
         {
-            "name": "payPrivateKey",
-            "type": "string",
-            "desc": "Pay Private Key",
-            "ignoreInA": 1
+            "desc": "Pay Private Key", 
+            "ignoreInA": 1, 
+            "name": "payPrivateKey", 
+            "type": "string"
         }
-    ]
+    ], 
+    "chamversion": "1.3.1", 
+    "desc": "华为", 
+    "name": "huawei", 
+    "svrver": "1.4.1", 
+    "version": "1.3.1"
 }

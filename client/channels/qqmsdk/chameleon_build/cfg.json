@@ -1,40 +1,41 @@
 {
-    "desc": "QQ互娱",
-    "name": "qqmsdk",
-    "chamversion": "1.3.1",
-    "version": "v2.0.6a",
-    "enableWrapPackage": 0,
     "cfgitem": [
         {
-            "name": "qqAppId",
-            "type": "string",
-            "desc": "手Q APP ID"
-        },
+            "desc": "手Q APP ID", 
+            "name": "qqAppId", 
+            "type": "string"
+        }, 
         {
-            "name": "qqAppKey",
-            "type": "string",
-            "desc": "手Q APP KEY"
-        },
+            "desc": "手Q APP KEY", 
+            "name": "qqAppKey", 
+            "type": "string"
+        }, 
         {
-            "name": "wxAppId",
-            "type": "string",
-            "desc": "微信 APP ID"
-        },
+            "desc": "微信 APP ID", 
+            "name": "wxAppId", 
+            "type": "string"
+        }, 
         {
-            "name": "wxAppKey",
-            "type": "string",
-            "desc": "微信 APP KEY"
-        },
+            "desc": "微信 APP KEY", 
+            "name": "wxAppKey", 
+            "type": "string"
+        }, 
         {
-            "name": "moneyIcon",
-            "type": "string",
-            "desc": "qq支付时候所需要的支付图标，必须是48*48的"
-        },
+            "desc": "qq支付时候所需要的支付图标，必须是48*48的", 
+            "name": "moneyIcon", 
+            "type": "string"
+        }, 
         {
-            "name": "test",
-            "type": "boolean",
-            "default": "false",
-            "desc": "是否使用测试环境"
+            "default": "false", 
+            "desc": "是否使用测试环境", 
+            "name": "test", 
+            "type": "boolean"
         }
-    ]
+    ], 
+    "chamversion": "1.3.1", 
+    "desc": "QQ互娱", 
+    "enableWrapPackage": 0, 
+    "name": "qqmsdk", 
+    "svrver": "1.5.0", 
+    "version": "v2.0.6a"
 }

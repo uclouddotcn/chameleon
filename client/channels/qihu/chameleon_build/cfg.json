@@ -1,47 +1,48 @@
 {
-    "desc": "奇虎360",
-    "name": "qihu",
-    "chamversion": "1.3.1",
-    "version": "1.1.0",
     "cfgitem": [
         {
-            "name": "appId",
-            "type": "string",
-            "desc": "APP ID"
-        },
+            "desc": "APP ID", 
+            "name": "appId", 
+            "type": "string"
+        }, 
         {
-            "name": "appKey",
-            "type": "string",
-            "desc": "APP KEY"
-        },
+            "desc": "APP KEY", 
+            "name": "appKey", 
+            "type": "string"
+        }, 
         {
-            "name": "weixinAppid",
-            "type": "string",
-            "desc": "微信APP ID"
-        },
+            "desc": "微信APP ID", 
+            "name": "weixinAppid", 
+            "type": "string"
+        }, 
         {
-            "name": "appSecret",
-            "type": "string",
-            "desc": "APP SECRET",
-            "ignoreInA": 1
-        },
+            "desc": "APP SECRET", 
+            "ignoreInA": 1, 
+            "name": "appSecret", 
+            "type": "string"
+        }, 
         {
-            "name": "isBGTransparent",
-            "type": "boolean",
-            "desc": "是否使用透明背景",
-            "default": "true"
-        },
+            "default": "true", 
+            "desc": "是否使用透明背景", 
+            "name": "isBGTransparent", 
+            "type": "boolean"
+        }, 
         {
-            "name": "uri",
-            "type": "url",
-            "desc": "支付回调URL"
-        },
+            "desc": "支付回调URL", 
+            "name": "uri", 
+            "type": "url"
+        }, 
         {
-            "name": "channel",
-            "type": "string",
-            "desc": "用于标识应用方的子渠道",
-            "default": "default",
-            "ignoreInA": 1
+            "default": "default", 
+            "desc": "用于标识应用方的子渠道", 
+            "ignoreInA": 1, 
+            "name": "channel", 
+            "type": "string"
         }
-    ]
+    ], 
+    "chamversion": "1.3.1", 
+    "desc": "奇虎360", 
+    "name": "qihu", 
+    "svrver": "1.4.1", 
+    "version": "1.1.0"
 }
