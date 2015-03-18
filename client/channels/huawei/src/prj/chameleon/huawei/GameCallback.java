@@ -72,40 +72,6 @@ class GameCallback implements IGameCallBack {
      */
     @Override
     public void onUpdateCheckFinished(UpdateInfo info) {
-        // 根据业务需要设置，demo中只在登录界面展示更新信息
-        if (null == info) {
-            DebugConfig.d(Constants.TAG, "IGameCallBack onUpdateCheckFinished:无更新信息");
-            return;
-        }
-        DebugConfig.d(Constants.TAG, "IGameCallBack onUpdateCheckFinished:UpdateInfo="
-                + info.toString());
-
-        // 如有需要则提示用户是否更新，可针对提示方式和界面自行修改，如不需要SDK更新则忽略此逻辑不处理即可
-        AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-        dialog.setTitle("更新提示")
-                .setMessage("更新内容：" + info.toString())
-                .setPositiveButton("更新", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        // 通知SDK进行更新
-                        if (null != GlobalParams.hwBuoy) {
-                            GlobalParams.hwBuoy.updateApp(
-                                    mContext.getApplicationContext(),
-                                    GameCallback.this);
-                        }
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).create().show();
-
-        dialog.show();
     }
 
     @Override

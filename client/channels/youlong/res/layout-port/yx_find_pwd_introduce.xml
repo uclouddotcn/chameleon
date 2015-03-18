@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background_corners" >
+
+    <include android:id="@+id/personal_top_layout" layout="@layout/common_header"/>
+
+
+    <LinearLayout
+        android:id="@+id/layout_login"
+        style="@style/style_login_content_total_port"
+        android:layout_below="@id/personal_top_layout">
+
+        <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top">
+	        <LinearLayout
+	            android:id="@+id/ll1"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="wrap_content"
+	                    android:orientation="horizontal">
+	            <TextView
+	                android:id="@+id/label1"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/find_pwd_introduce1"/>
+	            <TextView
+	                android:id="@+id/label2"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/find_pwd_19196link"
+	                android:textColor="@color/blue"/>
+	            <TextView
+	                android:id="@+id/label3"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/find_pwd_introduce2"/>
+	         </LinearLayout>
+	         <TextView
+	                android:id="@+id/label4"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_below="@id/ll1"
+	                android:text="@string/find_pwd_introduce3"/>
+         </RelativeLayout>
+         <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp">
+	        <LinearLayout
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="wrap_content"
+	                    android:orientation="vertical">
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/find_pwd_introduce4"/>
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginLeft="14dp"
+	                android:text="@string/find_pwd_introduce5"/>
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginLeft="14dp"
+	                android:text="@string/find_pwd_introduce6"/>
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginLeft="14dp"
+	                android:text="@string/find_pwd_introduce9"/>
+	         </LinearLayout>
+         </RelativeLayout>
+
+        </LinearLayout>
+        
+</RelativeLayout>

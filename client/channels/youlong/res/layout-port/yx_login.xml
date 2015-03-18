@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_container"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background_corners" >
+    
+    <!-- SuperToast要求必须要有 id为 card_container 的LinearLayout -->
+	<LinearLayout
+	    android:id="@+id/card_container"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal">
+	</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/personal_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/login_head_bg" >
+
+        
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/logo19196" />
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/exit_icon_26dp"
+            android:layout_height="@dimen/exit_icon_26dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/exit_icon_rightTo_26dp"
+            android:src="@drawable/icon_back" 
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/exit"
+            android:layout_width="@dimen/exit_icon_26dp"
+            android:layout_height="@dimen/exit_icon_26dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/exit_icon_rightTo_26dp"
+            android:src="@drawable/exit" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_login"
+        style="@style/style_login_content_total_port"
+        android:layout_below="@id/personal_top_layout">
+
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+<!--                 style="@style/PersonalMainLayoutStyle" -->
+            <RelativeLayout
+                android:id="@+id/dropdownWidth"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/login_input_line_padding"
+                android:paddingRight="@dimen/login_input_line_padding"
+                android:background="@drawable/login_et_bg">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/line_view"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_btn_select"
+                        android:layout_width="30dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:nextFocusRight="@+id/btn_select" 
+                        android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/btn_select"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/login_history_selector" />
+					</LinearLayout>
+                    <RelativeLayout
+                        android:id="@+id/theparent"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/ll_btn_select"
+                        android:nextFocusRight="@id/btn_select" >
+
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="27dp"
+                            android:layout_height="25dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/username_icon_select" />
+
+                        <EditText
+                            android:id="@+id/loginaccount"
+                            android:layout_toRightOf="@id/imageView2"
+                            style="@style/edit_style"
+                            android:hint="@string/username_hint">
+                            
+                            <requestFocus />
+                         </EditText>
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                	<View 
+                	    android:id="@+id/line_view"
+                	    android:layout_centerVertical="true"
+                	    style="@style/PersonalLine" />
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/line_view"
+                	android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="27dp"
+                        android:layout_height="25dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/pwd_icon_select" />
+
+					<EditText
+                        android:id="@+id/loginpassword"
+						android:layout_toRightOf="@id/imageView3"
+                        android:layout_centerVertical="true"
+                        style="@style/edit_style"
+                        android:hint="@string/pwd_hint"
+                        android:inputType="textPassword">
+
+                    </EditText>
+                </RelativeLayout>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="10dp" >
+
+                <LinearLayout
+                    android:id="@+id/layout_remeber_pwd"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:layout_centerVertical="true"
+	                android:orientation="horizontal">
+	                <ImageView
+	                    android:id="@+id/check_remeber_pwd"
+	                    android:layout_width="20dp"
+	                    android:layout_height="20dp"
+	                    android:layout_gravity="center_vertical"
+	                    android:background="@drawable/btn_toggle_btn_selector"
+	                    android:contentDescription="记住密码"/>
+	
+	                <TextView
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:layout_gravity="center_vertical"
+			                android:layout_marginLeft="4dp"
+			                android:text="记住密码"
+			                android:textSize="@dimen/label_text_12sp"
+			                android:textStyle="bold" />
+	                <!-- <LinearLayout
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_marginLeft="5dp"
+			            android:orientation="vertical" >
+			
+			            <TextView
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:text="记住密码"
+			                android:textSize="10sp"
+			                android:textStyle="bold" />
+			
+			            <TextView
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:text=" Save Password"
+			                android:textSize="6sp" />
+			        </LinearLayout> -->
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/layout_auto_login"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:layout_centerVertical="true"
+	                android:layout_toRightOf="@id/layout_remeber_pwd"
+	                android:orientation="horizontal">
+	                <ImageView
+	                    android:id="@+id/auto_login"
+	                    android:layout_width="20dp"
+	                    android:layout_height="20dp"
+	                    android:layout_gravity="center_vertical"
+	                    android:background="@drawable/btn_toggle_btn_selector"
+	                    android:contentDescription="自动登陆"
+	                    android:scaleType="centerCrop" />
+	                <TextView
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:layout_gravity="center_vertical"
+			                android:layout_marginLeft="4dp"
+			                android:text="自动登陆"
+			                android:textSize="@dimen/label_text_12sp"
+			                android:textStyle="bold" />
+	                <!-- <LinearLayout
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_marginLeft="5dp"
+			            android:orientation="vertical" >
+			            <TextView
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:text="自动登陆"
+			                android:textSize="10sp"
+			                android:textStyle="bold" />
+			
+			            <TextView
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:text=" Automatic Landing"
+			                android:textSize="6dp" />
+			        </LinearLayout> -->
+				</LinearLayout>
+                <TextView
+                        android:id="@+id/tv_find_pwd"
+                        android:layout_width="80dp"
+                        android:layout_height="24dp"
+	                    android:layout_gravity="center_vertical"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/pwd_find_bg"
+                        android:drawableLeft="@drawable/pwd_find_icon"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="4dp"
+                        android:text="忘记密码"
+                        android:textColor="#fff"
+                        android:textStyle="bold" 
+                        android:textSize="@dimen/label_text_12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="fill"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/login"
+                    style="@style/login_btn_style"
+                    android:text="立即登录"/>
+            </LinearLayout>
+
+            
+            <LinearLayout
+                android:id="@+id/RelativeLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center" 
+                android:orientation="horizontal">
+            
+                <RelativeLayout
+                    android:id="@+id/layout_website19196"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/bottom_bg_select">
+
+                    <ImageView
+                        android:id="@+id/website_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/website_icon_selector" />
+
+                    <TextView
+                        android:id="@+id/website19196"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/website_icon"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/link_website19196"
+                        android:textColor="@drawable/website_text_select"
+                        android:textSize="15sp" 
+                        android:autoLink="web"/>
+                </RelativeLayout>
+                <RelativeLayout
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:gravity="center" >
+	                <Button
+	                    android:id="@+id/register"
+	                    android:layout_width="match_parent"
+	                    android:layout_height="match_parent"
+	                    android:background="@drawable/bottom_bg_select"
+	                    android:text="@string/registerByPhone"
+	                    android:textColor="@drawable/website_text_select"
+	                    android:textSize="15sp" />
+				</RelativeLayout>
+			</LinearLayout>
+          </LinearLayout>
+        </LinearLayout>
+
+</RelativeLayout>

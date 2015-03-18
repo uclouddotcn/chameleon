@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical">
+        
+        <!-- 龙币余额 -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="15dp"
+	   		android:layout_marginRight="15dp"
+	        android:gravity="center_vertical">
+            
+            <TextView
+                android:id="@+id/tv_lb_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/hint_text_color"
+                android:textSize="16sp"
+                android:text="龙币余额："/>
+            
+            <!-- 余额 -->
+            <TextView
+                android:id="@+id/lb_tv_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/_blue"
+                android:textSize="16sp"
+                android:layout_toRightOf="@+id/tv_lb_hint"
+                android:text="0"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/_blue"
+                android:textSize="16sp"
+                android:layout_toRightOf="@+id/lb_tv_balance"
+                android:text="个币"/>
+            <Button
+                android:id="@+id/lb_btn_refresh"
+                android:layout_width="56dp"
+                android:layout_height="36dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:background="@drawable/btn_refersh_selector"
+                android:text="刷 新"/>
+        </RelativeLayout>
+        
+        <!-- 分割线 -->
+        <TextView
+            android:layout_marginLeft="15dp"
+	   		android:layout_marginRight="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/lb_detail_line"/>
+        
+        <!-- 引用订单明细布局 -->
+	    <include
+	        layout="@layout/layout_order_info"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_marginTop="12dp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        />
+    </LinearLayout>
+
+</FrameLayout>
