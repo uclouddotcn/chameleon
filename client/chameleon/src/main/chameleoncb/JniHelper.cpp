@@ -35,7 +35,7 @@ int doCallJniMethod<std::string>(JNIEnv * env, jclass clazz, jmethodID mid, std:
     jbyteArray r = (jbyteArray)env->CallStaticObjectMethodV(clazz, mid, args);
     *result = ConvertByteArray(env, r);
     env->DeleteLocalRef(r);
-    return 0; 
+    return 0;
 }
 
 
