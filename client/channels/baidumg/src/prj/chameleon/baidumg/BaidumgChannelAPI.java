@@ -158,6 +158,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
         appInfo.setOrientation(mCfg.mScreenOrientation);
         mAdPage = new ActivityAdPage(activity, mAdPageListener);
+        Log.e(Constants.TAG, "Before INit.");
         BDGameSDK.init(activity, appInfo, new IResponse<Void>() {
             @Override
             public void onResponse(int i, String s, Void aVoid) {
