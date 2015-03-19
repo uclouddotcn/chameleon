@@ -346,24 +346,30 @@
 	            android:contentDescription="@string/bdp_image"
 	            />
 	        
-	        <TextView 
+	        <LinearLayout 
+	            android:id="@+id/lin_customer_support"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="@string/bdp_customer_support"
-	            android:textColor="@color/bdp_dark_gray"
-	            android:textSize="13sp"
-	            />
-	        
-	        <!-- 客服电话 -->
-	        <TextView 
-	            android:id="@+id/txt_customer_support"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:paddingTop="10dip"
-	            android:text="@string/bdp_customer_support_phone"
-	            android:textColor="@color/bdp_blue"
-	            android:textSize="13sp"
-	            />
+	            android:visibility="gone"
+	        	android:gravity="bottom">
+		        <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/bdp_customer_support"
+		            android:textColor="@color/bdp_dark_gray"
+		            android:textSize="13sp"
+		            />
+		        
+		        <!-- 客服电话 -->
+		        <TextView 
+		            android:id="@+id/txt_customer_support"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:paddingTop="10dip"
+		            android:textColor="@color/bdp_blue"
+		            android:textSize="13sp"
+		            />
+	        </LinearLayout>
 	    </LinearLayout>
 	    
 	    <!-- 历史账号列表 -->

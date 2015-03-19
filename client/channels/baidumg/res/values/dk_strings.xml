@@ -556,5 +556,6 @@
     <string name="dk_repayment_vip">回馈VIP抽奖</string>
     <string name="dk_go_prize">去抽奖</string>
     <string name="dk_effect_time">有效期：</string>
+    <string name="dk_safe_notice">为了您的信息安全，请用密码登录后使用</string>
 
 </resources>
