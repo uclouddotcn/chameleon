@@ -8,7 +8,9 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.anzhi.usercenter.sdk.AnzhiUserCenter;
+import com.anzhi.usercenter.sdk.LogoActivity;
 import com.anzhi.usercenter.sdk.inter.AnzhiCallback;
+import com.anzhi.usercenter.sdk.inter.InitSDKCallback;
 import com.anzhi.usercenter.sdk.inter.KeybackCall;
 import com.anzhi.usercenter.sdk.item.CPInfo;
 
@@ -41,6 +43,10 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private final KeybackCall mKeybackCb = new KeybackCall() {
         @Override
         public void KeybackCall(String s) {
+            if (s == null){
+                return;
+            }
+
             if (s.equals("gamePay")) {
                 if (mPayCb != null) {
                     mPayCb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);
@@ -117,13 +123,15 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mCpInfo.setGameName(commCfg.mAppName);
     }
 
+
+
     /**
      * init the SDK
      * @param activity the activity to give the real SDK
      * @param cb callback function when the request is finished, the JSON object is null
      */
     @Override
-    public void init(android.app.Activity activity,
+    public void init(final android.app.Activity activity,
                      final IDispatcherCb cb) {
         if (mIsDebug) {
             AnzhiUserCenter.getInstance().setOpendTestLog(mIsDebug);
@@ -132,6 +140,12 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         AnzhiUserCenter.getInstance().setCPInfo(mCpInfo);
         AnzhiUserCenter.getInstance().setCallback(mEventCb);
         AnzhiUserCenter.getInstance().setKeybackCall(mKeybackCb);
+        InitSDKCallback iniCb = new InitSDKCallback(){
+            public void ininSdkCallcack(){
+                AnzhiUserCenter.getInstance().login(activity, true);
+            }
+        };
+        AnzhiUserCenter.getInstance().azinitSDK(activity,mCpInfo, iniCb);
         if (mCfgLandScape) {
             AnzhiUserCenter.getInstance().setActivityOrientation(0);
         } else {
@@ -309,11 +323,6 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             Log.e(Constants.TAG, "Fail to parse login rsp", e);
             return false;
         }
-    }
-
-    @Override
-    public void createToolBar(Activity activity, int position) {
-        AnzhiUserCenter.getInstance().createFloatView(activity);
     }
 
     @Override
