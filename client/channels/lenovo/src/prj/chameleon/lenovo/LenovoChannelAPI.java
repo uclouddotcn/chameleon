@@ -154,8 +154,14 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void exit(Activity activity, IDispatcherCb cb) {
-        cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
+    public void exit(Activity activity, final IDispatcherCb cb) {
+        LenovoGameApi.doQuit(activity, new LenovoGameApi.IQuitCallback() {
+            @Override
+            public void onFinished(String data) {
+                //退出游戏
+                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+            }
+        });
     }
 
 
