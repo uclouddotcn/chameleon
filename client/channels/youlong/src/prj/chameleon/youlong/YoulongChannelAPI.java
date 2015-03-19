@@ -56,7 +56,7 @@ public final class YoulongChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                         userInfo.mUserName = intent.getStringExtra("userName");
                         userInfo.mUserToken = intent.getStringExtra("token");
                         mUserInfo = userInfo;
-                        cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.mUserToken, userInfo.mUserName, mChannel));
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.mUserName, userInfo.mUserToken, mChannel));
                         mAccountActionListener = accountActionListener;
                     } else if (state.equals(Utils.LOGIN_CANCEL)) {
                         //取消登录操作
@@ -71,7 +71,7 @@ public final class YoulongChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 userInfo.mUserName = intent.getStringExtra("userName");
                 userInfo.mUserToken = intent.getStringExtra("token");
                 mUserInfo = userInfo;
-                cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.mUserToken, userInfo.mUserName, mChannel));
+                cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(userInfo.mUserName, userInfo.mUserToken, mChannel));
             }
         });
     }
