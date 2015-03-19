@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/include_title"
+        layout="@layout/com_lenovo_pay_item_titlebar" />
+
+    <include
+        android:id="@+id/include_goods"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/include_title"
+        layout="@layout/com_lenovo_pay_item_goods" />
+
+    <include
+        android:id="@+id/include_paytype"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/include_goods"
+        android:layout_alignParentBottom="true"
+        layout="@layout/com_lenovo_pay_item_paytype" />
+
+</RelativeLayout>

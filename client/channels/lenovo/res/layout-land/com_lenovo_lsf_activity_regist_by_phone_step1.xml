@@ -66,7 +66,7 @@
         android:layout_marginLeft="@dimen/com_lenovo_lsf_content_padding_left_right"
         android:layout_marginRight="@dimen/com_lenovo_lsf_content_padding_left_right"
         android:text="@string/com_lenovo_lsf_login_string_registration"
-        android:textColor="@color/white"
+        android:textColor="@color/com_lenovo_lsf_white"
         android:textSize="@dimen/com_lenovo_lsf_btn_text_font_size" />
 
 

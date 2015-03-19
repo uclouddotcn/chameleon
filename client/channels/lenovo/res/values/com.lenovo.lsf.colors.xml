@@ -11,14 +11,13 @@
 	<!-- by weizhenhua -->
 	<color name="dialog_title_color">#2967A8</color>
   	<color name="color_text_black">#262626</color>
-  	<color name="white">#ffffffff</color>
+  	<color name="com_lenovo_lsf_white">#ffffffff</color>
   	<color name="dialog_verify_code_btn_disable">#DEDEDE</color>
   	<color name="dialog_verify_code_btn_enable">#4EA1F9</color>
   	<color name="color_text_register">#999999</color>
   	<color name="rank_listview_divider_color">#C9C8C8</color>
   	<color name="default_listview_item_pressed_color">#CEEEFD</color>
   	<color name="color_text_gray">#626262</color>
-  	<color name="transparent">#00000000</color>
   	<color name="sharedialog_blue">#155AA1</color>
 	<color name="com_lenovo_lsf_sdk_title_background">#0062b3</color>
   	<color name="com_lenovo_lsf_tile_font_color">#ffffff</color>
