@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
     package="prj.chameleon.uc">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +19,8 @@
         <activity
             android:name="cn.uc.gamesdk.SdkActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/app_name"
+            android:label="test"
+            chameleon:replace="android:label=@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
