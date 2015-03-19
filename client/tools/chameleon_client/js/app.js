@@ -328,6 +328,7 @@ chameleonApp = angular.module('chameleonApp', [
                         $scope.selectedSDKs = channel.sdks;
                         $scope.selectedSDK = {};
                         $scope.SDKConfigHtml = "";
+                        $scope.hideSignConfig = $scope.selectedChannel.useGlobalSignConfig;
 
                         //refresh config view
                         $('#SDKConfigView').empty();
@@ -405,6 +406,7 @@ chameleonApp = angular.module('chameleonApp', [
                         }else{
                             $scope.hideSignConfig = false;
                         }
+                        $scope.selectedChannel.config.useGlobalSignConfig = $scope.hideSignConfig;
                     }
 
                     //icon config
