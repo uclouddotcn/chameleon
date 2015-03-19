@@ -5,7 +5,6 @@
     android:background="@android:color/white" >
 
     <WebView
-        
         android:id="@+id/webView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -24,21 +23,14 @@
         android:minHeight="3dip"
         android:visibility="visible" />
 
-    <!--
-          <ProgressBar
-        android:id="@+id/progressBar_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
-    -->
-    
+   
+
     <RelativeLayout
         android:id="@+id/functionbar"
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:background="@drawable/anzhi_bg_ab"
         android:gravity="center_vertical" >
 
@@ -48,36 +40,28 @@
             android:background="@android:drawable/bottom_bar"
             android:gravity="center_vertical" >
 
-              <Button
-                  android:id="@+id/bt_back"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                    android:background="@drawable/anzhi_arrow_back"
-                  />
-
-              <Button
-                  android:id="@+id/bt_advance"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                   android:background="@drawable/anzhi_arrow_right"
-                
-                   android:layout_weight="1"
-                  />
-
-              <Button
-                  android:id="@+id/bt_refresh"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
+            <Button
+                android:id="@+id/bt_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-				android:background="@drawable/sdk_loading"                 
-                 />
+                android:background="@drawable/anzhi_arrow_back" />
 
+            <Button
+                android:id="@+id/bt_advance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/anzhi_arrow_right" />
+
+            <Button
+                android:id="@+id/bt_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/sdk_loading" />
         </LinearLayout>
-
-      
     </RelativeLayout>
-    
 
     <RelativeLayout
         android:id="@+id/errorLay"
@@ -90,9 +74,9 @@
         <ImageView
             android:id="@+id/errerIv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:background="@drawable/anzhi_prompt"/>
+            android:background="@drawable/anzhi_prompt" />
 
         <TextView
             android:layout_width="fill_parent"
@@ -100,15 +84,6 @@
             android:layout_below="@id/errerIv"
             android:gravity="center_horizontal"
             android:text="@string/anzhi_pageloadfailandback" />
-
-        <!--
-             <Button
-            android:id="@+id/retryBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" 
-            android:text="刷新"/>
-        -->
     </RelativeLayout>
 
 </RelativeLayout>

@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:background="@color/white" >
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@android:color/white" >
+        android:background="@color/white" >
 
         <RelativeLayout
             android:id="@+id/linearLayout1"
@@ -43,10 +43,10 @@
                     android:layout_margin="5dip"
                     android:layout_toRightOf="@id/pwd_TV"
                     android:background="@null"
-                    android:hint="@string/anzhi_nickname"
+                    android:cursorVisible="true"
+                    android:hint="@string/anzhi_inputnickname"
                     android:maxLength="12"
                     android:singleLine="true"
-                    android:cursorVisible="true"        
                     android:textColor="@color/anzhi_494949"
                     android:textColorHint="@color/anzhi_d0d0d0"
                     android:textSize="@dimen/font_16" />
@@ -64,8 +64,8 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/size_40"
             android:layout_above="@+id/divider"
-            android:layout_marginLeft="@dimen/size_40"
-            android:layout_marginRight="@dimen/size_40"
+            android:layout_marginLeft="@dimen/size_10"
+            android:layout_marginRight="@dimen/size_10"
             android:background="@drawable/anzhi_button_bg_green"
             android:text="@string/anzhi_save"
             android:textColor="@color/anzhi_FFFFFF"

@@ -19,7 +19,7 @@
         android:layout_marginBottom="5dip"
         android:layout_marginTop="5dip"
         android:textColor="@color/anzhi_494949"
-        android:text="@string/star_shuangyu"
+        android:text="@string/anzhi_star_shuangyu"
         android:textSize="@dimen/font_18" />
 
 </LinearLayout>
