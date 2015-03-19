@@ -1,19 +1,19 @@
 {
-    "desc": "游龙",
-    "name": "youlong",
-    "chamversion": "1.4.1",
-    "version": "V0.72",
     "cfgitem": [
         {
-          "name": "pId",
-          "type" : "string",
-          "desc" : "PID"
-        },
+            "desc": "PID", 
+            "name": "pId", 
+            "type": "string"
+        }, 
         {
-          "name": "pKey",
-          "type" : "string",
-          "desc" : "PKEY"
+            "desc": "PKEY", 
+            "name": "pKey", 
+            "type": "string"
         }
-    ]
+    ], 
+    "chamversion": "1.4.1", 
+    "desc": "游龙", 
+    "name": "youlong", 
+    "svrver": "1.4.1", 
+    "version": "V0.72"
 }
-

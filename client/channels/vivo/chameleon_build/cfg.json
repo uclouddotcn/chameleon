@@ -1,32 +1,33 @@
 {
-    "desc": "VIVO",
-    "name": "vivo",
-    "chamversion": "1.3.1",
-    "version": "V2.1.0",
     "cfgitem": [
         {
-            "name": "appId",
-            "type": "string",
-            "desc": "APP ID",
-            "ignoreInA": 1
-        },
+            "desc": "APP ID", 
+            "ignoreInA": 1, 
+            "name": "appId", 
+            "type": "string"
+        }, 
         {
-            "name": "cpId",
-            "type": "string",
-            "desc": "CP ID",
-            "ignoreInA": 1
-        },
+            "desc": "CP ID", 
+            "ignoreInA": 1, 
+            "name": "cpId", 
+            "type": "string"
+        }, 
         {
-            "name": "cpKey",
-            "type": "string",
-            "desc": "CP KEY",
-            "ignoreInA": 1
-        },
+            "desc": "CP KEY", 
+            "ignoreInA": 1, 
+            "name": "cpKey", 
+            "type": "string"
+        }, 
         {
-            "name": "payUrl",
-            "type": "url",
-            "desc": "支付回调地址",
-            "ignoreInA": 1
+            "desc": "支付回调地址", 
+            "ignoreInA": 1, 
+            "name": "payUrl", 
+            "type": "url"
         }
-    ]
+    ], 
+    "chamversion": "1.3.1", 
+    "desc": "VIVO", 
+    "name": "vivo", 
+    "svrver": "1.4.1", 
+    "version": "V2.1.0"
 }

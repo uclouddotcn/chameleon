@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/com_lenovo_pay_goods_paytpe_bg"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/layout_paytype_first_row"
+        android:layout_width="fill_parent"
+        android:layout_height="130dp"
+        android:baselineAligned="false"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/layout_bankcard"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/bankcard_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableTop="@drawable/com_lenovo_pay_bankcard"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/com_lenovo_pay_goods_bankcard_text"
+                android:textColor="@color/com_lenovo_pay_goods_paytpe_text"
+                android:textSize="@dimen/com_lenovo_pay_goods_item_paytpye_fontsize" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/center_land_line1"
+            android:layout_width="1px"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:background="#D1D1D1" />
+
+        <LinearLayout
+            android:id="@+id/layout_zhifubao"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/zhifubao_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableTop="@drawable/com_lenovo_pay_zhifubao"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/com_lenovo_pay_goods_zhifubao_text"
+                android:textColor="@color/com_lenovo_pay_goods_paytpe_text"
+                android:textSize="@dimen/com_lenovo_pay_goods_item_paytpye_fontsize" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/center_land_line2"
+            android:layout_width="1px"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:background="#D1D1D1" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/center_land_line3"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#D1D1D1" />
+
+    <LinearLayout
+        android:id="@+id/layout_paytype_second_row"
+        android:layout_width="fill_parent"
+        android:layout_height="130dp"
+        android:baselineAligned="false"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/layout_caifutong"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/caifutong_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableTop="@drawable/com_lenovo_pay_caifutong"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/com_lenovo_pay_goods_caifutong_text"
+                android:textColor="@color/com_lenovo_pay_goods_paytpe_text"
+                android:textSize="@dimen/com_lenovo_pay_goods_item_paytpye_fontsize" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/center_land_line4"
+            android:layout_width="1px"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:background="#D1D1D1" />
+
+        <LinearLayout
+            android:id="@+id/layout_chargecard"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/chargecard_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableTop="@drawable/com_lenovo_pay_chargecard"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/com_lenovo_pay_goods_chargecard_text"
+                android:textColor="@color/com_lenovo_pay_goods_paytpe_text"
+                android:textSize="@dimen/com_lenovo_pay_goods_item_paytpye_fontsize" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/center_land_line6"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#D1D1D1" />
+
+    <LinearLayout
+        android:id="@+id/layout_paytype_third_row"
+        android:layout_width="fill_parent"
+        android:layout_height="130dp"
+        android:baselineAligned="false"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/layout_gamecard"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/gamecard_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableTop="@drawable/com_lenovo_pay_gamecard"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/com_lenovo_pay_goods_gamecard_text"
+                android:textColor="@color/com_lenovo_pay_goods_paytpe_text"
+                android:textSize="@dimen/com_lenovo_pay_goods_item_paytpye_fontsize" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/center_land_line5"
+            android:layout_width="1px"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:background="#D1D1D1" />
+
+        <LinearLayout
+            android:id="@+id/layout_space"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/space_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:textColor="@color/com_lenovo_pay_goods_paytpe_text"
+                android:textSize="@dimen/com_lenovo_pay_goods_item_paytpye_fontsize" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

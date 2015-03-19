@@ -1,26 +1,25 @@
 {
-    "desc": "拇指玩",
-    "name": "muzhiwan",
-    "chamversion": "1.4.1",
-    "version": "V2.0.7.1",
     "cfgitem": [
         {
-          "name": "payKey",
-          "type" : "string",
-          "desc" : "payKey",
-          "ignoreInA" : 1
-        },
+            "desc": "payKey", 
+            "ignoreInA": 1, 
+            "name": "payKey", 
+            "type": "string"
+        }, 
         {
-          "name": "appKey",
-          "type" : "string",
-          "desc" : "appKey"
-        },
+            "desc": "appKey", 
+            "name": "appKey", 
+            "type": "string"
+        }, 
         {
-          "name": "debug",
-          "type" : "boolean",
-          "desc" : "debug"
+            "desc": "debug", 
+            "name": "debug", 
+            "type": "boolean"
         }
-
-    ]
+    ], 
+    "chamversion": "1.4.1", 
+    "desc": "拇指玩", 
+    "name": "muzhiwan", 
+    "svrver": "1.4.1", 
+    "version": "V2.0.7.1"
 }
-

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    >
+    
+    <FrameLayout 
+        android:id="@+id/exit_advert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+	        android:id="@+id/dialog_top"
+	        android:layout_width="match_parent"
+	        android:layout_height="180dp"
+	        android:orientation="vertical" >
+			<ImageView
+			    android:id="@+id/exit_img_advert"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:scaleType="fitXY"
+			    android:src="@drawable/more"/>
+	    </LinearLayout>
+		<RelativeLayout
+		    android:id="@+id/dialog_top2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	       >
+	
+	        <ImageView
+	            android:id="@+id/cancel"
+	            android:layout_width="@dimen/exit_icon_20dp"
+	            android:layout_height="@dimen/exit_icon_20dp"
+	            android:layout_centerVertical="true"
+	            android:layout_alignParentRight="true"
+	            android:layout_alignParentTop="true"
+	            android:layout_marginRight="10dp"
+	            android:layout_marginTop="10dp"
+	            android:src="@drawable/exit" />
+	    </RelativeLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/exit_advert"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bottom_bg_select"
+            android:gravity="center" >
+
+            <Button
+                android:id="@+id/exit_btn_exit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/exit_btn_color_select"
+                android:text="退出登录"
+                android:textSize="15sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" >
+
+            <Button
+                android:id="@+id/exit_btn_forum"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autoLink="web"
+                android:background="@drawable/exit_btn_bbs_color_select"
+                android:linksClickable="true"
+                android:text="进入论坛"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

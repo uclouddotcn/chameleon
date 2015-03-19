@@ -67,46 +67,15 @@
     <color name="anzhi_c003C6A99">#003C6A99</color>
     <color name="anzhi_c883C6A99">#883C6A99</color>
     <color name="anzhi_cFF3C6A99">#FF3C6A99</color>
-    <color name="mini_text_color_gray">#333333</color>
-    <color name="mini_hint_color">#b2b2b2</color>
-    <color name="mini_error_hint_color">#ffffff</color>
-    <color name="mini_error_input">#FF0000</color>
-    <color name="mini_text_shadow">#fefefe</color>
-    <color name="mini_text_white">#ffffff</color>
-    <color name="mini_text_black">#000000</color>
-    <color name="mini_button_text_disable">#aaaaaa</color>
-    <color name="mini_button_text_normal">#ffffff</color>
-    <color name="mini_text_link">#2861d7</color>
-    <color name="mini_list_bg_color">#bababa</color>
-    <color name="mini_page_bg_color">#ededed</color>
-    <color name="mini_input_hint_color">#cccccc</color>
-    <color name="mini_win_background">#00000000</color>
-    <color name="mini_card_defaultuse">#FF9933</color>
-
-    <drawable name="mini_list_devider">#bababa</drawable>
-    <drawable name="mini_page_bg_color">#ededed</drawable>
-    <drawable name="mini_win_background_draw">#00000000</drawable>
-
-    <color name="c80000000">#80000000</color>
-    <color name="c0088dd">#0088dd</color>
-    <color name="cb3b3b3">#b3b3b3</color>
-    <color name="mini_color_gray">#666666</color>
-    <color name="mini_color_light_gray">#999999</color>
-    <color name="mini_text_color_desc">#999999</color>
-    <color name="mini_cardlimit_text_color">#000000</color>
-    <color name="mini_cardlimit_money_color">#666666</color>
-    <color name="mini_card_edti_bk">#31373e</color>
-    <color name="mini_card_edit_pop_shadow">#59000000</color>
-    <color name="setting_translucent_bg">#e0000000</color>
-    <color name="B_black">#FF000000</color>
-    <color name="C_white">#FFFFFFFF</color>
-    <color name="msp_dialog_tiltle_blue">#2277BB</color>
-    <color name="msp_text_color_gray">#333333</color>
-    <color name="msp_hint_color">#b2b2b2</color>
-    <color name="msp_line_color">#cccccc</color>
-    <color name="msp_combox_list_devider_color">#d8d8d8</color>
-
-    <drawable name="mini_web_back_text_default">#333333</drawable>
-    <drawable name="mini_web_back_text_press">#cccccc</drawable>
+    <color name="anzhi_8e8e8e">#8e8e8e</color>
+    <color name="anzhi_ee8a05">#ee8a05</color>
+    <color name="anzhi_2b2b2b">#2b2b2b</color>
+    <color name="anzhi_999999">#999999</color>
+    <color name="anzhi_666666">#666666</color>
+    <color name="anzhi_333333">#333333</color>
+    <color name="anzhi_line_color">#b4b4b4</color>
+    <color name="anzhi_e5e5e5">#e5e5e5</color>
+    <color name="anzhi_c7c7c7">#c7c7c7</color>
+    <color name="anzhi_a6a6a6">#a6a6a6</color>
 
 </resources>

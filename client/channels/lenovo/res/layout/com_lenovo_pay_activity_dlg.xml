@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="420dp"
+    android:layout_height="290dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/com_lenovo_pay_activity_detail_bg" >
+
+    <TextView
+        android:id="@+id/activity_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="35dp"
+        android:layout_alignParentTop="true"
+        android:text="活动详情"
+        android:textColor="@color/com_lenovo_pay_title_text"
+        android:textSize="24sp" />
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_below="@+id/activity_title"
+        android:background="#ff6a26"
+        />
+    <TextView
+        android:id="@+id/activity_content_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_line"
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="12dp"
+        android:text="V币充值返利活动规则:"
+        android:textColor="#ffffff"
+        android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/activity_content_tv"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/activity_content_title"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="20dp"
+        android:text="V币充值返利活动规则:adfasdfasdfasdfasdadfasdfasdfasdfasdfa\n11111111111\n222222222222\n33333333333333"
+        android:singleLine="false"
+        android:maxLines="6"
+        android:scrollbars="vertical"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
+       <View
+        android:id="@+id/view_space1"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/activity_content_tv"
+        android:layout_height="12dp"
+        />
+    <LinearLayout
+        android:id="@+id/layout_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_space1"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="horizontal" >
+        <Button
+            android:id="@+id/charge_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/com_lenovo_pay_activity_charge_btn_selector"
+            android:text="@string/com_lenovo_pay_activity_charge_tv"
+            android:textSize="16sp"
+            android:textColor="#ffffff" />
+        <View
+        android:id="@+id/view_space"
+        android:layout_width="40dp"
+        android:layout_height="1dp"
+        />
+        
+        <Button
+            android:id="@+id/know_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/com_lenovo_pay_activity_cancel_btn_selector"
+            android:text="@string/com_lenovo_pay_activity_know_tv"
+            android:textSize="16sp"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+       <View
+        android:id="@+id/view_space2"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/layout_btn"
+        android:layout_height="12dp"
+        />
+</RelativeLayout>

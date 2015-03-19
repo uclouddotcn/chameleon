@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- <item android:state_selected="true" android:drawable="@drawable/btn_pay_selected"/>
+    <item  android:drawable="@drawable/btn_pay_normal"/> -->
+    <item android:state_selected="true" android:drawable="@color/skin_blue_tab_press"/>
+    <item  android:drawable="@color/skin_blue_tab_normal"/>
+</selector>
+ 

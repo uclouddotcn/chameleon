@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/com_lenovo_pay_userinfo_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/layout_userinfo"
+        android:layout_width="fill_parent"
+        android:layout_height="110dp" >
+
+        <ImageView
+            android:id="@+id/userinfo_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/com_lenovo_pay_userinfo" />
+
+        <LinearLayout
+            android:id="@+id/layout_userinfo_first_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/com_lenovo_pay_title_internal_space"
+            android:layout_toRightOf="@+id/userinfo_icon"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <TextView
+                android:id="@+id/accountname_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="181010223122"
+                android:textColor="#757575"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:id="@+id/layout_balanceinfo"
+                android:layout_width="@dimen/com_lenovo_pay_title_userinfo_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/balance_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/com_lenovo_pay_userinfo_balance_text"
+                    android:textColor="#191919"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:id="@+id/balance_coin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1000"
+                    android:textColor="@color/com_lenovo_pay_balance"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:id="@+id/balance_coin_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/com_lenovo_pay_v_name"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/com_lenovo_pay_title_balance_fontsize" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/center_land_line1"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#D1D1D1" />
+
+    <RelativeLayout
+        android:id="@+id/layout_trade_record"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="16dp" >
+
+        <TextView
+            android:id="@+id/trade_record_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/com_lenovo_pay_userinfo_trade_record_text"
+            android:textColor="#191919"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/trade_record_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/com_lenovo_pay_userinfo_traderecord_tv_selector" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/center_land_line2"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#D1D1D1" />
+
+</LinearLayout>

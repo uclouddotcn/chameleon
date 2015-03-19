@@ -63,7 +63,7 @@
             android:layout_marginRight="@dimen/com_lenovo_lsf_content_padding_left_right"
             android:background="@drawable/com_lenovo_lsf_btn_register_selector"
             android:text="@string/com_lenovo_lsf_string_network_error_retry"
-            android:textColor="@color/white"
+            android:textColor="@color/com_lenovo_lsf_white"
             android:textSize="16sp" />
     </RelativeLayout>
 

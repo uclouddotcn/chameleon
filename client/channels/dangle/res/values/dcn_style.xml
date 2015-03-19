@@ -84,7 +84,7 @@
     </style>
 
     <declare-styleable name="line">
-        <attr name="orientation" format="string" />
+        <attr name="orientation_dashed" format="string" />
     </declare-styleable>
 
 

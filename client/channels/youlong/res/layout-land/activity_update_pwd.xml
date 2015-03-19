@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background_corners" >
+
+    <include android:id="@+id/personal_top_layout" layout="@layout/common_header"/>
+
+
+    <LinearLayout
+        android:id="@+id/layout_login"
+        style="@style/style_login_content_total_land"
+        android:layout_below="@id/personal_top_layout">
+
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+<!--                 style="@style/PersonalMainLayoutStyle" -->
+            <RelativeLayout
+                android:id="@+id/editBorder"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/login_input_line_padding"
+                android:paddingRight="@dimen/login_input_line_padding"
+                android:background="@drawable/login_et_bg">
+
+                <View 
+               	    android:id="@+id/line_view"
+               	    android:layout_centerVertical="true"
+               	    style="@style/PersonalLine" />
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_alignBottom="@id/line_view">
+
+                    <EditText
+                            android:id="@+id/update_pwd_et_pwd"
+                            style="@style/edit_style"
+                            android:layout_centerVertical="true"
+                            android:paddingLeft="2dp"
+                            android:inputType="textPassword"
+                            android:hint="请输入新密码">
+                            
+                            <requestFocus />
+                         </EditText>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_alignTop="@id/line_view"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/update_pwd_et_repwd"
+                        style="@style/edit_style"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="2dp"
+                        android:inputType="textPassword"
+                        android:hint="再次输入新密码">
+
+                    </EditText>
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" >
+
+                <TextView
+                    android:id="@+id/tv_find_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/password_pattern_error"
+                    android:textSize="@dimen/edit_text_14sp" />
+                
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="fill"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/update_btn_pwd"
+                    style="@style/login_btn_style"
+                    android:text="确认" />
+            </LinearLayout>
+          </LinearLayout>
+        </LinearLayout>
+        
+</RelativeLayout>

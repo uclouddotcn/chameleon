@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item"
+        android:layout_width="106dp"
+        android:layout_height="46dp"
+        android:background="@drawable/com_lenovo_pay_gamecard_index_frame"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="46dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:textColor="@color/com_lenovo_pay_title_text"
+            android:textSize="18sp" />
+      <LinearLayout
+            android:layout_below="@id/item_text"
+            android:id="@+id/item_seperator"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >   
+	       <TextView
+	            android:id="@+id/item_sepoerator_above"
+	            android:layout_width="fill_parent"
+	            android:layout_height="1px"
+	            android:background="@color/com_lenovo_pay_gamecard_item_index_seperator_above"/>
+	        <TextView
+	            android:id="@+id/item_sepoerator_bellow"
+	            android:layout_width="fill_parent"
+	            android:layout_height="1px"
+	            android:background="@color/com_lenovo_pay_gamecard_item_index_seperator_bellow"/>
+     </LinearLayout>
+</RelativeLayout>

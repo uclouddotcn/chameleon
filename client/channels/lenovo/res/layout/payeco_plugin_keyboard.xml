@@ -1,43 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#70000000"
+    android:gravity="bottom" >
+<RelativeLayout
     android:id="@+id/payeco_keyboardLayout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/payeco_keyboard_bg"
     android:gravity="bottom" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/payeco_keyboardKey"
         android:layout_width="fill_parent"
         android:layout_height="40.0dip"
         android:layout_marginTop="5.0dip"
-        android:orientation="horizontal"
-        android:visibility="visible" >
-
-        <ImageView
+         >
+       <ImageView
+           	android:id="@+id/payeco_keyboard_key"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginLeft="15.0dip"
             android:layout_marginRight="5.0dip"
             android:background="@drawable/payeco_keyboard_key" />
-
         <TextView
+            android:id="@+id/payeco_keyboard_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginLeft="5.0dip"
+            android:layout_toRightOf="@id/payeco_keyboard_key"
             android:text="@string/payeco_keyboard"
-            android:textColor="@color/payeco_textColorWhite"
+            android:textColor="#fff"
             android:textSize="@dimen/payeco_pw_textsize" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:layout_toRightOf="@id/payeco_keyboard_text"
             android:layout_marginLeft="25.0dip"
             android:background="@drawable/payeco_unionpay_logo" />
-    </LinearLayout>
+        <Button 
+            android:id="@+id/payeco_keyborad_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消"
+           android:paddingLeft="10dip" 
+            android:paddingRight="10dip"
+            android:paddingBottom="5dip"
+            android:textColor="#fff"
+            android:layout_margin="5dip"
+            android:background="@drawable/payeco_plugin_btnright_selector"
+            android:layout_alignParentRight="true"
+            />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/payeco_keyboardTips"
@@ -67,21 +86,29 @@
         <LinearLayout
             android:id="@+id/payeco_keyboard_editText"
             android:layout_width="fill_parent"
-            android:layout_height="42.0dip" >
-
+            android:layout_height="wrap_content" 
+            android:background="@drawable/payeco_keyboard_pw_bg0"
+            android:layout_margin="5dip"
+            android:gravity="center_vertical"
+            >
+			<TextView 
+			    android:layout_width="wrap_content"
+            	android:layout_height="wrap_content" 
+            	android:text="银行卡密码:"
+            	 android:textColor="#000"
+            	android:textSize="@dimen/payeco_pwkeyboard_button_textsize" 
+			    />
             <Button
                 android:id="@+id/payeco_keyboard_password"
-                android:layout_width="fill_parent"
+                android:layout_width="0dip"
                 android:layout_height="fill_parent"
-                android:layout_marginLeft="5.0dip"
-                android:layout_marginRight="5.0dip"
-                android:background="@drawable/payeco_keyboard_input_bg"
                 android:gravity="center_vertical"
                 android:hint="@string/payeco_keyboard_edit_hint"
                 android:inputType="textPassword"
+                android:background="#fff"
                 android:paddingLeft="10.0dip"
                 android:singleLine="true"
-                android:textColor="@color/payeco_textColorBlack"
+                android:layout_weight="1"
                 android:textSize="@dimen/payeco_pwkeyboard_button_textsize" />
         </LinearLayout>
 
@@ -92,7 +119,7 @@
             android:layout_marginLeft="5.0dip"
             android:layout_marginRight="5.0dip"
             android:layout_marginTop="8.0dip"
-            android:background="@color/payeco_bgColor"
+            android:background="#E8E8E8"
             android:padding="8.0dip" >
 
             <LinearLayout
@@ -199,7 +226,7 @@
                         android:layout_weight="2"
                         android:background="@drawable/payeco_plugin_btnleft_selector"
                         android:text="@string/payeco_keyboard_delete"
-                        android:textColor="@color/payeco_textColorWhite"
+                        android:textColor="#fff"
                         android:textSize="@dimen/payeco_pwkeyboard_button_textsize" />
                 </LinearLayout>
             </LinearLayout>
@@ -213,7 +240,7 @@
             android:layout_marginLeft="5.0dip"
             android:layout_marginRight="5.0dip"
             android:layout_marginTop="5.0dip" >
-
+<!-- 
             <RadioGroup
                 android:id="@+id/payeco_keyboard_type"
                 android:layout_width="0px"
@@ -237,7 +264,7 @@
                     android:id="@+id/payeco_symbol_keyboard"
                     style="@style/payeco_keyboardButton"
                     android:text="@string/payeco_keyboard_symbol" />
-            </RadioGroup>
+            </RadioGroup> -->
 
             <Button
                 android:id="@+id/payeco_confirm_keyboard"
@@ -247,9 +274,9 @@
                 android:layout_weight="1"
                 android:background="@drawable/payeco_plugin_btnright_selector"
                 android:text="@string/payeco_keyboard_confirm"
-                android:textColor="@color/payeco_textColorWhite"
+                android:textColor="#FFF"
                 android:textSize="@dimen/payeco_pwkeyboard_button_textsize" />
         </LinearLayout>
     </LinearLayout>
-
+</RelativeLayout>
 </RelativeLayout>

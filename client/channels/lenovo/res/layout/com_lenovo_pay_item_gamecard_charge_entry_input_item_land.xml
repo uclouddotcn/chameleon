@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/btn"
+        android:layout_width="80dp"
+        android:layout_height="35dp"
+        android:background="@drawable/com_lenovo_pay_gamecard_entry_frame"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="#535353"
+            android:textSize="24sp" />
+
+</RelativeLayout>

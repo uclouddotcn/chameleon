@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
   
-    android:background="@android:color/white" >
+    android:background="@color/anzhi_e5e5e5">
 
 
         <RelativeLayout
@@ -118,7 +118,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/size_10"
                             android:layout_toRightOf="@id/icon"
-                            android:text="@string/title_currency"
+                            android:text="@string/anzhi_title_currency"
                             android:textColor="@color/anzhi_494949"
                             android:textSize="@dimen/font_18" />
 
@@ -169,7 +169,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/size_10"
                             android:layout_toRightOf="@id/icon"
-                            android:text="@string/title_consum_history"
+                            android:text="@string/anzhi_title_consum_history"
                             android:textColor="@color/anzhi_494949"
                             android:textSize="@dimen/font_18" />
 

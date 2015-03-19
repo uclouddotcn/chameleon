@@ -1,40 +1,40 @@
 {
-    "desc": "优酷",
-    "name": "youku",
-    "chamversion": "1.4.1",
-    "version": "V1.9.2",
     "cfgitem": [
         {
-          "name": "appId",
-          "type" : "string",
-          "desc" : "APPID"
-        },
+            "desc": "APPID", 
+            "name": "appId", 
+            "type": "string"
+        }, 
         {
-          "name": "appName",
-          "type" : "string",
-          "desc" : "游戏名称"
-        },
+            "desc": "游戏名称", 
+            "name": "appName", 
+            "type": "string"
+        }, 
         {
-          "name": "appKey",
-          "type" : "string",
-          "desc" : "APPKEY"
-        },
+            "desc": "APPKEY", 
+            "name": "appKey", 
+            "type": "string"
+        }, 
         {
-          "name": "appSecret",
-          "type" : "string",
-          "desc" : "APPSECRET"
-        },
+            "desc": "APPSECRET", 
+            "name": "appSecret", 
+            "type": "string"
+        }, 
         {
-          "name": "notifyUri",
-          "type" : "url",
-          "desc" : "支付回调地址"
-        },
+            "desc": "支付回调地址", 
+            "name": "notifyUri", 
+            "type": "url"
+        }, 
         {
-          "name": "paykey",
-          "type" : "string",
-          "desc" : "peykey",
-          "ignoreInA" : 1
+            "desc": "peykey", 
+            "ignoreInA": 1, 
+            "name": "paykey", 
+            "type": "string"
         }
-    ]
+    ], 
+    "chamversion": "1.4.1", 
+    "desc": "优酷", 
+    "name": "youku", 
+    "svrver": "1.4.1", 
+    "version": "V1.9.2"
 }
-

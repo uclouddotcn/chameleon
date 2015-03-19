@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/personal_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/login_head_bg" >
+
+        <TextView
+            android:id="@+id/tv_comm_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@null"
+            android:textColor="#fff"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:typeface="normal" />
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/exit_icon_26dp"
+            android:layout_height="@dimen/exit_icon_26dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/exit_icon_rightTo_26dp"
+            android:src="@drawable/icon_back"/>
+
+        <ImageView
+            android:id="@+id/exit"
+            android:layout_width="@dimen/exit_icon_26dp"
+            android:layout_height="@dimen/exit_icon_26dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/exit_icon_rightTo_26dp"
+            android:src="@drawable/exit"  
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+</RelativeLayout>

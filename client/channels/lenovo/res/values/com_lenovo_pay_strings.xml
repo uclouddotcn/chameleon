@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="com_lenovo_pay_title_login_text">已登录</string>
+    <string name="com_lenovo_pay_title_user_text">用户</string>
+    <string name="com_lenovo_pay_title_balance_text">余额:</string>
+    <string name="com_lenovo_pay_title_charge_text">充值</string>
+    <string name="com_lenovo_pay_title_charge_card_text">充值卡充值</string>
+    <string name="com_lenovo_pay_goods_name_text">商品名称:</string>
+    <string name="com_lenovo_pay_goods_order_text">订单售价:</string>
+    <string name="com_lenovo_pay_goods_balance_text">使用余额支付</string>
+    <string name="com_lenovo_pay_goods_need_pay_text">您还需要支付</string>
+    <string name="com_lenovo_pay_goods_custom_service_text">客服电话: 010 88680000</string>
+    <string name="com_lenovo_pay_goods_bankcard_text">银行卡支付</string>
+    <string name="com_lenovo_pay_traderecord_bankcard_text">银行卡</string>
+    <string name="com_lenovo_pay_goods_zhifubao_text">支付宝</string>
+    <string name="com_lenovo_pay_goods_caifutong_text">财付通</string>
+    <string name="com_lenovo_pay_goods_chargecard_text">充值卡</string>
+    <string name="com_lenovo_pay_goods_gamecard_text">游戏点卡</string>
+    <string name="com_lenovo_pay_goods_vcoinpay_text">去支付</string>
+    <string name="com_lenovo_pay_gamecard_sure_pay_text">确认支付</string>
+    <string name="com_lenovo_pay_gamecard_pay_back_aibeibi_text">预计将到账</string>
+    <string name="com_lenovo_pay_next_step_text">下一步</string>
+    <string name="com_lenovo_pay_userinfo_balance_text">账户余额:</string>
+    <string name="com_lenovo_pay_userinfo_trade_record_text">查看交易记录</string>
+    <string name="com_lenovo_pay_userinfo_title_text">账户信息</string>
+    <string name="com_lenovo_pay_bankpay_title_text">银行卡充值</string>
+    <string name="com_lenovo_pay_zhifubao_title_text">支付宝充值</string>
+    <string name="com_lenovo_pay_caifutong_title_text">财付通充值</string>
+    <string name="com_lenovo_pay_charge_paytype_title_text">选择支付方式</string>
+    <string name="com_lenovo_pay_chargecard_title_text">充值卡充值</string>
+    <string name="com_lenovo_pay_chargecard_pay_title_text">充值卡支付</string>
+    <string name="com_lenovo_pay_gamecard_title_text">游戏点卡充值</string>
+    <string name="com_lenovo_pay_gamecard_pay_title_text">游戏点卡支付</string>
+    <string name="com_lenovo_pay_please_input_cardno2">请输入%1$s游戏点卡卡号</string>
+    <string name="com_lenovo_pay_please_input_cardpwd2">请输入%1$s游戏点卡密码</string>
+    <string name="com_lenovo_pay_card_deno_label">请选择%1$s面额:</string>
+    <string name="com_lenovo_pay_szf_deno_label">其它面额(元):</string>
+    <string name="com_lenovo_pay_szf_card_input_label">卡号:</string>
+    <string name="com_lenovo_pay_szf_pwd_input_label">密码:</string>
+    <string name="com_lenovo_pay_pleast_input_id">请输入卡号</string>
+    <string name="com_lenovo_pay_pleast_input_pwd">请输入卡密码</string>
+    <string name="com_lenovo_pay_pleast_input_deno">请输入卡面额</string>
+    <string name="com_lenovo_pay_card_no_min_error">卡号长度应最小为%1$s位.</string>
+    <string name="com_lenovo_pay_card_pwd_min_error">卡密长度应最小为%1$s位.</string>
+    <string name="com_lenovo_pay_input_amount_null_error">您输入的金额不正确,请重新输入!</string>
+    <string name="com_lenovo_pay_input_correct_deno">输入面额范围应为1~1000元</string>
+    <string name="com_lenovo_pay_fee_tip">(已扣除%1$s手续费)</string>
+    <string name="com_lenovo_pay_deno_fast_pay_fee">总共扣除:%1$s,其中购买商品价格:%2$s元,存入V币:%3$s元%4$s,是否进行支付？</string>
+    <string name="com_lenovo_pay_deno_no_charge_to_pay">面额与支付金额不一致，不能进行支付，请选择其它面额或其它支付方式</string>
+    <string name="com_lenovo_pay_network_unconnent">网络连接失败，请检查网络！</string>
+    <string name="com_lenovo_pay_tip1">我需支付</string>
+    <string name="com_lenovo_pay_tip2">元</string>
+    <string name="com_lenovo_pay_fee_rate">包含%1$s元手续费.</string>
+    <string name="com_lenovo_pay_deno_bigger">所选面额小于支付金额.</string>
+    
+    <string name="com_lenovo_pay_deno_no_enough">所选面额扣除%1$s手续费小于支付金额.</string>
+    <string name="com_lenovo_pay_please_input_cardno">请输入%1$s话费卡卡号</string>
+    <string name="com_lenovo_pay_please_input_cardpwd">请输入%1$s话费卡密码</string>
+    <string name="com_lenovo_pay_card_no_min_error_1">卡号长度应为%1$s位.</string>
+    <string name="com_lenovo_pay_card_pwd_min_error_1">卡密长度应为%1$s位.</string>
+    <string name="com_lenovo_pay_error_cardno">卡号长度错误,请重新输入！</string>
+    <string name="com_lenovo_pay_error_cardpassword">密码长度错误,请重新输入！</string>
+    <string name="com_lenovo_pay_error_pwd_to_cardno">卡号对应的密码错误，请重新输入！</string>
+    <string name="com_lenovo_pay_card_input_error">%1$s输入应为数字,请重新输入！</string>
+    <string name="com_lenovo_pay_card_warn">请确保所选面额与卡实际面额一致，否则将可能导致充值失败、意外销卡或资金损失。</string>
+    <string name="com_lenovo_pay_xlistview_header_hint_normal">下拉刷新</string>
+    <string name="com_lenovo_pay_xlistview_header_hint_ready">松开刷新数据</string>
+    <string name="com_lenovo_pay_xlistview_header_hint_loading">正在加载。。。</string>
+    <string name="com_lenovo_pay_xlistview_header_last_time">上次更新时间：</string>
+    <string name="com_lenovo_pay_xlistview_footer_hint_normal">查看更多</string>
+    <string name="com_lenovo_pay_xlistview_footer_hint_ready">松开载入更多</string>
+    
+    <string name="com_lenovo_pay_traderecord_title_text">交易记录</string>
+    <string name="com_lenovo_pay_traderecord_no_charge_tip_text">没有充值记录。</string>
+    <string name="com_lenovo_pay_traderecord_no_pay_tip_text">没有购买记录。</string>
+    <string name="com_lenovo_pay_traderecord_charge_text">充值记录</string>
+    <string name="com_lenovo_pay_traderecord_pay_text">购买记录</string>
+    <string name="com_lenovo_pay_traderecord_balance_text">账户余额:</string>
+    <string name="com_lenovo_pay_traderecord_charge_btn_text">去充值</string>
+    <string name="com_lenovo_pay_back_vbi_text">预计将到账</string>
+    <string name="com_lenovo_pay_fee_rate_4_charge">扣除%1$s元手续费.</string>
+    <string name="com_lenovo_pay_traderecord_detail_order_text">流水单号:</string>
+    <string name="com_lenovo_pay_traderecord_detail_amount_text">充值金额:</string>
+    <string name="com_lenovo_pay_traderecord_detail_chargeway_text">充值方式:</string>
+    <string name="com_lenovo_pay_traderecord_detail_chargeresult_text">充值结果:</string>
+    <string name="com_lenovo_pay_traderecord_detail_chargesource_text">充值来源:</string>
+    <string name="com_lenovo_pay_traderecord_detail_fee_text">手续费:</string>
+    <string name="com_lenovo_pay_traderecord_detail_account_amount_text">到账金额:</string>
+    <string name="com_lenovo_pay_traderecord_detail_title_text">订单详情</string>
+    <string name="com_lenovo_pay_other_deno">其它金额(元):</string>
+    <string name="com_lenovo_pay_input_amount_null_error1">输入的金额不能为空,请重新输入!</string>
+    <string name="com_lenovo_pay_v_name">V币</string>
+    <string name="com_lenovo_pay_input_amount_small_error">输入的最小金额为1元,请重新输入!</string>
+    <string name="com_lenovo_pay_input_amount_big_error">输入的金额不能超过1000元,请重新输入!</string>
+    <string name="com_lenovo_pay_input_amount_format_error">您输入的金额不合法,请重新输入!"</string>
+    <string name="com_lenovo_pay_traderecord_detail_text">订单详情  &#62;</string>
+    <string name="com_lenovo_pay_cash_unit_text">v币</string>
+    <string name="com_lenovo_pay_dlg_ok_text">确定</string>
+    <string name="com_lenovo_pay_dlg_cancel_text">取消</string>
+    <string name="com_lenovo_pay_dlg_title_text">提示</string>
+    <string name="com_lenovo_pay_password_dlg_sure">确认支付</string>
+    <string name="com_lenovo_pay_password_dlg_hint_password">支付密码8～16位数字或英文</string>
+    <string name="com_lenovo_pay_charge_input_tip">请选择充值金额:</string>
+    
+    
+    <string name="com_lenovo_pay_traderecord_detail_productname_text">商品名称:</string>
+    <string name="com_lenovo_pay_traderecord_detail_productvalue_text">商品价值：</string>
+    <string name="com_lenovo_pay_traderecord_detail_tradestatus_text">交易状态：</string>
+    
+    
+    
+    <string name="com_lenovo_pay_loading_cashier_text">正在连接支付中心，请稍后...</string>
+    <string name="com_lenovo_pay_loading_userinfo_text">正在获取用户信息，请稍后...</string>
+    <string name="com_lenovo_pay_use_logining_cashier_text">正在登录中，请稍候..</string>
+    <string name="com_lenovo_pay_gp_text">前往</string>
+    <string name="com_lenovo_pay_exit_pay_tip_text">确定放弃本次支付?</string>
+    <string name="com_lenovo_pay_pay_processing_text">正在处理中...</string>
+    <string name="com_lenovo_pay_pay_finish_text">该订单已经处理成功</string>
+    <string name="com_lenovo_pay_pay_retry_text">商品价格刷新完成，请重新支付</string>
+    
+    <string name="com_lenovo_pay_input_cardnum_text">请输入卡号</string>
+    <string name="com_lenovo_pay_input_cardpwd_text">请输入卡密码</string>
+    <string name="com_lenovo_pay_input_carddenomanation_text">请输入卡面额</string>
+    
+    <string name="com_lenovo_pay_query_waiting_text">正在查询充值结果，请稍候...</string>
+    <string name="com_lenovo_pay_query_now_text">立即查询</string>
+    <string name="com_lenovo_pay_query_waiting_to_account_text">充值尚未到账，请稍候...</string>
+    <string name="com_lenovo_pay_query_wait_text">稍后查询</string>
+    
+    <string name="com_lenovo_pay_no_sufficient_funds">V币余额不足，请前往充值.</string>
+    <string name="com_lenovo_pay_tenpay_loading_text">正在加载财付通，请稍候...</string>
+    <string name="com_lenovo_pay_pay_finish_thanks">你已成功购买商品，本次支付金额为%1$s元，感谢您的支持！</string>
+    <string name="com_lenovo_pay_vcoin_pay_tip">您将使用V币支付%1$s%2$s\u0020（1元=%3$s）,请确认.</string>
+    <string name="com_lenovo_pay_vcoin_pay_fee_tip">您将使用V币支付%1$s%2$s\u0020（其中%3$s为支付手续费, 1元=%4$s）, 请确认.</string>
+    <string name="com_lenovo_pay_charge_rate_tip">本次共需支付:%1$s,其中商品价格:%2$s,%3$s收取手续费:%4$s.</string>
+    <string name="com_lenovo_pay_pay_card_warn_tip">请确保所选面额与卡实际面额一致，否则将可能导致充值失败、意外销卡或资金损失。</string>
+    <string name="com_lenovo_pay_user_activing_text">正在激活账户,请稍侯...</string>
+    
+    <string name="com_lenovo_pay_trade_record_loadmore">查看更多</string>
+    
+    <string name="com_lenovo_pay_trade_record_refresh">下拉刷新</string>
+    
+    <string name="com_lenovo_pay_trade_record_refresh_time">上次更新时间：</string>
+    
+    <string name="com_lenovo_pay_trade_record_success">成功</string>
+    <string name="com_lenovo_pay_trade_record_failed">失败</string>
+    
+	<string name="com_lenovo_pay_activity_charge_tv">立即充值</string>
+	<string name="com_lenovo_pay_activity_know_tv">我知道了</string>
+	<string name="com_lenovo_pay_charge_success_info">已到账 %1$s V币</string>
+	<string name="com_lenovo_pay_charge_amount">充值 %1$s 元</string>
+	<string name="com_lenovo_pay_charge_account_tip">登录帐号:</string>
+	<string name="com_lenovo_pay_charge_know">我知道了</string>
+	
+    
+    
+    <!-- error -->
+    <string name="com_lenovo_pay_error_network_failed_text">网络连接失败，请检查网络！</string>
+    <string name="com_lenovo_pay_error_remote_call_failed_text">调用远程服务失败</string>
+    <string name="com_lenovo_pay_error_goods_expired_text">商品价格已过期，正在重新获取...</string>
+    <string name="com_lenovo_pay_error_charge_exception_text">充值异常.</string>
+    
+    
+    
+</resources>

@@ -55,7 +55,7 @@
                     android:layout_weight="0.5"
                     android:background="@drawable/anzhi_button_bg_gray"
                     android:gravity="center"
-                    android:text="@string/ok"
+                    android:text="@string/anzhi_ok"
                     android:textColor="@color/anzhi_545454"
                     android:textSize="@dimen/font_18" />
             </LinearLayout>

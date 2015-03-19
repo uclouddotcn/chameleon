@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="horizontal"
+    android:background="@color/com_lenovo_pay_goods_bg">
+     
+     <ScrollView
+        android:id="@+id/scroll2"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:background="@color/com_lenovo_pay_gamecard_item_index_bg"
+        android:fadeScrollbars="false" >
+        <com.lenovo.pay.mobile.ui.MyGridView
+                android:id="@+id/gamecard_denomination_index"
+                android:layout_width="136dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:columnWidth="106dp"
+                android:horizontalSpacing="0dp"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="auto_fit"
+                android:verticalSpacing="0dp" />
+    </ScrollView>
+                    
+  <RelativeLayout
+      android:layout_marginTop="15dp"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">  
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/pay_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="false" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <!-- 输入框 -->
+            <com.lenovo.pay.mobile.ui.MyGridView
+                android:id="@+id/deno_grid"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:columnWidth="85dp"
+                android:horizontalSpacing="7dp"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="auto_fit"
+                android:verticalSpacing="7dp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/com_lenovo_pay_gamecard_entry_frame"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" >
+		
+                <!-- 充值卡号 -->
+                <FrameLayout
+                    android:id="@+id/card_num"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="0dp" >
+                    <include layout="@layout/com_lenovo_pay_item_gamecard_charge_entry_edittext_land" />
+                </FrameLayout>
+                <View  
+                    android:layout_width="match_parent"
+            		android:layout_height="1px"
+            		android:background="@color/com_lenovo_pay_title_bg" />
+                
+                <!-- 充值卡密码 -->
+                <FrameLayout
+                    android:id="@+id/card_pwd"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="0dp" >
+
+                    <include layout="@layout/com_lenovo_pay_item_gamecard_charge_entry_edittext_land" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/szf_deno_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="3dp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/pay_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp" />
+            </RelativeLayout>
+            
+            <!-- 提示栏 -->
+            <TextView
+                android:id="@+id/warn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
+
+    </ScrollView>
+     <Button
+        android:id="@id/pay_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="20sp"
+        android:background="@drawable/com_lenovo_pay_vcoin_pay_btn_selector"
+        android:textColor="@color/com_lenovo_pay_title_text"
+        android:text="@string/com_lenovo_pay_gamecard_sure_pay_text" />   
+</RelativeLayout>
+
+
+</LinearLayout>

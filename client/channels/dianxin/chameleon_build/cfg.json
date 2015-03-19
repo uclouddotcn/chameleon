@@ -1,37 +1,38 @@
 {
-  "desc": "电信",
-  "name": "dianxin",
-  "chamversion": "1.4.1",
-  "version": "V1.0",
-  "cfgitem": [
-    {
-      "name": "clientId",
-      "type": "string",
-      "desc": "ClientId  "
-    },
-    {
-      "name": "clientSecret",
-      "type": "string",
-      "desc": "ClientSecret",
-      "ignoreInA": 1
-    },
-    {
-      "name": "digitalId",
-      "type": "string",
-      "desc": "数字ID",
-      "ignoreInA": 1
-    },
-    {
-      "name": "cpId",
-      "type": "string",
-      "desc": "CPID",
-      "ignoreInA": 1
-    },
-    {
-      "name": "appKey",
-      "type": "string",
-      "desc": "AppKey",
-      "ignoreInA": 1
-    }
-  ]
+    "cfgitem": [
+        {
+            "desc": "ClientId  ", 
+            "name": "clientId", 
+            "type": "string"
+        }, 
+        {
+            "desc": "ClientSecret", 
+            "ignoreInA": 1, 
+            "name": "clientSecret", 
+            "type": "string"
+        }, 
+        {
+            "desc": "数字ID", 
+            "ignoreInA": 1, 
+            "name": "digitalId", 
+            "type": "string"
+        }, 
+        {
+            "desc": "CPID", 
+            "ignoreInA": 1, 
+            "name": "cpId", 
+            "type": "string"
+        }, 
+        {
+            "desc": "AppKey", 
+            "ignoreInA": 1, 
+            "name": "appKey", 
+            "type": "string"
+        }
+    ], 
+    "chamversion": "1.4.1", 
+    "desc": "电信", 
+    "name": "dianxin", 
+    "svrver": "1.4.1", 
+    "version": "V1.0"
 }

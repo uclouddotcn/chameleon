@@ -1,0 +1,154 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/_gray"
+    android:orientation="vertical" >
+
+    <!-- 顶部 -->
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        layout="@layout/common_title_bar" />
+
+    <!-- 渐变色 -->
+    <!--
+        <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="7dp"
+	    android:orientation="vertical"
+	    android:background="@drawable/payment_title_gradient"
+	    />
+    -->
+
+
+    <!-- 支付方式 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/_gray2"
+        android:orientation="horizontal" >
+
+        <!-- 银联支付 -->
+
+        <LinearLayout
+            android:id="@+id/pay_ll_yl"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_pay_selector"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/pay_btn_yl"
+                android:layout_width="46dp"
+                android:layout_height="30dp"
+                android:background="@drawable/btn_yl_selector" />
+        </LinearLayout>
+
+        <View style="@style/style_line" />
+
+        <!-- 支付宝支付 -->
+
+        <LinearLayout
+            android:id="@+id/pay_ll_zfb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_pay_selector"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/pay_btn_zfb"
+                android:layout_width="70dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_zfb_selector" />
+        </LinearLayout>
+
+        <View style="@style/style_line" />
+        <!-- 卡类支付 -->
+
+        <LinearLayout
+            android:id="@+id/pay_ll_card"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_pay_selector"
+            android:gravity="center" >
+
+            <Button
+                android:id="@+id/pay_btn_card"
+                android:layout_width="46dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_card_selector" />
+        </LinearLayout>
+
+        <View style="@style/style_line" />
+        <!-- 龙币支付 -->
+
+        <RelativeLayout
+            android:id="@+id/pay_ll_lb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_pay_selector"
+            android:gravity="center" >
+
+            <Button
+                android:id="@+id/pay_btn_lb"
+                android:layout_width="64dp"
+                android:layout_height="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/btn_lb_selector" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- 支付方式详细 -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp" >
+
+        <!-- 订单明细 -->
+        <!-- android:background="@drawable/pay_detail_background" -->
+
+        <FrameLayout
+            android:id="@+id/pay_frag_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="40dp"
+            android:orientation="vertical" >
+        </FrameLayout>
+
+        <!-- 支付按钮 -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp" >
+
+            <Button
+                android:id="@+id/pay_btn_pay"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:background="@drawable/btn_payment_selector"
+                android:textColor="@android:color/white"
+                android:textSize="22sp" />
+        </RelativeLayout>
+    </FrameLayout>
+
+</LinearLayout>
