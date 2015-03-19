@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_pressed="true" android:drawable="@drawable/com_lenovo_pay_userinfo_right_arrow_pressed"/>
+    <item android:state_enabled="true" android:drawable="@drawable/com_lenovo_pay_userinfo_right_arrow_normal"/>
+    <item android:drawable="@drawable/com_lenovo_pay_usericon_normal"/>
+</selector>

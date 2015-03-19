@@ -1,6 +1,12 @@
 {
     "cfgitem": [
         {
+            "desc": "APP ID",
+            "ignoreInA": 1,
+            "name": "appID",
+            "type": "string"
+        },
+        {
             "desc": "APP KEY",
             "name": "appKey",
             "type": "string"

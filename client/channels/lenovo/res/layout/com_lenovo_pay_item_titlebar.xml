@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/com_lenovo_pay_title_height"
+    android:background="@color/com_lenovo_pay_title_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/layout_quicklogin"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/com_lenovo_pay_title_height">
+
+        <ImageView
+            android:id="@+id/goback_icon"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/com_lenovo_pay_back" />
+
+        <LinearLayout
+            android:id="@+id/layout_userinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/goback_icon"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginRight="16dp"
+            android:visibility="visible" >
+
+            <ImageView
+                android:id="@+id/login_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/com_lenovo_pay_usericon_tv_selector" />
+
+            <TextView
+                android:id="@+id/login_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/com_lenovo_pay_title_login_text"
+                android:textColor="@color/com_lenovo_pay_title_text"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/balance_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="@string/com_lenovo_pay_title_balance_text"
+                android:textColor="@color/com_lenovo_pay_title_text"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/balance_coin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1000"
+                android:textColor="@color/com_lenovo_pay_balance"
+                android:textSize="12sp" />
+             <TextView
+                android:id="@+id/balance_coin_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/com_lenovo_pay_cash_unit_text"
+                android:textColor="@color/com_lenovo_pay_balance"
+                android:textSize="12sp" />
+
+            <View
+                android:id="@+id/title_space"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5" />
+
+            <TextView
+                android:id="@+id/charge_text"
+                android:layout_width="70dp"
+                android:layout_height="28dp"
+                android:text="@string/com_lenovo_pay_title_charge_text"
+                android:drawableLeft="@drawable/com_lenovo_pay_charge_icon"
+                android:gravity="left|center"
+                android:textColor="#ffffff"
+                android:background="@drawable/com_lenovo_pay_charge_btn_selector"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_common"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/goback_icon"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="充值卡充值"
+                android:textColor="@color/com_lenovo_pay_title_text"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

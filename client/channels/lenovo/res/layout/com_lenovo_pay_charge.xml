@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff" >
+
+    <include
+        android:id="@+id/include_title"
+        layout="@layout/com_lenovo_pay_item_titlebar_common_land" />
+
+    <ListView 
+        android:id="@+id/listview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/include_title"
+        android:background="#ffffff"
+        android:scrollbars="none"
+        android:divider="@null"></ListView>
+</RelativeLayout>

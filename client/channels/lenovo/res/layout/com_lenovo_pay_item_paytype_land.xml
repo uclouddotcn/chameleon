@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/com_lenovo_pay_goods_paytpe_bg"
+    android:orientation="vertical" >
+
+    <View
+        android:id="@+id/line_space"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/com_lenovo_pay_goods_item_paytpye_top_height"
+        android:background="#E9E9E9"
+        android:visibility="visible" />
+
+    <com.lenovo.pay.mobile.ui.MyGridView
+        android:id="@+id/gridview_paytypelist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="#00000000"
+        android:fadeScrollbars="true"
+        android:fadingEdge="none"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:listSelector="#00000000"
+        android:numColumns="5"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/layout_vcoin"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="visible" >
+
+        <Button
+            android:id="@+id/vcoin_pay_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/com_lenovo_pay_goods_item_paytpye_margin"
+            android:layout_marginRight="@dimen/com_lenovo_pay_goods_item_paytpye_margin"
+            android:background="@drawable/com_lenovo_pay_vcoin_pay_btn_selector"
+            android:text="@string/com_lenovo_pay_goods_vcoinpay_text"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+</RelativeLayout>

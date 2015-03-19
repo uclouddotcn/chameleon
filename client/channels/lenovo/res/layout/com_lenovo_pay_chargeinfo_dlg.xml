@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="285dp"
+    android:layout_height="wrap_content"
+    android:background="@color/com_lenovo_pay_userinfo_bg"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:id="@+id/layout_title"
+        android:layout_width="fill_parent"
+        android:layout_height="22dp"
+        android:background="@color/com_lenovo_pay_title_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:textColor="@color/com_lenovo_pay_title_text"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/layout_userinfo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/userinfo_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="17dp"
+            android:src="@drawable/com_lenovo_pay_charge_result_icon" />
+
+        <LinearLayout
+            android:id="@+id/layout_userinfo_first_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/userinfo_icon"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+
+
+            <LinearLayout
+                android:id="@+id/layout_balanceinfo"
+                android:layout_width="@dimen/com_lenovo_pay_title_userinfo_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/charge_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/com_lenovo_pay_charge_amount"
+                    android:textColor="#191919"
+                    android:textSize="16sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layout_chargeinfo"
+                android:layout_width="@dimen/com_lenovo_pay_title_userinfo_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/chargevconin_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/com_lenovo_pay_charge_success_info"
+                    android:textColor="#191919"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+                      <LinearLayout
+                android:id="@+id/layout_chargeinfo"
+                android:layout_width="@dimen/com_lenovo_pay_title_userinfo_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+                    <TextView
+	                android:id="@+id/accountname_tip"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginRight="2dp"
+	                android:text="@string/com_lenovo_pay_charge_account_tip"
+	                android:textColor="#757575"
+	                android:textSize="10sp" />
+	                <TextView
+	                android:id="@+id/accountname_text"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginRight="2dp"
+	                android:ellipsize="end"
+	                android:maxLines="2"
+	                android:text="181010223122"
+	                android:textColor="#757575"
+	                android:textSize="12sp" />
+                </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/dlg_sure"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/com_lenovo_pay_charge_result_btn_selector"
+            android:text="@string/com_lenovo_pay_charge_know"
+            android:textSize="12sp"
+            android:textColor="#ffffff" />
+
+    </LinearLayout>
+    <View
+        android:id="@+id/center_land_line2"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#D1D1D1" />
+
+</LinearLayout>

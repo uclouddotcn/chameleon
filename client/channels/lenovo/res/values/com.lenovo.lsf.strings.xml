@@ -264,7 +264,14 @@
   	<string name="com_lenovo_toolbar_id_close">"关闭"</string>
   	<string name="com_lenovo_toolbar_label_gift">礼包</string>
   	<string name="com_lenovo_lsf_string_autologin_failed">自动登录失败，请手工登录</string>
-	
+  	
+  	
+  	<string name="com_lenovo_lsf_quit_text">退出游戏</string>
+  	<string name="com_lenovo_lsf_enter_forum_text">点我试试</string>
+  	<string name="com_lenovo_lsf_watch_text">去看看</string>
+  	<string name="com_lenovo_lsf_close_text">关闭</string>
+	<string name="com_lenovo_lsf_activity_title_name">公告</string>
+	<string name="com_lenovo_lsf_quit_title_name">确认退出？</string>
 	
 	
 	
@@ -463,4 +470,6 @@
 	
 	<!-- 欢迎条相关 -->
 	<string name="account_manager">帐号管理</string>
+	
+	
 </resources>
