@@ -130,6 +130,12 @@
         "name": "安峰",
         "sdk": "anfeng",
         "icon": "1"
+    },
+    "mopo": {
+        "name": "斯凯",
+        "sdk": "mopo",
+        "pkgsuffix": ".mopo$",
+        "icon": "1"
     }
 }
 
