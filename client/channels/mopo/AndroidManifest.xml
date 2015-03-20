@@ -1,0 +1,182 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="prj.chameleon.mopo">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.UPDATE_DEVICE_STATS" />
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RUN_INSTRUMENTATION" />
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <application>
+        <service android:name="com.skymobi.pay.sms.service.SmsService" ></service>
+        <service android:name="com.skymobi.pay.sms.service.SynService" ></service>
+        <service android:name="com.skymobi.pay.common.service.PayCtrlService" ></service>
+        <service android:name="com.skymobi.pay.services.SkyPayRemoteService" >
+            <intent-filter>
+                <action android:name="com.skymobi.pay.sdk.ISkyPayRemoteService" >
+                </action>
+            </intent-filter>
+        </service>
+        <service android:name="com.skymobi.pay.third.service.CheckResultBackgroundService" >
+        </service>
+        <receiver android:name="com.skymobi.pay.sms.receiver.BootReceiver" >
+        <intent-filter android:priority="2147483647" >
+        <action android:name="android.intent.action.BATTERY_CHANGED" />
+        <action android:name="android.intent.action.SIM_STATE_CHANGED" />
+        <action android:name="android.intent.action.NOTIFICATION_ADD" />
+        <action android:name="android.intent.action.SERVICE_STATE" />
+            <action android:name="android.intent.action.NOTIFICATION_REMOVE" />
+            <action android:name="android.intent.action.NOTIFICATION_UPDATE" />
+            <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+            <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            <action android:name="android.intent.action.ANY_DATA_STATE" />
+            <action android:name="android.net.wifi.STATE_CHANGE" />
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <action android:name="android.intent.action.SCREEN_ON" />
+            <action android:name="android.intent.action.USER_PRESENT" />
+        </intent-filter>
+        </receiver>
+        <receiver android:name="com.skymobi.pay.sms.receiver.SmsReceiver" >
+            <intent-filter android:priority="2147483647" >
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.skymobi.pay.sms.receiver.NetworkReceiver" >
+            <intent-filter android:priority="2147483647" >
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <activity
+            android:name="com.skymobi.pay.sdk.SkyPayActivity"
+            android:configChanges="orientation|navigation|keyboardHidden|keyboard"
+            android:label="@string/app_name_skypay"
+            android:theme="@style/transparent" >
+        </activity>
+        <activity
+            android:name="com.skymobi.pay.third.activity.impl.EnterChargeCenter"
+            android:configChanges="orientation|navigation|keyboardHidden|keyboard"
+            android:label="@string/app_name_skypay"
+            android:theme="@style/transparent"
+            android:windowSoftInputMode="adjustPan" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" >
+                </action>
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.skymobi.pay.third.activity.impl.QueryChargeResultActivity"
+            android:configChanges="orientation|navigation|keyboardHidden|keyboard"
+            android:label="@string/app_name_skypay"
+            android:screenOrientation="behind"
+            android:theme="@style/transparent" >
+        </activity>
+        <activity
+            android:name="com.skymobi.pay.third.activity.impl.HelpActivity"
+            android:configChanges="orientation|navigation|keyboardHidden|keyboard"
+            android:label="@string/app_name_skypay"
+            android:screenOrientation="behind"
+            android:theme="@style/transparent" >
+        </activity>
+        <activity
+            android:name="com.unionpay.uppay.PayActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:label="@string/app_name_skypay"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.unionpay.uppay.PayActivityEx"
+            android:configChanges="orientation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:label="@string/app_name_skypay"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity android:name="com.skymobi.snssdknetwork.outfunction.activity.ShareActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity android:name="com.skymobi.snssdknetwork.outfunction.activity.AccountActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" ></activity>
+        <activity
+            android:name="com.skymobi.sdkmainplugin.activity.Share1Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.skymobi.sdkmainplugin.activity.Share2Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.skymobi.sdkmainplugin.activity.AccountActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.skymobi.plugin.api.activity.ShardActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.skymobi.plugin.api.activity.TransparentActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.skymobi.plugin.api.activity.LandscapeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.skymobi.plugin.api.activity.OrientationUndefinedActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.skymobi.plugin.api.activity.PortraitActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.skymobi.plugin.api.activity.Shard2Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="unspecified"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        </activity>
+    </application>
+</manifest>
