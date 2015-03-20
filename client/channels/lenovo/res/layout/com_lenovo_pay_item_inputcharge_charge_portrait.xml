@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:background="@color/com_lenovo_pay_goods_bg">
+    
+    <FrameLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/common_titlebar">
+    </FrameLayout>
+    
+    <FrameLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/titlebar">
+        <include layout="@layout/com_lenovo_pay_item_titlebar_common_land" />
+    </FrameLayout>
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titlebar"
+        android:layout_above="@+id/pay_charge_btn"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:fadeScrollbars="false" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <com.lenovo.pay.mobile.ui.MyGridView
+                android:id="@+id/grid"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:columnWidth="85dp"
+                android:horizontalSpacing="7dp"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="auto_fit"
+                android:verticalSpacing="7dp" />
+
+            <FrameLayout
+				android:id="@+id/deno"
+				android:layout_width="fill_parent"
+				android:background="@drawable/com_lenovo_pay_gamecard_entry_frame"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_marginTop="15dp" >
+				<include layout="@layout/com_lenovo_pay_item_gamecard_charge_entry_edittext_land" />
+		   </FrameLayout>
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
+			
+                <TextView
+                    android:id="@+id/szf_deno_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/pay_charge_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"  />
+            </RelativeLayout>
+            
+            <!-- 提示栏 -->
+            <TextView
+                android:id="@+id/warn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:visibility="gone"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@id/pay_charge_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/nullid"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="20sp"
+        android:background="@drawable/com_lenovo_pay_vcoin_pay_btn_portrait_selector"
+        android:textColor="@color/com_lenovo_pay_title_text"
+        android:text="@string/com_lenovo_pay_next_step_text" />
+    
+    <TextView
+        android:id="@id/nullid"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp" />
+</RelativeLayout>

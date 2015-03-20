@@ -255,7 +255,7 @@
     <string name="dcn_check_security_notice_label">注：验证成功后可绑定新手机号码</string>
     <string name="dcn_error_message_title">密码不正确，请重新输入</string>
     <string name="dcn_about_title">关于我们</string>
-    <string name="dcn_about_version">版本：V3.0.5</string>
+    <string name="dcn_about_version">版本：V3.0.6</string>
     <string name="dcn_about_url">当乐网 http://www.d.cn</string>
     <string name="dcn_about_company">北京当乐信息技术有限公司</string>
     <string name="dcn_about_phone_num">客服电话：028-83112436</string>

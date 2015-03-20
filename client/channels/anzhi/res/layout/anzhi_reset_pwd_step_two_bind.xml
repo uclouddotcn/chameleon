@@ -2,13 +2,14 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/white"
     android:fillViewport="true" >
 
-    <LinearLayout 
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"    
-    android:background="@android:color/white"
-    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -17,12 +18,12 @@
             android:orientation="vertical" >
 
             <TextView
-                 android:layout_marginTop="@dimen/size_10"
                 android:id="@+id/tv_validate_sc_desc"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/size_10"
                 android:layout_marginRight="@dimen/size_10"
+                android:layout_marginTop="@dimen/size_10"
                 android:text="@string/anzhi_reset_pwd_validate_sc_tel"
                 android:textColor="@color/anzhi_757575"
                 android:textSize="@dimen/font_14" />
@@ -31,21 +32,20 @@
                 android:id="@+id/linearlayout_tel"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/size_48"
-                android:gravity="center_vertical"
                 android:layout_marginTop="@dimen/size_5"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:gravity="center_vertical"
                 android:orientation="horizontal" >
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/size_10"
-                    android:layout_marginRight="@dimen/size_10"
+                    android:layout_marginRight="@dimen/size_7"
                     android:layout_weight="1"
                     android:background="@drawable/anzhi_input_normal" >
 
-                 
                     <EditText
                         android:id="@+id/et_validate"
                         android:layout_width="fill_parent"
@@ -64,13 +64,15 @@
                 <Button
                     android:id="@+id/bt_getCode"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/size_40"
-                    android:layout_marginRight="@dimen/size_10"
-                    android:background="@drawable/anzhi_button_bg_orange"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/size_7"
+                    android:background="@drawable/anzhi_button_bg_orange_nopading"
                     android:gravity="center"
-                    android:text="@string/get_authcode_txt"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:text="@string/anzhi_get_authcode_txt"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/font_18" />
+                    android:textSize="@dimen/font_15" />
             </LinearLayout>
 
             <Button
@@ -78,8 +80,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/size_40"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/size_40"
-                android:layout_marginRight="@dimen/size_40"
+                android:layout_marginLeft="@dimen/size_10"
+                android:layout_marginRight="@dimen/size_10"
                 android:layout_marginTop="@dimen/size_30"
                 android:background="@drawable/anzhi_button_bg_green"
                 android:enabled="false"
@@ -87,18 +89,18 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/font_18" />
         </LinearLayout>
-        
-         <LinearLayout
+
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/size_10"
             android:layout_marginLeft="@dimen/size_10"
             android:layout_marginRight="@dimen/size_10"
-            android:layout_marginBottom="@dimen/size_10"
             android:orientation="vertical" >
 
             <TextView
                 android:layout_width="fill_parent"
-                android:layout_height="40dp"               
+                android:layout_height="40dp"
                 android:layout_weight="2"
                 android:background="@drawable/anzhi_textview_normal"
                 android:gravity="center_vertical"
@@ -106,9 +108,10 @@
                 android:text="@string/anzhi_help_customer"
                 android:textColor="@color/anzhi_757575"
                 android:textSize="@dimen/font_12" />
+
             <TextView
                 android:layout_width="fill_parent"
-                android:layout_height="40dp"                                     
+                android:layout_height="40dp"
                 android:autoLink="phone"
                 android:background="@drawable/anzhi_textview_normal_b"
                 android:gravity="center_vertical"
@@ -119,5 +122,4 @@
         </LinearLayout>
     </LinearLayout>
 
-  
 </ScrollView>

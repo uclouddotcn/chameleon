@@ -3,6 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true"
+    android:background="@color/white"
     android:scrollbars="none" >
 
     <LinearLayout
@@ -10,8 +11,7 @@
         android:layout_height="fill_parent"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:orientation="vertical"
-      >
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -72,11 +72,10 @@
                         android:layout_toRightOf="@id/nam_TV"
                         android:background="@null"
                         android:completionThreshold="1"
-                        android:cursorVisible="true"
                         android:hint="@string/anzhi_usernameorteloremail"
                         android:singleLine="true"
                         android:textColor="@color/anzhi_494949"
-                        android:textColorHint="@color/anzhi_d0d0d0"
+                        android:textColorHint="@color/anzhi_d0d0d0"                    
                         android:textSize="@dimen/font_18" >
                     </EditText>
 
@@ -148,7 +147,8 @@
                         android:textColor="@color/anzhi_494949"
                         android:textColorHint="@color/anzhi_d0d0d0"
                         android:textSize="@dimen/font_18" >
-                    </EditText>
+                        </EditText>
+                  
 
                     <ImageView
                         android:id="@+id/iv_pwd_delete"
@@ -174,13 +174,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/anzhi_checkbox_false"
                     android:button="@drawable/anzhi_checkbox"
                     android:checked="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="5dip"
                     android:layout_toRightOf="@+id/cb_auto_login"
                     android:text="@string/anzhi_auto_login"
@@ -193,7 +193,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/title_find_account_or_pwd"
+                    android:text="@string/anzhi_title_find_account_or_pwd"
                     android:textColor="@color/anzhi_EB9100"
                     android:textSize="@dimen/font_16" />
             </RelativeLayout>
@@ -290,7 +290,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:background="@drawable/anzhi_login_offical_bg" />
+                    android:background="@drawable/anzhi_login_offical_bg"
+                    android:visibility="invisible" />
             </LinearLayout>
         </LinearLayout>
 

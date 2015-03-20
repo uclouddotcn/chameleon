@@ -1,34 +1,34 @@
 {
     "cfgitem": [
         {
-            "desc": "厂商ID", 
-            "name": "merchantId", 
+            "desc": "厂商ID",
+            "name": "merchantId",
             "type": "string"
-        }, 
+        },
         {
-            "desc": "APP ID", 
-            "name": "appId", 
+            "desc": "APP ID",
+            "name": "appId",
             "type": "string"
-        }, 
+        },
         {
-            "desc": "APP KEY", 
-            "name": "appKey", 
+            "desc": "APP KEY",
+            "name": "appKey",
             "type": "string"
-        }, 
+        },
         {
-            "desc": "服务器序号", 
-            "name": "serverSeqNum", 
+            "desc": "服务器序号",
+            "name": "serverSeqNum",
             "type": "string"
-        }, 
+        },
         {
-            "desc": "PAYMENT KEY", 
-            "name": "paymentKey", 
+            "desc": "PAYMENT KEY",
+            "name": "paymentKey",
             "type": "string"
         }
-    ], 
-    "chamversion": "1.3.0", 
-    "desc": "当乐", 
-    "name": "dangle", 
-    "svrver": "1.4.1", 
-    "version": "3.0.5"
+    ],
+    "chamversion": "1.3.0",
+    "desc": "当乐",
+    "name": "dangle",
+    "svrver": "1.4.1",
+    "version": "3.0.6"
 }

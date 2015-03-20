@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:background="@color/white" >
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@android:color/white" >
+        android:background="@color/white" >
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -31,17 +31,17 @@
                     <Button
                         android:id="@+id/getcode_tv"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/size_40"
+                        android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/size_10"
-                        android:background="@drawable/anzhi_button_bg_orange"
+                        android:background="@drawable/anzhi_button_bg_orange_nopading"
                         android:gravity="center"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:text="@string/get_authcode_txt"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:text="@string/anzhi_get_authcode_txt"
                         android:textColor="@android:color/white"
-                        android:textSize="@dimen/font_16" />
+                        android:textSize="@dimen/font_15" />
 
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -52,37 +52,29 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
-                              android:gravity="right|center"
+                            android:gravity="right|center"
                             android:minEms="4"
                             android:text="@string/anzhi_telnumber"
                             android:textColor="@color/anzhi_494949"
                             android:textSize="@dimen/font_16" />
 
-                        <RelativeLayout
+                        <EditText
+                            android:id="@+id/tel_et"
                             android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
+                            android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_gravity="center_vertical"
-                            android:background="@android:color/white" >
-
-                            <EditText
-                                android:id="@+id/tel_et"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:background="@null"
-                                android:hint="@string/anzhi_input_telnumber"
-                                android:inputType="phone"
-                                android:paddingLeft="5dip"
-                                android:paddingRight="5dip"
-                                android:singleLine="true"
-                                android:textColor="@color/anzhi_494949"
-                                android:textColorHint="@color/anzhi_d0d0d0"
-                                android:textSize="@dimen/font_16" >
-
-                                <requestFocus />
-                            </EditText>
-                        </RelativeLayout>
+                            android:background="@null"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"                                                     
+                            android:hint="@string/anzhi_input_telnumber"
+                            android:inputType="phone"
+                            android:paddingLeft="5dip"
+                            android:paddingRight="5dip"
+                            android:singleLine="true"
+                            android:textColor="@color/anzhi_494949"
+                            android:textColorHint="@color/anzhi_d0d0d0"
+                            android:textSize="@dimen/font_16" >
+                        </EditText>
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -101,7 +93,6 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
-                           
                             android:gravity="right|center"
                             android:minEms="4"
                             android:text="@string/anzhi_validatecode"
@@ -151,7 +142,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent"
                         android:layout_centerVertical="true"
-                       
                         android:gravity="right|center"
                         android:minEms="4"
                         android:text="@string/anzhi_paypwd"
@@ -271,8 +261,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="@dimen/size_40"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="@dimen/size_40"
-                    android:layout_marginRight="@dimen/size_40"
                     android:layout_marginTop="@dimen/size_40"
                     android:background="@drawable/anzhi_button_bg_green"
                     android:gravity="center"

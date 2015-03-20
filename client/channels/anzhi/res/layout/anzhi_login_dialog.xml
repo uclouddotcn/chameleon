@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ <RelativeLayout 
+   xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
     <LinearLayout
+        
+     
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/size_10"
@@ -16,7 +19,8 @@
             android:id="@+id/tv_login_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_10"
+              android:textColor="@color/anzhi_494949"
+            android:layout_marginTop="@dimen/size_5"
             android:textSize="@dimen/font_16" />
 
         <LinearLayout
@@ -39,6 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                 android:textColor="@color/anzhi_494949"
                 android:text="@string/anzhi_tv_logining"
                 android:textSize="@dimen/font_16" />
         </LinearLayout>
@@ -48,14 +53,15 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/size_40"
             android:gravity="center"
-             android:layout_marginLeft="@dimen/size_40"
-               android:layout_marginRight="@dimen/size_40"
+            android:layout_marginLeft="@dimen/size_40"
+            android:layout_marginRight="@dimen/size_40"
             android:layout_marginTop="@dimen/size_10"
-            android:background="@drawable/anzhi_button_bg_gray"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/anzhi_button_bg_gray_new"
             android:text="@string/anzhi_login_cancel"
-            android:textColor="@color/anzhi_FFFFFF"
+            android:textColor="@color/white"
             android:textSize="@dimen/font_18" />
         
     </LinearLayout>
 
-</RelativeLayout>
+ </RelativeLayout>

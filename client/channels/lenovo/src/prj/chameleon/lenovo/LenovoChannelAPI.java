@@ -178,19 +178,8 @@ public final class LenovoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             public void onPayResult(int resultCode, String signValue,
                                     String resultInfo) {// resultInfo = 应用编号&商品编号&外部订单号
                 if (LenovoGameApi.PAY_SUCCESS == resultCode) {
-                    if (null == signValue) {
-                        // 没有签名值，默认采用finish()，请根据需要修改
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
-                    }
-                    boolean flag = LenovoGameApi.GamePayRequest.isLegalSign(signValue,
-                            mCfg.mAppKey);
-                    if (flag) {
-                        // 合法签名值，支付成功，请添加支付成功后的业务逻辑
-                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                    } else {
-                        // 非法签名值，默认采用finish()，请根据需要修改
-                        cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
-                    }
+                    // 没有签名值，默认采用finish()，请根据需要修改
+                    cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
                 } else if (LenovoGameApi.PAY_CANCEL == resultCode) {
                     // 取消支付处理，默认采用finish()，请根据需要修改
                     cb.onFinished(Constants.ErrorCode.ERR_PAY_CANCEL, null);

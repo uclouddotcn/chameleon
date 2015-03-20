@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/com_lenovo_pay_goods_paytpe_bg"
+    android:orientation="vertical" >
+
+
+	<FrameLayout 
+	    android:id="@+id/common_titlebar"
+	    android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+	</FrameLayout>	
+
+	<FrameLayout 
+	    android:id="@+id/titlebar"
+	    android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+	    <include layout="@layout/com_lenovo_pay_item_titlebar_common_land" />
+	</FrameLayout>		
+        
+    <LinearLayout 
+        android:id="@+id/entrybar"
+        android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:orientation="vertical">
+	</LinearLayout>
+</LinearLayout>

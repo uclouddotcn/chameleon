@@ -369,6 +369,7 @@ def procSplashIcons(channelPath, globalcfg):
     splashPath = globalcfg['channel'].get('splashPath')
 
     if splashPath is not None:
+        splashPath = os.path.join(splashPath, 'splash')
         splashes = __getAllObjFiles(splashPath, '.*\.(png|jpg)')
         i = 0
         for (x, y) in splashes:

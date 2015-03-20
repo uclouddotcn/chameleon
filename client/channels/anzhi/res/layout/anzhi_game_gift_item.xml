@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/anzhi_account_list_item_selector"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants" >
 
     <ImageView
         android:id="@+id/iv_header"
@@ -11,8 +11,7 @@
         android:layout_height="@dimen/size_50"
         android:layout_centerVertical="true"
         android:layout_margin="5dp"
-        android:src="@drawable/gift_icon_default"
-         />
+        android:src="@drawable/anzhi_default" />
 
     <TextView
         android:id="@+id/tv_name"
@@ -41,45 +40,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_desc"
-        android:layout_marginTop="2dp"        
-        android:paddingBottom="5dp"
+        android:layout_marginTop="2dp"
         android:layout_toRightOf="@id/iv_header"
+        android:paddingBottom="5dp"
         android:text="@string/anzhi_gift_end_time"
         android:textColor="@color/gray"
         android:textSize="@dimen/font_12" />
-    
-    <LinearLayout 
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"       
-        android:layout_centerVertical="true" 
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/size_20"
-        android:gravity="center"
-        >
-        
-    
+        android:gravity="center" >
 
-    <Button
-        android:id="@+id/bt_gift_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"                 
-        android:background="@drawable/anzhi_button_bg_green"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text="@string/anzhi_test"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/font_14"
-        />
+        <Button
+            android:id="@+id/bt_gift_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/anzhi_button_bg_green"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/anzhi_test"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_14" />
 
-    <TextView
-        android:id="@+id/tv_gift_status"
-       	android:layout_width="wrap_content"
-        android:layout_height="wrap_content"        
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"       
-        android:visibility="gone"
-        android:textSize="@dimen/font_14" />
-
-  </LinearLayout>
+        <TextView
+            android:id="@+id/tv_gift_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textSize="@dimen/font_14"
+            android:visibility="gone" />
+    </LinearLayout>
 
 </RelativeLayout>

@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
     package="prj.chameleon.anzhi">
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="19" />    
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.webkit.permission.PLUGIN" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -29,10 +32,6 @@
 
 
     <application>
-        <meta-data
-            android:name="ANZHIUSERCENTE_VERSIONS"
-            android:value="3.1.2" >
-        </meta-data>
 
         <activity
             android:name="com.anzhi.usercenter.sdk.LogoActivity"
@@ -41,6 +40,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Transparent"
             chameleon:replace="android:screenOrientation=%orientation%">
+            <meta-data
+                android:name="ANZHIUSERCENTE_VERSIONS"
+                android:value="3.2" >
+            </meta-data>
         </activity>
         <activity
             android:name="com.anzhi.usercenter.sdk.LoginActivity"
@@ -218,14 +221,7 @@
             android:screenOrientation="portrait"
             chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
-        <activity
-            android:name="com.anzhi.usercenter.sdk.BindanzhiAccountAcivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/Transparent"
-            android:windowSoftInputMode="stateHidden|adjustPan"
-            android:screenOrientation="portrait"
-            chameleon:replace="android:screenOrientation=%orientation%">
-        </activity>
+
         <activity
             android:name="com.anzhi.usercenter.sdk.LoadingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -275,13 +271,6 @@
             chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
-            android:name="com.anzhi.usercenter.sdk.GameCenterActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            chameleon:replace="android:screenOrientation=%orientation%">
-        </activity>
-        <activity
             android:name="com.anzhi.usercenter.sdk.AnzhiGameBbsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
@@ -303,6 +292,13 @@
             chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
         <activity
+            android:name="com.anzhi.usercenter.sdk.MessageActivitty"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            chameleon:replace="android:screenOrientation=%orientation%">
+        </activity>
+        <activity
             android:name="com.anzhi.usercenter.sdk.GiftbagRecordActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
@@ -310,14 +306,11 @@
             chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
 
+
+
         <receiver android:name="com.anzhi.usercenter.sdk.control.NetListenerReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.anzhi.usercenter.sdk.control.LogoutReceiver" >
-            <intent-filter>
-                <action android:name="anzhi.usercenter.aciton.userlogout" />
             </intent-filter>
         </receiver>
 

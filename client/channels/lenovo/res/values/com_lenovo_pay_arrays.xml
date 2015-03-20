@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="com_lenovo_pay_gamecard_deno">
+	<item>5元</item>
+	<item>10元</item>
+	<item>15元</item>
+	<item>20元</item>
+	<item>30元</item>
+	<item>40元</item>
+	<item>50元</item>
+	<item>60元</item>
+</string-array>
+
+<string-array name="com_lenovo_pay_shenzhoufu_charge_card_title">
+    <item>移动卡</item>
+    <item>联通卡</item>
+    <item>电信卡</item>
+</string-array>
+</resources>

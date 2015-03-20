@@ -231,9 +231,9 @@
     <string name="bdp_paycenter_tips_title_verify_pwd">验证支付密码</string>
     <string name="bdp_paycenter_tips_skip">跳过</string>
     <string name="bdp_paycenter_tips_back">返回</string>
-    <string name="bdp_paycenter_tips_skip_verify_pwd">温馨提示：跳过该步骤，您将无法在之后的交易中使用百度币付款。</string>
+    <string name="bdp_paycenter_tips_skip_verify_pwd">温馨提示：跳过该步骤，您将无法在之后的交易中使用百度币或代金券付款。</string>
     <string name="bdp_paycenter_tips_verify_pwd_user">亲爱的用户，</string>
-    <string name="bdp_paycenter_tips_set_pwd_account_info">\u3000\u3000我们发现您的账户余额为%s百度币，为了您的账户安全，我们强烈建议您设置百度币支付密码！</string>
+    <string name="bdp_paycenter_tips_set_pwd_account_info">\u3000\u3000为了您的账户安全，我们强烈建议您设置支付密码！</string>
     <string name="bdp_paycenter_tips_set_pwd">支付密码：6&#8211;16位字母或数字</string>
     <string name="bdp_paycenter_tips_input_pwd">请输入百度币支付密码</string>
     <string name="bdp_paycenter_tips_input_pwd_len_error">支付密码格式不对</string>
@@ -437,6 +437,7 @@
     <string name="bdp_paycenter_pay_amount">支付%1$s元</string>
     <string name="bdp_paycenter_voucher_pay_tips">确认要使用%1$s元代金券支付？超出金额部分将自动作废。</string>
     <string name="bdp_alipay_install_fail">支付宝插件安装失败</string>
+    <string name="bdp_paycenter_channel_check_fail">支付渠道信息验证失败!!</string>
      <!-- paycenter -->
     
     

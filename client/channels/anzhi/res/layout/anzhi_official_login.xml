@@ -129,7 +129,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/linearLayout1"
                 android:layout_margin="@dimen/size_10" >
-
             </RelativeLayout>
 
             <LinearLayout
