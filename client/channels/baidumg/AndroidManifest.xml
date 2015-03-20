@@ -3,8 +3,8 @@
     package="prj.chameleon.baidumg">
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="14" />
+        android:minSdkVersion="11"
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,16 +14,21 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
@@ -31,17 +36,14 @@
 
     <application
         android:allowBackup="true"  >
-        <!-- ↓↓↓ DK SDK ↓↓↓ -->
-        <meta-data
-            android:name="BAIDUSDK_CHANNEL"
-            android:value="13744" />
+
 
         <!-- 0-百度 1-多酷 2-91 -->
 
         <meta-data android:name="BDPlatformType" android:value="0" />
 
 
-        <meta-data android:name="BDGameVersion" android:value="3.0.0" />
+        <meta-data android:name="BDGameVersion" android:value="3.1.3" />
 
         <activity
             android:name="com.baidu.platformsdk.LoginActivity"
@@ -54,7 +56,7 @@
             android:configChanges="orientation|navigation|screenSize|keyboard|keyboardHidden"
             android:exported="false"
             android:excludeFromRecents="true"
-            android:theme="@style/bdp_dialog_style_fullscreen"/>
+            android:theme="@style/bdp_style_transparent"/> 
         <activity
             android:name="com.baidu.platformsdk.BindPhoneActivity"
             android:configChanges="orientation|navigation|screenSize|keyboard|keyboardHidden"
@@ -263,8 +265,19 @@
         <activity android:name="com.unionpay.uppay.PayActivity"
             android:screenOrientation="landscape" />
         <!-- ↑↑↑ 银联SDK ↑↑↑ -->
-
-        <!-- ↓↓↓ 多酷SDK ↓↓↓ -->
+        
+        <!-- ↓↓↓ 支付宝插件 ↓↓↓ -->
+        <activity android:name="com.alipay.sdk.app.H5PayActivity"
+				   android:configChanges="orientation|keyboardHidden|navigation"
+				   android:exported="false"
+				   android:screenOrientation="behind" />
+        <activity android:name="com.alipay.sdk.auth.AuthActivity"
+				   android:configChanges="orientation|keyboardHidden|navigation"
+				   android:exported="false"
+				   android:screenOrientation="behind" />
+        <!-- ↑↑↑ 支付宝插件 ↑↑↑ -->
+        
+        <!-- ↓↓↓ 多酷SDK ↓↓↓ --> 
         <activity
             android:name="com.duoku.platform.ui.DKContainerActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
@@ -347,42 +360,50 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:process=":remote"
             android:windowSoftInputMode="stateVisible|adjustResize" >
+
         </activity>
         <activity
             android:name="com.baidu.tiebasdk.write.VcodeActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:process=":remote"
             android:windowSoftInputMode="stateVisible|adjustResize" >
+
         </activity>
         <activity
             android:name="com.baidu.tiebasdk.write.NewVcodeActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:process=":remote"
             android:windowSoftInputMode="stateHidden" >
+
         </activity>
         <activity
             android:name="com.baidu.tiebasdk.write.AtListActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:process=":remote" >
+
         </activity>
         <activity
             android:name="com.baidu.tiebasdk.write.WriteImageActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:process=":remote" >
+
         </activity>
         <activity
             android:name="com.baidu.tiebasdk.pb.ImageActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:process=":remote" >
+
         </activity>
         <activity
             android:name="com.baidu.tiebasdk.pb.WebActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:process=":remote" >
+
         </activity>
         <activity
             android:name="com.baidu.tiebasdk.more.AccountActivity"
             android:process=":remote" >
+
         </activity>
         <!-- 贴吧activity end -->
 

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="mytheme" parent="@android:style/Theme.Light">
+		<item name="android:windowNoTitle"> true </item>
+	</style>
+
+	<style name="transparent" parent="@android:style/Theme.Dialog">		<item name="android:windowBackground">@color/transparent_background</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowFullscreen">true</item>
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowAnimationStyle">@+android:style/Animation.Translucent</item>	</style>
+
+	<style name="PopupAnimation" parent="android:Animation">
+		<item name="android:windowEnterAnimation">@anim/sm_popup_enter</item>
+		<item name="android:windowExitAnimation">@anim/sm_popup_exit</item>
+	</style>
+
+	<style name="dialog" parent="@android:style/Theme.Dialog">
+		<item name="android:windowFrame">@null</item><!--边框-->
+		<item name="android:windowIsFloating">true</item><!--是否浮现在activity之上-->
+		<item name="android:windowIsTranslucent">false</item><!--半透明-->
+		<item name="android:windowNoTitle">true</item><!--无标题-->
+		<item name="android:windowBackground">@color/dialog_transparent_background</item><!--背景透明-->
+		<item name="android:backgroundDimEnabled">false</item><!--模糊-->
+	</style>
+
+	<style name="back_button_normal">
+		<item name="android:textColor">@color/back_button_normal</item>
+		<item name="android:shadowColor">@color/back_button_shadow_normal</item>
+		<item name="android:shadowDx">1</item>
+		<item name="android:shadowDy">1</item>
+		<item name="android:shadowRadius">1</item>
+	</style>
+
+	<style name="main_tab_bottom">
+		<item name="android:textSize">@dimen/bottom_tab_font_size</item>
+		<item name="android:textColor">#ff000000</item>
+		<item name="android:ellipsize">marquee</item>
+		<item name="android:gravity">center</item>
+		<item name="android:background">@drawable/sm_home_btn_bg</item>
+		<item name="android:layout_width">68dp</item>
+		<item name="android:layout_height">38.3dp</item>
+		<item name="android:button">@null</item>
+		<item name="android:singleLine">true</item>
+	</style>
+	
+	<style name="main_tab_bottom_port">
+		<item name="android:textSize">13dp</item>
+		<item name="android:textColor">#ff086DBA</item>
+		<item name="android:ellipsize">marquee</item>
+		<item name="android:gravity">center</item>
+		<item name="android:background">@drawable/sm_home_btn_bg</item>
+		<item name="android:layout_width">58dp</item>
+		<item name="android:layout_height">32dp</item>
+		<item name="android:button">@null</item>
+		<item name="android:singleLine">true</item>
+	</style>
+</resources>

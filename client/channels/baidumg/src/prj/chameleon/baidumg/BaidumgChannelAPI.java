@@ -72,7 +72,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             payOrderInfo.setTotalPriceCent(realPayMoney);
         }
         payOrderInfo.setExtInfo(composePayExt(null));
-        BDGameSDK.pay(payOrderInfo, null, new IResponse<PayOrderInfo>() {
+        BDGameSDK.pay(payOrderInfo, "http://118.192.73.182/ucloud/baidumg/pay", new IResponse<PayOrderInfo>() {
             @Override
             public void onResponse(int i, String s, PayOrderInfo payOrderInfo) {
                 switch (i) {
@@ -158,6 +158,7 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
         appInfo.setOrientation(mCfg.mScreenOrientation);
         mAdPage = new ActivityAdPage(activity, mAdPageListener);
+        Log.e(Constants.TAG, "Before INit.");
         BDGameSDK.init(activity, appInfo, new IResponse<Void>() {
             @Override
             public void onResponse(int i, String s, Void aVoid) {

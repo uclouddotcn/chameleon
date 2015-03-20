@@ -1,0 +1,43 @@
+{
+    "cfgitem": [
+        {
+            "desc": "APP ID", 
+            "name": "appId", 
+            "type": "string"
+        }, 
+        {
+            "desc": "APP Name", 
+            "name": "appName", 
+            "type": "string"
+        }, 
+        {
+            "desc": "商户ID", 
+            "ignoreInA": 1, 
+            "name": "merchantId", 
+            "type": "string"
+        }, 
+        {
+            "desc": "商户密码", 
+            "ignoreInA": 1, 
+            "name": "merchantPasswd", 
+            "type": "string"
+        }, 
+        {
+            "desc": "渠道ID", 
+            "ignoreInA": 1, 
+            "name": "channelId", 
+            "type": "string"
+        }, 
+        {
+            "desc": "回调URl", 
+            "ignoreInA": 1, 
+            "name": "payUrl", 
+            "type": "string"
+        }
+    ], 
+    "chamversion": "1.5.0", 
+    "desc": "斯凯", 
+    "name": "mopo", 
+    "svrver": "1.5.0", 
+    "version": "v3005"
+}

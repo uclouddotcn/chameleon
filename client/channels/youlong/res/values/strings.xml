@@ -28,7 +28,6 @@
 	<string name="to_card_hint">支持移动，联通，电信充值卡</string>
     
    	<string name="network_confirm">请开启GPRS或WIFI网络！</string>
-    <string name="app_name">新版SDK_demo</string>
     <string name="notice">提示信息</string>
     <string name="yes">确定</string>
     <string name="confirm">确认</string>

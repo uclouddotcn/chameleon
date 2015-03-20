@@ -20,7 +20,7 @@ var cfgDesc = {
 var YoulongChannel = function(logger, cfgChecker) {
     SDKPluginBase.call(this, logger, cfgChecker);
     this.client = restify.createJsonClient({
-        url: 'http://api.411game.com',
+        url: 'http://ucapi.411game.com',
         retry: false,
         log: logger,
         requestTimeout: 10000,
@@ -32,26 +32,28 @@ util.inherits(YoulongChannel, SDKPluginBase);
 
 YoulongChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
-    var q = '/validation.do';
+    var q = '/Api/checkToken';
     var sign = this.calcSign(token+wrapper.cfg.pId+wrapper.cfg.pKey);
+    var uid = token;
+    token = others;
     var postObj = {
-        UserName: token,
-        PID: wrapper.cfg.pId,
-        flag: sign
+        token: token,
+        pid: wrapper.cfg.pId
     };
     this._logger.debug({token: token}, "receive request");
-    this.client.post(q, postObj, function (err, req, res, obj) {
+    this.client.post(q, querystring.stringify(postObj), function (err, req, res, obj) {
         req.log.debug({req: req, err: err, obj: obj, q: q}, 'on result ');
         try {
             if (err) {
                 req.log.warn({err: err}, 'request error');
                 return callback(null, { code: ErrorCode.ERR_FAIL});
             }
-            if (obj.userState  == 1) {
+            obj = JSON.parse(obj);
+            if (obj.state == "1" && obj.username === uid) {
                 callback(null, {
                     code: ErrorCode.ERR_OK,
                     loginInfo: {
-                        uid: token,
+                        uid: uid,
                         token: token
                     }
                 });
