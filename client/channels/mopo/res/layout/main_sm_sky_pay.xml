@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_sm_sky_pay_fl"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:id="@+id/main_sky_pay_ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/main_sky_pay_rl"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sm_pay_bg"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/main_sky_pay_inside_ll"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:id="@+id/main_sky_pay_top_rl"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/auth_btn"
+                        android:layout_width="70dp"
+                        android:layout_height="27dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/sm_auth_button"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="安全认证"
+                        android:textColor="#058726" >
+                    </Button>
+
+                    <TextView
+                        android:id="@+id/tv_user_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="13dp"
+                        android:textColor="#058726" 
+                        android:visibility="gone" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/cancel_btn"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginRight="10.0dp"
+                        android:layout_marginTop="12.0dp"
+                        android:background="@drawable/sm_close_btn"
+                        android:clickable="true"
+                        android:scaleType="fitCenter" >
+                    </TextView>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/main_sky_pay_middle_rl"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <ScrollView
+                        android:id="@+id/main_sky_pay_sv"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content" >
+
+                        <!-- 由于 ScrollView和FrameLayout冲突需要增加的布局套壳 -->
+
+                        <LinearLayout
+                            android:id="@+id/main_sky_pay_sv_ll"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" >
+
+		                    <RelativeLayout
+		                    android:id="@+id/main_sky_pay_middle_inside_rl"
+		                    android:layout_width="fill_parent"
+		                    android:layout_height="wrap_content"
+		                    android:orientation="horizontal" >
+		                    
+		                    <ProgressBar
+                             android:id="@+id/pay_progressBar"
+                             style="?android:attr/progressBarStyleSmall"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_alignParentRight="true"
+                             android:layout_alignParentTop="true" 
+                             android:layout_marginRight="12dp"
+                             android:layout_marginTop="7dp"
+                             android:visibility="gone"/>
+		                         
+                            <TextView
+                                android:id="@+id/tv_cp_hint"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginRight="12dp"
+                                android:layout_marginTop="7dp"
+                                android:lineSpacingExtra="3dp"
+                                android:textColor="#282828"
+                                android:textSize="18sp"
+                                android:textStyle="bold" >
+                            </TextView>
+
+							</RelativeLayout>
+							
+                            <TextView
+                                android:id="@+id/tv_hint"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginRight="12dp"
+                                android:layout_marginTop="7dp"
+                                android:lineSpacingExtra="3dp"
+                                android:textColor="#5b6e7c"
+                                android:textSize="13sp" >
+                            </TextView>
+
+                            <ProgressBar
+                                android:id="@+id/hint_progressBar"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginTop="7dp"
+                                android:max="100"
+                                android:visibility="gone" />
+                            <!-- 由于 ScrollView和FrameLayout冲突需要增加的布局套壳 -->
+                        </LinearLayout>
+                        <!-- 滚动条 -->
+                    </ScrollView>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/main_sky_pay_button_rl"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp" >
+
+                    <LinearLayout
+                        android:id="@+id/main_sky_pay_button_ll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/comfirm_btn"
+                            android:layout_width="110.67dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/sm_pay_comfirm_button"
+                            android:text="确 定"
+                            android:textColor="#317510" >
+                        </Button>
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</FrameLayout>
