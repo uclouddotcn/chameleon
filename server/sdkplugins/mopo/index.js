@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var querystring = require('querystring');
 var util = require('util');
+var url = require('url');
 
 var async = require('async');
 var restify = require('restify');
@@ -44,7 +45,6 @@ MopoChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
         skyid: others,
         token: token
     };
-    var self = this;
     this.client.get(u+querystring.stringify(obj), function (err, req, res, obj) {
         req.log.debug({req: req, err: err, obj: obj}, 'on result ');
         if (err) {
@@ -82,12 +82,13 @@ MopoChannel.prototype.pendingPay = function (wrapper, params, infoFromSDK, callb
         var gameType = '1';
         var notifyAddress = encodeURIComponent(wrapper.cfg.payUrl);
         var appName = wrapper.cfg.appName;
-        var appVersion = '1.0';
+        var appVersion = '1';
         var price = params.realPayMoney || 100;
         var channelId = wrapper.cfg.channelId;
         var merchantId = wrapper.cfg.merchantId;
         var appId = wrapper.cfg.appId;
         var payType = 3;
+        var productName = params.productName || "游戏币";
         var signParams = "merchantId=" + merchantId +
             "&appId=" + appId +
             "&notifyAddress=" + notifyAddress +
@@ -109,7 +110,7 @@ MopoChannel.prototype.pendingPay = function (wrapper, params, infoFromSDK, callb
         + "&gameType=" + gameType
         + "&systemId=" + SYSTEM_ID
         + "&payType=" + payType
-        + "&productName=" + params.productName
+        + "&productName=" + productName
         + "&channelId=" + channelId
         + "&merchantSign=" + sign;
         setImmediate(callback, null, orderId, params, null, orderInfo);
@@ -128,10 +129,6 @@ MopoChannel.prototype.calcSign = function (wrapper, params) {
 MopoChannel.prototype.getPayUrlInfo = function ()  {
     return [
         {
-            method: 'post',
-            path: '/pay'
-        },
-        {
             method: 'get',
             path: '/pay'
         }
@@ -144,13 +141,15 @@ MopoChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
     req.log.debug({req: req, params: params}, 'recv pay rsp');
     try {
         var expectSign = params.signMsg;
-        var lastIndex = req.body.lastIndexOf('&signMsg=');
+        var query = url.parse(req.url, false).search.substr(1);
+
+        var lastIndex = query.lastIndexOf('&signMsg=');
         if (lastIndex < 0) {
-            req.log.error({body: req.body}, 'illegal rsp from remote');
+            req.log.error({body: query}, 'illegal rsp from remote');
             this.send(res, 1);
             return next();
         }
-        var signBody = req.body.substr(0, lastIndex)+'&key='+wrapper.cfg.merchantPasswd;
+        var signBody = query.substr(0, lastIndex)+'&key='+wrapper.cfg.merchantPasswd;
         var orderId = params.orderId;
         var sign = this.calcSign(wrapper, signBody);
         if (sign !== expectSign) {
@@ -170,13 +169,12 @@ MopoChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
             this.send(res, 1);
             return next();
         }
-        var uid = params.skyId;
         var other = {
             chOrderId: params.payNum,
             payTime: params.payTime,
             payType: params.cardType
         };
-        wrapper.userAction.pay(wrapper.channelName, uid, null,
+        wrapper.userAction.pay(wrapper.channelName, null, null,
             orderId, ErrorCode.ERR_OK,
             null, null, amount, other,
             function (err, result) {
