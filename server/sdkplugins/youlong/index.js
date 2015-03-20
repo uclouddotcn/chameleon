@@ -34,8 +34,10 @@ YoulongChannel.prototype.verifyLogin = function(wrapper, token, others, callback
     var self = this;
     var q = '/Api/checkToken';
     var sign = this.calcSign(token+wrapper.cfg.pId+wrapper.cfg.pKey);
+    var uid = token;
+    token = others;
     var postObj = {
-        Token: token,
+        token: token,
         pid: wrapper.cfg.pId
     };
     this._logger.debug({token: token}, "receive request");
@@ -47,11 +49,11 @@ YoulongChannel.prototype.verifyLogin = function(wrapper, token, others, callback
                 return callback(null, { code: ErrorCode.ERR_FAIL});
             }
             obj = JSON.parse(obj);
-            if (obj.state == "1" && obj.username === others) {
+            if (obj.state == "1" && obj.username === uid) {
                 callback(null, {
                     code: ErrorCode.ERR_OK,
                     loginInfo: {
-                        uid: others,
+                        uid: uid,
                         token: token
                     }
                 });
