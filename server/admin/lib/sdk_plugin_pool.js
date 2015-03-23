@@ -1,41 +1,38 @@
 var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
+var _ = require('underscore');
+var versionparser = require('./versionparser');
 
 function SDKPluginInfo (name) {
     this.name = name;
     this.versions = {};
-    this.newest = null;
+    this.newest = {};
 }
 
 SDKPluginInfo.prototype.addVersion = function (ver, p) {
-    if (typeof ver === 'string') {
-        ver = parseInt(ver);
-    }
     this.versions[ver] = p;
-    if (!(this.newest > ver)) {
-        this.newest = ver;
+    var splitVersion = versionparser.getSplitVersionCode(ver);
+    var index = splitVersion[0];
+    var value = splitVersion[1];
+    if(this.newest[index]){
+        if(this.newest[index] < value) this.newest[index] = value;
+    }else{
+        this.newest[index] = value;
     }
 };
 
-SDKPluginInfo.prototype.getNewestPath = function () {
-    return this.versions[this.newest];
+SDKPluginInfo.prototype.getNewestPath = function (splitVersion) {
+    var value = this.newest[splitVersion];
+    return this.versions[splitVersion + '.' + value];
 };
 
 SDKPluginInfo.prototype.getVersionPath = function (ver) {
-    if (typeof ver === 'string') {
-        try {
-            ver = parseInt(ver);
-        } catch (e) {
-            this._logger.error({err: e}, 'fail to get version');
-            return null;
-        }
-    }
     return this.versions[ver];
 };
 
-SDKPluginInfo.prototype.getNewestVersion = function () {
-    return this.newest;
+SDKPluginInfo.prototype.getNewestVersion = function (splitVersion) {
+    return splitVersion + '.' + this.newest[splitVersion];
 };
 
 function SDKPluginPool(chPluginPoolDir, logger) {
@@ -53,7 +50,7 @@ function extractPluginInfo (name) {
     }
     return {
         name: p[1],
-        version: p[3] ? parseInt(p[3]) : 0
+        version: p[3] ? versionparser.formatVersionCode(p[3]) : "0.0.0.0"
     }
 }
 
@@ -82,14 +79,19 @@ SDKPluginPool.prototype.getAllPluginNames = function () {
     return Object.keys(this.plugins);
 };
 
-SDKPluginPool.prototype.getNewestPluginPath = function (name) {
+SDKPluginPool.prototype.getNewestPluginPath = function (name, version) {
     var pInfo = this.plugins[name];
     if (!pInfo) {
         return null;
     }
+
+    var splitVersion = versionparser.getSplitVersionCode(version);
+    if(splitVersion.length !== 2){
+        return null;
+    }
     return {
-        ver: pInfo.getNewestVersion(),
-        p: pInfo.getNewestPath()
+        ver: pInfo.getNewestVersion(splitVersion[0]),
+        p: pInfo.getNewestPath(splitVersion[0])
     };
 };
 
@@ -132,7 +134,7 @@ SDKPluginPool.prototype.addNewPlugin = function (name, version, p) {
     var pInfo = this.plugins[name];
     if (pInfo == null) {
         pInfo = new SDKPluginInfo(name);
-        this.plugins[pInfo.name] = pInfo;
+        this.plugins[pInfo.name].push(pInfo);
     }
     if (!p) {
         p = path.join(this.chdir, name+'-'+version);

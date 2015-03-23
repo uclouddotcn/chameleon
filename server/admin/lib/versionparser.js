@@ -10,6 +10,15 @@ var getVersionCode = exports.getVersionCode = function (version) {
     return major * 100 * 100 * 1000 + medium * 100 * 1000 + minor * 1000 + build;
 };
 
+exports.getSplitVersionCode = function(version){
+    var names = version.split('.');
+    var major = parseInt(names[0] || '0');
+    var medium = parseInt(names[1] || '0');
+    var minor = parseInt(names[2] || '0');
+    var build = parseInt(names[3] || '0');
+
+    return [major + '.' + medium + '.' + minor, build];
+}
 
 exports.formatVersionCode = function (versionCode) {
     var build = versionCode % 1000;

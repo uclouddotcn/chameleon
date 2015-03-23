@@ -113,6 +113,24 @@ Admin.prototype.init = function (emitter) {
             callback(err);
         }
     });
+
+    this._logger.info('register product.getproduct');
+    emitter.register('product.getproduct', function(req, callback){
+        var product = self.productMgr.products[req.product];
+        if(!product){
+            return callback(new Error('Product not found:' + req.product));
+        }else{
+            try{
+                var productInfo = product.productInfo();
+                if(!productInfo){
+                    return callback(new Error('ProductInfo not found:' + req.product));
+                }
+                callback(null, productInfo);
+            }catch (e){
+                callback(e);
+            }
+        }
+    })
 };
 
 
