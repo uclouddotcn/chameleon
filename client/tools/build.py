@@ -301,10 +301,10 @@ def mergeToNodewebkit(targetFolder):
 
 def build():
     print('start syncing the server version')
-    #syncServerVer(os.path.join(BASEDIR, '..'))
+    syncServerVer(os.path.join(BASEDIR, '..'))
 
     targetFolder = os.path.join(BASEDIR, 'chameleon_build')
-    #cleanOldBuild(targetFolder)
+    cleanOldBuild(targetFolder)
     version = getversion()
     chameleonTarget = os.path.join(targetFolder, 'chameleon')
     print('get version is %s' %version)
