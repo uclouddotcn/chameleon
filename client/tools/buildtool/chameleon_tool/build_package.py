@@ -363,6 +363,20 @@ def pkgAlign(pkgPath, pkgAlignedPath):
     u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     return u
 
+#TODO copy splash icon
+def procSplashIcon(channelPath, globalcfg):
+    icon = globalcfg['channel'].get('iconPath')
+    splash = globalcfg['channel'].get('splashPath')
+    if icon is not None:
+        drawablePath = os.path.join(channelPath, 'drawable')
+        if not os.path.exists(drawablePath):
+            os.makedirs(drawablePath)
+        shutil.copy(icon, os.path.join(drawablePath, ICON_NAME))
+    if splash is not None:
+        splashPath = os.path.join(channelPath, 'assets', 'chameleon')
+        if not os.path.exists(splashPath):
+            os.makedirs(splashPath)
+        shutil.copy(splash, os.path.join(splashPath, 'chameleon_splashscreen_0.png'))
 
 def procSplashIcons(channelPath, globalcfg):
     icon = globalcfg['channel'].get('iconPath')
@@ -521,7 +535,7 @@ def main():
     generatePkgName = manifest.getPkgName()+'-'+manifest.getPkgVersionName()+'-'+channel+'-release.apk'
 
     transformCfg(channelPath, globalcfg)
-    procSplashIcons(channelPath, globalcfg)
+    procSplashIcon(channelPath, globalcfg)
     tempPkgName = generatePkgName+'.tempzipfile'
 
     sdkPaths = [x.path for x in libs]

@@ -13,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 
 import prj.chameleon.channelapi.ActivityInterface;
+import prj.chameleon.channelapi.ChameleonApplication;
 import prj.chameleon.channelapi.ChannelInterface;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IDispatcherCb;
@@ -39,6 +40,12 @@ public class UnityChannelInterface {
     private static class RequestProxy {
         private LinkedList<Runnable> mPendingQueue = new LinkedList<Runnable>();
         private boolean mIsInited = false;
+
+        private RequestProxy(){
+            //if application is load and activity oncreate then is not test
+            mIsInited = ChameleonApplication.isTest ? true : false;
+            Log.e(Constants.TAG, "RequestProxy mIsInited = " + mIsInited);
+        }
 
         // run on UI thread only
         public synchronized void setInitDone () {
