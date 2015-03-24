@@ -221,6 +221,17 @@ var Admin = function(pluginMgr, options, logger) {
         });
     });*/
 
+    self.server.get('/product', function(req, res, next){
+        requestPoster.request('product.getproduct', {product: req.params.product}, function(err, productInfo){
+            if (err) {
+                req.log.info({err:err}, 'fail to get product');
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.json(productInfo);
+            return next();
+        });
+    });
+
     //path for update server config
     var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
     self.server.post('/product', function(req, res, next){

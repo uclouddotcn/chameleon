@@ -24,7 +24,7 @@ Channel.prototype.reload = function (sdkcfgs) {
     var apis = {};
     sdkcfgs.sdks.forEach(function (cfg) {
         try {
-            var inst = self.sdkMgr.getPlugin(self.name, cfg.name, cfg.cfg);
+            var inst = self.sdkMgr.getPlugin(self.name, cfg.name, cfg.cfg, cfg.version);
             var types = cfg.type.split(',');
             types.forEach(function (t) {
                 apis[t] = inst;
