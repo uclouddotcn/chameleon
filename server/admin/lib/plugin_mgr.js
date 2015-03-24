@@ -33,42 +33,23 @@ util.inherits(PluginMgr, EventEmitter);
 
 PluginMgr.prototype.loadAllPlugins = function (callback) {
     var self = this;
-    this.lsetting.get('setting', 'sdkplugins', function (err, ret) {
-        self.sdkPluginSetting = null;
-        if (err) {
-            self.logger.error({err: err}, 'Fail to load previous sdkplugins setting, using newest');
-            self.sdkPluginSetting = {};
-        } else {
-            try {
-                self.sdkPluginSetting = JSON.parse(ret);
-                if (!self.sdkPluginSetting) {
-                    self.sdkPluginSetting={};
-                }
-            } catch (e) {
-                self.logger.error({err: e}, 'Fail to load settings of sdkplugins');
-                self.sdkPluginSetting = {};
+    var availPluginNames = self.pluginPool.getAllPluginNames();
+    var pluginInfos = [];
+    for (var i = 0; i < availPluginNames.length; ++i) {
+        var name = availPluginNames[i];
+        var info = self.getVersionInfo(name);
+        try {
+            for(var j=0; j < info.length; j++){
+                pluginInfos.push(info[j]);
+                self.logger.info({info: info[j]}, 'successfully loaded plugin for ' + name);
             }
-        }
 
-        var availPluginNames = self.pluginPool.getAllPluginNames();
-        var pluginInfos = [];
-        for (var i = 0; i < availPluginNames.length; ++i) {
-            var name = availPluginNames[i];
-            var info = self.getVersionInfo(name);
-            try {
-                for(var j=0; j < info.length; j++){
-                    pluginInfos.push(info[j]);
-                    self.logger.info({info: info[j]}, 'successfully loaded plugin for ' + name);
-                }
-
-            } catch (e) {
-                self.logger.error( {err: e}, 'invalid plugin module');
-            }
+        } catch (e) {
+            self.logger.error( {err: e}, 'invalid plugin module');
         }
-        self.pluginInfos = pluginInfos;
-        callback(null);
-        //doLoadPluginModule(self, plugin)
-    });
+    }
+    self.pluginInfos = pluginInfos;
+    setImmediate(callback);
 };
 
 /**
@@ -102,7 +83,7 @@ PluginMgr.prototype.upgradePlugin = function(fileurl, md5value, callback) {
             return callback(err);
         }
         var pluginInfoList = self.getVersionInfo(name);
-        _.filter(self.pluginInfos, {name: name});
+        self.pluginInfos = _.reject(self.pluginInfos, {name: name});
         for(var i = 0; i < pluginInfoList.length; i++){
             self.pluginInfos.push(pluginInfoList[i]);
         }
@@ -118,7 +99,7 @@ PluginMgr.prototype.getVersionInfo = function (name) {
         versionList = [];
 
     var plugin = self.pluginPool.plugins[name];
-    for(var v in plugin.versions){
+    for(var v in plugin.newest){
         versionList.push(v);
     }
 
@@ -130,7 +111,7 @@ PluginMgr.prototype.getVersionInfo = function (name) {
             ver = pluginInfo.ver;
             result.push({
                 name: name,
-                ver: ver,
+                ver: versionList[i],
                 p: pluginPath
             });
 
@@ -141,6 +122,7 @@ PluginMgr.prototype.getVersionInfo = function (name) {
     return result;
 };
 
+// deprected
 PluginMgr.prototype.usePluginAtVersion = function (name, version, callback) {
     var p= this.pluginPool.getPluginPath(name, version);
     if (p === null) {

@@ -4,6 +4,8 @@ var path = require('path');
 var _ = require('underscore');
 var versionparser = require('./versionparser');
 
+var extractPluginInfo = versionparser.extractPluginInfo;
+
 function SDKPluginInfo (name) {
     this.name = name;
     this.versions = {};
@@ -11,10 +13,9 @@ function SDKPluginInfo (name) {
 }
 
 SDKPluginInfo.prototype.addVersion = function (ver, p) {
-    this.versions[ver] = p;
-    var splitVersion = versionparser.getSplitVersionCode(ver);
-    var index = splitVersion[0];
-    var value = splitVersion[1];
+    this.versions[ver.toString()] = p;
+    var index = ver.getId();
+    var value = ver.build;
     if(this.newest[index]){
         if(this.newest[index] < value) this.newest[index] = value;
     }else{
@@ -42,17 +43,6 @@ function SDKPluginPool(chPluginPoolDir, logger) {
     this.collectAvailPlugin();
 }
 
-function extractPluginInfo (name) {
-    var r = /([a-z0-9_]+)(-(\d+))?$/;
-    var p = r.exec(name);
-    if (!p) {
-        return null;
-    }
-    return {
-        name: p[1],
-        version: p[3] ? versionparser.formatVersionCode(p[3]) : "0.0.0.0"
-    }
-}
 
 // sync operation, only used during initialization
 SDKPluginPool.prototype.collectAvailPlugin = function () {
@@ -104,8 +94,8 @@ SDKPluginPool.prototype.loadUpgradePlugin = function (fileurl, md5value, callbac
                 try {
                     var upgradeInfo = JSON.parse(stdout.toString());
                     var name = upgradeInfo.name.split('-');
-                    self.addNewPlugin(name[2], upgradeInfo.versionCode);
-                    callback(null, name[2], upgradeInfo.version, self.getPluginPath(upgradeInfo.name, upgradeInfo.version));
+                    self.addNewPlugin(name[2], versionparser.getVersionFromCode(upgradeInfo.versionCode));
+                    callback(null, name[2], upgradeInfo.version, self.getPluginPath(name[2], upgradeInfo.version));
                 } catch (e) {
                     self._logger.error({err: e});
                     callback(e);
@@ -134,10 +124,10 @@ SDKPluginPool.prototype.addNewPlugin = function (name, version, p) {
     var pInfo = this.plugins[name];
     if (pInfo == null) {
         pInfo = new SDKPluginInfo(name);
-        this.plugins[pInfo.name].push(pInfo);
+        this.plugins[name] = pInfo;
     }
     if (!p) {
-        p = path.join(this.chdir, name+'-'+version);
+        p = path.join(this.chdir, name+'-'+version.toVersionCode());
     }
     pInfo.addVersion(version, p);
 };
