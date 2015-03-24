@@ -91,6 +91,7 @@ def genCmd(buildchannel, channel, channelPath,  targetPath):
     paras.append(('-c', channel))
     paras.append(('-r', channelPath))
     paras.append(('-g', targetPath))
+    print(' '.join([x+' '+y for (x,y) in paras]))
     return os.system(' '.join([x+' '+y for (x,y) in paras]))
 
 def initTargetScriptFolder(targetScriptFolder):
@@ -310,7 +311,7 @@ def build():
     print('get version is %s' %version)
 
     print('build chameleon libs...')
-    #buildChameleonLib()
+    buildChameleonLib()
 
     print('start initing build folder...')
     initProjectFolder(chameleonTarget, version)
