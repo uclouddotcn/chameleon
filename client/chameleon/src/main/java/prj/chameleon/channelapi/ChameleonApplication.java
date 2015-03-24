@@ -11,6 +11,9 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 public class ChameleonApplication extends Application {
+
+    public static boolean isTest = true;
+
     private void loadInit() {
         try {
             loadConfig();
@@ -30,6 +33,7 @@ public class ChameleonApplication extends Application {
 
     @Override
     public void onCreate() {
+        isTest = false;
         ChannelInterface.onApplicationEvent(Constants.ApplicationEvent.BEFORE_ON_CREATE, this);
         super.onCreate();
         ChannelInterface.onApplicationEvent(Constants.ApplicationEvent.AFTER_ON_CREATE, this);
