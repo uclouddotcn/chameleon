@@ -84,20 +84,25 @@ Product.prototype.productInfo = function(){
  */
 Product.prototype.loadAllChannels = function (channelCfg) {
     var self = this;
-    Object.keys(channelCfg).forEach(function (key) {
-        self.startChannel(key, channelCfg[key]);
-    });
-    if (env.debug) {
-        // start test channel
-        this.startChannel("test", {
-            sdks: [
-                {
-                    name: 'test',
-                    type: 'user,pay',
-                    cfg: {}
-                }
-            ]
+    try {
+        Object.keys(channelCfg).forEach(function (key) {
+            self.startChannel(key, channelCfg[key]);
         });
+        if (env.debug) {
+            // start test channel
+            this.startChannel("test", {
+                sdks: [
+                    {
+                        name: 'testchannel',
+                        type: 'user,pay',
+                        cfg: {}
+                    }
+                ]
+            });
+        }
+    } catch (e) {
+        self._logger.error({err: e}, 'Fail to start prodcut');
+        throw new Error('product('+this._productName+') fail to start!' + e.message);
     }
 };
 
@@ -263,8 +268,9 @@ SDKPluginManager.prototype.getPlugin = function (channelName, sdkname, cfg, vers
     var pluginModuleInfo = _.find(this.pluginMgr.pluginInfos, function(info){
         return info.name === sdkname && getShortVersion(info.version) === version;
     });
+    this._logger.info({sdkname: sdkname, cfg: cfg, version: version}, 'get plugin');
     if(!pluginModuleInfo){
-        throw new Error('Fail to find pluginModuleInfo at version: ', version);
+        throw new Error('Fail to find pluginModuleInfo at version: ' + sdkname+':'+version);
     }
     var pluginModule = require(pluginModuleInfo.path);
     if (pluginModule == null) {

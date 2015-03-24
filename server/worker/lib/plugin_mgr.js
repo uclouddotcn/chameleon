@@ -38,19 +38,6 @@ PluginMgr.prototype.loadAllPlugins = function (pluginInfos) {
     }
 };
 
-PluginMgr.prototype.usePluginAtVersion = function (name, version) {
-     var pluginModule = doLoadPluginModule(this, version, p);
-     if (pluginModule instanceof Error) {
-     } else {
-         var pModule = _.findWhere(this.pluginModules, {name: name, version: version});
-         if(pModule){
-             pModule = pluginModule;
-         }
-         this.emit('plugin-upgrade', name, pluginModule);
-     }
-     return pluginModule;
-};
-
 function doLoadPluginModule(self, name, ver, path) {
     var pluginModule = require(path);
     if (!pluginModule.name ) {
