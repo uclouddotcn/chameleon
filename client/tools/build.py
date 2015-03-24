@@ -229,7 +229,7 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
     clientPath = os.path.join(targetFolder, 'chameleon_client')
     os.mkdir(clientPath)
     unzipFiles(zf, os.path.join(targetFolder, 'chameleon_client'))
-    shutil.copytree(chameleonFolder, os.path.join(targetFolder,  'chameleon'))
+    shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon_client',  'chameleon'))
     downloadDependency(os.path.join(targetFolder, 'chameleon_client'))
     placePlatformStartScript(targetFolder)
 
