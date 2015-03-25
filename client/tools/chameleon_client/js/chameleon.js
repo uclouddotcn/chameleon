@@ -22,8 +22,9 @@ var constants = require('./constants');
 function ChameleonTool(){
     this.projectRoot = constants.chameleonHome;
     this.configRoot = pathLib.join(__dirname, '..', 'chameleon');
+    fs.ensureDirSync(this.configRoot);
     this.dbPath = pathLib.join(constants.chameleonHome, 'db');
-    fs.ensureDir(this.dbPath);
+    fs.ensureDirSync(this.dbPath);
     this.dbPath = pathLib.join(this.dbPath, 'chameleon');
 }
 
