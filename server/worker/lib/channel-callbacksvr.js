@@ -33,7 +33,6 @@ function (productMgr, port, host, options, logger) {
     self.port = port;
     self.host = host;
     self.options = options;
-    this.server.listen(port, host, options);
     this.subDirs = {};
     productMgr.on('start-inst', self._onStartChannel.bind(self));
     productMgr.on('end-inst', self._onRemoveChannel.bind(self));

@@ -66,13 +66,13 @@ var WorkerMgr = function () {
 util.inherits(WorkerMgr, EventEmitter);
 
 
-WorkerMgr.prototype.init = function (logger, pluginInfos, workerCfg, callback) {
+WorkerMgr.prototype.init = function (logger, pluginMgr, workerCfg, callback) {
     this._logger = logger;
     this.cmds = {};
     this.ver = 0;
     this.worker = null;
     this.num = 0;
-    this.pluginInfos = pluginInfos;
+    this.pluginMgr = pluginMgr;
     this._resetWorkerCfg(workerCfg);
     var a = process.execArgv.filter(function(a) {return a.substr(0, 11) != '--debug-brk';});
     if (a.length != process.execArgv) {
@@ -215,8 +215,14 @@ WorkerMgr.prototype._startWorker = function (callback) {
         self._doRequest(self.worker.wid, '__start', {
             script: self.forkScripts,
             args: self.args,
-            data: self.pluginInfos
-        }, callback);
+            data: self.pluginMgr.pluginInfos
+        }, function (err) {
+            if (err) {
+                var wid = self.worker.wid;
+                cluster.workers[wid] && cluster.workers[wid].kill('SIGKILL')
+            }
+            callback(err);
+        });
     });
 };
 
@@ -277,6 +283,7 @@ WorkerMgr.prototype._onWorkerExit = function (worker, code, signal) {
     }
     var self = this;
     self.status = 'restarting';
+    this._logger.info({wid: worker.id, code: code, signal: signal}, 'try restart worker');
     self.worker = null;
     // unknown restart
     this._startWorker(function (err) {

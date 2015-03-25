@@ -73,14 +73,17 @@ def packChannels(channelParentFolder, targetParentFolder):
     print(build_channel)
     print('*********************start build channels**************************')
     for ci in channelInfos:
-        copyChannel(build_channel, ci.name, CHANNEL_DIR, targetParentFolder, {"version": ci.cfg["chamversion"], "realVer": ci.cfg["version"]})
+        result = copyChannel(build_channel, ci.name, CHANNEL_DIR, targetParentFolder, {"version": ci.cfg["chamversion"], "realVer": ci.cfg["version"]})
+        if result != 0:
+            print("!!!!!!!!!!this is build channel:"+ci.name+" result != 0 !!!!!!!!!!!!!")
+            return
     print('*********************end build channels**************************')
     return channelInfos
 
 def copyChannel(buildchannel, channel, channelPath,  targetPath,  versionInfo):
     if not os.path.exists(targetPath):
         os.makedirs(targetPath)
-    genCmd(buildchannel, channel, channelPath, targetPath)
+    return genCmd(buildchannel, channel, channelPath, targetPath)
 
 def genCmd(buildchannel, channel, channelPath,  targetPath):
     paras = []
@@ -88,7 +91,8 @@ def genCmd(buildchannel, channel, channelPath,  targetPath):
     paras.append(('-c', channel))
     paras.append(('-r', channelPath))
     paras.append(('-g', targetPath))
-    os.system(' '.join([x+' '+y for (x,y) in paras]))
+    print(' '.join([x+' '+y for (x,y) in paras]))
+    return os.system(' '.join([x+' '+y for (x,y) in paras]))
 
 def initTargetScriptFolder(targetScriptFolder):
     if not os.path.exists(targetScriptFolder):
@@ -225,7 +229,7 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
     clientPath = os.path.join(targetFolder, 'chameleon_client')
     os.mkdir(clientPath)
     unzipFiles(zf, os.path.join(targetFolder, 'chameleon_client'))
-    shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'app', 'chameleon'))
+    shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon_client',  'chameleon'))
     downloadDependency(os.path.join(targetFolder, 'chameleon_client'))
     placePlatformStartScript(targetFolder)
 
@@ -297,7 +301,7 @@ def mergeToNodewebkit(targetFolder):
 
 
 def build():
-    print ('start syncing the server version')
+    print('start syncing the server version')
     syncServerVer(os.path.join(BASEDIR, '..'))
 
     targetFolder = os.path.join(BASEDIR, 'chameleon_build')
