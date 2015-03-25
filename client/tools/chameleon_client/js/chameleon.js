@@ -189,6 +189,12 @@ ChameleonTool.prototype.getSDKList = function(){
     return SDKList;
 }
 
+ChameleonTool.prototype.getAPKVersionList = function(projectName){
+    var folder = pathLib.join(this.projectRoot, projectName, 'build', 'target');
+
+
+}
+
 ChameleonTool.prototype.dirName = function(){
     return this.configRoot;
 }
@@ -203,10 +209,10 @@ ChameleonTool.prototype.chameleonPath = function(){
 ChameleonTool.prototype.createProjectDirectory = function(name){
     var root = this.projectRoot;
     try{
-        var path = root + name;
-        fs.mkdirpSync(path);
-        path += '/cfg';
-        fs.mkdirpSync(path);
+        var path = pathLib.join(root, name);
+        fs.ensureDirSync(pathLib.join(path, 'cfg'));
+        fs.ensureDirSync(pathLib.join(path, 'build', 'target'))
+        fs.ensureDirSync(pathLib.join(path, 'output'));
     }catch (e){
         console.log(e);
         Logger.log(e.message, e);
