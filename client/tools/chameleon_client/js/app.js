@@ -141,7 +141,8 @@ chameleonApp = angular.module('chameleonApp', [
                                     $scope.installAPKMessage = "解压APK母包失败";
                                     return;
                                 }
-                                APKVersion = data;
+                                //APKVersion = data;
+                                $scope.APKVersionList = ProjectMgr.getAPKVersionList($scope.project.name);
                             });
                         }
                     }
@@ -595,8 +596,8 @@ chameleonApp = angular.module('chameleonApp', [
                                     data.channel.splashPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
                                 }
                                 if(channel.config.icon && channel.config.icon.path){
-                                    data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, nodePath('/res/icon.png'));
-                                    fse.copySync(node_path.join(chameleonPath.projectRoot, 'cfg', channel.channelName, 'build', 'icon.png'), data.channel.iconPath);
+                                    //data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, nodePath('/res/icon.png'));
+                                    //fse.copySync(node_path.join(chameleonPath.projectRoot, 'cfg', channel.channelName, 'build', 'icon.png'), data.channel.iconPath);
                                     data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
                                 }
 
@@ -621,7 +622,11 @@ chameleonApp = angular.module('chameleonApp', [
                             //pack process
                             var projectRoot = node_path.join(chameleonPath.projectRoot, $scope.project.name);
                             var configRoot = chameleonPath.configRoot;
-                            $scope.apkFilePath = $scope.fileread.path;
+                            if(!APKVersion){
+                                alert('请先选择APK母包');
+                                return;
+                            }
+                            $scope.apkFilePath = node_path.join(projectRoot, 'build', 'target', APKVersion);
                         }catch (e){
                             callback(e);
                         }
@@ -740,6 +745,42 @@ chameleonApp = angular.module('chameleonApp', [
                             alert('推送服务器失败');
                         });
                     }
+
+                    //manage APK
+                    $scope.APKVersionList = [];
+                    var list = ProjectMgr.getAPKVersionList($scope.project.name);
+                    for(var i = 0; i < list.length; i++){
+                        $scope.APKVersionList.push({
+                            name: 'APK',
+                            version: list[i]
+                        });
+                    }
+                    $scope.selectedAPKVersion = [];
+                    $scope.APKVersionTable = {
+                        data: 'APKVersionList',
+                        columnDefs: [
+                            {
+                                displayName: '已解压APK版本',
+                                width: '100%',
+                                field: 'version',
+                                resizable: false,
+                                groupable: false
+                            }
+                        ],
+                        multiSelect: false,
+                        selectedItems: $scope.selectedAPKVersion,
+                        showGroupPanel: false,
+                        beforeSelectionChange: function() {
+                            return !$scope.compiling;
+                        },
+                        afterSelectionChange: function(rowItem){
+                            APKVersion = rowItem.entity.version;
+                        },
+                        rowTemplate: '<div ng-style="{ cursor: row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}">' +
+                        '<div class="ngVerticalBar" ng-style="{height: rowHeight}" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div>' +
+                        '<div ng-cell></div>' +
+                        '</div>'
+                    };
                 }]
             })
             .state('loadsdk', {

@@ -9,6 +9,7 @@
                 <li role="presentation"><a href="#SDKManager" >SDK管理</a></li>
                 <li role="presentation"><a href="#SDKConfig" >SDK配置</a></li>
                 <li role="presentation"><a href="#iconManager" >icon管理</a></li>
+                <li role="presentation"><a href="#APKPicker" >APK母包管理</a></li>
                 <li role="presentation"><a href="#pack" >打包</a></li>
             </ul>
 
@@ -224,13 +225,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="pack" role="tabpanel">
+                <div class="tab-pane fade" id="APKPicker" role="tabpanel">
                     <div class="row">
                         <label>选择APK母包</label><label>{{apkFilePath}}</label><label style="margin-left: 10px; color: red;">{{installAPKMessage}}</label>
                     </div>
                     <div>
-                        <input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/>
+                        <label>添加新母包</label><input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/>
                     </div>
+                    <div class="row">
+                        <div class="gridStyle" ng-grid="APKVersionTable" style="height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="pack" role="tabpanel">
                     <div class="gridStyle" ng-grid="gridOptions9" style="height: 300px; overflow-y: auto"></div>
                     <div class="row">
                         <input class="btn-large btn-success has-spinner" type="button" ng-click="pack()" value="打包" />

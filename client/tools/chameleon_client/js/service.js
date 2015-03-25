@@ -172,6 +172,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.getSDKList();
     }
 
+    ProjectMgr.prototype.getAPKVersionList = function(projectName){
+        return this.tool.getAPKVersionList(projectName);
+    }
+
     ProjectMgr.prototype.dirName = function(){
         return this.tool.dirName();
     }

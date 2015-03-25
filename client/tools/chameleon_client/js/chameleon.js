@@ -191,8 +191,9 @@ ChameleonTool.prototype.getSDKList = function(){
 
 ChameleonTool.prototype.getAPKVersionList = function(projectName){
     var folder = pathLib.join(this.projectRoot, projectName, 'build', 'target');
+    var versionList = fso.readdirSync(folder);
 
-
+    return versionList;
 }
 
 ChameleonTool.prototype.dirName = function(){
