@@ -236,6 +236,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.checkJavaHome();
     }
 
+    ProjectMgr.prototype.chameleonPath = function(){
+        return this.tool.chameleonPath();
+    }
+
     return new ProjectMgr();
 }])
     .factory('WaitingDlg', ['$q', '$modal', function ($q, $modal) {
