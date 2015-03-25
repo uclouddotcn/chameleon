@@ -90,7 +90,7 @@ chameleonApp = angular.module('chameleonApp', [
                     }
                     var iconPosition = function(){
                         var result = {};
-                        var root = node_path.join(chameleonPath.configRoot,  nodePath('app/chameleon/channelinfo/'), $scope.selectedChannel.channelName, nodePath('/drawable/drawable-xhdpi/'));
+                        var root = node_path.join(chameleonPath.configRoot,  nodePath('channelinfo'), $scope.selectedChannel.channelName, nodePath('/drawable/drawable-xhdpi/'));
                         result.leftDown = fs.existsSync(node_path.join(root, 'icon-decor-leftdown.png'));
                         result.leftUp = fs.existsSync(node_path.join(root, 'icon-decor-leftup.png'));
                         result.rightDown = fs.existsSync(node_path.join(root, 'icon-decor-rightdown.png'));
