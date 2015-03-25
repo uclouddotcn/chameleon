@@ -80,7 +80,8 @@ chameleonApp = angular.module('chameleonApp', [
 
                     var dirName = ProjectMgr.dirName(),
                         env = ProjectMgr.getEnv(),
-                        packingRoot = dirName.substr(0, dirName.length-19),
+                        chameleonPath = ProjectMgr.chameleonPath(),
+                        //packingRoot = dirName.substr(0, dirName.length-19),
                         APKVersion = '';
 
                     //functions
@@ -89,7 +90,7 @@ chameleonApp = angular.module('chameleonApp', [
                     }
                     var iconPosition = function(){
                         var result = {};
-                        var root = node_path.join(packingRoot,  nodePath('app/chameleon/channelinfo/'), $scope.selectedChannel.channelName, nodePath('/drawable/drawable-xhdpi/'));
+                        var root = node_path.join(chameleonPath.configRoot,  nodePath('app/chameleon/channelinfo/'), $scope.selectedChannel.channelName, nodePath('/drawable/drawable-xhdpi/'));
                         result.leftDown = fs.existsSync(node_path.join(root, 'icon-decor-leftdown.png'));
                         result.leftUp = fs.existsSync(node_path.join(root, 'icon-decor-leftup.png'));
                         result.rightDown = fs.existsSync(node_path.join(root, 'icon-decor-rightdown.png'));
@@ -120,11 +121,11 @@ chameleonApp = angular.module('chameleonApp', [
                             }
                         }
                         if(element[0].name == "apk") {
-                            var projectRoot = packingRoot + 'app/projects/' + $scope.project.name + '/';
+                            var projectRoot = node_path.join(chameleonPath.projectRoot, $scope.project.name);
                             $scope.installAPKMessage = '';
                             $scope.apkFilePath = $scope.fileread.path;
                             var install = ProjectMgr.command('python', [
-                                node_path.normalize(packingRoot + 'app/chameleon/tools/buildtool/chameleon_tool/build_package.py'),
+                                node_path.normalize(node_path.join(chameleonPath.configRoot, nodePath('tools/buildtool/chameleon_tool/build_package.py'))),
                                 '-p',
                                 $scope.apkFilePath,
                                 '-P',
@@ -154,7 +155,7 @@ chameleonApp = angular.module('chameleonApp', [
                         });
 
                         if($scope.project.config.icon){
-                            var destiny =node_path.join(packingRoot, nodePath( '/app/projects/'), $scope.project.name, nodePath('/cfg/icon.png'));
+                            var destiny =node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
                             fse.copySync($scope.project.config.icon, destiny);
                             $scope.projectIcon = $scope.project.config.icon;
                         }
@@ -258,14 +259,14 @@ chameleonApp = angular.module('chameleonApp', [
                             $('.sdkList').not(event.target).prop({'checked':false});
 
                             $scope.selectedChannel.sdks.push(sdk);
-                            (_.findWhere($scope.project.channels, {channelName: $scope.selectedChannel.channelName})).sdks = $scope.selectedChannel.sdks;
+                            //(_.findWhere($scope.project.channels, {channelName: $scope.selectedChannel.channelName})).sdks = $scope.selectedChannel.sdks;
                             $scope.selectedSDKs = $scope.selectedChannel.sdks;
                             ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
                         }else{
                             $scope.selectedChannel.sdks = _.reject($scope.selectedChannel.sdks, function(element){
                                 return element.name == sdk.name;
                             });
-                            (_.findWhere($scope.project.channels, {channelName: $scope.selectedChannel.channelName})).sdks = $scope.selectedChannel.sdks;
+                            //(_.findWhere($scope.project.channels, {channelName: $scope.selectedChannel.channelName})).sdks = $scope.selectedChannel.sdks;
                             $scope.selectedSDKs = $scope.selectedChannel.sdks;
                             ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
                         }
@@ -328,7 +329,6 @@ chameleonApp = angular.module('chameleonApp', [
                         $scope.selectedSDKs = channel.sdks;
                         $scope.selectedSDK = {};
                         $scope.SDKConfigHtml = "";
-                        $scope.hideSignConfig = $scope.selectedChannel.useGlobalSignConfig;
 
                         //refresh config view
                         $('#SDKConfigView').empty();
@@ -406,7 +406,6 @@ chameleonApp = angular.module('chameleonApp', [
                         }else{
                             $scope.hideSignConfig = false;
                         }
-                        $scope.selectedChannel.config.useGlobalSignConfig = $scope.hideSignConfig;
                     }
 
                     //icon config
@@ -451,7 +450,7 @@ chameleonApp = angular.module('chameleonApp', [
                         var channel = $scope.selectedChannel;
                         //save image
                         if(!$scope.hasIcon()){
-                            var path = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, 'icon', channel.channelName + '.png');
+                            var path = node_path.join(chameleonPath.projectRoot, $scope.project.name, 'cfg', channel.channelName, 'res', 'icon.png');
                             fse.copySync($scope.projectIcon, path);
                             channel.config.icon = {};
                             channel.config.icon.path = path;
@@ -511,14 +510,12 @@ chameleonApp = angular.module('chameleonApp', [
                             }
 
                             var b = base;
-                            var o = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, nodePath('/drawable/drawable-xhdpi/'), getOverlayPath(overlay));
+                            var o = node_path.join(chameleonPath.configRoot, 'channelinfo', channel.channelName, nodePath('/drawable/drawable-xhdpi/'), getOverlayPath(overlay));
                             if(!fs.existsSync(o)) return;
                             drawImage(canvas, b, o, path);
                         }
 
-                        var path = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, 'icon', channel.channelName + '.png');
-                        var iconFolder = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), channel.channelName, 'icon');
-                        if(!fs.existsSync(iconFolder)) fs.mkdirSync(iconFolder);
+                        var path = node_path.join(chameleonPath.projectRoot, $scope.project.name, 'cfg', channel.channelName, 'res', 'icon.png');
                         saveImage(canvas, path);
                         ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
 
@@ -531,9 +528,7 @@ chameleonApp = angular.module('chameleonApp', [
                                     config.icon.position = position;
                                     ProjectMgr.setChannel($scope.project, $scope.selectedChannels[i]);
                                     if(config.icon.path){
-                                        var savePath = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), $scope.selectedChannels[i].channelName, 'icon', $scope.selectedChannels[i].channelName + '.png');
-                                        var iconFolder = node_path.join(packingRoot, nodePath('app/chameleon/channelinfo/'), $scope.selectedChannels[i].channelName, 'icon');
-                                        if(fs.existsSync(iconFolder)) fs.mkdirSync(iconFolder);
+                                        var savePath = node_path.join(chameleonPath.projectRoot, $scope.project.name, 'cfg', $scope.selectedChannels[i].channelName, 'res', 'icon.png');
                                         saveImageWithoutDisplay(canvas, config.icon.path, config.icon.position, savePath, $scope.selectedChannels[i]);
                                     }
                                 }
@@ -584,8 +579,8 @@ chameleonApp = angular.module('chameleonApp', [
                                 if(channel.config.splash){
                                     data.channel.splashPath = channel.config.splash;
                                     if(channel.config.splash === '1'){
-                                        var destiney = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/splash/splash'));
-                                        var source = node_path.join(packingRoot, 'app/chameleon/channelinfo', channel.channelName, 'drawable/splashscreen', $scope.project.landscape ? 'landscape' : 'portrait');
+                                        var destiney = node_path.join(chameleonPath.projectRoot, project.name, nodePath('cfg'), channel.channelName, nodePath('/res/splash'));
+                                        var source = node_path.join(chameleonPath.configRoot, 'channelinfo', channel.channelName, 'drawable/splashscreen', $scope.project.landscape ? 'landscape' : 'portrait');
                                         var fso = require('fs');
                                         if(fso.existsSync(source + '.png')){
                                             source += '.png';
@@ -597,12 +592,12 @@ chameleonApp = angular.module('chameleonApp', [
                                         data.channel.splashPath = destiney;
                                         fse.copySync(source, data.channel.splashPath);
                                     }
-                                    data.channel.splashPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
+                                    data.channel.splashPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
                                 }
                                 if(channel.config.icon && channel.config.icon.path){
-                                    data.channel.iconPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/drawable/icon.png'));
-                                    fse.copySync(packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/icon/' + channel.channelName + '.png', data.channel.iconPath);
-                                    data.channel.iconPath = node_path.join(packingRoot, nodePath('app/projects/'), project.name, nodePath('cfg'), channel.channelName, nodePath('/res/'));
+                                    data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, nodePath('/res/icon.png'));
+                                    fse.copySync(node_path.join(chameleonPath.projectRoot, 'cfg', channel.channelName, 'build', 'icon.png'), data.channel.iconPath);
+                                    data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
                                 }
 
                                 if(channel.sdks && channel.sdks.length>0){
@@ -622,17 +617,17 @@ chameleonApp = angular.module('chameleonApp', [
                                 }
                             }
                             var buf = new Buffer(JSON.stringify(data));
-                            fs.writeFileSync(node_path.join(packingRoot, nodePath('app/projects/'), project.name, 'cfg', channel.channelName, 'config.json'), buf);
+                            fs.writeFileSync(node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'config.json'), buf);
                             //pack process
-                            var projectRoot = node_path.join(packingRoot, nodePath('app/projects/'), $scope.project.name);
-                            var configRoot = node_path.join(packingRoot, nodePath('app/chameleon/'));
+                            var projectRoot = node_path.join(chameleonPath.projectRoot, $scope.project.name);
+                            var configRoot = chameleonPath.configRoot;
                             $scope.apkFilePath = $scope.fileread.path;
                         }catch (e){
                             callback(e);
                         }
                         ProjectMgr.commandOnProcess('python', [
                             '-u',
-                            node_path.normalize(node_path.join(packingRoot, nodePath('app/chameleon/tools/buildtool/chameleon_tool/build_package.py'))),
+                            node_path.normalize(node_path.join(chameleonPath.configRoot, nodePath('tools/buildtool/chameleon_tool/build_package.py'))),
                             '-c',
                             channel.channelName,
                             '-r',
@@ -705,7 +700,7 @@ chameleonApp = angular.module('chameleonApp', [
                         });
                     }
                     $scope.openOutputFolder = function(){
-                        require('nw.gui').Shell.openItem(node_path.join(packingRoot, nodePath('app/projects/'), project.name, 'output'));
+                        require('nw.gui').Shell.openItem(node_path.join(chameleonPath.projectRoot, project.name, 'output'));
                     }
                     $scope.dumpServerConfig = function(){
                         var AdmZip = require('adm-zip');
@@ -742,7 +737,7 @@ chameleonApp = angular.module('chameleonApp', [
                             alert('推送服务器配置成功');
                         }).error(function(err){
                             console.log(err);
-                            alert('推送服务器配置失败');
+                            alert('推送服务器失败');
                         });
                     }
                 }]

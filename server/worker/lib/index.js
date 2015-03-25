@@ -60,7 +60,6 @@ function _init(baseDir, argv, pluginInfos, cmdEmitter, callback) {
     var logger = startLogger(env.debug);
 
     // create pending order store
-
     var pendingOrderStore = createPendingOrderStore(cfg.pendingOrderStoreCfg, logger.svrLogger);
 
     // create plugin mgr

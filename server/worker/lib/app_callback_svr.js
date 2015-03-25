@@ -11,8 +11,8 @@ var AppCallbackSvr = function (cfg) {
         url: cfg.host,
         version: '*',
         retry: false,
-        requestTimeout: 20000,
-        connectTimeout: 10000
+        requestTimeout: 1000,
+        connectTimeout: 1000
     });
     this.payCbUrl = cfg.payCbUrl;
     this.host = cfg.host;
