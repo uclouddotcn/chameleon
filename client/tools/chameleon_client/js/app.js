@@ -1547,8 +1547,9 @@ chameleonApp = angular.module('chameleonApp', [
             restrict: 'A',
             link: function(scope, element){
                 var fs = require('fs');
+                var pathLib = require('path');
                 var dirName = ProjectMgr.dirName();
-                var packingRoot = dirName.substr(0, dirName.length-19);
+                var chameleonPath = ProjectMgr.chameleonPath();
                 var drawImage = function(canvas, base, overlay){
                     var context = canvas.getContext('2d');
                     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -1593,7 +1594,7 @@ chameleonApp = angular.module('chameleonApp', [
                     if(!scope.pictureToDraw.overlay) return;
                     var channel = scope.selectedChannel;
                     var base = scope.pictureToDraw.base;
-                    var overlay = packingRoot + 'app/chameleon/channelinfo/' + channel.channelName + '/drawable/drawable-xhdpi/' + getOverlayPath(scope.pictureToDraw.overlay);
+                    var overlay = pathLib.join(chameleonPath.configRoot, 'channelinfo', channel.channelName, 'drawable', 'drawable-xhdpi', getOverlayPath(scope.pictureToDraw.overlay));
                     if(!fs.existsSync(overlay)) return;
                     drawImage(canvas, base, overlay);
                 }
