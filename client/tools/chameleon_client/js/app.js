@@ -314,7 +314,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 }
                             })
 
-                            $('#SDKConfigView').empty();
+                            //$('#SDKConfigView').empty();
                             if($scope.selectedChannel.config.isGlobalConfig){
                                 $('#globalSignConfig').prop('checked', true);
                             }else{
@@ -351,9 +351,8 @@ chameleonApp = angular.module('chameleonApp', [
                         $scope.selectedSDKs = channel.sdks;
                         $scope.selectedSDK = {};
                         $scope.SDKConfigHtml = "";
+                        $scope.$apply();
 
-                        //refresh config view
-                        $('#SDKConfigView').empty();
                     }
 
                     //Dynamic SDK View
