@@ -619,8 +619,6 @@ chameleonApp = angular.module('chameleonApp', [
                                     data.channel.splashPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
                                 }
                                 if(channel.config.icon && channel.config.icon.path){
-                                    //data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, nodePath('/res/icon.png'));
-                                    //fse.copySync(node_path.join(chameleonPath.projectRoot, 'cfg', channel.channelName, 'build', 'icon.png'), data.channel.iconPath);
                                     data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
                                 }
 
@@ -645,13 +643,9 @@ chameleonApp = angular.module('chameleonApp', [
                             //pack process
                             var projectRoot = node_path.join(chameleonPath.projectRoot, $scope.project.name);
                             var configRoot = chameleonPath.configRoot;
-                            if(!APKVersion){
-                                alert('请先选择APK母包');
-                                return;
-                            }
                             $scope.apkFilePath = node_path.join(projectRoot, 'build', 'target', APKVersion);
                         }catch (e){
-                            callback(e);
+                            return callback(e);
                         }
                         ProjectMgr.commandOnProcess('python', [
                             '-u',
@@ -702,6 +696,12 @@ chameleonApp = angular.module('chameleonApp', [
                             element.index = index;
                             element.packingMessage = '';
                         });
+
+                        if(!APKVersion){
+                            alert('请先选择APK母包');
+                            return;
+                        }
+
                         var task = [];
                         _.each(channelToPack, function(channel){
                             channel.progress = 0;
@@ -723,7 +723,7 @@ chameleonApp = angular.module('chameleonApp', [
                                         },
                                         function (data) {
                                             if (data) {
-                                                var reg = new RegExp("\r\n", "g");
+                                                var reg = new RegExp("$", "g");
                                                 var num = data.match(reg).length;
 
                                                 channel.progress += 10 * num;
@@ -734,7 +734,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 }
                             );
                         });
-                        async.parallel.apply(this, [task, function(err, callback){
+                        async.parallelLimit.apply(this,[task,5, function(err){
                             $scope.isPackDisabled = false;
                         }]);
                     }
