@@ -163,6 +163,7 @@ ChameleonTool.prototype.getChannelList = function(){
             channel.config.icon = channelInfo[p].icon == 1 ? {} : undefined;
             channel.config.iconFlag = channelInfo[p].icon;
             channel.config.SDKName = channelInfo[p].sdk;
+            channel.config.isGlobalConfig = true;
 
             channelList.push(channel);
         }

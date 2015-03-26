@@ -75,6 +75,7 @@ chameleonApp = angular.module('chameleonApp', [
                         fse = require('fs-extra'),
                         fs = require('fs'),
                         http = require('http'),
+                        async = require('async'),
                         node_path = require('path');
                     //env = require('../env.json'),
 
@@ -286,6 +287,11 @@ chameleonApp = angular.module('chameleonApp', [
                             //hack css to refresh with model
                             $('#' + $scope.selectedSDKs[i].name).prop({'checked': true});
                         }
+                        _.each($scope.selectedChannels, function(c, index){
+                            if(c.channelName === channel.channelName){
+                                $scope.gridOptions6.selectItem(index, true);
+                            }
+                        });
                     }
 
                     //sdk config
@@ -300,8 +306,21 @@ chameleonApp = angular.module('chameleonApp', [
                             $scope.fileread = channel.signConfig.keyStoreFile;
                             $scope.selectedSDKs = channel.sdks;
                             $scope.selectedSDK = {};
+                            $scope.$apply();
+
+                            _.each($scope.selectedChannels, function(c, index){
+                                if(c.channelName === channel.channelName){
+                                    $scope.gridOptions5.selectItem(index, true);
+                                }
+                            })
 
                             $('#SDKConfigView').empty();
+                            if($scope.selectedChannel.config.isGlobalConfig){
+                                $('#globalSignConfig').prop('checked', true);
+                            }else{
+                                $('#globalSignConfig').prop('checked', false);
+                            }
+                            $scope.useGlobalSignConfig();
                         },
                         columnDefs: [{
                             field: 'desc',
@@ -315,6 +334,8 @@ chameleonApp = angular.module('chameleonApp', [
                         afterSelectionChange: function(rowItem, event){
                             var sdk = rowItem.entity;
                             $scope.selectedSDK = sdk;
+                            $scope.SDKConfigHtml = '';
+                            $scope.$apply();
                             $scope.SDKConfigHtml = SDKTemplate(sdk.name, $scope.SDKList);
                         },
                         columnDefs: [{
@@ -404,8 +425,10 @@ chameleonApp = angular.module('chameleonApp', [
                         var isGlobalSignConfig = $('#globalSignConfig').prop('checked');
                         if(isGlobalSignConfig){
                             $scope.hideSignConfig = true;
+                            $scope.selectedChannel.config.isGlobalConfig = true;
                         }else{
                             $scope.hideSignConfig = false;
+                            $scope.selectedChannel.config.isGlobalConfig = false;
                         }
                     }
 
@@ -668,41 +691,52 @@ chameleonApp = angular.module('chameleonApp', [
                             }
                         ]
                     }
+                    $scope.isPackDisabled = false;
 
                     $scope.pack = function(){
                         var channelToPack = $scope.gridOptions9.$gridScope.selectedItems;
                         $('.progress-bar').css({'width': '0%'});
+                        $scope.isPackDisabled = true;
 
                         _.each($scope.selectedChannels, function(element, index){
                             element.index = index;
                             element.packingMessage = '';
                         });
+                        var task = [];
                         _.each(channelToPack, function(channel){
                             channel.progress = 0;
-                            packChannel(project, channel,
-                                function(err){
-                                    if(err){
-                                        channel.packingMessage = '打包失败';
-                                        $($('.message')[channel.index]).css({'color': 'red'});
-                                        $scope.$apply();
-                                        return ;
-                                    }
-                                    $($('.progress-bar')[channel.index]).css({'width': '100%'});
-                                    channel.packingMessage = '打包成功';
-                                    $($('.message')[channel.index]).css({'color': 'green'});
-                                    $scope.$apply();
-                                },
-                                function(data){
-                                    if(data){
-                                        var reg = new RegExp("\r\n", "g");
-                                        var num = data.match(reg).length;
+                            task.push(
+                                function(callback) {
+                                    packChannel(project, channel,
+                                        function (err) {
+                                            if (err) {
+                                                channel.packingMessage = '打包失败';
+                                                $($('.message')[channel.index]).css({'color': 'red'});
+                                                $scope.$apply();
+                                                return callback(null);
+                                            }
+                                            $($('.progress-bar')[channel.index]).css({'width': '100%'});
+                                            channel.packingMessage = '打包成功';
+                                            $($('.message')[channel.index]).css({'color': 'green'});
+                                            $scope.$apply();
+                                            callback(null);
+                                        },
+                                        function (data) {
+                                            if (data) {
+                                                var reg = new RegExp("\r\n", "g");
+                                                var num = data.match(reg).length;
 
-                                        channel.progress += 10 * num;
-                                        $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
-                                    }
+                                                channel.progress += 10 * num;
+                                                $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
+                                            }
+                                        }
+                                    );
                                 }
-                            )
+                            );
                         });
+                        async.parallel.apply(this, [task, function(err, callback){
+                            $scope.isPackDisabled = false;
+                        }]);
                     }
                     $scope.openOutputFolder = function(){
                         require('nw.gui').Shell.openItem(node_path.join(chameleonPath.projectRoot, project.name, 'output'));
