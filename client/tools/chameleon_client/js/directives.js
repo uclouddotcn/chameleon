@@ -17,6 +17,23 @@ var chameleonDirectives = angular.module('chameleonDirectives', [
             }
         };
     }])
+    // for pakcage name validation
+    .directive('packagename', function ($q) {
+        return {
+            require: '?ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                ctrl.$validators.packagename = function(modelValue, viewValue) {
+                    if (ctrl.$isEmpty(modelValue)) {
+                        // consider empty model valid
+                        return true;
+                    }
+                    scope.channelValidator.onPackageName(modelValue);
+                    return true;
+                };
+            }
+        }
+
+    })
     .directive("champic", function () {
         return {
             restrict: "E",

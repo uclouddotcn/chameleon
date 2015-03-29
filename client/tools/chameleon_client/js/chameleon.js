@@ -1,6 +1,3 @@
-/**
- * Created by Administrator on 2015/1/12.
- */
 var fs = require('fs-extra');
 var fso = require('fs');
 var childprocess = require("child_process");
@@ -15,80 +12,110 @@ var sqlite3 = require('sqlite3').verbose();
 
 var Logger = require('./lib/logger');
 var Project = require('./lib/project');
-var Channel = require('./lib/channel');
+var Channel = require('./lib/channel').Channel;
+var ChannelMeta = require('./lib/channel').ChannelMeta;
 var env = require('../env.json');
 
 function ChameleonTool(){
-    this.projectRoot = '../app/projects/';
-    this.configRoot = '../app/chameleon/';
+    if (process.env['CHAMELEON_DEV_MODE'] === 'wsk') {
+        // wsk's development mode
+        this.projectRoot = '../app/projects/';
+        this.configRoot = '../../chameleon_build/chameleon/';
+    } else {
+        // production mode
+        this.projectRoot = '../app/projects/';
+        this.configRoot = '../app/chameleon/';
+    }
+    this.channelMeta = null;
 }
 
 ChameleonTool.prototype.init = function(callback){
-    var dbContext = new sqlite3.Database('data/chameleon');
-
-    dbContext.serialize(function () {
-        dbContext.run("create table if not exists 'project' ('id' integer PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' varchar(50), 'landscape' boolean, 'version' varchar(50), 'path' text, 'signConfig' text, 'config' text)", function(err) {
-            if(err) {
-                Logger.log('Create table project failed.', err);
-                return;
-            }
-            console.log('Table project created.')
+    var self = this;
+    async.series([ function (cb) {
+        self.channelMeta = self.initChannelMetas();
+        setImmediate(cb);
+    }, function (cb) {
+        var dbContext = new sqlite3.Database('data/chameleon');
+        dbContext.serialize(function () {
+            dbContext.run("create table if not exists 'project' ('id' integer PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' varchar(50), 'landscape' boolean, 'version' varchar(50), 'path' text, 'signConfig' text, 'config' text)", function(err) {
+                if(err) {
+                    Logger.log('Create table project failed.', err);
+                    return;
+                }
+                console.log('Table project created.')
+            });
+            dbContext.run("create table if not exists 'channel' ('id' integer PRIMARY KEY AUTOINCREMENT NOT NULL, 'projectID' int not null, 'channelName' varchar(50), 'config' text, 'desc' varchar(50), 'signConfig' text, 'sdks' text)", function(err) {
+                if(err) {
+                    Logger.log('Create table channel failed.', err);
+                    return;
+                }
+                console.log('Table channel created.');
+            });
+            dbContext.run("create table if not exists 'history' ( 'version' varchar(50) PRIMARY KEY NOT NULL, 'config' text )", function(err) {
+                if(err) {
+                    Logger.log('Create table history failed.', err);
+                    return;
+                }
+                console.log('Table history created.');
+                cb(null);
+            });
         });
-        dbContext.run("create table if not exists 'channel' ('id' integer PRIMARY KEY AUTOINCREMENT NOT NULL, 'projectID' int not null, 'channelName' varchar(50), 'config' text, 'desc' varchar(50), 'signConfig' text, 'sdks' text)", function(err) {
-            if(err) {
-                Logger.log('Create table channel failed.', err);
-                return;
-            }
-            console.log('Table channel created.');
-        });
-        dbContext.run("create table if not exists 'history' ( 'version' varchar(50) PRIMARY KEY NOT NULL, 'config' text )", function(err) {
-            if(err) {
-                Logger.log('Create table history failed.', err);
-                return;
-            }
-            console.log('Table history created.');
-            callback(null, "success");
-        });
+        dbContext.close();
+    }], function (err) {
+        callback(err);
     });
+}
 
-    dbContext.close();
+ChameleonTool.prototype.initChannelMetas = function () {
+    var channelInfo = fs.readJsonFileSync(
+        this.configRoot + 'channelinfo/channellist.json');
+    var channelMeta = {};
+    for (var p in channelInfo) {
+        channelMeta[p] = new ChannelMeta(p, channelInfo[p]);
+    }
+    return channelMeta;
+};
+
+ChameleonTool.prototype.newSqllitesContext = function () {
+    return new sqlite3.Database('data/chameleon');
 }
 
 ChameleonTool.prototype.getAllProjects = function(callback){
-    var projects = [],
-        dbContext = new sqlite3.Database('data/chameleon');
-
+    dbContext = new sqlite3.Database('data/chameleon');
+    var self = this;
     dbContext.all("select * from project", function(err, rows){
+        var projects = [];
         if(err) {
             Logger.log("getAllProject() failed.", err);
             callback(err);
             return;
         }
         for(var i=0; i<rows.length; i++){
-            var project = new Project();
             var row = rows[i];
-            project.id = row.id;
-            project.name = row.name;
-            project.landscape = row.landscape == 0 ? false : true;
-            project.version = row.version;
-            project.path = row.path;
-            project.signConfig = JSON.parse(row.signConfig);
-            project.config = JSON.parse(row.config);
-            projects.push(project);
+            projects.push({
+                id : row.id,
+                name : row.name,
+                landscape : row.landscape == 0 ? false : true,
+                version : row.version,
+                path : row.path,
+                signConfig : JSON.parse(row.signConfig),
+                config : JSON.parse(row.config)
+            });
         }
         callback(null, projects);
     });
 
     dbContext.close();
-}
+};
 
 ChameleonTool.prototype.initProject = function(project){
-    var instance = new Project();
-    return _.extend(instance, project);
+    var instance = new Project(this);
+    instance.initFromDBObj(project);
+    return instance;
 }
 
 ChameleonTool.prototype.createEmptyProject = function(){
-    return new Project();
+    return new Project(this);
 }
 
 ChameleonTool.prototype.createProject = function(project, callback){
@@ -145,18 +172,13 @@ ChameleonTool.prototype.updateProject = function(project, callback){
 ChameleonTool.prototype.getChannelList = function(){
     try {
         var channelList = [];
-        var channelInfo = fs.readJsonFileSync(this.configRoot + 'channelinfo/channellist.json');
+        var channelInfo = fs.readJsonFileSync(
+            this.configRoot + 'channelinfo/channellist.json');
         for (var p in channelInfo) {
             var channel = new Channel();
 
-            channel.channelName = p;
-            channel.desc = channelInfo[p].name;
-            channel.checked = false;
-            channel.config.pkgsuffix = channelInfo[p].pkgsuffix;
-            if(channelInfo[p].splashscreen == 1) channel.config.splash = '1';
-            if(channelInfo[p].splashscreen == 2) channel.config.splash = true;
+            channel._meta = new ChannelMeta(p, channelInfo[p]);
             channel.config.icon = channelInfo[p].icon == 1 ? {} : undefined;
-            channel.config.iconFlag = channelInfo[p].icon;
             channel.config.SDKName = channelInfo[p].sdk;
             channel.config.useGlobalSignConfig = true;
 

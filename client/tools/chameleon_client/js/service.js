@@ -97,12 +97,13 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
             });
         }
         return defered.promise;
-    }
+    };
+
 
     ProjectMgr.prototype.getAllChannels = function(project){
         var defered = $q.defer();
         try{
-            var projectInstance = this.tool.initProject(project);
+            var projectInstance = project;
             projectInstance.getAllChannels(project.id, function(err, data){
                 if(err) {
                     console.log(err);
@@ -120,12 +121,12 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
             });
         }
         return defered.promise;
-    }
+    };
 
     ProjectMgr.prototype.setChannel = function(project, channel){
         var defered = $q.defer();
         try{
-            var projectInstance = this.tool.initProject(project);
+            var projectInstance = project;
             projectInstance.setChannel(project.id, channel, function(err, data){
                 if(err) {
                     console.log(err);
@@ -145,12 +146,16 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
             });
         }
         return defered.promise;
-    }
+    };
+
+    ProjectMgr.prototype.newProjectModel = function (projInDB) {
+        return this.tool.initProject(projInDB);
+    };
 
     ProjectMgr.prototype.deleteChannel = function(project, channel){
         var defered = $q.defer();
         try{
-            var projectInstance = this.tool.initProject(project);
+            var projectInstance = project;
             projectInstance.deleteChannel(channel.id, function(err, data){
                 if(err) throw err;
                 defered.resolve(data);

@@ -1,5 +1,4 @@
 <div>
-    <form>
         <div role="tabpanel">
 
             <!-- Nav tabs -->
@@ -15,6 +14,7 @@
             <!-- Tab panes -->
             <div class="tab-content" style="margin-top: 20px;">
                 <div class="tab-pane fade in active" id="projectManager" role="tabpanel">
+                    <form>
                     <div class="panel panel-default">
                         <div class="panel-heading">基本配置</div>
                         <div class="panel-body">
@@ -114,6 +114,7 @@
                         </div>
                     </div>
                     <div><button class="btn-large btn-success has-spinner" ng-click="saveProjectConfig()" ng-disabled="isProjectUnchanged">保存</button></div>
+                    </form>
                 </div>
                 <div class="tab-pane fade" id="channelManager" role="tabpanel" >
                     <div class="row">
@@ -139,6 +140,7 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="SDKConfig" role="tabpanel">
+                    <form name="SDKConfigForm">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="gridStyle" ng-grid="gridOptions6"></div>
@@ -147,11 +149,19 @@
                             <div class="gridStyle" ng-grid="gridOptions7"></div>
                         </div>
                         <div class="col-md-4">
+                            <div >
+                                <alert ng-repeat="cherr in channelValidator.errors" type="danger">{{cherr.msg}}</alert>
+                            </div>
                             <div class="panel panel-default">
                                 <div class="panel-heading">渠道配置</div>
                                 <div class="panel-body">
                                     <div>
-                                        <label>渠道包名</label><input type="text" ng-model="selectedChannel.config.packageName" />
+                                        <label>渠道包名</label>
+                                        <input
+                                            type="text"
+                                            ng-model="selectedChannel.config.packageName"
+                                            ng-model-options="{updateOn: 'blur'}"
+                                            packagename/>
                                     </div>
 <!--                                    <div ng-hide="!hasSplash">
                                         <label>Splash</label><label>{{selectedChannel.config.splashPath}}</label><input type="button" ng-click="selectSplashScreen()" value="选择"/>
@@ -180,11 +190,12 @@
                             </div>
                             <div class="control-group" style="margin: 5px;">
                                 <div class="controls">
-                                    <button type="submit" class="btn" ng-click="setSDKConfig()" >保存</button>
+                                    <button type="submit" class="btn" ng-disabled="!SDKConfigForm.$dirty" ng-click="setSDKConfig()" >保存</button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    </form>
                 </div>
                 <div class="tab-pane fade" id="iconManager" role="tabpanel">
                     <div class="row">
@@ -249,5 +260,4 @@
             </script>
 
         </div>
-    </form>
 </div>
