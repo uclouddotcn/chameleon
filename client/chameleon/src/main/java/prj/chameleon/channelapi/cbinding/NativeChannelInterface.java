@@ -766,4 +766,11 @@ public class NativeChannelInterface {
             mRunEnv.run(runnable);
         }
     }
+    
+    public static String getChameleonLibPath(String libname){
+        String p = System.mapLibraryName(libname);
+        Log.e("luaj getChame", libname);
+        Log.e("luaj getChame", p);
+        return p;
+    }    
 }

@@ -166,6 +166,18 @@ chameleonApp = angular.module('chameleonApp', [
                             $scope.projectIcon = $scope.project.config.icon;
                         }
                     };
+                    $scope.outputConfig = function(){
+                        try{
+                            var zip = ProjectMgr.getOutputZip($scope.project);
+                            fileDialog.saveAs(function(fileName){
+                                zip.writeZip(fileName);
+                                alert('保存成功');
+                            }, $scope.project.name + '.zip');
+                        }catch (e){
+                            console.log(e);
+                            alert('导出失败： 未知错误');
+                        }
+                    };
                     $scope.$watch('project', function(newValue, oldValue) {
                         if(newValue !== oldValue) $scope.isProjectUnchanged = false;
                     }, true);

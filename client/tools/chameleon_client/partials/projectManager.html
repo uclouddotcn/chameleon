@@ -114,7 +114,10 @@
                             </div>
                         </div>
                     </div>
-                    <div><button class="btn-large btn-success has-spinner" ng-click="saveProjectConfig()" ng-disabled="isProjectUnchanged">保存</button></div>
+                    <div class="row">
+                        <button class="btn-large btn-success has-spinner" ng-click="saveProjectConfig()" ng-disabled="isProjectUnchanged">保存</button>
+                        <button class="btn-large btn-success has-spinner" ng-click="outputConfig()">导出游戏配置</button>
+                    </div>
                     </form>
                 </div>
                 <div class="tab-pane fade" id="channelManager" role="tabpanel" >

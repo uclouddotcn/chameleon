@@ -104,6 +104,7 @@ int callJniMethod(JNIEnv * env, int funcCode, T* result, ...) {
         LOGF("fail to find class");
         return -1;
     }
+    LOGE("call : %s", FUNC_TYPE[funcCode][0]);
     jmethodID mid = env->GetStaticMethodID(cplatformAPI, FUNC_TYPE[funcCode][0], FUNC_TYPE[funcCode][1]);
     if (mid == NULL) {
         LOGF("fail to find static method %s", FUNC_TYPE[funcCode][0]);
@@ -151,6 +152,7 @@ JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_i
             return;
         } 
     }
+    g_channelName = JniHelper::ConvertByteArray(env, platformName);
     if (!g_apiLib.mCb) {
         LOGW("There is not callback registered");
         return;
@@ -556,19 +558,6 @@ void releaseJavaVM(JavaVM * vm) {
 
 std::string getChannelName() {
     LOGE("channel name %s", g_channelName.c_str());
-    if (g_channelName.size() == 0) {
-        JNIEnv * env = g_apiLib.GetEnv();
-        if (env == NULL) {
-            return "";
-        }
-        std::string channelName;
-        int ret = callJniMethod(env, FUNC_ID_GET_CHANNEL, &channelName);
-        if (ret == 0) {
-            g_channelName = channelName;
-        }
-
-
-    }
     return g_channelName;
 }
 

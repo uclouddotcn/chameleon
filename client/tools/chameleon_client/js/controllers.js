@@ -1183,6 +1183,28 @@ chameleonControllers
                 ProjectMgr.removeProject(rowItem.id);
             });
         }
+
+        $scope.loadConfig = function(){
+            try{
+                fileDialog.openFile(function(fileName){
+                    var promise = ProjectMgr.loadConfigFromZip(fileName);
+                    promise.then(function(data){
+                        if(data){
+                            var p = ProjectMgr.getProjectList();
+                            p.then(
+                                function (data) {
+                                    $scope.projects = data;
+                                }
+                            );
+                        }
+                    });
+                });
+            }catch (e){
+                console.log(e);
+                alert('导入失败： 未知错误');
+            }
+
+        };
     }])
     .controller('BindProjectCtrl', ['$scope', '$state', 'ProjectMgr', 'fileDialog', 'globalCache', function ($scope, $state, ProjectMgr, fileDialog, globalCache) {
         $scope.newProjectPromise = null;

@@ -397,4 +397,58 @@ ChameleonTool.prototype.command = function(command, args, callback, process){
     });
 }
 
+ChameleonTool.prototype.getOutputZip = function(project){
+    var zip = new ADMZip();
+
+    //zip.addLocalFolder(pathLib.join(this.projectRoot, project.name, 'cfg'), 'cfg');
+    zip.addFile('project.json', new Buffer(JSON.stringify(project)));
+
+    return zip;
+}
+
+ChameleonTool.prototype.loadConfigFromZip = function(path, callback){
+    try{
+        var zip = new ADMZip(path);
+        var self = this;
+
+        var projectEntry = zip.getEntry('project.json');
+        var project = zip.readFile(projectEntry).toString();
+        project = JSON.parse(project);
+        project = this.initProject(project);
+
+        this.createProject(project, function(err, data){
+            if(err){
+                callback(err);
+                return;
+            }
+
+            var task = [];
+            for(var i = 0; i < project.channels.length; i++){
+                task.push(function(cb){
+                    project.setChannel(data, project.channels[i], function(err, id){
+                        if(err){
+                            return cb(err);
+                        }
+                        cb(null, id);
+                    });
+                });
+            }
+            async.series.apply(this, [task, function(err){
+                if(err){
+                    console.log(err)
+                    return callback(err);
+                }
+                self.createProjectDirectory(project.name);
+                var projectFolderEntry = zip.getEntry(project.name);
+                if(projectEntry){
+                    zip.extractEntryTo(projectFolderEntry, pathLib.join(self.projectRoot, project.name));
+                }
+                callback(null);
+            }]);
+        });
+    }catch (e){
+        callback(e);
+    }
+}
+
 module.exports = ChameleonTool;
