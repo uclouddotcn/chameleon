@@ -2,11 +2,13 @@
  * Created by Administrator on 2015/1/13.
  */
 var sqlite3 = require('sqlite3').verbose();
+var pathLib = require('path');
 
 var Logger = require('./logger');
 var Channel = require('./channel').Channel;
 var ChameleonError = require('./chameleonError');
 var _ = require('underscore');
+var constants = require('../constants');
 
 function Project(chtool){
     this.id = 0;
@@ -96,7 +98,7 @@ Project.prototype.deleteChannel = function(channelID, callback){
     if(channelID<=0){
         callback(new ChameleonError(null, 'Channel ID is invalid.', 'deleteChannel()'));
     }
-    var dbContext = new sqlite3.Database('data/chameleon');
+    var dbContext = new sqlite3.Database(this.dbPath);
     try{
         var sqlText = "delete from channel where id=$id";
         var params = {

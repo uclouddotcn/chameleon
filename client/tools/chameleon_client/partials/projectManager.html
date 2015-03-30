@@ -8,6 +8,7 @@
                 <li role="presentation"><a href="#SDKManager" >SDK管理</a></li>
                 <li role="presentation"><a href="#SDKConfig" >SDK配置</a></li>
                 <li role="presentation"><a href="#iconManager" >icon管理</a></li>
+                <li role="presentation"><a href="#APKPicker" >APK母包管理</a></li>
                 <li role="presentation"><a href="#pack" >打包</a></li>
             </ul>
 
@@ -140,7 +141,6 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="SDKConfig" role="tabpanel">
-                    <form name="SDKConfigForm">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="gridStyle" ng-grid="gridOptions6"></div>
@@ -149,10 +149,11 @@
                             <div class="gridStyle" ng-grid="gridOptions7"></div>
                         </div>
                         <div class="col-md-4">
+                            <form name="SDKConfigForm">
                             <div >
                                 <alert ng-repeat="cherr in channelValidator.errors" type="danger">{{cherr.msg}}</alert>
                             </div>
-                            <div class="panel panel-default">
+                            <div class="panel panel-default" ng-hide="!selectedChannel">
                                 <div class="panel-heading">渠道配置</div>
                                 <div class="panel-body">
                                     <div>
@@ -166,8 +167,14 @@
 <!--                                    <div ng-hide="!hasSplash">
                                         <label>Splash</label><label>{{selectedChannel.config.splashPath}}</label><input type="button" ng-click="selectSplashScreen()" value="选择"/>
                                     </div>-->
-                                    <div><input type="checkbox" ng-click="useGlobalSignConfig()" id="globalSignConfig" checked="true"><label>使用全局配置</label></div>
-                                    <div ng-hide="hideSignConfig">
+                                    <div>
+                                        <input type="checkbox"
+                                               ng-model="selectedChannel.config.isGlobalConfig"
+                                               id="globalSignConfig"
+                                               checked="true"/>
+                                        <label>使用全局配置</label>
+                                    </div>
+                                    <div ng-hide="!selectedChannel || selectedChannel.config.isGlobalConfig">
                                     <div>
                                         <label>Keystore文件</label><label>{{selectedChannel.signConfig.keyStoreFile}}</label>
                                     </div>
@@ -193,9 +200,9 @@
                                     <button type="submit" class="btn" ng-disabled="!SDKConfigForm.$dirty" ng-click="setSDKConfig()" >保存</button>
                                 </div>
                             </div>
+                            </form>
                         </div>
                     </div>
-                    </form>
                 </div>
                 <div class="tab-pane fade" id="iconManager" role="tabpanel">
                     <div class="row">
@@ -235,16 +242,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="pack" role="tabpanel">
+                <div class="tab-pane fade" id="APKPicker" role="tabpanel">
                     <div class="row">
                         <label>选择APK母包</label><label>{{apkFilePath}}</label><label style="margin-left: 10px; color: red;">{{installAPKMessage}}</label>
                     </div>
                     <div>
-                        <input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/>
+                        <label>添加新母包</label><input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/>
                     </div>
+                    <div class="row">
+                        <div class="gridStyle" ng-grid="APKVersionTable" style="height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="pack" role="tabpanel">
                     <div class="gridStyle" ng-grid="gridOptions9" style="height: 300px; overflow-y: auto"></div>
                     <div class="row">
-                        <input class="btn-large btn-success has-spinner" type="button" ng-click="pack()" value="打包" />
+                        <input class="btn-large btn-success has-spinner" type="button" ng-click="pack()" ng-disabled="isPackDisabled" value="打包" />
                         <input class="btn-large btn-success has-spinner" type="button" ng-click="openOutputFolder()" value="打开输出文件夹" />
                         <input class="btn-large btn-success has-spinner" type="button" ng-click="dumpServerConfig()" value="生成Server配置文件" />
                         <input class="btn-large btn-success has-spinner" type="button" ng-click="pushServerConfig()" value="推送服务器配置" />
