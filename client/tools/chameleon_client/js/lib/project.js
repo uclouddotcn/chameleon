@@ -5,11 +5,12 @@ var sqlite3 = require('sqlite3').verbose();
 var pathLib = require('path');
 
 var Logger = require('./logger');
-var Channel = require('./channel');
+var Channel = require('./channel').Channel;
 var ChameleonError = require('./chameleonError');
+var _ = require('underscore');
 var constants = require('../constants');
 
-function Project(){
+function Project(chtool){
     this.id = 0;
     this.name = '';
     this.landscape = true;
@@ -18,21 +19,34 @@ function Project(){
     this.signConfig ={};
     this.config = {};
     this.channels = [];
-    this.dbPath = pathLib.join(constants.chameleonHome, 'db', 'chameleon');
+    this._chTool = chtool;
 }
 
+Project.prototype.initFromDBObj = function (projInDB) {
+    _.assign(this, projInDB);
+};
+
 Project.prototype.getAllChannels = function(projectID, callback){
-    var dbContext = new sqlite3.Database(this.dbPath);
+    var self = this;
+    var dbContext = self._chTool.newSqllitesContext();
     try {
-        var result = [];
         var sqlText = "select * from channel where projectID=$projectID";
         var params = {
             $projectID: projectID
-        }
+        };
         dbContext.all(sqlText, params, function(err, rows){
-            if(err) throw err;
+            var result = [];
+            var chname = null;
+            if(err)
+                return callback(err);
             for(var i = 0; i < rows.length; i++){
-                var channel = new Channel();
+                chname = rows[i].channelName;
+                var metaInfo = self._chTool.channelMeta[chname];
+                if (metaInfo === null) {
+                    console.error('Fail to find meta info for ' + metaInfo)
+                    continue;
+                }
+                var channel = new Channel(metaInfo);
                 channel.id = rows[i].id;
                 channel.channelName = rows[i].channelName;
                 channel.desc = rows[i].desc;
@@ -48,13 +62,13 @@ Project.prototype.getAllChannels = function(projectID, callback){
     }finally{
         dbContext.close();
     }
-}
+};
 
 Project.prototype.setChannel = function(projectID, channel, callback){
     if(projectID<=0){
         callback(new ChameleonError(null, 'Project ID is invalid.', 'setChannel()'));
     }
-    var dbContext = new sqlite3.Database(this.dbPath);
+    var dbContext = this._chTool.newSqllitesContext();
     try {
         var sqlText = "update channel set projectID=$projectID, channelName=$channelName, config=$config, desc=$desc, signConfig=$signConfig, sdks=$sdks where id=$id";
         if(channel.id == 0) sqlText = "insert into channel (projectID, channelName, config, desc, signConfig, sdks) values ($projectID, $channelName, $config, $desc, $signConfig, $sdks)";
@@ -66,8 +80,9 @@ Project.prototype.setChannel = function(projectID, channel, callback){
             $desc: channel.desc,
             $signConfig: JSON.stringify(channel.signConfig),
             $sdks: JSON.stringify(channel.sdks)
-        }
-        if(channel.id ==0) delete params.$id;
+        };
+        if(channel.id ==0)
+            delete params.$id;
         dbContext.run(sqlText, params, function(err){
             if(err) throw err;
             callback(null, this.lastID||this.changes);
@@ -77,7 +92,7 @@ Project.prototype.setChannel = function(projectID, channel, callback){
     }finally {
         dbContext.close();
     }
-}
+};
 
 Project.prototype.deleteChannel = function(channelID, callback){
     if(channelID<=0){
@@ -88,10 +103,12 @@ Project.prototype.deleteChannel = function(channelID, callback){
         var sqlText = "delete from channel where id=$id";
         var params = {
             $id: channelID
-        }
+        };
         dbContext.run(sqlText, params, function(err){
-            if(err) throw  err;
-            if(callback) callback(null, this.changes);
+            if(err)
+                callback(err);
+            if(callback)
+                callback(null, this.changes);
         });
     }catch (e){
         Logger.log("Method deleteChannel failed.", e);

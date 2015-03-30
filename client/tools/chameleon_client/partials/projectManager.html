@@ -1,5 +1,4 @@
 <div>
-    <form>
         <div role="tabpanel">
 
             <!-- Nav tabs -->
@@ -16,6 +15,7 @@
             <!-- Tab panes -->
             <div class="tab-content" style="margin-top: 20px;">
                 <div class="tab-pane fade in active" id="projectManager" role="tabpanel">
+                    <form>
                     <div class="panel panel-default">
                         <div class="panel-heading">基本配置</div>
                         <div class="panel-body">
@@ -118,6 +118,7 @@
                         <button class="btn-large btn-success has-spinner" ng-click="saveProjectConfig()" ng-disabled="isProjectUnchanged">保存</button>
                         <button class="btn-large btn-success has-spinner" ng-click="outputConfig()">导出游戏配置</button>
                     </div>
+                    </form>
                 </div>
                 <div class="tab-pane fade" id="channelManager" role="tabpanel" >
                     <div class="row">
@@ -151,17 +152,32 @@
                             <div class="gridStyle" ng-grid="gridOptions7"></div>
                         </div>
                         <div class="col-md-4">
-                            <div class="panel panel-default">
+                            <form name="SDKConfigForm">
+                            <div >
+                                <alert ng-repeat="cherr in channelValidator.errors" type="danger">{{cherr.msg}}</alert>
+                            </div>
+                            <div class="panel panel-default" ng-hide="!selectedChannel">
                                 <div class="panel-heading">渠道配置</div>
                                 <div class="panel-body">
                                     <div>
-                                        <label>渠道包名</label><input type="text" ng-model="selectedChannel.config.packageName" />
+                                        <label>渠道包名</label>
+                                        <input
+                                            type="text"
+                                            ng-model="selectedChannel.config.packageName"
+                                            ng-model-options="{updateOn: 'blur'}"
+                                            packagename/>
                                     </div>
 <!--                                    <div ng-hide="!hasSplash">
                                         <label>Splash</label><label>{{selectedChannel.config.splashPath}}</label><input type="button" ng-click="selectSplashScreen()" value="选择"/>
                                     </div>-->
-                                    <div><input type="checkbox" ng-click="useGlobalSignConfig()" id="globalSignConfig" checked="true"><label>使用全局配置</label></div>
-                                    <div ng-hide="hideSignConfig">
+                                    <div>
+                                        <input type="checkbox"
+                                               ng-model="selectedChannel.config.isGlobalConfig"
+                                               id="globalSignConfig"
+                                               checked="true"/>
+                                        <label>使用全局配置</label>
+                                    </div>
+                                    <div ng-hide="!selectedChannel || selectedChannel.config.isGlobalConfig">
                                     <div>
                                         <label>Keystore文件</label><label>{{selectedChannel.signConfig.keyStoreFile}}</label>
                                     </div>
@@ -184,9 +200,10 @@
                             </div>
                             <div class="control-group" style="margin: 5px;">
                                 <div class="controls">
-                                    <button type="submit" class="btn" ng-click="setSDKConfig()" >保存</button>
+                                    <button type="submit" class="btn" ng-disabled="!SDKConfigForm.$dirty" ng-click="setSDKConfig()" >保存</button>
                                 </div>
                             </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -258,5 +275,4 @@
             </script>
 
         </div>
-    </form>
 </div>
