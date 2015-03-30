@@ -1110,7 +1110,7 @@ chameleonControllers
             $modalInstance.dismiss();
         };
     })
-    .controller('ProjectListCtrl', ['$scope', '$state', 'ProjectMgr', '$modal','globalCache', function($scope, $state, ProjectMgr, $modal,globalCache) {
+    .controller('ProjectListCtrl', ['$scope', '$state', 'ProjectMgr', '$modal','globalCache', 'fileDialog', function($scope, $state, ProjectMgr, $modal,globalCache, fileDialog) {
         $scope.projects = [];
         //$scope.show.index = true;
 
