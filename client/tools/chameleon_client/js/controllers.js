@@ -1131,8 +1131,10 @@ chameleonControllers
                 keyboard: false
             });
             modalInstance.result.then(function(result){
-                $scope.projects.push(result);
-                ProjectMgr.createProjectDirectory(result.name);
+                if(result){
+                    $scope.projects.push(result);
+                    ProjectMgr.createProjectDirectory(result.name);
+                }
             });
         };
 
@@ -1247,6 +1249,9 @@ chameleonControllers
             $modalInstance.close();
         }
         $scope.create = function () {
+            if(!$scope.newProject){
+                return $modalInstance.close();
+            }
             try {
                 $scope.newProjectPromise = ProjectMgr.createProject($scope.newProject);
                 $scope.newProjectPromise.then(
