@@ -147,7 +147,13 @@ chameleonApp = angular.module('chameleonApp', [
                                     return;
                                 }
                                 //APKVersion = data;
-                                $scope.APKVersionList = ProjectMgr.getAPKVersionList($scope.project.name);
+                                var list = ProjectMgr.getAPKVersionList($scope.project.name);
+                                for(var i = 0; i < list.length; i++){
+                                    $scope.APKVersionList.push({
+                                        name: 'APK',
+                                        version: list[i]
+                                    });
+                                }
                             });
                         }
                     }
@@ -219,6 +225,9 @@ chameleonApp = angular.module('chameleonApp', [
 
                     $scope.toggleChannel = function(event, channel){
                         if(event.target.checked){
+                            //make new channel default use global config.
+                            channel.config.isGlobalConfig = true;
+
                             var promise = ProjectMgr.setChannel($scope.project, channel);
                             promise.then(function(){
                                 $scope.project.channels.push(channel);
@@ -644,10 +653,10 @@ chameleonApp = angular.module('chameleonApp', [
                                         data.channel.splashPath = destiney;
                                         fse.copySync(source, data.channel.splashPath);
                                     }
-                                    data.channel.splashPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
+                                    //data.channel.splashPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
                                 }
                                 if(channel.config.icon && channel.config.icon.path){
-                                    data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
+                                    data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res', 'icon.png');
                                 }
 
                                 if(channel.sdks && channel.sdks.length>0){
