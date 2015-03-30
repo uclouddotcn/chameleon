@@ -148,6 +148,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 }
                                 //APKVersion = data;
                                 var list = ProjectMgr.getAPKVersionList($scope.project.name);
+                                $scope.APKVersionList = [];
                                 for(var i = 0; i < list.length; i++){
                                     $scope.APKVersionList.push({
                                         name: 'APK',
