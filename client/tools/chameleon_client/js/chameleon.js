@@ -25,9 +25,10 @@ function ChameleonTool(){
         this.configRoot = '../../chameleon_build/chameleon/';
     } else {
         // production mode
-        this.projectRoot = '../app/projects/';
-        this.configRoot = '../app/chameleon/';
+        this.projectRoot = constants.chameleonHome;
+        this.configRoot = pathLib.join(__dirname, '..', 'chameleon');
     }
+
     this.dbPath = pathLib.join(constants.chameleonHome, 'db');
     fs.ensureDirSync(this.dbPath);
     this.dbPath = pathLib.join(this.dbPath, 'chameleon');
