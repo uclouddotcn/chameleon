@@ -109,7 +109,7 @@ VivoChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     });
 };
 
-VivoChannel.prototype.pendingPay=function(wrapper, channelName, params, infoFromSDK, callback){
+VivoChannel.prototype.pendingPay=function(wrapper, params, infoFromSDK, callback){
     var self = this;
 
     try {

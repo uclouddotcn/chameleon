@@ -180,17 +180,6 @@ var Admin = function(pluginMgr, options, logger) {
         });
     });
 
-    self.server.put('/sdk/:name', function(req, res, next) {
-        var newInst = self.pluginMgr.usePluginAtVersion(req.params.name,
-            req.params.version, function (err) {
-                if (err) {
-                    return next(new restify.InvalidArgumentError(err.message));
-                }
-                res.send({});
-                return next();
-            });
-    });
-
     // path for getting all product instance
     self.server.get('/products', function(req, res, next) {
         requestPoster.request('products.getall', null, function (err, rsp) {
@@ -221,6 +210,17 @@ var Admin = function(pluginMgr, options, logger) {
         });
     });*/
 
+    self.server.get('/product', function(req, res, next){
+        requestPoster.request('product.getproduct', {product: req.params.product}, function(err, productInfo){
+            if (err) {
+                req.log.info({err:err}, 'fail to get product');
+                return next(new restify.InvalidArgumentError(err.message));
+            }
+            res.json(productInfo);
+            return next();
+        });
+    });
+
     //path for update server config
     var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
     self.server.post('/product', function(req, res, next){
@@ -235,11 +235,10 @@ var Admin = function(pluginMgr, options, logger) {
         }
 
         var productConfigPath = path.join(constants.productDir, product['name']);
-        console.log(productConfigPath);
         async.series([
             function(callback){
                 if(fs.existsSync(productConfigPath)){
-                    fse.move(productConfigPath, productConfigPath + '.backup', true, function(err){
+                    fse.move(productConfigPath, '.'+productConfigPath + '.backup', true, function(err){
                         if(err) {
                             return callback(new restify.InvalidArgumentError(err.message));
                         }
@@ -403,7 +402,7 @@ function saveWorkerCfg(cfg) {
 
 Admin.prototype.startWorker = function (workercfg, callback) {
     var self = this;
-    workerMgr.init(self.logger, self.pluginMgr.pluginInfos, workercfg, function (err) {
+    workerMgr.init(self.logger, self.pluginMgr, workercfg, function (err) {
         if (err) {
             self.logger.error({err: err}, "Fail to init worker");
             callback(err);

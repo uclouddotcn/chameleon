@@ -3,7 +3,6 @@ package prj.chameleon.channelapi.cbinding;
 import android.app.Activity;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
-import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -14,6 +13,7 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 
 import prj.chameleon.channelapi.ActivityInterface;
+import prj.chameleon.channelapi.ChameleonApplication;
 import prj.chameleon.channelapi.ChannelInterface;
 import prj.chameleon.channelapi.Constants;
 import prj.chameleon.channelapi.IDispatcherCb;
@@ -68,6 +68,12 @@ public class NativeChannelInterface {
         private LinkedList<Runnable> mPendingQueue = new LinkedList<Runnable>();
         private Activity mActivity = null;
         private boolean mIsInited = false;
+
+        private RequestProxy(){
+            //if application is load and activity oncreate then is not test
+            mIsInited = ChameleonApplication.isTest ? true : false;
+            Log.e(Constants.TAG, "RequestProxy mIsInited = " + mIsInited);
+        }
 
         // run on UI thread only
         public synchronized void setInitDone (Activity activity) {

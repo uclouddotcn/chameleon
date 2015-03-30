@@ -142,7 +142,12 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         AnzhiUserCenter.getInstance().setKeybackCall(mKeybackCb);
         InitSDKCallback iniCb = new InitSDKCallback(){
             public void ininSdkCallcack(){
-                AnzhiUserCenter.getInstance().login(activity, true);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                    }
+                });
             }
         };
         AnzhiUserCenter.getInstance().azinitSDK(activity,mCpInfo, iniCb);
@@ -151,7 +156,6 @@ public final class AnzhiChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         } else {
             AnzhiUserCenter.getInstance().setActivityOrientation(1);
         }
-        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
     /**
      * user login to platform

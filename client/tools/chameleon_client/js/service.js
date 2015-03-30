@@ -172,6 +172,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.getSDKList();
     }
 
+    ProjectMgr.prototype.getAPKVersionList = function(projectName){
+        return this.tool.getAPKVersionList(projectName);
+    }
+
     ProjectMgr.prototype.dirName = function(){
         return this.tool.dirName();
     }
@@ -234,6 +238,37 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
 
     ProjectMgr.prototype.checkJavaHome = function(){
         return this.tool.checkJavaHome();
+    }
+
+    ProjectMgr.prototype.chameleonPath = function(){
+        return this.tool.chameleonPath();
+    }
+
+    ProjectMgr.prototype.getOutputZip = function(project){
+        return this.tool.getOutputZip(project);
+    }
+
+    ProjectMgr.prototype.loadConfigFromZip = function(path){
+        var defered = $q.defer();
+
+        try{
+            this.tool.loadConfigFromZip(path, function(err){
+                if(err) {
+                    console.log(err);
+                    defered.resolve({err: err});
+                    return;
+                }
+
+                defered.resolve('载入游戏成功');
+            });
+        }catch (e){
+            $log.log('Fail to load project' + e.message);
+            global.setImmediate(function(){
+                defered.resolve(null);
+            });
+        }
+
+        return defered.promise;
     }
 
     return new ProjectMgr();

@@ -1,9 +1,9 @@
 package prj.chameleon.channelapi;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -14,26 +14,27 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- *  ChannelInterface is the only interface for client to use
+ * ChannelInterface is the only interface for client to use
  */
 public class ChannelInterface {
 
     /**
      * init the SDK
-     * @param activity the activity to give the real SDK
      *
-     * @param isDebug (deprecated) whether set sdk to debug mode
-     * @param cb callback function when the request is finished, the JSON object is null
+     * @param activity the activity to give the real SDK
+     * @param isDebug  (deprecated) whether set sdk to debug mode
+     * @param cb       callback function when the request is finished, the JSON object is null
      */
-	public static void init(final Activity activity,
+    public static void init(final Activity activity,
                             boolean isDebug,
-			  		        final IDispatcherCb cb) {
+                            final IDispatcherCb cb) {
         Log.d(Constants.TAG, "on init from channel interface");
         _plugins.init(activity, cb);
-	}
+    }
 
     /**
      * test if in debug mode
+     *
      * @return {boolean}, whether in debug mode
      */
     public static boolean isDebug() {
@@ -42,6 +43,7 @@ public class ChannelInterface {
 
     /**
      * set debug mode
+     *
      * @param debug if debug mode
      */
     public static void setDebug(boolean debug) {
@@ -50,6 +52,7 @@ public class ChannelInterface {
 
     /**
      * get channel user id
+     *
      * @return channel user id
      */
     public static String getUin() {
@@ -58,6 +61,7 @@ public class ChannelInterface {
 
     /**
      * user have loggined or not
+     *
      * @return true if the user have already logged in
      */
     public static boolean isLogined() {
@@ -66,6 +70,7 @@ public class ChannelInterface {
 
     /**
      * get the token of this session
+     *
      * @return the token of the channel
      */
     public static String getToken() {
@@ -74,6 +79,7 @@ public class ChannelInterface {
 
     /**
      * get the pay token of this session
+     *
      * @return the pay token of this channel
      */
     public static String getPayToken() {
@@ -93,6 +99,7 @@ public class ChannelInterface {
 
     /**
      * feed the login rsp from the chameleon server to SDK
+     *
      * @param rsp the login rsp from chameleon server
      * @return true if login rsp succeeds, false otherwise
      */
@@ -102,12 +109,13 @@ public class ChannelInterface {
 
     /**
      * login as a guest
-     * @param activity the activity to give the real SDK
-     * @param loginCallback callback when login guest if finished ,JSON object will have one or three fields
-     *                      guest : if this is non-zero, then the user login as a guest, following two
+     *
+     * @param activity              the activity to give the real SDK
+     * @param loginCallback         callback when login guest if finished ,JSON object will have one or three fields
+     *                              guest : if this is non-zero, then the user login as a guest, following two
      *                              fields will not exists
-     *                      token : the access token from the channel
-     *                      others: a segment of json string for SDK server
+     *                              token : the access token from the channel
+     *                              others: a segment of json string for SDK server
      * @param accountActionListener listener of the user account actions, refer to the interface definition
      */
     public static void loginGuest(Activity activity,
@@ -118,10 +126,10 @@ public class ChannelInterface {
 
     /**
      * register guest, if the user is not login as a guest, this function does nothing
-     * @param activity  the activity to give the real SDK
-     * @param tips the tips for the register, not all channel support customize the tips
-     * @param cb callback of the binding request
      *
+     * @param activity the activity to give the real SDK
+     * @param tips     the tips for the register, not all channel support customize the tips
+     * @param cb       callback of the binding request
      * @return boolean, true when user login as a guest and the register can continue, otherwise false
      */
     public static boolean registGuest(Activity activity, String tips, IDispatcherCb cb) {
@@ -130,33 +138,35 @@ public class ChannelInterface {
 
     /**
      * user login to channel
-     * @param activity the activity to give the real SDK
-     * @param cb JSON object will have two fields
-     *           token : the access token from the channel
-     *           others: a segment of json string for SDK server
+     *
+     * @param activity              the activity to give the real SDK
+     * @param cb                    JSON object will have two fields
+     *                              token : the access token from the channel
+     *                              others: a segment of json string for SDK server
      * @param accountActionListener listener of the user account actions, refer to the interface definition
      */
     public static void login(Activity activity,
                              IDispatcherCb cb,
                              IAccountActionListener accountActionListener) {
-		_plugins.mUserApi.login(activity, cb, accountActionListener);
-	}
+        _plugins.mUserApi.login(activity, cb, accountActionListener);
+    }
 
 
     /**
      * user charge the currency in the game
+     *
      * @param activity
-     * @param orderId the order id from server
-     * @param uidInGame player id in the game
+     * @param orderId         the order id from server
+     * @param uidInGame       player id in the game
      * @param userNameInGame  player name in the game
-     * @param serverId  current server id
-     * @param currencyName the currency name
-     * @param payInfo the additional payinfo from chameleon server
-     * @param rate the rate of the game currency to RMB, e.g. ￥1.0 can buy 10 game currency, then
-     *             rate = 10
-     * @param realPayMoney the real money to pay
+     * @param serverId        current server id
+     * @param currencyName    the currency name
+     * @param payInfo         the additional payinfo from chameleon server
+     * @param rate            the rate of the game currency to RMB, e.g. ￥1.0 can buy 10 game currency, then
+     *                        rate = 10
+     * @param realPayMoney    the real money to pay
      * @param allowUserChange can user change the amnout he paid
-     * @param cb JSON object will be null
+     * @param cb              JSON object will be null
      */
     public static void charge(Activity activity,
                               String orderId,
@@ -169,24 +179,25 @@ public class ChannelInterface {
                               int realPayMoney,
                               boolean allowUserChange,
                               IDispatcherCb cb) {
-		_plugins.mPayApi.charge(activity, orderId, uidInGame, userNameInGame,
+        _plugins.mPayApi.charge(activity, orderId, uidInGame, userNameInGame,
                 serverId, currencyName, payInfo, rate, realPayMoney,
                 allowUserChange, cb);
-	}
+    }
 
     /**
-     *  user buy a product
-     * @param activity the activity to give the real SDK
-     * @param orderId the order id from server
-     * @param uidInGame player id in the game
+     * user buy a product
+     *
+     * @param activity       the activity to give the real SDK
+     * @param orderId        the order id from server
+     * @param uidInGame      player id in the game
      * @param userNameInGame player name in the game
-     * @param serverId  current server id
-     * @param productName the name of the product
-     * @param productID the id of the product
-     * @param payInfo the additional payinfo from chameleon server
-     * @param productCount the count of product
-     * @param realPayMoney the real money to pay
-     * @param cb JSON object will be null
+     * @param serverId       current server id
+     * @param productName    the name of the product
+     * @param productID      the id of the product
+     * @param payInfo        the additional payinfo from chameleon server
+     * @param productCount   the count of product
+     * @param realPayMoney   the real money to pay
+     * @param cb             JSON object will be null
      */
     public static void buy(android.app.Activity activity,
                            String orderId,
@@ -206,6 +217,7 @@ public class ChannelInterface {
 
     /**
      * user logout
+     *
      * @param activity the activity to give the real SDK
      */
     public static void logout(Activity activity) {
@@ -215,10 +227,12 @@ public class ChannelInterface {
     public static boolean isSupportSwitchAccount() {
         return _plugins.mUserApi.isSupportSwitchAccount();
     }
+
     /**
      * for user to switch the account, to many channel it performs logout then login
+     *
      * @param activity the activity to give the real SDK
-     * @param cb callback when switch done, the ret value is the same as login
+     * @param cb       callback when switch done, the ret value is the same as login
      * @return boolean, whether the switch account starts
      */
     public static boolean switchAccount(Activity activity, IDispatcherCb cb) {
@@ -227,6 +241,7 @@ public class ChannelInterface {
 
     /**
      * create the float tool bar ( required by 91, UC)
+     *
      * @param activity the activity to give the real SDK
      * @param position refer to Constant.Toolbar*
      */
@@ -236,16 +251,18 @@ public class ChannelInterface {
     }
 
     /**
-     *  show or hide the float tool bar (required by 91, UC)
+     * show or hide the float tool bar (required by 91, UC)
+     *
      * @param activity the activity to give the real SDK
-     * @param visible true for show, false for hide
+     * @param visible  true for show, false for hide
      */
     public static void showFloatBar(Activity activity, boolean visible) {
         _plugins.mUserApi.showFloatBar(activity, visible);
     }
 
     /**
-     *  destroy the tool bar
+     * destroy the tool bar
+     *
      * @param activity the activity to give the real SDK
      */
     public static void destroyToolBar(Activity activity) {
@@ -254,16 +271,18 @@ public class ChannelInterface {
     }
 
     /**
-     *  when the app is activate from the background( refer to 91 doc, only required by 91)
+     * when the app is activate from the background( refer to 91 doc, only required by 91)
+     *
      * @param activity the activity to give the real SDK
-     * @param cb JSON object will be null
+     * @param cb       JSON object will be null
      */
     public static void onResume(Activity activity, IDispatcherCb cb) {
         _plugins.onResume(activity, cb);
     }
 
     /**
-     *  when the app is stopped
+     * when the app is stopped
+     *
      * @param activity the activity to give the real SDK
      */
     public static void onPause(Activity activity) {
@@ -271,7 +290,8 @@ public class ChannelInterface {
     }
 
     /**
-     *  when the app is onStarted
+     * when the app is onStarted
+     *
      * @param activity the activity to give the real SDK
      */
     public static void onStart(Activity activity) {
@@ -279,7 +299,8 @@ public class ChannelInterface {
     }
 
     /**
-     *  when the app is onStop
+     * when the app is onStop
+     *
      * @param activity the activity to give the real SDK
      */
     public static void onStop(Activity activity) {
@@ -287,7 +308,8 @@ public class ChannelInterface {
     }
 
     /**
-     *  when the app is onNewIntent
+     * when the app is onNewIntent
+     *
      * @param activity the activity to give the real SDK
      */
     public static void onNewIntent(Activity activity, Intent intent) {
@@ -295,7 +317,8 @@ public class ChannelInterface {
     }
 
     /**
-     *  when the app is stopped
+     * when the app is stopped
+     *
      * @param activity the activity to give the real SDK
      */
     public static void onDestroy(Activity activity) {
@@ -306,13 +329,14 @@ public class ChannelInterface {
     }
 
     /**
-     *  check if the user is adult, if the channel doesn't provide this interface, user will be
-     *  treated as adult
+     * check if the user is adult, if the channel doesn't provide this interface, user will be
+     * treated as adult
+     *
      * @param activity the activity to give the real SDK
-     * @param cb JSON object will receive flag:
-     *           ANTI_ADDICTION_ADULT
-     *           ANTI_ADDICTION_CHILD
-     *           ANTI_ADDICTION_UNKNOWN
+     * @param cb       JSON object will receive flag:
+     *                 ANTI_ADDICTION_ADULT
+     *                 ANTI_ADDICTION_CHILD
+     *                 ANTI_ADDICTION_UNKNOWN
      */
     public static void antiAddiction(Activity activity,
                                      IDispatcherCb cb) {
@@ -321,6 +345,7 @@ public class ChannelInterface {
 
     /**
      * destroy the sdk instance
+     *
      * @param activity
      */
     public static void exit(Activity activity, final IDispatcherCb cb) {
@@ -335,20 +360,22 @@ public class ChannelInterface {
 
     /**
      * run additional protocol
+     *
      * @param activity
      * @param protocol the additional protocol
-     * @param message the input message of the protocol
-     * @param cb can be null, otherwise it will called when the sdk is desctoryed, JSON will be null
+     * @param message  the input message of the protocol
+     * @param cb       can be null, otherwise it will called when the sdk is desctoryed, JSON will be null
      */
     public static boolean runProtocol(Activity activity,
-                               String protocol,
-                               String message,
-                               IDispatcherCb cb) {
+                                      String protocol,
+                                      String message,
+                                      IDispatcherCb cb) {
         return _plugins.mUserApi.runProtocol(activity, protocol, message, cb);
     }
 
     /**
      * 当前SDK是否支持该函数
+     *
      * @param protocol protocol名称
      * @return
      */
@@ -358,12 +385,13 @@ public class ChannelInterface {
 
     /**
      * submit player login info, for uc, oppo
-     * @param activity activity
-     * @param roleId player id
-     * @param roleName player name
+     *
+     * @param activity  activity
+     * @param roleId    player id
+     * @param roleName  player name
      * @param roleLevel player level
-     * @param zoneId zone id
-     * @param zoneName zone name
+     * @param zoneId    zone id
+     * @param zoneName  zone name
      */
     public static void submitPlayerInfo(Activity activity,
                                         String roleId,
@@ -376,8 +404,7 @@ public class ChannelInterface {
     }
 
     /**
-     *
-     * @param event refer to Constants.ApplicationEvent
+     * @param event     refer to Constants.ApplicationEvent
      * @param arguments the var-arguments for this event
      */
     public static void onApplicationEvent(int event, Object... arguments) {
@@ -385,18 +412,19 @@ public class ChannelInterface {
     }
 
     /**
-     *
      * @return get current channel name
      */
-	public static String getChannelName() {
-		return _plugins.getChannelName();
-	}
+    public static String getChannelName() {
+        return _plugins.getChannelName();
+    }
 
     public static void setChannelName(String channelName) {
         _plugins.setChannelName(channelName);
     }
+
     /**
      * on activity result, the parameter is the same as Activity.onActivityResult
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -410,81 +438,89 @@ public class ChannelInterface {
 
     /**
      * enable push 开启推送服务
+     *
      * @param activity activity
      */
-    public static void enablePush(Activity activity){
+    public static void enablePush(Activity activity) {
         _plugins.mPushApi.enablePush(activity);
     }
 
     /**
      * disable push 关闭推送服务
+     *
      * @param activity activity
      */
-    public static void disablePush(Activity activity){
+    public static void disablePush(Activity activity) {
         _plugins.mPushApi.disablePush(activity);
     }
 
     /**
      * add alias 添加别名
+     *
      * @param activity activity
-     * @param alias 别名
-     * @param cb 回调函数 是否成功
+     * @param alias    别名
+     * @param cb       回调函数 是否成功
      */
-    public static void addAlias(Activity activity, String alias, String type, IDispatcherCb cb){
+    public static void addAlias(Activity activity, String alias, String type, IDispatcherCb cb) {
         _plugins.mPushApi.addAlias(activity, alias, type, cb);
     }
 
     /**
      * remove alias 删除别名
+     *
      * @param activity activity
-     * @param alias 要删除的别名
-     * @param cb callback 回调函数 是否成功
+     * @param alias    要删除的别名
+     * @param cb       callback 回调函数 是否成功
      */
-    public static void removeAlias(Activity activity, String alias, String type, IDispatcherCb cb){
+    public static void removeAlias(Activity activity, String alias, String type, IDispatcherCb cb) {
         _plugins.mPushApi.removeAlias(activity, alias, type, cb);
     }
 
     /**
      * set tags 设置标签 可多个
+     *
      * @param activity activity
-     * @param tags Tags list to be set 要设置的标签list
-     * @param cb callback 回调函数 是否成功
+     * @param tags     Tags list to be set 要设置的标签list
+     * @param cb       callback 回调函数 是否成功
      */
-    public static void setTags(Activity activity, List<String> tags, IDispatcherCb cb){
+    public static void setTags(Activity activity, List<String> tags, IDispatcherCb cb) {
         _plugins.mPushApi.setTags(activity, tags, cb);
     }
 
     /**
      * get tags 获取所有标签list
+     *
      * @param activity activity
-     * @param cb callback 回调函数 返回的标签列表会在回调函数中以json串的方式返回
+     * @param cb       callback 回调函数 返回的标签列表会在回调函数中以json串的方式返回
      */
-    public static void getTags(Activity activity, IDispatcherCb cb){
+    public static void getTags(Activity activity, IDispatcherCb cb) {
         _plugins.mPushApi.getTags(activity, cb);
     }
 
     /**
      * delete tags 删除标签
+     *
      * @param activity activity
-     * @param tags Tags list to be delete 要删除的标签列表
-     * @param cb callback 回调函数 是否成功
+     * @param tags     Tags list to be delete 要删除的标签列表
+     * @param cb       callback 回调函数 是否成功
      */
-    public static void delTags(Activity activity, List<String> tags, IDispatcherCb cb){
+    public static void delTags(Activity activity, List<String> tags, IDispatcherCb cb) {
         _plugins.mPushApi.delTags(activity, tags, cb);
     }
 
     /**
      * set no disturb mode 设置免打扰时间
+     *
      * @param startHour start hour 开始时间 单位：小时，范围：[0-23]
-     * @param endHour end hour 结束时间 单位：小时，范围：[0-23]
+     * @param endHour   end hour 结束时间 单位：小时，范围：[0-23]
      */
-    public static void setNoDisturbMode(Activity activity, int startHour, int endHour){
+    public static void setNoDisturbMode(Activity activity, int startHour, int endHour) {
         _plugins.mPushApi.setNoDisturbMode(activity, startHour, endHour);
     }
 
 
     /**
-     *  the channel implementation for current package
+     * the channel implementation for current package
      */
     private static class Plugins {
         private ArrayList<APIGroup> mApiGroups = new ArrayList<APIGroup>();
@@ -575,34 +611,65 @@ public class ChannelInterface {
             mUserApi.exit(activity, new IDispatcherCb() {
                 @Override
                 public void onFinished(int retCode, JSONObject data) {
-                    if (retCode != Constants.ErrorCode.ERR_OK) {
-                        cb.onFinished(retCode, null);
-                        return;
+                    switch (retCode){
+                        case Constants.ErrorCode.ERR_OK:
+                            exitApi(activity, cb);
+                            break;
+                        case Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE:
+                            showExitDialog(activity, cb);
+                            break;
+                        default:
+                            cb.onFinished(retCode, null);
+                            break;
                     }
-                    final Iterator<APIGroup> iterator = mApiGroups.iterator();
-                    final Runnable initProc = new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!iterator.hasNext()) {
-                                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                                return;
-                            }
-                            APIGroup group = iterator.next();
-                            if (group.getApi() == mUserApi) {
-                                run();
-                                return;
-                            }
-                            group.exit(activity, new IDispatcherCb() {
-                                @Override
-                                public void onFinished(int retCode, JSONObject data) {
-                                    run();
-                                }
-                            });
-                        }
-                    };
-                    initProc.run();
                 }
             });
+        }
+
+        public void showExitDialog(final Activity activity, final IDispatcherCb cb) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("提示");
+            builder.setMessage("确认退出吗？");
+            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    exitApi(activity, cb);
+                    activity.finish();
+                }
+            });
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                }
+            });
+            builder.create().show();
+        }
+
+        private void exitApi(final Activity activity, final IDispatcherCb cb) {
+            final Iterator<APIGroup> iterator = mApiGroups.iterator();
+            final Runnable initProc = new Runnable() {
+                @Override
+                public void run() {
+                    if (!iterator.hasNext()) {
+                        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                        return;
+                    }
+                    APIGroup group = iterator.next();
+                    if (group.getApi() == mUserApi) {
+                        run();
+                        return;
+                    }
+                    group.exit(activity, new IDispatcherCb() {
+                        @Override
+                        public void onFinished(int retCode, JSONObject data) {
+                            run();
+                        }
+                    });
+                }
+            };
+            initProc.run();
         }
 
         private void addApiGroup(APIGroup group) {
@@ -656,6 +723,7 @@ public class ChannelInterface {
             }
         }
     }
+
     private static Plugins _plugins = new Plugins();
     private static boolean isToobarCreated = false;
     private static boolean isDebug = false;

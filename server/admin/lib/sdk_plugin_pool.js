@@ -1,41 +1,39 @@
 var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
+var _ = require('underscore');
+var versionparser = require('./versionparser');
+
+var extractPluginInfo = versionparser.extractPluginInfo;
 
 function SDKPluginInfo (name) {
     this.name = name;
     this.versions = {};
-    this.newest = null;
+    this.newest = {};
 }
 
 SDKPluginInfo.prototype.addVersion = function (ver, p) {
-    if (typeof ver === 'string') {
-        ver = parseInt(ver);
-    }
-    this.versions[ver] = p;
-    if (!(this.newest > ver)) {
-        this.newest = ver;
+    this.versions[ver.toString()] = p;
+    var index = ver.getId();
+    var value = ver.build;
+    if(this.newest[index]){
+        if(this.newest[index] < value) this.newest[index] = value;
+    }else{
+        this.newest[index] = value;
     }
 };
 
-SDKPluginInfo.prototype.getNewestPath = function () {
-    return this.versions[this.newest];
+SDKPluginInfo.prototype.getNewestPath = function (splitVersion) {
+    var value = this.newest[splitVersion];
+    return this.versions[splitVersion + '.' + value];
 };
 
 SDKPluginInfo.prototype.getVersionPath = function (ver) {
-    if (typeof ver === 'string') {
-        try {
-            ver = parseInt(ver);
-        } catch (e) {
-            this._logger.error({err: e}, 'fail to get version');
-            return null;
-        }
-    }
     return this.versions[ver];
 };
 
-SDKPluginInfo.prototype.getNewestVersion = function () {
-    return this.newest;
+SDKPluginInfo.prototype.getNewestVersion = function (splitVersion) {
+    return splitVersion + '.' + this.newest[splitVersion];
 };
 
 function SDKPluginPool(chPluginPoolDir, logger) {
@@ -45,17 +43,6 @@ function SDKPluginPool(chPluginPoolDir, logger) {
     this.collectAvailPlugin();
 }
 
-function extractPluginInfo (name) {
-    var r = /([a-z0-9_]+)(-(\d+))?$/;
-    var p = r.exec(name);
-    if (!p) {
-        return null;
-    }
-    return {
-        name: p[1],
-        version: p[3] ? parseInt(p[3]) : 0
-    }
-}
 
 // sync operation, only used during initialization
 SDKPluginPool.prototype.collectAvailPlugin = function () {
@@ -82,14 +69,19 @@ SDKPluginPool.prototype.getAllPluginNames = function () {
     return Object.keys(this.plugins);
 };
 
-SDKPluginPool.prototype.getNewestPluginPath = function (name) {
+SDKPluginPool.prototype.getNewestPluginPath = function (name, version) {
     var pInfo = this.plugins[name];
     if (!pInfo) {
         return null;
     }
+
+    var splitVersion = versionparser.getSplitVersionCode(version);
+    if(splitVersion.length !== 2){
+        return null;
+    }
     return {
-        ver: pInfo.getNewestVersion(),
-        p: pInfo.getNewestPath()
+        ver: pInfo.getNewestVersion(splitVersion[0]),
+        p: pInfo.getNewestPath(splitVersion[0])
     };
 };
 
@@ -102,8 +94,8 @@ SDKPluginPool.prototype.loadUpgradePlugin = function (fileurl, md5value, callbac
                 try {
                     var upgradeInfo = JSON.parse(stdout.toString());
                     var name = upgradeInfo.name.split('-');
-                    self.addNewPlugin(name[2], upgradeInfo.versionCode);
-                    callback(null, name[2], upgradeInfo.version, self.getPluginPath(upgradeInfo.name, upgradeInfo.version));
+                    self.addNewPlugin(name[2], versionparser.getVersionFromCode(upgradeInfo.versionCode));
+                    callback(null, name[2], upgradeInfo.version, self.getPluginPath(name[2], upgradeInfo.version));
                 } catch (e) {
                     self._logger.error({err: e});
                     callback(e);
@@ -132,10 +124,10 @@ SDKPluginPool.prototype.addNewPlugin = function (name, version, p) {
     var pInfo = this.plugins[name];
     if (pInfo == null) {
         pInfo = new SDKPluginInfo(name);
-        this.plugins[pInfo.name] = pInfo;
+        this.plugins[name] = pInfo;
     }
     if (!p) {
-        p = path.join(this.chdir, name+'-'+version);
+        p = path.join(this.chdir, name+'-'+version.toVersionCode());
     }
     pInfo.addVersion(version, p);
 };

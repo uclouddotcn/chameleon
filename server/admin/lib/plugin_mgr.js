@@ -2,6 +2,7 @@ var EventEmitter = require('events').EventEmitter;
 var fs = require('fs');
 var url = require('url');
 var util = require('util');
+var _ = require('underscore');
 
 var constants = require('./constants');
 var SDKPluginPool = require('./sdk_plugin_pool');
@@ -32,41 +33,23 @@ util.inherits(PluginMgr, EventEmitter);
 
 PluginMgr.prototype.loadAllPlugins = function (callback) {
     var self = this;
-    this.lsetting.get('setting', 'sdkplugins', function (err, ret) {
-        self.sdkPluginSetting = null;
-        if (err) {
-            self.logger.error({err: err}, 'Fail to load previous sdkplugins setting, using newest');
-            self.sdkPluginSetting = {};
-        } else {
-            try {
-                self.sdkPluginSetting = JSON.parse(ret);
-                if (!self.sdkPluginSetting) {
-                    self.sdkPluginSetting={};
-                }
-            } catch (e) {
-                self.logger.error({err: e}, 'Fail to load settings of sdkplugins');
-                self.sdkPluginSetting = {};
+    var availPluginNames = self.pluginPool.getAllPluginNames();
+    var pluginInfos = [];
+    for (var i = 0; i < availPluginNames.length; ++i) {
+        var name = availPluginNames[i];
+        var info = self.getVersionInfo(name);
+        try {
+            for(var j=0; j < info.length; j++){
+                pluginInfos.push(info[j]);
+                self.logger.info({info: info[j]}, 'successfully loaded plugin for ' + name);
             }
+
+        } catch (e) {
+            self.logger.error( {err: e}, 'invalid plugin module');
         }
-        var availPluginNames = self.pluginPool.getAllPluginNames();
-        var pluginInfos = [];
-        for (var i = 0; i < availPluginNames.length; ++i) {
-            var name = availPluginNames[i];
-            var info = self.getVersionInfo(name);
-            try {
-                pluginInfos.push(info);
-                if (info.ver !== self.sdkPluginSetting[name]) {
-                    self.sdkPluginSetting[name] = info.ver;
-                }
-                self.logger.info({ver: self.sdkPluginSetting[name]}, 'successfully loaded plugin for ' + name);
-            } catch (e) {
-                self.logger.error( {err: e}, 'invalid plugin module');
-            }
-        }
-        self.pluginInfos = pluginInfos;
-        callback(null);
-        //doLoadPluginModule(self, plugin)
-    });
+    }
+    self.pluginInfos = pluginInfos;
+    setImmediate(callback);
 };
 
 /**
@@ -99,38 +82,47 @@ PluginMgr.prototype.upgradePlugin = function(fileurl, md5value, callback) {
         if (err) {
             return callback(err);
         }
-        for (var i = 0; i < self.pluginInfos.length; ++i) {
-            var info = self.pluginInfos[i];
-            if (info.name === name) {
-                self.pluginInfos[i] = self.getVersionInfo(name);
-            }
+        var pluginInfoList = self.getVersionInfo(name);
+        self.pluginInfos = _.reject(self.pluginInfos, {name: name});
+        for(var i = 0; i < pluginInfoList.length; i++){
+            self.pluginInfos.push(pluginInfoList[i]);
         }
         callback(null, name, ver, path);
     })
 };
 
 PluginMgr.prototype.getVersionInfo = function (name) {
-    var self = this;
-    var pluginPath = null;
-    var ver = self.sdkPluginSetting[name];
-    if (ver) {
-        pluginPath = self.pluginPool.getPluginPath(name, ver);
+    var self = this,
+        result = [],
+        pluginPath = null,
+        ver = null,
+        versionList = [];
+
+    var plugin = self.pluginPool.plugins[name];
+    for(var v in plugin.newest){
+        versionList.push(v);
     }
-    if (!pluginPath) {
-        // the last loading plugin is missing, use newest as default
-        var pluginInfo = self.pluginPool.getNewestPluginPath(name);
-        self.logger.info({ver: pluginInfo.ver}, 'loading newest plugin for ' + name);
-        pluginPath = pluginInfo.p;
-        ver = pluginInfo.ver;
+
+    if (versionList) {
+        for(var i =0; i<versionList.length; i++){
+            var pluginInfo = self.pluginPool.getNewestPluginPath(name, versionList[i]);
+            self.logger.info({ver: pluginInfo.ver}, 'loading newest plugin for ' + name);
+            pluginPath = pluginInfo.p;
+            ver = pluginInfo.ver;
+            result.push({
+                name: name,
+                ver: versionList[i],
+                p: pluginPath
+            });
+
+            self.logger.info({ver: ver}, 'loading plugin for ' + name);
+        }
     }
-    self.logger.info({ver: ver}, 'loading plugin for ' + name);
-    return {
-        name: name,
-        ver: ver,
-        p: pluginPath
-    }
+
+    return result;
 };
 
+// deprected
 PluginMgr.prototype.usePluginAtVersion = function (name, version, callback) {
     var p= this.pluginPool.getPluginPath(name, version);
     if (p === null) {
@@ -164,9 +156,11 @@ PluginMgr.prototype.usePluginAtVersion = function (name, version, callback) {
 
 function makePluginInfo(pluginModule) {
     if (pluginModule) {
-        return {name: pluginModule.name,
-                version: pluginModule.ver,
-                path: pluginModule.p};
+        return {
+        name: pluginModule.name,
+        version: pluginModule.ver,
+        path: pluginModule.p
+        };
     } else {
         return pluginModule;
     }
@@ -198,5 +192,6 @@ function doLoadPluginModule(self, ver, path) {
     self.logger.info({name: pluginModuleInfo.name}, 'load plugin module');
     return pluginModuleInfo;
 }
+
 
 

@@ -7,6 +7,8 @@ var fs = require('fs');
 var http = require('http');
 var child_process = require('child_process');
 var util = require('util');
+var constants = require('./lib/constants');
+var Encryption = require('./lib/encryption');
 
 var PROC_NAME = 'chameleon_admin';
 var BASE_DIR = path.join(__dirname, '..');
@@ -88,7 +90,7 @@ function postRequest (host, port, url, data, method, callback) {
     var s = JSON.stringify(data);
     if (typeof method === 'function') {
         callback = method;
-        method = 'POST'
+        method = 'POST';
     }
     var req = http.request({
         port: port,
@@ -127,6 +129,23 @@ function postRequest (host, port, url, data, method, callback) {
     });
     req.write(s);
     req.end();
+}
+
+function pushProduct (productName, host, port, callback){
+    try{
+        var product = fs.readFileSync(path.join(constants.productDir, productName));
+        var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
+        product = encryption.encrypt(product.toString());
+    }catch (e){
+        return callback(e);
+    }
+
+    postRequest(host, port, '/product', {product: encodeURIComponent(product)}, function(err, result){
+        if(err){
+            return callback(err);
+        }
+        callback(null, result);
+    });
 }
 
 function main() {
@@ -472,6 +491,19 @@ function main() {
         .action(function () {
             error('unknown command');
             program.help();
+        });
+
+    program
+        .command('push <productName> <host> <port>')
+        .description('push product')
+        .action(function(productName, host, port){
+            pushProduct(productName, host, port, function(err, result){
+                if(err){
+                    error('Fail to push product: ' + err.message);
+                    process.exit(-1);
+                }
+                info(result);
+            });
         });
 
     if (process.argv.length === 2) {

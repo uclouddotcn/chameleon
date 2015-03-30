@@ -2,11 +2,13 @@ var restify = require('restify');
 var util = require('util');
 var pathLib = require('path');
 var fs = require('fs');
+var _ = require('underscore');
 
 var createAppCbSvr = require('./app_callback_svr').create;
 var ChannelMgr = require('./channelmgr');
 var env = require('./env');
 var UserAction = require('./user-events');
+var paramChecker = require('./param-checker');
 
 /**
  * every products will have one instance, manage
@@ -57,26 +59,50 @@ Product.prototype.updateCfg = function (cfg, cb) {
     }
 };
 
+Product.prototype.productInfo = function(){
+    var result = {};
+    result['name'] = this._productName;
+    result['plugin'] = [];
+    var pluginInstances = this._sdkMgr.getAllPluginInsts();
+    for(var sdkName in pluginInstances){
+        var pluginInst = pluginInstances[sdkName];
+        if(pluginInst.inst){
+            result['plugin'].push({
+                channelName: pluginInst.inst.channelName,
+                version: pluginInst.version,
+                path: pluginInst.path
+            });
+        }
+    }
+
+    return result;
+}
+
 /**
  * load all channels
  * @param channelCfg dict of the channel configs
  */
 Product.prototype.loadAllChannels = function (channelCfg) {
     var self = this;
-    Object.keys(channelCfg).forEach(function (key) {
-        self.startChannel(key, channelCfg[key]);
-    });
-    if (env.debug) {
-        // start test channel
-        this.startChannel("test", {
-            sdks: [
-                {
-                    name: 'test',
-                    type: 'user,pay',
-                    cfg: {}
-                }
-            ]
+    try {
+        Object.keys(channelCfg).forEach(function (key) {
+            self.startChannel(key, channelCfg[key]);
         });
+        if (env.debug) {
+            // start test channel
+            this.startChannel("test", {
+                sdks: [
+                    {
+                        name: 'testchannel',
+                        type: 'user,pay',
+                        cfg: {}
+                    }
+                ]
+            });
+        }
+    } catch (e) {
+        self._logger.error({err: e}, 'Fail to start prodcut');
+        throw new Error('product('+this._productName+') fail to start!' + e.message);
     }
 };
 
@@ -213,13 +239,19 @@ function checkAppCallbackSvrCfg(cfgObj) {
     }
 }
 
+function getShortVersion(version){
+    var names = version.split('.');
+    var major = parseInt(names[0] || '0');
+    var medium = parseInt(names[1] || '0');
+    var minor = parseInt(names[2] || '0');
+    var build = parseInt(names[3] || '0');
+
+    return major + '.' + medium + '.' + minor;
+}
 
 function SDKPluginManager (pluginMgr, userAction, logger) {
     this.pluginMgr = pluginMgr;
     var self = this;
-    this.pluginMgr.on('plugin-upgrade', function (name) {
-        self.replacePlugin(name);
-    });
     this._userAction = userAction;
     this._logger = logger;
     this._plugins = {};
@@ -232,55 +264,66 @@ function SDKPluginManager (pluginMgr, userAction, logger) {
  * @param cfg config setting
  * @returns {object} plugin wrapper
  */
-SDKPluginManager.prototype.getPlugin = function (channelName, sdkname, cfg) {
-    var pluginModule = this.pluginMgr.pluginModules[sdkname];
+SDKPluginManager.prototype.getPlugin = function (channelName, sdkname, cfg, version) {
+    var pluginModuleInfo = _.find(this.pluginMgr.pluginInfos, function(info){
+        return info.name === sdkname && getShortVersion(info.version) === version;
+    });
+    this._logger.info({sdkname: sdkname, cfg: cfg, version: version}, 'get plugin');
+    if(!pluginModuleInfo){
+        throw new Error('Fail to find pluginModuleInfo at version: ' + sdkname+':'+version);
+    }
+    var pluginModule = require(pluginModuleInfo.path);
     if (pluginModule == null) {
         throw new Error("Fail to create plugin " + sdkname);
     }
-    var pluginInsts = this._plugins[sdkname];
+    if (!pluginModule.name ) {
+        throw new Error('plugin ' + path +
+        ' miss required field name');
+    }
+    if (!pluginModule.createSDK ) {
+        throw new Error('plugin ' + path +
+        ' miss required function create');
+    }
+    if (!pluginModule.cfgDesc ) {
+        throw new Error('plugin ' + path +
+        ' miss required function cfgDesc');
+    }
+    var checker = paramChecker.createChecker(pluginModule.cfgDesc);
+    var pluginInst = this._plugins[sdkname];
     var plugin = null;
-    if (!pluginInsts) {
-        plugin = pluginModule.plugin;
-        pluginInsts = {
+    if (!pluginInst) {
+        plugin = pluginModule.createSDK(this._logger, checker, env.debug);
+        pluginInst = {
             plugin: plugin,
-            insts: []
+            version: version,
+            path: pluginModuleInfo.path
         };
-        this._plugins[sdkname] = pluginInsts;
+        this._plugins[sdkname] = pluginInst;
     } else {
-        plugin = pluginInsts.plugin;
+        plugin = pluginInst.plugin;
     }
     var inst = plugin.createPluginWrapper(this._userAction, channelName, cfg);
     if (inst == null) {
         throw new Error("Fail to create plugin wrapper" + channelName);
     }
-    pluginInsts.insts.push(inst);
+    pluginInst['inst'] = inst;
     return inst;
 };
 
-SDKPluginManager.prototype.replacePlugin = function (sdkname) {
-    var pluginModule = this.pluginMgr.pluginModules[sdkname];
-    if (pluginModule == null) {
-        self._logger.error("Fail to find plugin info " + sdkname);
-        return;
-    }
-    var pluginInsts = this._plugins[sdkname];
-    if (!pluginInsts) {
-        return;
-    }
-    pluginInsts.plugin = pluginModule.plugin;
-    for (var i = 0; i < pluginInsts.insts.length; ++i) {
-        pluginInsts.insts[i].replacePlugin(pluginInsts.plugin);
-    }
-};
+SDKPluginManager.prototype.getAllPluginInfos = function(){
+    return this.pluginMgr.pluginInfos;
+}
+
+SDKPluginManager.prototype.getAllPluginInsts = function(){
+    return this._plugins;
+}
 
 SDKPluginManager.prototype.uninstallChannel = function (channelName) {
     for (var sdkname in this._plugins) {
-        var pluginInsts = this._plugins[sdkname];
-        for (var i = 0; i < pluginInsts.insts.length; ++i) {
-            if (pluginInsts.insts[i].channelName === channelName) {
-                pluginInsts.insts.splice(i, 1);
-                return;
-            }
+        var pluginInst = this._plugins[sdkname];
+        if (pluginInst.inst.channelName === channelName) {
+            pluginInst.inst = null;
+            return;
         }
     }
 };

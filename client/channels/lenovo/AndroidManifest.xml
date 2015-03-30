@@ -35,7 +35,7 @@
 
         <meta-data
             android:name="lenovo.gamesdk.new"
-            android:value="2.1.0" />
+            android:value="2.3.2" />
 
         <!-- 闪屏界面，默认横屏，通过screenOrientation可以进行修改-->
         <activity
@@ -64,7 +64,7 @@
         </activity>
         <!-- 登录成功欢迎条界面结束 -->
 
-        <!-- 登录过程界面，默认横屏，通过screenOrientation可以进行修改 注意必须8个activity同时修改 -->
+        <!-- 登录过程界面，默认横屏，通过screenOrientation可以进行修改 -->
         <activity
             android:name="com.lenovo.lsf.lenovoid.ui.PsLoginActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -141,123 +141,133 @@
             android:configChanges="orientation|keyboardHidden"
             android:excludeFromRecents="true"
             android:label=""
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
             android:theme="@style/com_lenovo_lsf_ui" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.FlexibleActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog" >
+        </activity>
+
+        <activity
+            android:name="com.lenovo.lsf.lenovoid.ui.QuitActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:screenOrientation="landscape"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@style/com_lenovo_lsf_Translucent_NoTitle_Dialog" >
+        </activity>
         <!-- 登录过程界面结束 -->
 
-        <service
-            android:name="com.lenovo.lsf.lenovoid.toolbar.AppCheckService" >
-        </service>
-        <!-- 登录配置结束 -->
-
-
-
         <!-- 支付配置开始 -->
+
         <!-- 收银台界面，默认横屏，通过screenOrientation可以进行修改-->
         <activity
             android:name="com.lenovo.mpay.ifmgr.PayManagerActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
+            android:configChanges="keyboardHidden|orientation|screenSize|navigation|locale|layoutDirection"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             chameleon:replace="android:screenOrientation=%orientation%"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <!-- 收银台界面结束-->
-        <!-- 银联 -->
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.SplashActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.CardMainActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.PayMainActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.PayItActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.PayResultActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.AccountMainActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.ChooseBankActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.LoginActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.RegisterActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.GetpassActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.ResetpassActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.EditpassActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.EditinfoActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.AddCardActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.AddCardFromAuthActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.UserProtocalActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.CheckCardBalanceActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.CardInfoActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.CardBalanceResultActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.unionpay.upomp.bypay.activity.CardBankResultActivity"
-            android:screenOrientation="portrait" />
-        <!-- 一键支付 -->
-        <activity
-            android:name="com.fastpay.sdk.activity.FastPay"
-            android:configChanges="keyboardHidden|orientation|screenSize|navigation"
-            android:launchMode="singleTop"
-            android:screenOrientation="behind"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <!-- 易联 -->
         <activity
             android:name="com.payeco.android.plugin.PayecoPluginLoadingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="true"
-            android:theme="@android:style/Theme.Translucent"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            />
         <activity
-            android:name="com.payeco.android.plugin.PayecoOrderDetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:name="com.payeco.android.plugin.PayecoCamaraActivity"
+            android:screenOrientation="portrait" />
+
         <activity
-            android:name="com.payeco.android.plugin.PayecoPayResultActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:name="com.payeco.android.plugin.PayecoVedioActivity"
+            android:screenOrientation="landscape"
+            android:process="com.payeco.android.plugin.vedio"
+            />
+
+        <!--百度插件部分  -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="com.baidu.location.service_v2.2" >
+                </action>
+            </intent-filter>
+        </service>
+
+        <!-- meta-data需要写在application中 -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="DhNxS47YIr3CNdocGoAcy1ts" />
+        <!-- 支付宝 -->
         <activity
-            android:name="com.payeco.android.plugin.PayecoWebViewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
         <activity
-            android:name="com.payeco.android.plugin.PayecoRiskControlActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <!-- 易联 -->
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" >
+        </activity>
         <!-- 支付配置结束 -->
+
+        <service
+            android:name="com.lenovo.lsf.lenovoid.toolbar.AppCheckService" >
+        </service>
+
+        <receiver android:name="com.lenovo.lsf.gamesdk.receiver.GameSdkReceiver" android:permission="com.lenovo.lsf.device.permission.MESSAGE">
+            <intent-filter>
+                <action android:name="com.lenovo.lsf.gamesdk.receiver.GameSdkReceiver"></action>
+                <action android:name="1406040827749.app.ln"
+                    chameleon:replace="android:name=%appId%"></action>  <!--TODO 在此处填入申请的lenovo open AppID-->
+                <category android:name="com.xianyugame.sanguofire.lenovo"
+                    chameleon:replace="android:name=%packageName%"/> <!--TODO 在此处填入Package Name-->
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.lenovo.lsf.gamesdk.receiver.GameSdkAndroidLReceiver">
+            <intent-filter>
+                <action android:name="com.lenovo.lsf.device.ANDROID_L_MSG"></action>
+                <category android:name="com.xianyugame.sanguofire.lenovo"
+                    chameleon:replace="android:name=%packageName%"/><!--TODO 在此处填入Package Name-->
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.lenovo.lsf.push.receiver.PushReceiver" android:process=":PushService">
+            <intent-filter >
+                <action android:name="com.lenovo.lsf.intent.REGISTER" />
+                <action android:name="com.lenovo.lsf.intent.UNREGISTER" />
+                <action android:name="com.lenovo.lsf.intent.LOG_CONTROL" />
+                <action android:name="com.lenovo.lsf.intent.PUSH_TYPE_CONTROL" />
+                <action android:name="com.lenovo.lsf.intent.PUSH_TEST_MESSAGE" />
+                <action android:name="com.lenovo.lsf.intent.SWITCH_ON_SERVICE" />
+                <action android:name="com.lenovo.lsf.intent.SWITCH_OFF_SERVICE" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.lenovo.lsf.push.service.PushService" android:process=":PushService"
+            android:exported="true">
+        </service>
+
+        <activity android:name="com.lenovo.lsf.push.ui.DisplayActivity" android:process=":DisplayActivity"
+            android:theme="@android:style/Theme.Translucent" android:screenOrientation="portrait">
+        </activity>
+
+        <service android:name="com.lenovo.lsf.push.ui.DisplayService" android:process=":PushService"
+            android:exported="true">
+        </service>
     </application>
 </manifest>

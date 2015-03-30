@@ -48,7 +48,7 @@ public class Constants {
         public final static int ERR_LOGIN_IN_QQ_NON_INSTALLED = 22;
         public final static int ERR_LOGIN_IN_WX_NON_INSTALLED = 23;
         public final static int ERR_LOGIN_GAME_EXIT_NOCARE = 24; // 渠道不关心退出游戏的事件
-        public final static int ERR_LOGIN_MSDK_PLAT_NO_SPEC = 25; // 渠道不关心退出游戏的事件
+        public final static int ERR_LOGIN_MSDK_PLAT_NO_SPEC = 25; // MSDK login callback
     }
 
     public final static class ApplicationEvent {
