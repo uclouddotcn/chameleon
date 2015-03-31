@@ -130,7 +130,7 @@ public class NativeChannelInterface {
     public static void setRunningEnv(final Activity activity, final IRunEnv runEnv) {
         mActivity = activity;
         mRunEnv = runEnv;
-        onCreate(activity);
+        //onCreate(activity);
     }
 
     /**
@@ -141,7 +141,7 @@ public class NativeChannelInterface {
     public static void setRunningEnv(final Activity activity, final GLSurfaceView view) {
         mActivity = activity;
         mRunEnv = new GlSurfaceViewRunEnv(view);
-        onCreate(activity);
+        //onCreate(activity);
     }
 
     /**
@@ -151,7 +151,7 @@ public class NativeChannelInterface {
     public static void setRunningEnv(final Activity activity) {
         mActivity = activity;
         mRunEnv = new UIRunEnv();
-        onCreate(activity);
+        //onCreate(activity);
     }
 
     private static void onCreate(final Activity activity) {
