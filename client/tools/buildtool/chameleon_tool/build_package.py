@@ -368,7 +368,7 @@ def procSplashIcon(channelPath, globalcfg):
     icon = globalcfg['channel'].get('iconPath')
     splash = globalcfg['channel'].get('splashPath')
     if icon is not None:
-        drawablePath = os.path.join(channelPath, 'drawable')
+        drawablePath = os.path.join(channelPath, 'res', 'drawable')
         if not os.path.exists(drawablePath):
             os.makedirs(drawablePath)
         shutil.copy(icon, os.path.join(drawablePath, ICON_NAME))
