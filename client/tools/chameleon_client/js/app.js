@@ -348,7 +348,6 @@ chameleonApp = angular.module('chameleonApp', [
                         afterSelectionChange: function(rowItem, event){
                             var sdk = rowItem.entity;
                             $scope.selectedSDK = sdk;
-                            $scope.SDKConfigHtml = '';
                             $scope.SDKConfigHtml = SDKTemplate(sdk.name, $scope.SDKList);
                         },
                         columnDefs: [{
