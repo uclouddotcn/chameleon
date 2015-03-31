@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +26,11 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         public boolean mIsLogined = false;
     }
     public UserInfo mUserInfo = new UserInfo();
+
+    public TestChannelAPI(){
+        mChannel = "test";
+    }
+
     @Override
     public void charge(Activity activity, String orderId, String uidInGame, String userNameInGame, String serverId, String currencyName, String payInfo, int rate, int realPayMoney, boolean allowUserChange, final IDispatcherCb cb) {
         Log.i(TAG, "'pay()' method is called");
@@ -62,7 +66,6 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void init(Activity activity, final IDispatcherCb cb) {
         Log.i(TAG, "'init()' method is called");
-        mChannel = "test";
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
