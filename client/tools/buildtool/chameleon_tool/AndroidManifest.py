@@ -61,7 +61,10 @@ class AndroidManifestInst(object):
         entryActivityNode = self._findEntryActivity()
         if entryActivityNode is None:
             raise RuntimeError('Fail to find the start entry')
-        newEntry = oldPkgName+".ChameleonMainActivity"
+        oldEntry = entryActivityNode.getAttribute('android:name')
+        if oldEntry.startswith('.'):
+            oldEntry = oldPkgName + oldEntry
+        newEntry = oldEntry[0:oldEntry.rfind('.')] + ".ChameleonMainActivity"
         entryActivityNode.setAttribute('android:name', newEntry)
         if channel == 'lenovo':
             intentNode = AndroidManifestInst._getChildNS(entryActivityNode,
