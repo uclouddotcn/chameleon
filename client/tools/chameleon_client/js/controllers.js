@@ -1110,7 +1110,7 @@ chameleonControllers
             $modalInstance.dismiss();
         };
     })
-    .controller('ProjectListCtrl', ['$scope', '$state', 'ProjectMgr', '$modal','globalCache', function($scope, $state, ProjectMgr, $modal,globalCache) {
+    .controller('ProjectListCtrl', ['$scope', '$state', 'ProjectMgr', '$modal','globalCache', 'fileDialog', function($scope, $state, ProjectMgr, $modal,globalCache, fileDialog) {
         $scope.projects = [];
         //$scope.show.index = true;
 
@@ -1131,8 +1131,10 @@ chameleonControllers
                 keyboard: false
             });
             modalInstance.result.then(function(result){
-                $scope.projects.push(result);
-                ProjectMgr.createProjectDirectory(result.name);
+                if(result){
+                    $scope.projects.push(result);
+                    ProjectMgr.createProjectDirectory(result.name);
+                }
             });
         };
 
@@ -1247,6 +1249,9 @@ chameleonControllers
             $modalInstance.close();
         }
         $scope.create = function () {
+            if(!$scope.newProject){
+                return $modalInstance.close();
+            }
             try {
                 $scope.newProjectPromise = ProjectMgr.createProject($scope.newProject);
                 $scope.newProjectPromise.then(
