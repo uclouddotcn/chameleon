@@ -74,8 +74,7 @@ ChameleonTool.prototype.init = function(callback){
 
 
 ChameleonTool.prototype.initChannelMetas = function () {
-    var channelInfo = fs.readJsonFileSync(
-        this.configRoot + 'channelinfo/channellist.json');
+    var channelInfo = fs.readJsonFileSync(pathLib.join(this.configRoot, 'channelinfo', 'channellist.json'));
     var channelMeta = {};
     for (var p in channelInfo) {
         channelMeta[p] = new ChannelMeta(p, channelInfo[p]);
