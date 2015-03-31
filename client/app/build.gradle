@@ -115,6 +115,8 @@ android {
         }
         anfeng {
         }
+        mopo {
+        }
         p_getui {
 
         }
@@ -181,6 +183,7 @@ dependencies {
     coolpadCompile project(':channels:coolpad')
     youlongCompile project(':channels:youlong')
     anfengCompile project(':channels:anfeng')
+    mopoCompile project(':channels:mopo')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')

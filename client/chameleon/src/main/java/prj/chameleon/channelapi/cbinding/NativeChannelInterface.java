@@ -21,6 +21,7 @@ import prj.chameleon.channelapi.IDispatcherCb;
 public class NativeChannelInterface {
 
     static {
+        System.loadLibrary("chameleoncb");
         ActivityInterface.registerCallback(new ActivityInterface.Callback() {
             @Override
             public void onInitFinished(int retCode) {
@@ -129,7 +130,7 @@ public class NativeChannelInterface {
     public static void setRunningEnv(final Activity activity, final IRunEnv runEnv) {
         mActivity = activity;
         mRunEnv = runEnv;
-        onCreate(activity);
+        //onCreate(activity);
     }
 
     /**
@@ -140,7 +141,7 @@ public class NativeChannelInterface {
     public static void setRunningEnv(final Activity activity, final GLSurfaceView view) {
         mActivity = activity;
         mRunEnv = new GlSurfaceViewRunEnv(view);
-        onCreate(activity);
+        //onCreate(activity);
     }
 
     /**
@@ -150,7 +151,7 @@ public class NativeChannelInterface {
     public static void setRunningEnv(final Activity activity) {
         mActivity = activity;
         mRunEnv = new UIRunEnv();
-        onCreate(activity);
+        //onCreate(activity);
     }
 
     private static void onCreate(final Activity activity) {
