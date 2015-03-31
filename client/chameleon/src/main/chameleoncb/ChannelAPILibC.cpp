@@ -6,7 +6,7 @@
 
 using namespace std;
 #include<string>
-
+#define CXXSTR2CPTR(CXXSTR) (CXXSTR == NULL?NULL:CXXSTR->c_str())
 /**
 Wrapper c implementation of the virtual functions by the C++ interface.
 **/
@@ -31,9 +31,8 @@ class ChannelAPICallbackCWrapper : public Chameleon::ChannelAPICallbackInf{
 
         virtual void afterAccountSwitch(int code, const std::string * loginInfo)
         {
-            m_adapter.afterAccountSwitch(code, loginInfo->c_str());
-        }
-
+            m_adapter.afterAccountSwitch(code, CXXSTR2CPTR(loginInfo));
+        } 
         virtual void onAccountLogout()
         {
             m_adapter.onAccountLogout();
@@ -51,12 +50,12 @@ class ChannelAPICallbackCWrapper : public Chameleon::ChannelAPICallbackInf{
 
         virtual void onRegistGuest(int id, int code, const std::string * loginInfo)
         {
-            m_adapter.onRegistGuest(id, code, loginInfo->c_str());
+            m_adapter.onRegistGuest(id, code, CXXSTR2CPTR(loginInfo));
         }
 
         virtual void onLogin(int id, int code, const std::string * loginInfo)
         {
-            m_adapter.onLogin(id, code, loginInfo->c_str());
+            m_adapter.onLogin(id, code, CXXSTR2CPTR(loginInfo));
         }
 
         virtual void onCharge(int id, int code)
@@ -71,7 +70,7 @@ class ChannelAPICallbackCWrapper : public Chameleon::ChannelAPICallbackInf{
 
         virtual void onSwitchAccount(int id, int code, const std::string * loginInfo)
         {
-            m_adapter.onSwitchAccount(id, code, loginInfo->c_str());
+            m_adapter.onSwitchAccount(id, code, CXXSTR2CPTR(loginInfo));
         }
 
         virtual void onToolbar(int flag)
