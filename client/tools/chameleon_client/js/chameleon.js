@@ -285,35 +285,6 @@ ChameleonTool.prototype.removeChannelDirectory = function(project, channelName){
     }
 }
 
-ChameleonTool.prototype.generateServerConfig = function(project){
-    var result = {};
-    var url = urlLib.parse(project.config.payCallbackUrl);
-    var host = url.protocol + '//' + url.host;
-    var pathName = url.pathname;
-
-    result['_product.json'] = {
-        appcb: {
-            host: host,
-            payCbUrl: pathName
-        }
-    }
-    for(var i=0; i<project.channels.length; i++){
-        var channel = project.channels[i];
-        var config = {};
-        config.sdks = [];
-        for(var j=0; j<channel.sdks.length; j++){
-            config.sdks.push({
-                name: channel.channelName,
-                type: 'pay,user',
-                cfg: channel.sdks[j].config
-            });
-        }
-        result[channel.channelName + '.json'] = config;
-    }
-
-    return result;
-}
-
 ChameleonTool.prototype.generateProductForServer = function(project){
     var result = {};
     var url = urlLib.parse(project.config.payCallbackUrl);
@@ -333,9 +304,11 @@ ChameleonTool.prototype.generateProductForServer = function(project){
         var config = {};
         config.sdks = [];
         for(var j=0; j<channel.sdks.length; j++){
+            console.log('123' + channel.sdks[j].svrver)
             config.sdks.push({
                 name: channel.channelName,
                 type: 'pay,user',
+                version: channel.sdks[j].svrver,
                 cfg: channel.sdks[j].config
             });
         }
