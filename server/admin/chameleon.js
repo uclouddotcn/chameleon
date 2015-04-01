@@ -131,16 +131,9 @@ function postRequest (host, port, url, data, method, callback) {
     req.end();
 }
 
-function pushProduct (productName, host, port, callback){
-    try{
-        var product = fs.readFileSync(path.join(constants.productDir, productName));
-        var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
-        product = encryption.encrypt(product.toString());
-    }catch (e){
-        return callback(e);
-    }
-
-    postRequest(host, port, '/product', {product: encodeURIComponent(product)}, function(err, result){
+function pushProduct (p, host, port, callback){
+    var product = fs.readFileSync(p).toString('utf8');
+    postRequest(host, port, '/product', product, function(err, result){
         if(err){
             return callback(err);
         }
@@ -440,18 +433,17 @@ function main() {
         });
 
     program
-        .command('add-product <zipfile>')
+        .command('add-product <filename>')
         .description('add product')
         .action(function (filepath) {
             try {
-                filepath = path.resolve(process.cwd(), filepath);
-                installProduct(filepath, function (err) {
-                    if (err) {
-                        error('Fail to install products: ' + err.message + '\n' + err.stack);
-                        return;
+                pushProduct(filepath, program.host, program.port, function(err, result){
+                    if(err){
+                        error('Fail to push product: ' + err.message);
+                        process.exit(-1);
                     }
-                    info('Done');
-                })
+                    info(result);
+                });
             } catch (e) {
                 error("invalid zip file: " + e.message);
                 error(e.stack);
@@ -497,6 +489,7 @@ function main() {
             program.help();
         });
 
+    /*
     program
         .command('push <productName> <host> <port>')
         .description('push product')
@@ -509,6 +502,7 @@ function main() {
                 info(result);
             });
         });
+    */
 
     if (process.argv.length === 2) {
         program.help();

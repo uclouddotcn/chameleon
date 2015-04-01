@@ -6,7 +6,7 @@ var fs = require('fs');
 var fse = require('fs-extra');
 var async = require('async');
 var path = require('path');
-var Encryption = require('./encryption');
+//var Encryption = require('./encryption');
 var workerMgr = require('./worker_mgr');
 var constants = require('./constants');
 
@@ -222,16 +222,17 @@ var Admin = function(pluginMgr, options, logger) {
     });
 
     //path for update server config
-    var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
+    //var encryption = new Encryption(path.join(constants.baseDir, 'config', 'key'));
     self.server.post('/product', function(req, res, next){
         var product;
         try{
-            req.log.info({params: req.params}, 'receive product config');
+            req.log.info({params: req.body}, 'receive product config');
             //product = JSON.parse(req.params.product);
-            product = encryption.decrypt(decodeURIComponent(req.params.product));
-            product = JSON.parse(product);
+            //product = encryption.decrypt(decodeURIComponent(req.params.product));
+            product = JSON.parse(req.body);
         }catch (e){
-            return next(new restify.InvalidArgumentError("Decrypt product failed."));
+            req.log.error({err: e}, 'Fail to load product');
+            return next(new restify.InvalidArgumentError("load product failed."));
         }
 
         var productConfigPath = path.join(constants.productDir, product['name']);
