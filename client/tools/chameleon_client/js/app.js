@@ -109,7 +109,7 @@ chameleonApp = angular.module('chameleonApp', [
                     $scope.fileread = project.signConfig.keyStoreFile;
                     $scope.isProjectUnchanged = true;
 
-                    if(project.config.icon){
+                    if(project.config.icon) {
                         $scope.projectIcon = project.config.icon;
                     }
 
@@ -365,6 +365,7 @@ chameleonApp = angular.module('chameleonApp', [
                         afterSelectionChange: function(rowItem, event){
                             var sdk = rowItem.entity;
                             $scope.selectedSDK = sdk;
+                            $scope.SDKConfigHtml = '';
                             $scope.SDKConfigHtml = SDKTemplate(sdk.name, $scope.SDKList);
                         },
                         columnDefs: [{
@@ -523,6 +524,7 @@ chameleonApp = angular.module('chameleonApp', [
                             channel.config.icon = {};
                             channel.config.icon.path = path;
                             ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
+                            channel.config.icon.path = path;
                             return;
                         }
                         //draw and save

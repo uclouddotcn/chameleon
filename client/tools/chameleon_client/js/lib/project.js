@@ -24,7 +24,6 @@ function Project(chtool){
 }
 
 Project.prototype.initFromDBObj = function (projInDB) {
-    delete projInDB._chTool;
     _.assign(this, projInDB);
 };
 
@@ -107,7 +106,7 @@ Project.prototype.deleteChannel = function(channelID, callback){
     if(channelID<=0){
         callback(new ChameleonError(null, 'Channel ID is invalid.', 'deleteChannel()'));
     }
-    var dbContext = new sqlite3.Database(this.dbPath);
+    var dbContext = this._chTool.newSqllitesContext();
     try{
         var sqlText = "delete from channel where id=$id";
         var params = {
