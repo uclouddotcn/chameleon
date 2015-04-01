@@ -245,6 +245,12 @@ chameleonApp = angular.module('chameleonApp', [
                                     return element.channelName == channel.channelName;
                                 });
                                 $scope.selectedChannels = $scope.project.channels;
+                                if(channel.channelName === $scope.selectedChannel.channelName){
+                                    $scope.selectedChannel = {};
+                                    $scope.selectedSDKs = [];
+                                    $scope.selectedSDK = {};
+                                    $('.sdkList').prop("checked", false);
+                                }
                                 ProjectMgr.removeChannelDirectory($scope.project, channelToDelete.channelName);
                             });
                         }
@@ -677,9 +683,10 @@ chameleonApp = angular.module('chameleonApp', [
                                             type: 'pay,user',
                                             config: _.extend({}, channel.sdks[i].config)
                                         };
-                                        for(var j=0; j<channel.sdks[i].cfgitem.length; j++){
-                                            if(channel.sdks[i].cfgitem[j].ignoreInA){
-                                                delete sdkConfig.config[channel.sdks[i].cfgitem[j].name];
+                                        var cfgitem = _.findWhere($scope.SDKList, {name: channel.sdks[i].name}).cfgitem;
+                                        for(var j=0; j<cfgitem.length; j++){
+                                            if(cfgitem[j].ignoreInA){
+                                                sdkConfig.config[cfgitem[j].name] = null;
                                             }
                                         }
                                         data.channel.sdks.push(sdkConfig);
@@ -790,23 +797,30 @@ chameleonApp = angular.module('chameleonApp', [
                         require('nw.gui').Shell.openItem(node_path.join(chameleonPath.projectRoot, project.name, 'output'));
                     }
                     $scope.dumpServerConfig = function(){
+                        var AdmZip = require('adm-zip');
                         var id = $scope.project.config.code;
                         if(!id){
                             alert(" 请配置游戏在Server中的名称");
                             return;
                         }
                         try{
-                            var config = ProjectMgr.generateProductForServer($scope.project);
+                            var zip = new AdmZip();
+                            var config = ProjectMgr.generateServerConfig($scope.project);
+                            for(var p in config){
+                                zip.addFile(id + '/' + p, new Buffer(JSON.stringify(config[p])), "");
+                            }
+                            zip.addFile('manifest.json', new Buffer(JSON.stringify({
+                                'product': id
+                            })));
                             fileDialog.saveAs(function(fileName){
-                                require('fs-extra').writeJSONFileSync(fileName, config);
+                                zip.writeZip(fileName + '.zip');
                                 alert('保存成功');
-                            }, id);
+                            }, id + '.zip');
                         }catch(e){
                             console.log(e);
                             alert('导出失败： 未知错误');
                         }
-                    };
-
+                    }
                     $scope.pushServerConfig = function(){
                         var product = ProjectMgr.generateProductForServer($scope.project);
                         product = JSON.stringify(product);
@@ -819,7 +833,7 @@ chameleonApp = angular.module('chameleonApp', [
                             console.log(err);
                             alert('推送服务器失败');
                         });
-                    };
+                    }
 
                     //manage APK
                     $scope.APKVersionList = [];

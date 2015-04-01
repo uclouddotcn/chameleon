@@ -247,10 +247,14 @@
                 </div>
                 <div class="tab-pane fade" id="APKPicker" role="tabpanel">
                     <div class="row">
-                        <label>选择APK母包</label><label>{{apkFilePath}}</label><label style="margin-left: 10px; color: red;">{{installAPKMessage}}</label>
+                        <label>选择APK母包</label>
                     </div>
-                    <div>
+                    <div class="row">
                         <label>添加新母包</label><input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/>
+                        <label>{{apkFilePath}}</label>
+                    </div>
+                    <div class="row">
+                        <label style="margin-left: 10px; color: red;">{{installAPKMessage}}</label>
                     </div>
                     <div class="row">
                         <div class="gridStyle" ng-grid="APKVersionTable" style="height: 300px; overflow-y: auto;"></div>
