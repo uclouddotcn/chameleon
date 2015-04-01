@@ -20,6 +20,7 @@ function Project(chtool){
     this.config = {};
     this.channels = [];
     this._chTool = chtool;
+    this.projectRoot = constants.chameleonHome;
 }
 
 Project.prototype.initFromDBObj = function (projInDB) {
@@ -29,7 +30,7 @@ Project.prototype.initFromDBObj = function (projInDB) {
 
 Project.prototype.getAllChannels = function(projectID, callback){
     var self = this;
-    var dbContext = self._chTool.newSqllitesContext();
+    var dbContext = this._chTool.newSqllitesContext();
     try {
         var sqlText = "select * from channel where projectID=$projectID";
         var params = {
@@ -54,6 +55,9 @@ Project.prototype.getAllChannels = function(projectID, callback){
                 channel.signConfig = JSON.parse(rows[i].signConfig);
                 channel.config = JSON.parse(rows[i].config);
                 channel.sdks = JSON.parse(rows[i].sdks);
+                if(channel.config.icon){
+                    channel.config.icon.path = pathLib.join(self.projectRoot, channel.config.icon.path);
+                }
                 result.push(channel);
             }
             callback(null, result);
@@ -70,6 +74,10 @@ Project.prototype.setChannel = function(projectID, channel, callback){
         callback(new ChameleonError(null, 'Project ID is invalid.', 'setChannel()'));
     }
     var dbContext = this._chTool.newSqllitesContext();
+    if(channel.config && channel.config.icon){
+        channel.config.icon.path = channel.config.icon.path.replace(this.projectRoot, '');
+        channel.config.icon.path = channel.config.icon.path.split('\\').join('/');
+    }
     try {
         var sqlText = "update channel set projectID=$projectID, channelName=$channelName, config=$config, desc=$desc, signConfig=$signConfig, sdks=$sdks where id=$id";
         if(channel.id == 0) sqlText = "insert into channel (projectID, channelName, config, desc, signConfig, sdks) values ($projectID, $channelName, $config, $desc, $signConfig, $sdks)";
