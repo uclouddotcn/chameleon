@@ -190,6 +190,7 @@ function main() {
         .command('start')
         .description('start the server')
         .option('-d, --debug', 'debug mode')
+        .option('-t, --testMode', 'test mode')
         .option('-p, --sdkPluginPath <sdkPluginPath>', 'path of sdk plugin')
         .action( runUnderPm2(function (cmd) {
             var options = cmd;
@@ -229,6 +230,9 @@ function main() {
                         opts.rawArgs.push('--sdkplugin');
                         opts.rawArgs.push(options.sdkPluginPath);
                     }
+                    if (options.testMode) {
+                        process.env['CHAMELEON_MODE'] = 'PRE_PRODUCTION';
+                    }
                     try {
                         pm2.start(path.join(__dirname, 'app.js'), opts, function (err, proc) {
                             if (err) {
@@ -242,7 +246,7 @@ function main() {
                             setTimeout(function () {
                                 fetchInfo();
                             }, 1100);
-                            var retrytimes = 3;
+                            var retrytimes = 10;
                             function fetchInfo () {
                                 postRequest(program.host, program.port, '/admin', postData, function (err, obj) {
                                     if (err) {
@@ -250,7 +254,7 @@ function main() {
                                         if (retrytimes < 0) {
                                             error('Fail to start admin server');
                                         } else {
-                                            setTimeout(fetchInfo(), 1100);
+                                            setTimeout(fetchInfo, 1100);
                                         }
                                     } else {
                                         if (obj.worker.forkScripts && obj.status !== 'running') {
@@ -258,7 +262,7 @@ function main() {
                                             if (retrytimes < 0) {
                                                 error('successfully start admin server, however worker fails to start');
                                             } else {
-                                                setTimeout(fetchInfo(), 1100);
+                                                setTimeout(fetchInfo, 1100);
                                             }
                                         } else {
                                             info('Admin started');
