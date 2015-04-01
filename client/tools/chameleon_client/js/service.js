@@ -245,10 +245,6 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.command(command, args, callback, process);
     }
 
-    ProjectMgr.prototype.generateServerConfig = function(project){
-        return this.tool.generateServerConfig(project);
-    }
-
     ProjectMgr.prototype.generateProductForServer = function(project){
         return this.tool.generateProductForServer(project);
     }

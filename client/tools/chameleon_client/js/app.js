@@ -790,30 +790,23 @@ chameleonApp = angular.module('chameleonApp', [
                         require('nw.gui').Shell.openItem(node_path.join(chameleonPath.projectRoot, project.name, 'output'));
                     }
                     $scope.dumpServerConfig = function(){
-                        var AdmZip = require('adm-zip');
                         var id = $scope.project.config.code;
                         if(!id){
                             alert(" 请配置游戏在Server中的名称");
                             return;
                         }
                         try{
-                            var zip = new AdmZip();
-                            var config = ProjectMgr.generateServerConfig($scope.project);
-                            for(var p in config){
-                                zip.addFile(id + '/' + p, new Buffer(JSON.stringify(config[p])), "");
-                            }
-                            zip.addFile('manifest.json', new Buffer(JSON.stringify({
-                                'product': id
-                            })));
+                            var config = ProjectMgr.generateProductForServer($scope.project);
                             fileDialog.saveAs(function(fileName){
-                                zip.writeZip(fileName + '.zip');
+                                require('fs-extra').writeJSONFileSync(fileName, config);
                                 alert('保存成功');
-                            }, id + '.zip');
+                            }, id);
                         }catch(e){
                             console.log(e);
                             alert('导出失败： 未知错误');
                         }
-                    }
+                    };
+
                     $scope.pushServerConfig = function(){
                         var product = ProjectMgr.generateProductForServer($scope.project);
                         product = JSON.stringify(product);
@@ -826,7 +819,7 @@ chameleonApp = angular.module('chameleonApp', [
                             console.log(err);
                             alert('推送服务器失败');
                         });
-                    }
+                    };
 
                     //manage APK
                     $scope.APKVersionList = [];

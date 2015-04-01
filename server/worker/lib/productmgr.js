@@ -122,7 +122,7 @@ ProductMgr.prototype._loadProductSync = function (productName, cfgpath) {
 ProductMgr.prototype._isConfigDir = function(productName){
     var p = pathLib.join(env.productDir, productName);
     return fs.lstatSync(p).isDirectory();
-}
+};
 
 module.exports = ProductMgr;
 
