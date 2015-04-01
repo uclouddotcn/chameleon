@@ -54,7 +54,7 @@ Project.prototype.getAllChannels = function(projectID, callback){
                 channel.signConfig = JSON.parse(rows[i].signConfig);
                 channel.config = JSON.parse(rows[i].config);
                 channel.sdks = JSON.parse(rows[i].sdks);
-                if(channel.config.icon){
+                if(channel.config.icon && channel.config.icon.path){
                     channel.config.icon.path = pathLib.join(self.projectRoot, channel.config.icon.path);
                 }
                 result.push(channel);
