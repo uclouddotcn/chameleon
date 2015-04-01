@@ -1,6 +1,6 @@
-#include "chameleoncb/ChannelAPICallbackC.h"
-#include "chameleoncb/ChameleonAPI_config.h"
-#include "chameleoncb/ChameleonChannelAPI_C.h"
+% for f in include_files:
+#include "${f}"
+% endfor
 #ifdef __cplusplus
 extern "C"{
 #else
@@ -124,166 +124,27 @@ void call_va (const char *func, const char *sig, ...) {
 }
 
 
-void chameleoncb_DestroyChannelAPICallbackInf (
+% for d in decls:
+void chameleoncb_${d.name} (
+    % if len(d.params) > 0:
+        ${d.params[0].type} ${d.params[0].name}
+    % endif
+    % for p in d.params[1:]:
+        , ${p.type} ${p.name}
+    % endfor
 )
 {
-    call_va("chameleoncb_DestroyChannelAPICallbackInf", ""
+    % if d.rsig != '':
+    call_va("chameleoncb_${d.name}", "${d.sig+'>'+d.rsig})
+    % else:
+    call_va("chameleoncb_${d.name}", "${d.sig}"
+    % endif
+    % for p in d.params:
+        , ${p.name}
+    % endfor
     );
 }
-void chameleoncb_onInited (
-        int code
-        , bool isDebug
-)
-{
-    call_va("chameleoncb_onInited", "ib"
-        , code
-        , isDebug
-    );
-}
-void chameleoncb_preAccountSwitch (
-)
-{
-    call_va("chameleoncb_preAccountSwitch", ""
-    );
-}
-void chameleoncb_afterAccountSwitch (
-        int code
-        , const char * loginInfo
-)
-{
-    call_va("chameleoncb_afterAccountSwitch", "is"
-        , code
-        , loginInfo
-    );
-}
-void chameleoncb_onAccountLogout (
-)
-{
-    call_va("chameleoncb_onAccountLogout", ""
-    );
-}
-void chameleoncb_onGuestBind (
-        const char * loginInfo
-)
-{
-    call_va("chameleoncb_onGuestBind", "s"
-        , loginInfo
-    );
-}
-void chameleoncb_onLoginGuest (
-        int id
-        , int code
-)
-{
-    call_va("chameleoncb_onLoginGuest", "ii"
-        , id
-        , code
-    );
-}
-void chameleoncb_onRegistGuest (
-        int id
-        , int code
-        , const char * loginInfo
-)
-{
-    call_va("chameleoncb_onRegistGuest", "iis"
-        , id
-        , code
-        , loginInfo
-    );
-}
-void chameleoncb_onLogin (
-        int id
-        , int code
-        , const char * loginInfo
-)
-{
-    call_va("chameleoncb_onLogin", "iis"
-        , id
-        , code
-        , loginInfo
-    );
-}
-void chameleoncb_onCharge (
-        int id
-        , int code
-)
-{
-    call_va("chameleoncb_onCharge", "ii"
-        , id
-        , code
-    );
-}
-void chameleoncb_onBuy (
-        int id
-        , int code
-)
-{
-    call_va("chameleoncb_onBuy", "ii"
-        , id
-        , code
-    );
-}
-void chameleoncb_onSwitchAccount (
-        int id
-        , int code
-        , const char * loginInfo
-)
-{
-    call_va("chameleoncb_onSwitchAccount", "iis"
-        , id
-        , code
-        , loginInfo
-    );
-}
-void chameleoncb_onToolbar (
-        int flag
-)
-{
-    call_va("chameleoncb_onToolbar", "i"
-        , flag
-    );
-}
-void chameleoncb_onResume (
-)
-{
-    call_va("chameleoncb_onResume", ""
-    );
-}
-void chameleoncb_onAntiAddiction (
-        int id
-        , int code
-        , int flag
-)
-{
-    call_va("chameleoncb_onAntiAddiction", "iii"
-        , id
-        , code
-        , flag
-    );
-}
-void chameleoncb_onExit (
-        int code
-)
-{
-    call_va("chameleoncb_onExit", "i"
-        , code
-    );
-}
-void chameleoncb_onRunProtocol (
-        int id
-        , int code
-        , const char * protocol
-        , const char * message
-)
-{
-    call_va("chameleoncb_onRunProtocol", "iiss"
-        , id
-        , code
-        , protocol
-        , message
-    );
-}
+% endfor
 
 
 /*
@@ -293,23 +154,9 @@ void chameleoncb_onRunProtocol (
 int init_callback_binding()
 {
     ChannelAPICallbackInf_C adapter;
-    adapter.DestroyChannelAPICallbackInf = chameleoncb_DestroyChannelAPICallbackInf;
-    adapter.onInited = chameleoncb_onInited;
-    adapter.preAccountSwitch = chameleoncb_preAccountSwitch;
-    adapter.afterAccountSwitch = chameleoncb_afterAccountSwitch;
-    adapter.onAccountLogout = chameleoncb_onAccountLogout;
-    adapter.onGuestBind = chameleoncb_onGuestBind;
-    adapter.onLoginGuest = chameleoncb_onLoginGuest;
-    adapter.onRegistGuest = chameleoncb_onRegistGuest;
-    adapter.onLogin = chameleoncb_onLogin;
-    adapter.onCharge = chameleoncb_onCharge;
-    adapter.onBuy = chameleoncb_onBuy;
-    adapter.onSwitchAccount = chameleoncb_onSwitchAccount;
-    adapter.onToolbar = chameleoncb_onToolbar;
-    adapter.onResume = chameleoncb_onResume;
-    adapter.onAntiAddiction = chameleoncb_onAntiAddiction;
-    adapter.onExit = chameleoncb_onExit;
-    adapter.onRunProtocol = chameleoncb_onRunProtocol;
+    % for d in decls:
+    adapter.${d.name} = chameleoncb_${d.name};
+    % endfor
     return init(adapter);
 }
 

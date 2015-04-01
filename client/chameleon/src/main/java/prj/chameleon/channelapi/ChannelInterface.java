@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import prj.chameleon.test.TestChannelAPI;
+
 /**
  * ChannelInterface is the only interface for client to use
  */
@@ -730,6 +732,14 @@ public class ChannelInterface {
 
     public static void addApiGroup(APIGroup apiGroup) {
         _plugins.addApiGroup(apiGroup);
+    }
+
+    public static void addTestApiGroup() {
+        TestChannelAPI api = new TestChannelAPI();
+        ChannelInterface.setChannelName("test");
+        _plugins.addApiGroup(new APIGroup(Constants.PluginType.USER_API | Constants.PluginType.PAY_API,
+                api));
+        Log.i(Constants.TAG, "add TestChannelAPI to ApiGroup.");
     }
 
 }

@@ -19,7 +19,7 @@ public class ChameleonApplication extends Application {
             loadConfig();
         } catch (Exception e) {
             Log.e(Constants.TAG, "Fail to find api, use test channel instead", e);
-            DummyChannelAPI.init();
+            ChannelInterface.addTestApiGroup();
         }
     }
 

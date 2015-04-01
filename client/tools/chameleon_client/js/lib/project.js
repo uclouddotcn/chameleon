@@ -24,6 +24,7 @@ function Project(chtool){
 }
 
 Project.prototype.initFromDBObj = function (projInDB) {
+    delete projInDB._chTool;
     _.assign(this, projInDB);
 };
 

@@ -53,15 +53,21 @@ class AndroidManifestInst(object):
             targetNode = children[0] 
         targetNode.setAttribute('android:targetSdkVersion', target)
 
-    def replaceApplication(self, newApp):
-        self._applicationNode.setAttribute('android:name', newApp)
+    def replaceApplication(self, channel):
+        if channel == 'baidumg':
+            self._applicationNode.setAttribute('android:name', 'prj.chameleon.channelapi.baidumg.Application')
+            self.replaceTargetSDK('15')
+        else:
+            self._applicationNode.setAttribute('android:name', 'prj.chameleon.channelapi.ChameleonApplication')
 
-    #TODO replace the MainActivity to ChameleonMainActivity
     def replaceEntryActivityNew(self, orientation, channel, oldPkgName):
         entryActivityNode = self._findEntryActivity()
         if entryActivityNode is None:
             raise RuntimeError('Fail to find the start entry')
-        newEntry = oldPkgName+".ChameleonMainActivity"
+        oldEntry = entryActivityNode.getAttribute('android:name')
+        if oldEntry.startswith('.'):
+            oldEntry = oldPkgName + oldEntry
+        newEntry = oldEntry[0:oldEntry.rfind('.')] + ".ChameleonMainActivity"
         entryActivityNode.setAttribute('android:name', newEntry)
         if channel == 'lenovo':
             intentNode = AndroidManifestInst._getChildNS(entryActivityNode,
