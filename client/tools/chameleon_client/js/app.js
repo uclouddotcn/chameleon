@@ -172,6 +172,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 alert("Update project config failed.");
                             }
                             $scope.isProjectUnchanged = true;
+                            $scope.project.config.icon = node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
                         });
                     };
                     $scope.outputConfig = function(){
