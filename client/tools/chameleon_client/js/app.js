@@ -160,6 +160,12 @@ chameleonApp = angular.module('chameleonApp', [
                         }
                     }
                     $scope.saveProjectConfig = function(){
+                        if($scope.project.config.icon){
+                            var destiny =node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
+                            fse.copySync($scope.project.config.icon, destiny);
+                            $scope.project.config.icon = destiny;
+                            $scope.projectIcon = $scope.project.config.icon;
+                        }
                         var promise = ProjectMgr.updateProject($scope.project);
                         promise.then(function(data){
                             if(!data){
@@ -167,13 +173,6 @@ chameleonApp = angular.module('chameleonApp', [
                             }
                             $scope.isProjectUnchanged = true;
                         });
-
-                        if($scope.project.config.icon){
-                            var destiny =node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
-                            fse.copySync($scope.project.config.icon, destiny);
-                            $scope.project.config.icon = destiny;
-                            $scope.projectIcon = $scope.project.config.icon;
-                        }
                     };
                     $scope.outputConfig = function(){
                         try{
