@@ -334,3 +334,9 @@ dl.dl-config {
     background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
 }
 
+.shortText{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 200px;
+}
