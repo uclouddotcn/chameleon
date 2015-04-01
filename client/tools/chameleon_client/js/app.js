@@ -249,7 +249,9 @@ chameleonApp = angular.module('chameleonApp', [
                                     $scope.selectedChannel = {};
                                     $scope.selectedSDKs = [];
                                     $scope.selectedSDK = {};
+                                    $scope.editingSDKs = [];
                                     $('.sdkList').prop("checked", false);
+                                    $scope.SDKConfigHtml = '';
                                 }
                                 ProjectMgr.removeChannelDirectory($scope.project, channelToDelete.channelName);
                             });
