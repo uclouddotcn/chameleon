@@ -79,6 +79,26 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return defered.promise;
     }
 
+    ProjectMgr.prototype.getProject = function(id){
+        var defered = $q.defer();
+        try{
+            this.tool.getProject(id, function(err, data){
+                if(err) {
+                    console.log(err);
+                    defered.resolve({err: err});
+                    return;
+                }
+                defered.resolve(data);
+            });
+        }catch (e){
+            $log.log('Fail to get project' + e.message);
+            global.setImmediate(function(){
+                defered.resolve(null);
+            });
+        }
+        return defered.promise;
+    }
+
     ProjectMgr.prototype.removeProject = function(id){
         this.tool.deleteProject(id);
     }
@@ -260,7 +280,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
             this.tool.loadConfigFromZip(path, function(err){
                 if(err) {
                     console.log(err);
-                    defered.resolve({err: err});
+                    defered.resolve({err: err, message: err.message});
                     return;
                 }
 

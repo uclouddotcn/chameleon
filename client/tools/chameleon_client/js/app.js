@@ -63,11 +63,12 @@ chameleonApp = angular.module('chameleonApp', [
                 controller: 'BindProjectCtrl'
             })
             .state('playmanage', {
-                url: '/playmanage/:project',
+                url: '/playmanage/:projectID',
                 templateUrl: 'partials/projectManager.html',
                 resolve: {
-                    project: ['$stateParams', function ($stateParams) {
-                        return JSON.parse($stateParams.project);
+                    project: ['$stateParams', 'ProjectMgr', function ($stateParams, ProjectMgr) {
+                        var promise = ProjectMgr.getProject($stateParams.projectID);
+                        return promise;
                     }]
                 },
                 controller: ['$scope', '$log', '$stateParams',
@@ -170,6 +171,7 @@ chameleonApp = angular.module('chameleonApp', [
                         if($scope.project.config.icon){
                             var destiny =node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
                             fse.copySync($scope.project.config.icon, destiny);
+                            $scope.project.config.icon = destiny;
                             $scope.projectIcon = $scope.project.config.icon;
                         }
                     };
@@ -291,7 +293,12 @@ chameleonApp = angular.module('chameleonApp', [
                             $scope.selectedChannel.sdks = [];
                             $('.sdkList').not(event.target).prop({'checked':false});
 
-                            $scope.selectedChannel.sdks.push(sdk);
+                            $scope.selectedChannel.sdks.push({
+                                name: sdk.name,
+                                version: sdk.version,
+                                desc: sdk.desc,
+                                config: {}
+                            });
                             $scope.selectedSDKs = $scope.selectedChannel.sdks;
                             ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
                         }else{
@@ -453,6 +460,9 @@ chameleonApp = angular.module('chameleonApp', [
                         afterSelectionChange: function(rowItem){
                             var channel = rowItem.entity;
                             $scope.selectedChannel = channel;
+                            if(channel.config.icon){
+                                $scope.projectIcon = channel.config.icon.path || $scope.project.config.icon;
+                            }
                             $scope.iconPosition = iconPosition();
                             if(channel.config.icon&&channel.config.icon.path){
                                 $scope.pictureToDraw = {
@@ -505,7 +515,6 @@ chameleonApp = angular.module('chameleonApp', [
                             }
                         }
                     };
-
                     $scope.saveIcon = function(){
                         var channel = $scope.selectedChannel;
                         //save image
@@ -608,7 +617,7 @@ chameleonApp = angular.module('chameleonApp', [
                         }else{
                             false;
                         }
-                    }
+                    };
 
                     //pack SDK
                     var packChannel = function(project, channel, callback, process){

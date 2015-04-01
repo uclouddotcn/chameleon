@@ -1167,14 +1167,14 @@ chameleonControllers
             globalCache.rowIndex = row.rowIndex;
             var project = $scope.projects[row.rowIndex];
             if (project) {
-                $state.go('playmanage', {project: JSON.stringify(project)});
+                $state.go('playmanage', {projectID: project.id});
             }
         }
 
         $scope.openProject = function () {
             if ($scope.selectedProject.length > 0) {
                 var project = $scope.selectedProject[0];
-                $state.go('playmanage', {projectId: JSON.stringify(project)});
+                $state.go('playmanage', {projectID: project.id});
             }
         }
 
@@ -1191,6 +1191,9 @@ chameleonControllers
                 fileDialog.openFile(function(fileName){
                     var promise = ProjectMgr.loadConfigFromZip(fileName);
                     promise.then(function(data){
+                        if(data.err){
+                            return alert(data.err.message);
+                        }
                         if(data){
                             var p = ProjectMgr.getProjectList();
                             p.then(

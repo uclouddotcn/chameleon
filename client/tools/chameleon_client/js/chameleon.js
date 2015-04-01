@@ -75,7 +75,7 @@ ChameleonTool.prototype.init = function(callback){
 
 ChameleonTool.prototype.initChannelMetas = function () {
     var channelInfo = fs.readJsonFileSync(
-        this.configRoot + 'channelinfo/channellist.json');
+        this.configRoot + '/channelinfo/channellist.json');
     var channelMeta = {};
     for (var p in channelInfo) {
         channelMeta[p] = new ChannelMeta(p, channelInfo[p]);
@@ -101,7 +101,7 @@ ChameleonTool.prototype.getAllProjects = function(callback){
         }
         for(var i=0; i<rows.length; i++){
             var row = rows[i];
-            projects.push({
+            var project = {
                 id : row.id,
                 name : row.name,
                 landscape : row.landscape == 0 ? false : true,
@@ -109,13 +109,49 @@ ChameleonTool.prototype.getAllProjects = function(callback){
                 path : row.path,
                 signConfig : JSON.parse(row.signConfig),
                 config : JSON.parse(row.config)
-            });
+            };
+            if(project.config.icon){
+                project.config.icon = pathLib.join(this.projectRoot, project.config.icon);
+            }
+            projects.push(project);
         }
         callback(null, projects);
     });
 
     dbContext.close();
 };
+
+ChameleonTool.prototype.getProject = function(id, callback){
+    var project = {},
+        dbContext = this.newSqllitesContext();
+    var self = this;
+
+    dbContext.all("select * from project where id=$id", {$id: id}, function(err, rows){
+        var project = {};
+        if(err) {
+            Logger.log("getProject() failed.", err);
+            callback(err);
+            return;
+        }
+        var row = rows[0];
+        project = {
+            id : row.id,
+            name : row.name,
+            landscape : row.landscape == 0 ? false : true,
+            version : row.version,
+            path : row.path,
+            signConfig : JSON.parse(row.signConfig),
+            config : JSON.parse(row.config)
+        };
+        if(project.config.icon){
+            project.config.icon = pathLib.join(this.projectRoot, project.config.icon);
+        }
+
+        callback(null, project);
+    });
+
+    dbContext.close();
+}
 
 ChameleonTool.prototype.initProject = function(project){
     var instance = new Project(this);
@@ -158,6 +194,11 @@ ChameleonTool.prototype.deleteProject = function(id){
 
 ChameleonTool.prototype.updateProject = function(project, callback){
     var dbContext = new sqlite3.Database(this.dbPath);
+
+    if(project.config.icon){
+        project.config.icon = project.config.icon.replace(this.projectRoot, '');
+        project.config.icon = project.config.icon.split('\\').join('/');
+    }
 
     dbContext.run("update project set name=$name, landscape=$landscape, version=$version, path=$path, signConfig=$signConfig, config=$config where id=$id", {
         $id: project.id,
@@ -399,11 +440,33 @@ ChameleonTool.prototype.command = function(command, args, callback, process){
     });
 }
 
+function getOutputProjectObject(project){
+    var result = {};
+    result.name = project.name;
+    result.landscape = project.landscape;
+    result.signConfig = project.signConfig;
+    result.config = project.config;
+    result.channels = [];
+    for(var i=0; i<project.channels.length; i++){
+        var channel = project.channels[i];
+        result.channels.push({
+            channelName: channel.channelName,
+            config: channel.config,
+            signConfig : channel.signConfig,
+            sdks: channel.sdks
+        });
+    }
+
+    return result;
+}
 ChameleonTool.prototype.getOutputZip = function(project){
     var zip = new ADMZip();
 
     zip.addLocalFolder(pathLib.join(this.projectRoot, project.name, 'cfg'), 'cfg');
-    zip.addFile('project.json', new Buffer(JSON.stringify(project)));
+    //zip.addFile('cfg', new Buffer(0), '', 0);
+    var output = JSON.stringify(getOutputProjectObject(project));
+    output = output.replace(new RegExp(this.projectRoot, 'g'), '');
+    zip.addFile('project.json', new Buffer(output));
 
     return zip;
 }
@@ -414,9 +477,14 @@ ChameleonTool.prototype.loadConfigFromZip = function(path, callback){
         var self = this;
 
         var projectEntry = zip.getEntry('project.json');
+        var projectFolderEntry = zip.getEntry('cfg');
+        console.log(projectFolderEntry);
         var project = zip.readFile(projectEntry).toString();
         project = JSON.parse(project);
         var projectInstance = this.initProject(project);
+        if(fso.existsSync(pathLib.join(self.projectRoot, projectInstance.name))){
+            return callback({message: "Folder exists, please delete folder first."});
+        }
 
         this.createProject(projectInstance, function(err, data){
             if(err){
@@ -424,6 +492,7 @@ ChameleonTool.prototype.loadConfigFromZip = function(path, callback){
                 return;
             }
 
+            console.log(data);
             projectInstance.id = data;
             var task = [];
             var num = 0;
@@ -445,9 +514,10 @@ ChameleonTool.prototype.loadConfigFromZip = function(path, callback){
                     return callback(err);
                 }
                 self.createProjectDirectory(projectInstance.name);
-                var projectFolderEntry = zip.getEntry(projectInstance.name);
+                console.log(projectFolderEntry);
                 if(projectFolderEntry){
-                    zip.extractEntryTo(projectFolderEntry, pathLib.join(self.projectRoot, projectInstance.name));
+                    console.log(111111);
+                    zip.extractEntryTo(projectFolderEntry, pathLib.join(self.projectRoot, projectInstance.name, 'cfg'));
                 };
                 callback(null);
             }]);
