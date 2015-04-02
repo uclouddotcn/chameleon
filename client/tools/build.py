@@ -233,11 +233,17 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
     downloadDependency(os.path.join(targetFolder, 'chameleon_client'))
     placePlatformStartScript(targetFolder)
 
-    print('unzip sqlite3')
+    print('unzip custom_modules')
     sqlitePath = os.path.join(clientPath, 'node_modules', 'sqlite3')
+    admZipPath = os.path.join(clientPath, 'node_modules', 'adm-zip')
     if os.path.exists(sqlitePath):
         cleanOldBuild(sqlitePath)
-    unzipFiles(os.path.join(clientPath, 'sqlite', 'windows', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
+    if os.path.exists(admZipPath):
+        cleanOldBuild(admZipPath)
+    unzipFiles(os.path.join(clientPath, 'custom_modules', 'windows', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
+    print('unzip sqlite3 done')
+    unzipFiles(os.path.join(clientPath, 'custom_modules', 'windows', 'adm-zip.zip'), os.path.join(clientPath, 'node_modules'))
+    print('unzip adm-zip done')
 
     if place is not None:
         place(os.path.join(targetFolder, 'nw'))
