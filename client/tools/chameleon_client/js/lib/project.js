@@ -73,7 +73,7 @@ Project.prototype.setChannel = function(projectID, channel, callback){
         callback(new ChameleonError(null, 'Project ID is invalid.', 'setChannel()'));
     }
     var dbContext = this._chTool.newSqllitesContext();
-    if(channel.config && channel.config.icon && channel.icon.path){
+    if(channel.config && channel.config.icon && channel.config.icon.path){
         channel.config.icon.path = channel.config.icon.path.replace(this.projectRoot, '');
         channel.config.icon.path = channel.config.icon.path.split('\\').join('/');
     }
