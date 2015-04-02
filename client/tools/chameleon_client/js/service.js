@@ -154,10 +154,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
                     return;
                 }
 
-                if(channel.id == 0){
+                if(!channel.id || channel.id === 0){
                     channel.id = data;
                 }
-                defered.resolve(project);
+                defered.resolve(channel);
             });
         }catch (e){
             $log.log('Fail to set channel of project' + e.message);

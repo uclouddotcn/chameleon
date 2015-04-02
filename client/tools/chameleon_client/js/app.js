@@ -232,10 +232,10 @@ chameleonApp = angular.module('chameleonApp', [
                             channel.config.isGlobalConfig = true;
 
                             var promise = ProjectMgr.setChannel($scope.project, channel);
-                            promise.then(function(){
-                                $scope.project.channels.push(channel);
+                            promise.then(function(channelToAdd){
+                                $scope.project.channels.push(channelToAdd);
                                 $scope.selectedChannels = $scope.project.channels;
-                                ProjectMgr.createChannelDirectory($scope.project, channel.channelName);
+                                ProjectMgr.createChannelDirectory($scope.project, channelToAdd.channelName);
                             });
                         }else{
                             var channelToDelete = _.findWhere($scope.project.channels, {channelName: channel.channelName});

@@ -54,7 +54,7 @@ Project.prototype.getAllChannels = function(projectID, callback){
                 channel.signConfig = JSON.parse(rows[i].signConfig);
                 channel.config = JSON.parse(rows[i].config);
                 channel.sdks = JSON.parse(rows[i].sdks);
-                if(channel.config.icon && channel.config.icon.path){
+                if(channel.config && channel.config.icon && channel.config.icon.path){
                     channel.config.icon.path = pathLib.join(self.projectRoot, channel.config.icon.path);
                 }
                 result.push(channel);
@@ -79,7 +79,7 @@ Project.prototype.setChannel = function(projectID, channel, callback){
     }
     try {
         var sqlText = "update channel set projectID=$projectID, channelName=$channelName, config=$config, desc=$desc, signConfig=$signConfig, sdks=$sdks where id=$id";
-        if(channel.id == 0) sqlText = "insert into channel (projectID, channelName, config, desc, signConfig, sdks) values ($projectID, $channelName, $config, $desc, $signConfig, $sdks)";
+        if(!channel.id || channel.id === 0) sqlText = "insert into channel (projectID, channelName, config, desc, signConfig, sdks) values ($projectID, $channelName, $config, $desc, $signConfig, $sdks)";
         var params = {
             $projectID: projectID,
             $id: channel.id,
@@ -89,7 +89,7 @@ Project.prototype.setChannel = function(projectID, channel, callback){
             $signConfig: JSON.stringify(channel.signConfig),
             $sdks: JSON.stringify(channel.sdks)
         };
-        if(channel.id ==0)
+        if(!channel.id || channel.id === 0)
             delete params.$id;
         dbContext.run(sqlText, params, function(err){
             if(err) throw err;
