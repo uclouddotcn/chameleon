@@ -24,7 +24,6 @@ function Project(chtool){
 }
 
 Project.prototype.initFromDBObj = function (projInDB) {
-    delete projInDB._chTool;
     _.assign(this, projInDB);
 };
 
@@ -55,7 +54,7 @@ Project.prototype.getAllChannels = function(projectID, callback){
                 channel.signConfig = JSON.parse(rows[i].signConfig);
                 channel.config = JSON.parse(rows[i].config);
                 channel.sdks = JSON.parse(rows[i].sdks);
-                if(channel.config.icon){
+                if(channel.config && channel.config.icon && channel.config.icon.path){
                     channel.config.icon.path = pathLib.join(self.projectRoot, channel.config.icon.path);
                 }
                 result.push(channel);
@@ -74,13 +73,13 @@ Project.prototype.setChannel = function(projectID, channel, callback){
         callback(new ChameleonError(null, 'Project ID is invalid.', 'setChannel()'));
     }
     var dbContext = this._chTool.newSqllitesContext();
-    if(channel.config && channel.config.icon){
+    if(channel.config && channel.config.icon && channel.config.icon.path){
         channel.config.icon.path = channel.config.icon.path.replace(this.projectRoot, '');
         channel.config.icon.path = channel.config.icon.path.split('\\').join('/');
     }
     try {
         var sqlText = "update channel set projectID=$projectID, channelName=$channelName, config=$config, desc=$desc, signConfig=$signConfig, sdks=$sdks where id=$id";
-        if(channel.id == 0) sqlText = "insert into channel (projectID, channelName, config, desc, signConfig, sdks) values ($projectID, $channelName, $config, $desc, $signConfig, $sdks)";
+        if(!channel.id || channel.id === 0) sqlText = "insert into channel (projectID, channelName, config, desc, signConfig, sdks) values ($projectID, $channelName, $config, $desc, $signConfig, $sdks)";
         var params = {
             $projectID: projectID,
             $id: channel.id,
@@ -90,7 +89,7 @@ Project.prototype.setChannel = function(projectID, channel, callback){
             $signConfig: JSON.stringify(channel.signConfig),
             $sdks: JSON.stringify(channel.sdks)
         };
-        if(channel.id ==0)
+        if(!channel.id || channel.id === 0)
             delete params.$id;
         dbContext.run(sqlText, params, function(err){
             if(err) throw err;
@@ -107,7 +106,7 @@ Project.prototype.deleteChannel = function(channelID, callback){
     if(channelID<=0){
         callback(new ChameleonError(null, 'Channel ID is invalid.', 'deleteChannel()'));
     }
-    var dbContext = new sqlite3.Database(this.dbPath);
+    var dbContext = this._chTool.newSqllitesContext();
     try{
         var sqlText = "delete from channel where id=$id";
         var params = {

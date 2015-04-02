@@ -111,7 +111,7 @@ ChameleonTool.prototype.getAllProjects = function(callback){
                 config : JSON.parse(row.config)
             };
             if(project.config.icon){
-                project.config.icon = pathLib.join(this.projectRoot, project.config.icon);
+                project.config.icon = pathLib.join(self.projectRoot, project.config.icon);
             }
             projects.push(project);
         }
@@ -144,7 +144,7 @@ ChameleonTool.prototype.getProject = function(id, callback){
             config : JSON.parse(row.config)
         };
         if(project.config.icon){
-            project.config.icon = pathLib.join(this.projectRoot, project.config.icon);
+            project.config.icon = pathLib.join(self.projectRoot, project.config.icon);
         }
 
         callback(null, project);
@@ -327,6 +327,35 @@ ChameleonTool.prototype.removeChannelDirectory = function(project, channelName){
     }
 }
 
+ChameleonTool.prototype.generateServerConfig = function(project){
+    var result = {};
+    var url = urlLib.parse(project.config.payCallbackUrl);
+    var host = url.protocol + '//' + url.host;
+    var pathName = url.pathname;
+
+    result['_product.json'] = {
+        appcb: {
+            host: host,
+            payCbUrl: pathName
+        }
+    }
+    for(var i=0; i<project.channels.length; i++){
+        var channel = project.channels[i];
+        var config = {};
+        config.sdks = [];
+        for(var j=0; j<channel.sdks.length; j++){
+            config.sdks.push({
+                name: channel.channelName,
+                type: 'pay,user',
+                cfg: channel.sdks[j].config
+            });
+        }
+        result[channel.channelName + '.json'] = config;
+    }
+
+    return result;
+}
+
 ChameleonTool.prototype.generateProductForServer = function(project){
     var result = {};
     var url = urlLib.parse(project.config.payCallbackUrl);
@@ -346,11 +375,9 @@ ChameleonTool.prototype.generateProductForServer = function(project){
         var config = {};
         config.sdks = [];
         for(var j=0; j<channel.sdks.length; j++){
-            console.log('123' + channel.sdks[j].svrver)
             config.sdks.push({
                 name: channel.channelName,
                 type: 'pay,user',
-                version: channel.sdks[j].svrver,
                 cfg: channel.sdks[j].config
             });
         }
@@ -450,8 +477,7 @@ ChameleonTool.prototype.loadConfigFromZip = function(path, callback){
         var self = this;
 
         var projectEntry = zip.getEntry('project.json');
-        var projectFolderEntry = zip.getEntry('cfg');
-        console.log(projectFolderEntry);
+        var projectFolderEntry = zip.getEntry('cfg/');
         var project = zip.readFile(projectEntry).toString();
         project = JSON.parse(project);
         var projectInstance = this.initProject(project);
@@ -465,7 +491,6 @@ ChameleonTool.prototype.loadConfigFromZip = function(path, callback){
                 return;
             }
 
-            console.log(data);
             projectInstance.id = data;
             var task = [];
             var num = 0;
@@ -487,10 +512,8 @@ ChameleonTool.prototype.loadConfigFromZip = function(path, callback){
                     return callback(err);
                 }
                 self.createProjectDirectory(projectInstance.name);
-                console.log(projectFolderEntry);
                 if(projectFolderEntry){
-                    console.log(111111);
-                    zip.extractEntryTo(projectFolderEntry, pathLib.join(self.projectRoot, projectInstance.name, 'cfg'));
+                    zip.extractEntryTo(projectFolderEntry, pathLib.join(self.projectRoot, projectInstance.name));
                 };
                 callback(null);
             }]);

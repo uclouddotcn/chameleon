@@ -481,6 +481,13 @@ def main():
     manifestFilePath = os.path.join(channelPath, MANIFEST_FILE_NAME)
 
     globalcfg = getCommCfg(os.path.join(options.projectRoot, 'cfg', channel))
+
+    manifest = loadManifest(manifestFilePathOrig)
+    #TODO 检查packageName是不是.开头
+    if globalcfg["channel"]["packageName"].startswith('.'):
+        globalcfg["channel"]["packageName"] = manifest.getPkgName() + globalcfg["channel"]["packageName"]
+        print(globalcfg["channel"]["packageName"])
+
     libs = getDependLibs(proj, globalcfg)
 
     for sdkinfo in libs:
@@ -505,10 +512,9 @@ def main():
         print(ERR_MSG[u])
         return u
 
-#    add an additional class for some special sdk.
-    modifyWx.makeWXEntryActivity(os.path.join(channelPath, 'smali'), channel, globalcfg['channel']['packageName'])
-    #TODO make MainActivity
-    manifest = loadManifest(manifestFilePathOrig)
+#   add an additional class for some special sdk.
+    #TODO make WXEntryActivity MainActivity
+    modifyWx.makeWXEntryActivity(os.path.join(channelPath, 'smali'), channel, globalcfg["channel"]["packageName"])
     modifyMainActivity.makeMainActivity(os.path.join(channelPath, 'smali'), manifest, globalcfg)
 
     dexPaths = [os.path.join(x.path, 'smali') for x in libs]
