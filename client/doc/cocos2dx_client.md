@@ -1,70 +1,27 @@
-# Cocos2dx接入
+﻿# Cocos2dx接入
 
-### 在Activity中初始化SDK，添加事件响应
+###必要的准备
 
-使用````prj.chameleon.channelapi.cbinding.NativeChannelInterface```接口中的函数，修改Cocos2dx生成的activity，重载onResume和onPause，在onCreateView中添加初始化函数，例如
+1. 添加chameleon.jar到android libs文件夹
+2. 讲chameleoncb文件夹拷贝到proj.android文件夹
 
+###在Android AppActivity.java中初始化sdk
 首先添加import
-
 ```
 import prj.chameleon.channelapi.cbinding.NativeChannelInterface;
-import android.content.Intent;
 ```
-
-然后在Activity中添加事件回调的处理函数
+在```onCreate```方法中使用```NativeChannelInterface.setRunningEnv```对sdk进行初始化
 
 ```
     @Override
-    public void onResume() {
-        super.onResume();
-        NativeChannelInterface.onResume(1);
-    }
+    protected void onCreate(Bundle savedInstanceState) {
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        NativeChannelInterface.onPause();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        NativeChannelInterface.onStart(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        NativeChannelInterface.onStop(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        NativeChannelInterface.onDestroy();
-    }
-
-
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-            NativeChannelInterface.onNewIntent(this, intent);
-    }
-
-
-
-
-    public Cocos2dxGLSurfaceView onCreateView() {
-    	Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);
-    	glSurfaceView.setEGLConfigChooser(5, 6, 5, 0, 16, 8);
-
-		// 设置运行环境
-        NativeChannelInterface.setRunningEnv(this, glSurfaceView);
-    	return glSurfaceView;
-    }
-
-
+        NativeChannelInterface.setRunningEnv(this, new NativeChannelInterface.IRunEnv(){
+        public void run(Runnable runnable){
+            AppActivity.this.runOnGLThread(runnable);
+        }
+    });        
+        super.onCreate(savedInstanceState);
 ```
 
 ### 修改jni/Android.mk
@@ -74,7 +31,7 @@ import android.content.Intent;
 
 ``` $(call import-add-path, $(LOCAL_PATH)/../chameleon)```
 
-``` $(call import-module,chameleoncb) ```
+``` $(call import-module,chameleoncb/prebuilt/android) ```
 
 
 ### 在游戏中使用接口
@@ -82,7 +39,6 @@ import android.content.Intent;
 ####请求接口
 
 接口定义在chameleon/chameleoncb/ChameleonPlatformAPI.h, 有些请求接口带有一个int参数id，这是异步请求的一个透传参数，当这个请求回应时，会带回这个参数，如果不需要传0即可。
-
 ```
 namespace Chameleon {
 namespace ChameleonChannelAPI{
@@ -97,10 +53,11 @@ namespace ChameleonChannelAPI{
     void releaseJavaVM(JavaVM * vm);
 
     /**
-     * 注册事件的回调实例
+     * 注册Chameleon的回调实例
+     * @param {ChannelAPICallbackInf} callbackImp
      */
-    void registCallback(ChannelAPICallbackInf * callbackImp);
-
+    int init(ChannelAPICallbackInf_C callbackImp);
+	
     /**
      * 发起游客登录，有些平台不支持游客登录或者平台一些登录策略，也有可能
      * 会发起正式的登录
@@ -274,9 +231,23 @@ namespace ChameleonChannelAPI{
 }
 
 ```
+#####初始化请求接口
+使用请求接口前，需要调用接口中的```setJavaVM```注册JVM运行时。
+例如，在Cocos2dx中，需要求改jni/helloxxx文件夹下面的main文件：
+
+···
+void cocos_android_app_init (JNIEnv* env, jobject thiz) {
+    LOGD("cocos_android_app_init");
+	JavaVM * vm;
+	env->GetJavaVM(&vm);
+	Chameleon::ChameleonChannelAPI::setJavaVM(vm);
+	
+    AppDelegate *pAppDelegate = new AppDelegate();
+}
+···
 
 #### 回调接口
-您必须实现一个这样的接口，然后由请求接口中的```registCallback```注册进chameleon的SDK。这个接口主要用来响应SDK的请求的回调，或者渠道SDK自动触发的一些信息。
+您必须实现一个这样的接口，然后由请求接口中的```init```注册进chameleon的SDK。这个接口主要用来响应SDK的请求的回调，或者渠道SDK自动触发的一些信息。
 
 chameleoncb/CPlatformAPICallback.h
 
