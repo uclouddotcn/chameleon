@@ -29,7 +29,7 @@ import prj.chameleon.channelapi.cbinding.NativeChannelInterface;
 
 ```LOCAL_WHOLE_STATIC_LIBRARIES += chameleoncb```
 
-``` $(call import-add-path, $(LOCAL_PATH)/../chameleon)```
+``` $(call import-add-path, $(LOCAL_PATH)/..)```
 
 ``` $(call import-module,chameleoncb/prebuilt/android) ```
 
