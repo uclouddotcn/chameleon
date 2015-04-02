@@ -79,6 +79,26 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return defered.promise;
     }
 
+    ProjectMgr.prototype.getProject = function(id){
+        var defered = $q.defer();
+        try{
+            this.tool.getProject(id, function(err, data){
+                if(err) {
+                    console.log(err);
+                    defered.resolve({err: err});
+                    return;
+                }
+                defered.resolve(data);
+            });
+        }catch (e){
+            $log.log('Fail to get project' + e.message);
+            global.setImmediate(function(){
+                defered.resolve(null);
+            });
+        }
+        return defered.promise;
+    }
+
     ProjectMgr.prototype.removeProject = function(id){
         this.tool.deleteProject(id);
     }
@@ -134,10 +154,10 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
                     return;
                 }
 
-                if(channel.id == 0){
+                if(!channel.id || channel.id === 0){
                     channel.id = data;
                 }
-                defered.resolve(project);
+                defered.resolve(channel);
             });
         }catch (e){
             $log.log('Fail to set channel of project' + e.message);
@@ -225,10 +245,6 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
         return this.tool.command(command, args, callback, process);
     }
 
-    ProjectMgr.prototype.generateServerConfig = function(project){
-        return this.tool.generateServerConfig(project);
-    }
-
     ProjectMgr.prototype.generateProductForServer = function(project){
         return this.tool.generateProductForServer(project);
     }
@@ -260,7 +276,7 @@ chameleonTool.service('ProjectMgr', ["$q", "$log", function($q, $log){
             this.tool.loadConfigFromZip(path, function(err){
                 if(err) {
                     console.log(err);
-                    defered.resolve({err: err});
+                    defered.resolve({err: err, message: err.message});
                     return;
                 }
 

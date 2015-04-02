@@ -24,7 +24,7 @@
                                     <label>游戏名称</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="text" ng-model="project.name" />
+                                    <label>{{project.name}}</label>
                                 </div>
                                 <label class="control-label col-md-3">方向</label>
                                 <div class="btn-group col-md-3">
@@ -37,7 +37,8 @@
                                     <label>选择icon</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <label>{{project.config.icon}}</label><input type="file" accept="image/png" fileread="project.config.icon" name="projectIcon" class="custom-file-input"/>
+                                    <label class="shortText">{{project.config.icon}}</label>
+                                    <input type="file" accept="image/png" fileread="project.config.icon" name="projectIcon" class="custom-file-input"/>
                                 </div>
                                 <div class="col-md-3">
                                     <label>游戏在server中的英文代号</label>
@@ -56,7 +57,7 @@
                                     <label>Keystore文件</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <label>{{project.signConfig.keyStoreFile}}</label><input type="file" accept="keystore/*" fileread="project.signConfig.keyStoreFile" name="project" class="custom-file-input"/>
+                                    <label class="shortText">{{project.signConfig.keyStoreFile}}</label><input type="file" accept="keystore/*" fileread="project.signConfig.keyStoreFile" name="project" class="custom-file-input"/>
                                 </div>
                                 <div class="col-md-3">
                                     <label>Alias</label>
@@ -179,7 +180,7 @@
                                     </div>
                                     <div ng-hide="!selectedChannel || selectedChannel.config.isGlobalConfig">
                                     <div>
-                                        <label>Keystore文件</label><label>{{selectedChannel.signConfig.keyStoreFile}}</label>
+                                        <label>Keystore文件</label><label class="shortText">{{selectedChannel.signConfig.keyStoreFile}}</label>
                                     </div>
                                     <div>
                                         <input type="file" accept="keystore/*" fileread="selectedChannel.signConfig.keyStoreFile" name="channel" class="custom-file-input"/>
@@ -224,7 +225,7 @@
                             </div>
                             <div class="row">
                                 <label>图片选择</label>
-                                <label>{{selectedChannel.config.icon.path}}</label>
+                                <label class="shortText">{{selectedChannel.config.icon.path}}</label>
                             </div>
                             <div class="row">
                                 <input type="file" fileread="selectedChannel.config.icon.path" name="icon" class="custom-file-input"/>
@@ -247,10 +248,14 @@
                 </div>
                 <div class="tab-pane fade" id="APKPicker" role="tabpanel">
                     <div class="row">
-                        <label>选择APK母包</label><label>{{apkFilePath}}</label><label style="margin-left: 10px; color: red;">{{installAPKMessage}}</label>
+                        <label>选择APK母包</label>
                     </div>
-                    <div>
+                    <div class="row">
                         <label>添加新母包</label><input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/>
+                        <label class="shortText">{{apkFilePath}}</label>
+                    </div>
+                    <div class="row">
+                        <label style="margin-left: 10px; color: red;">{{installAPKMessage}}</label>
                     </div>
                     <div class="row">
                         <div class="gridStyle" ng-grid="APKVersionTable" style="height: 300px; overflow-y: auto;"></div>

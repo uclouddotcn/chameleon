@@ -63,11 +63,12 @@ chameleonApp = angular.module('chameleonApp', [
                 controller: 'BindProjectCtrl'
             })
             .state('playmanage', {
-                url: '/playmanage/:project',
+                url: '/playmanage/:projectID',
                 templateUrl: 'partials/projectManager.html',
                 resolve: {
-                    project: ['$stateParams', function ($stateParams) {
-                        return JSON.parse($stateParams.project);
+                    project: ['$stateParams', 'ProjectMgr', function ($stateParams, ProjectMgr) {
+                        var promise = ProjectMgr.getProject($stateParams.projectID);
+                        return promise;
                     }]
                 },
                 controller: ['$scope', '$log', '$stateParams',
@@ -108,7 +109,7 @@ chameleonApp = angular.module('chameleonApp', [
                     $scope.fileread = project.signConfig.keyStoreFile;
                     $scope.isProjectUnchanged = true;
 
-                    if(project.config.icon){
+                    if(project.config.icon) {
                         $scope.projectIcon = project.config.icon;
                     }
 
@@ -159,19 +160,20 @@ chameleonApp = angular.module('chameleonApp', [
                         }
                     }
                     $scope.saveProjectConfig = function(){
+                        if($scope.project.config.icon){
+                            var destiny =node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
+                            fse.copySync($scope.project.config.icon, destiny);
+                            $scope.project.config.icon = destiny;
+                            $scope.projectIcon = $scope.project.config.icon;
+                        }
                         var promise = ProjectMgr.updateProject($scope.project);
                         promise.then(function(data){
                             if(!data){
                                 alert("Update project config failed.");
                             }
                             $scope.isProjectUnchanged = true;
+                            $scope.project.config.icon = node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
                         });
-
-                        if($scope.project.config.icon){
-                            var destiny =node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
-                            fse.copySync($scope.project.config.icon, destiny);
-                            $scope.projectIcon = $scope.project.config.icon;
-                        }
                     };
                     $scope.outputConfig = function(){
                         try{
@@ -230,10 +232,10 @@ chameleonApp = angular.module('chameleonApp', [
                             channel.config.isGlobalConfig = true;
 
                             var promise = ProjectMgr.setChannel($scope.project, channel);
-                            promise.then(function(){
-                                $scope.project.channels.push(channel);
+                            promise.then(function(channelToAdd){
+                                $scope.project.channels.push(channelToAdd);
                                 $scope.selectedChannels = $scope.project.channels;
-                                ProjectMgr.createChannelDirectory($scope.project, channel.channelName);
+                                ProjectMgr.createChannelDirectory($scope.project, channelToAdd.channelName);
                             });
                         }else{
                             var channelToDelete = _.findWhere($scope.project.channels, {channelName: channel.channelName});
@@ -243,6 +245,14 @@ chameleonApp = angular.module('chameleonApp', [
                                     return element.channelName == channel.channelName;
                                 });
                                 $scope.selectedChannels = $scope.project.channels;
+                                if(channel.channelName === $scope.selectedChannel.channelName){
+                                    $scope.selectedChannel = {};
+                                    $scope.selectedSDKs = [];
+                                    $scope.selectedSDK = {};
+                                    $scope.editingSDKs = [];
+                                    $('.sdkList').prop("checked", false);
+                                    $scope.SDKConfigHtml = '';
+                                }
                                 ProjectMgr.removeChannelDirectory($scope.project, channelToDelete.channelName);
                             });
                         }
@@ -291,7 +301,12 @@ chameleonApp = angular.module('chameleonApp', [
                             $scope.selectedChannel.sdks = [];
                             $('.sdkList').not(event.target).prop({'checked':false});
 
-                            $scope.selectedChannel.sdks.push(sdk);
+                            $scope.selectedChannel.sdks.push({
+                                name: sdk.name,
+                                version: sdk.version,
+                                desc: sdk.desc,
+                                config: {}
+                            });
                             $scope.selectedSDKs = $scope.selectedChannel.sdks;
                             ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
                         }else{
@@ -453,6 +468,9 @@ chameleonApp = angular.module('chameleonApp', [
                         afterSelectionChange: function(rowItem){
                             var channel = rowItem.entity;
                             $scope.selectedChannel = channel;
+                            if(channel.config.icon){
+                                $scope.projectIcon = channel.config.icon.path || $scope.project.config.icon;
+                            }
                             $scope.iconPosition = iconPosition();
                             if(channel.config.icon&&channel.config.icon.path){
                                 $scope.pictureToDraw = {
@@ -505,7 +523,6 @@ chameleonApp = angular.module('chameleonApp', [
                             }
                         }
                     };
-
                     $scope.saveIcon = function(){
                         var channel = $scope.selectedChannel;
                         //save image
@@ -515,6 +532,7 @@ chameleonApp = angular.module('chameleonApp', [
                             channel.config.icon = {};
                             channel.config.icon.path = path;
                             ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
+                            channel.config.icon.path = path;
                             return;
                         }
                         //draw and save
@@ -608,7 +626,7 @@ chameleonApp = angular.module('chameleonApp', [
                         }else{
                             false;
                         }
-                    }
+                    };
 
                     //pack SDK
                     var packChannel = function(project, channel, callback, process){
@@ -667,9 +685,10 @@ chameleonApp = angular.module('chameleonApp', [
                                             type: 'pay,user',
                                             config: _.extend({}, channel.sdks[i].config)
                                         };
-                                        for(var j=0; j<channel.sdks[i].cfgitem.length; j++){
-                                            if(channel.sdks[i].cfgitem[j].ignoreInA){
-                                                delete sdkConfig.config[channel.sdks[i].cfgitem[j].name];
+                                        var cfgitem = _.findWhere($scope.SDKList, {name: channel.sdks[i].name}).cfgitem;
+                                        for(var j=0; j<cfgitem.length; j++){
+                                            if(cfgitem[j].ignoreInA){
+                                                sdkConfig.config[cfgitem[j].name] = null;
                                             }
                                         }
                                         data.channel.sdks.push(sdkConfig);

@@ -76,7 +76,7 @@ Product.prototype.productInfo = function(){
     }
 
     return result;
-}
+};
 
 /**
  * load all channels
@@ -88,7 +88,8 @@ Product.prototype.loadAllChannels = function (channelCfg) {
         Object.keys(channelCfg).forEach(function (key) {
             self.startChannel(key, channelCfg[key]);
         });
-        if (env.debug) {
+        if (process.env['CHAMELEON_MODE'] === 'PRE_PRODUCTION') {
+            self._logger.info('In PRE_PRODUCTION mode, adding test channel');
             // start test channel
             this.startChannel("test", {
                 sdks: [

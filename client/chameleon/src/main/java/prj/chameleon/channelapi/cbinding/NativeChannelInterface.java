@@ -27,7 +27,7 @@ public class NativeChannelInterface {
             public void onInitFinished(int retCode) {
                 mRetCode = retCode;
                 Log.d(Constants.TAG, String.format("on init finished %d", retCode));
-                mRequestProxy.setInitDone(mActivity);
+                mRequestProxy.setInitDone();
             }
 
             @Override
@@ -67,7 +67,6 @@ public class NativeChannelInterface {
 
     private static class RequestProxy {
         private LinkedList<Runnable> mPendingQueue = new LinkedList<Runnable>();
-        private Activity mActivity = null;
         private boolean mIsInited = false;
 
         private RequestProxy(){
@@ -77,8 +76,8 @@ public class NativeChannelInterface {
         }
 
         // run on UI thread only
-        public synchronized void setInitDone (Activity activity) {
-            setActivity(activity);
+        public synchronized void setInitDone () {
+            setInited();
             for (Runnable runnable : mPendingQueue) {
                 Log.d(Constants.TAG, "run all queueed runnables");
                 runnable.run();
@@ -101,12 +100,10 @@ public class NativeChannelInterface {
 
         public synchronized void onDestroy() {
             mIsInited = false;
-            mActivity = null;
         }
 
-        private synchronized void setActivity(Activity activity) {
+        private synchronized void setInited() {
             mIsInited = true;
-            mActivity = activity;
         }
     }
 
@@ -160,7 +157,7 @@ public class NativeChannelInterface {
             public void onFinished(final int retCode, JSONObject data) {
                 mRetCode = retCode;
                 Log.d(Constants.TAG, String.format("on init finished %d", retCode));
-                mRequestProxy.setInitDone(mActivity);
+                mRequestProxy.setInitDone();
             }
         });
     }
@@ -178,6 +175,9 @@ public class NativeChannelInterface {
                     @Override
                     public void run() {
                         try {
+                            if (ChameleonApplication.isTest) {
+                                ChannelInterface.addTestApiGroup();
+                            }
                             ChannelAPINative.init(mRetCode, ChannelInterface.isDebug(), getChannelName());
                         } catch (UnsupportedEncodingException e) {
                             Log.e(Constants.TAG, "Fail to encode to UTF-8???", e);

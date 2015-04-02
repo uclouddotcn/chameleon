@@ -96,6 +96,9 @@ public class UnityChannelInterface {
         mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
+                if(ChameleonApplication.isTest){
+                    ChannelInterface.addTestApiGroup();
+                }
                 U3DHelper.SendMessage("onInited", mRetCode, null);
             }
         });
