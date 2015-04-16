@@ -52,15 +52,14 @@ YuwanChannel.prototype.verifyLogin = function(wrapper, token, others, callback) 
                 req.log.warn({err: err}, 'request error');
                 return callback(null, { code: ErrorCode.ERR_FAIL});
             }
-            obj = JSON.parse(obj);
             if (obj.ErrorCode === 1) {
                 callback(null, {
                     code: ErrorCode.ERR_OK,
                     loginInfo: {
                         uid: uid,
-                        token: token
+                        token: session
                     }
-                })
+                });
             } else if (obj.ErrorCode === 0) {
                 callback(null, {
                     code: ErrorCode.ERR_LOGIN_SESSION_INVALID,
@@ -84,7 +83,7 @@ YuwanChannel.prototype.verifyLogin = function(wrapper, token, others, callback) 
 YuwanChannel.prototype.calcSign = function(s){
     var md5sum = crypto.createHash('md5');
     md5sum.update(s);
-    return md5sum.digest('hex').toUpperCase();
+    return md5sum.digest('hex');
 };
 
 YuwanChannel.prototype.getPayUrlInfo=function(){
@@ -97,6 +96,10 @@ YuwanChannel.prototype.getPayUrlInfo=function(){
 };
 
 
+function getMoney(s) {
+    return Math.floor(parseFloat(s)*100)
+}
+
 function getStatus(s) {
     if (typeof s === 'string') {
         return parseInt(s);
@@ -108,15 +111,15 @@ function getStatus(s) {
 YuwanChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
     var self = this;
     var params = req.params;
-    var sign = params['flag'];
+    var sign = params.EncString;
     req.log.debug({req: req, params: params}, 'recv pay rsp');
     try {
         if (params.MerId !== wrapper.cfg.appId) {
             self._logger.warn({e: expectSign, r: sign}, "unmatched app id");
             return next(new restify.InvalidArgumentError("error"));
         }
-        if (params.Money !== params.PaymentFee) {
-            self._logger.warn({e: expectSign, r: sign}, "unmatched payment");
+        if (getMoney(params.Money) !== getMoney(params.PaymentFee)) {
+            self._logger.warn({m:params.Money, p: params.PaymentFee}, "unmatched payment");
             return next(new restify.InvalidArgumentError("error"));
         }
         var expectSign = self.calcSign(params.MerId+params.OrderId+params.Money+wrapper.cfg.appKey);
@@ -127,7 +130,7 @@ YuwanChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
 
         var orderId = params.OrderId;
         var status = getStatus(params.PaymentStatusCode) === 0 ? ErrorCode.ERR_OK : ErrorCode.ERR_FAIL;
-        var money = params.PaymentFee * 100;
+        var money = getMoney(params.PaymentFee);
 
         wrapper.userAction.pay(wrapper.channelName, null, null,
             orderId, status,
