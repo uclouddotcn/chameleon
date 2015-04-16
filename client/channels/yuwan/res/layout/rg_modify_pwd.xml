@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <include layout="@layout/rg_title_layout" />
+
+            <TextView
+                android:id="@+id/tv_prompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="15dp"
+                android:text="@string/rg_notice"
+                android:textColor="#ff8a00" />
+
+            <com.ireadygo.sdk.ui.widget.RgEditTextWithDel
+                android:id="@+id/et_oldPwd"
+                style="@style/CustomEditTextTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/rg_modify_pwd_edittext_bg_selector"
+                android:hint="@string/rg_input_history_pwd"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp" />
+
+            <com.ireadygo.sdk.ui.widget.RgEditTextWithDel
+                android:id="@+id/et_newPwd"
+                style="@style/CustomEditTextTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rg_modify_pwd_edittext_bg_selector"
+                android:hint="@string/rg_pwd_len"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp" />
+
+            <com.ireadygo.sdk.ui.widget.RgEditTextWithDel
+                android:id="@+id/et_newPwdRepeat"
+                style="@style/CustomEditTextTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rg_modify_pwd_edittext_bg_selector"
+                android:hint="@string/rg_confim_pwd"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp" />
+
+            <CheckBox
+                android:id="@+id/cb_showPwd"
+                style="@style/CustomCheckboxTheme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/rg_show_pwd"
+                android:textColor="@color/edittext_hint_color_default" />
+
+            <Button
+                android:id="@+id/btn_modify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/rg_modify_btn_bg"
+                android:gravity="center"
+                android:text="@string/rg_save_change"
+                android:layout_marginBottom="5dp"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <com.ireadygo.sdk.ui.widget.RgWebviewProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</ScrollView>

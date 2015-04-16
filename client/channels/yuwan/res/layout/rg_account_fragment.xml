@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/rg_account_icon"
+            android:drawablePadding="25dp"
+            android:gravity="left|center_vertical"
+            android:paddingBottom="@dimen/account_item_pading"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="@dimen/account_item_pading"
+            android:text="@string/rg_name"
+            android:textColor="#565656"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#b5b5b5" />
+
+        <TextView
+            android:id="@+id/tv_modifyPwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/rg_modify_password_icon"
+            android:drawablePadding="10dp"
+            android:drawableRight="@drawable/rg_account_arrows"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/account_item_pading"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="@dimen/account_item_pading"
+            android:text="@string/rg_change_pwd"
+            android:textColor="#565656"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#b5b5b5" />
+
+        <TextView
+            android:id="@+id/tv_myMsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/rg_my_message_icon"
+            android:drawablePadding="10dp"
+            android:drawableRight="@drawable/rg_account_arrows"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/account_item_pading"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="@dimen/account_item_pading"
+            android:text="@string/rg_my_message"
+            android:textColor="#565656"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/tv_payRecord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/rg_pay_record_icon"
+            android:drawablePadding="10dp"
+            android:drawableRight="@drawable/rg_account_arrows"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/account_item_pading"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="@dimen/account_item_pading"
+            android:text="@string/rg_my_record"
+            android:textColor="#565656"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#b5b5b5" />
+
+        <TextView
+            android:id="@+id/tv_switchAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/rg_logout_icon"
+            android:drawablePadding="10dp"
+            android:drawableRight="@drawable/rg_account_arrows"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/account_item_pading"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="@dimen/account_item_pading"
+            android:text="@string/rg_cancle_user"
+            android:textColor="#565656"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#b5b5b5" />
+    </LinearLayout>
+
+</ScrollView>
