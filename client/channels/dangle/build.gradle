@@ -34,6 +34,6 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
-    compile fileTree(dir: "libs", includes: ["*.jar"])
+    compile fileTree(dir: 'libs', includes: ['*.jar'])
     compile project(':chameleon')
 }

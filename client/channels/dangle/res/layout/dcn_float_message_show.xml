@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/dcn_floating_message_ly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/dcn_float_bg_right_up" >
+
+        <RelativeLayout
+            android:id="@+id/dcn_floating_message_close"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="3dp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/dcn_close_btn_selector" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/dcn_floating_message_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/dcn_floating_message_close"
+            android:clickable="true"
+            android:singleLine="true"
+            android:textColor="@color/dcn_black"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
+</LinearLayout>

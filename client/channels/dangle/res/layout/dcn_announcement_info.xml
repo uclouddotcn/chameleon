@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dcn_login_background" >
+
+    <com.downjoy.widget.DialogTitleLayer
+        android:id="@+id/dcn_float_settings_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dcn_title_height" />
+
+    <WebView
+        android:id="@+id/dcn_webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dcn_float_settings_title"
+        android:background="@color/dcn_white"
+        android:visibility="visible" />
+
+</RelativeLayout>
