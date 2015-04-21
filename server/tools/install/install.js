@@ -61,7 +61,7 @@ function installAdmin(installPath, callback) {
             if (fs.existsSync(adminTargetPath)) {
                 child_process.exec('rm -rf ' + adminTargetPath, function (err) {
                     cb(err);
-                })
+                });
             } else {
                 cb();
             }
@@ -75,11 +75,15 @@ function installAdmin(installPath, callback) {
         function (cb) {
             console.log('install all dependant');
             var childFolder = path.join(adminTargetPath, 'admin');
-            child_process.exec('npm install &> /dev/null', {
-                cwd: childFolder,
-            }, function (err, stdout, stderr) {
-                cb();
-            });
+            if (!fs.existsSync(path.join(childFolder, 'release.json'))) {
+                child_process.exec('npm rebuild &> /dev/null', {
+                    cwd: childFolder,
+                }, function (err, stdout, stderr) {
+                    cb();
+                });
+            } else {
+                setImmediate(cb);
+            }
         },
         function (cb) {
             console.log('rename to production folder');
