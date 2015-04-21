@@ -1,11 +1,12 @@
 var levelup = require('levelup');
 var path = require('path');
 
-function LevelDBClient(store, options, logger) {
+
+function LevelDBClient(store, options, logger, env) {
     if (!options) {
         options = {};
     }
-    var dbPath = options.path || DEFAULT_LV_DB_PATH;
+    var dbPath = options.path || path.join(env.billDir, 'pending-order.db');
     var self = this;
     self.db = levelup(dbPath);
     self.store = store;
@@ -59,12 +60,9 @@ LevelDBClient.prototype.close = function (callback) {
 };
 
 
-var DEFAULT_LV_DB_PATH = 
-    path.join(__dirname, '../../../../../../log/pending-order.db');
-
 module.exports = {
-    createClient: function (store, options, logger) {
-        return new LevelDBClient(store, options, logger);
+    createClient: function (store, options, logger, env) {
+        return new LevelDBClient(store, options, logger, env);
     }
 }
 
