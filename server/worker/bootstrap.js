@@ -65,23 +65,27 @@ function series (funcs, callback) {
 
 function npmInstall(p, callback) {
     console.log('npm install under ' + p);
-    child_process.exec('npm install', {
-        cwd: p
-    }, function (err, stdout, stderr){
-        if (err) {
-            console.error("Fail to install under: " + process.cwd());
-            console.error(stderr);
-            callback(err);
-            return;
-        }
-        callback();
-    });
+    if (!fs.existsSync(path.join(p, 'release.json'))) {
+        child_process.exec('npm rebuild', {
+            cwd: p
+        }, function (err, stdout, stderr){
+            if (err) {
+                console.error("Fail to install under: " + process.cwd());
+                console.error(stderr);
+                callback(err);
+                return;
+            }
+            callback();
+        });
+    } else {
+        setImmediate(callback);
+    }
 }
 
 function bfs(p, callback) {
     var subs = fs.readdirSync(p);
     var toInstall = [];
-    var morePath = []
+    var morePath = [];
     for (var i = 0; i < subs.length; ++i) {
         var f = path.join(p, subs[i]);
         if (subs[i] === 'package.json') {
