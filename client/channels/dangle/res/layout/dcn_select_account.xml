@@ -1,57 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/dcn_login_background"
+    android:orientation="vertical" >
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.downjoy.widget.DialogTitleLayer 
+    	android:id="@+id/dcn_float_settings_title"
+        android:layout_height="@dimen/dcn_title_height"
+       	android:layout_width="match_parent"
+        />
+
+    <ListView
+        android:id="@+id/dcn_accounts"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="50dp"
-        android:background="@drawable/dcn_pop_up_bg">
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@color/dcn_transparent"
+        android:dividerHeight="4dp"
+        android:listSelector="@android:color/transparent"
+        android:paddingLeft="@dimen/dcn_login_padding_left_right"
+        android:paddingRight="@dimen/dcn_login_padding_left_right" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dcn_title_height"
-            android:paddingLeft="@dimen/dcn_login_padding_left_right">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textSize="22sp"
-                android:textColor="#ff7800"
-                android:text="@string/dcn_select_account_title" />
-
-            <LinearLayout
-                android:id="@+id/dcn_exit"
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:background="@drawable/dcn_back_btn_selector"
-                android:layout_alignParentRight="true">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/dcn_popup_closed_selector" />
-            </LinearLayout>
-        </RelativeLayout>
-
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@color/dcn_transparent"
-            android:dividerHeight="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
-            android:paddingLeft="@dimen/dcn_login_padding_left_right"
-            android:paddingRight="@dimen/dcn_login_padding_left_right"
-            android:cacheColorHint="@android:color/transparent"
-            android:listSelector="@android:color/transparent"
-            android:id="@+id/dcn_accounts" />
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

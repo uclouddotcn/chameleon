@@ -92,4 +92,9 @@
         <item name="android:windowEnterAnimation">@anim/dcn_from_right</item>
         <item name="android:windowExitAnimation">@anim/dcn_to_left</item>
     </style>
+    <style name="DcnDownloadProgressBar" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:maxHeight">10dip</item>
+        <item name="android:minHeight">8dip</item>
+        <item name="android:indeterminateOnly">false</item>
+    </style>
 </resources>

@@ -21,7 +21,6 @@ import prj.chameleon.channelapi.IDispatcherCb;
 public class NativeChannelInterface {
 
     static {
-        System.loadLibrary("chameleoncb");
         ActivityInterface.registerCallback(new ActivityInterface.Callback() {
             @Override
             public void onInitFinished(int retCode) {

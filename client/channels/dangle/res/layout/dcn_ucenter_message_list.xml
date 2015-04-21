@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- 标题栏 -->
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dcn_title_height"
+        layout="@layout/dcn_custom_actionbar"
+        android:background="@drawable/dcn_actionbar_bg_dark" />
+
+    <TextView
+        android:id="@+id/dcn_msg_cnt_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:background="#F1F1F1"
+        android:gravity="right"
+        android:textSize="15sp"
+        android:textColor="#919191"
+         />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:divider="@null"
+            android:listSelector="@android:color/transparent" />
+
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/dcn_no_data"
+            android:drawableTop="@drawable/dcn_message_no_data"
+            android:gravity="center_horizontal"
+            android:textColor="#919191"
+            android:textSize="18sp"
+            android:layout_marginTop="4dip" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dcn_login_background"
+        android:orientation="vertical"
+        android:paddingBottom="15dp" >
+
+        <com.downjoy.widget.DialogTitleLayer 
+            android:id="@+id/dcn_float_settings_title"
+            android:layout_height="@dimen/dcn_title_height"
+            android:layout_width="match_parent"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/dcn_color_login_box_gb" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/dcn_floating_menu_show_label"
+                android:textColor="@color/dcn_light_black"
+                android:textSize="16sp" />
+
+            <RadioGroup
+                android:id="@+id/dcn_float_settings_rg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:checkedButton="@+id/dcn_float_settings_in_game"
+                android:orientation="horizontal" >
+
+                <!-- 默认选中b1 -->
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dcn_float_settings_in_game"
+                    android:background="@null"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/dcn_select_account_radio_selector"
+                    android:text="@string/dcn_floating_menu_showbear_game"
+                    android:textColor="@color/dcn_black"
+                    android:textSize="13sp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dcn_float_settings_in_notification"
+                    android:layout_marginLeft="5dp"
+                    android:background="@null"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/dcn_select_account_radio_selector"
+                    android:text="@string/dcn_floating_menu_showbear_noti"
+                    android:textColor="@color/dcn_black"
+                    android:textSize="13sp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dcn_float_settings_exit"
+                    android:layout_marginLeft="5dp"
+                    android:background="@null"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/dcn_select_account_radio_selector"
+                    android:text="@string/dcn_floating_menu_showbear_hide"
+                    android:textColor="@color/dcn_black"
+                    android:textSize="13sp" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/dcn_floating_menu_receive_msg_label"
+                android:textColor="@color/dcn_light_black"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/dcn_float_settings_sys_msg_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:button="@null"
+                android:checked="true"
+                android:drawableLeft="@drawable/dcn_floating_settings_checkbox_selector"
+                android:text="@string/dcn_floating_menu_sys_msg"
+                android:textColor="@color/dcn_black"
+                android:textSize="13sp" />
+
+            <CheckBox
+                android:id="@+id/dcn_float_settings_act_msg_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="@null"
+                android:button="@null"
+                android:checked="true"
+                android:drawableLeft="@drawable/dcn_floating_settings_checkbox_selector"
+                android:text="@string/dcn_floating_menu_act_msg"
+                android:textColor="@color/dcn_black"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/dcn_float_settings_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/dcn_orange_btn_selector"
+            android:text="@string/dcn_floating_menu_confirm"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</RelativeLayout>
