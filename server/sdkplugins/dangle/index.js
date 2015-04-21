@@ -20,7 +20,7 @@ var cfgDesc = {
 
 var DangleChannel = function(logger, cfgChecker) {
     SDKPluginBase.call(this, logger, cfgChecker);
-    this.requestUri = "http://connect.d.cn/";
+    this.requestUri = "http://ngsdk.d.cn/";
     this.client = restify.createJsonClient({
         url: this.requestUri,
         retry: false,
@@ -41,11 +41,11 @@ DangleChannel.prototype.calcSecret = function (s) {
 DangleChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
     var self = this;
     var cfgItem = wrapper.cfg;
-    var sig = this.calcSecret(token+'|'+cfgItem.appKey);
-    var q = '/open/member/info?' +
+    var sig = this.calcSecret(cfgItem.appId+'|'+cfgItem.appKey+'|'+token+'|'+others);
+    var q = '/api/cp/checkToken?' +
         querystring.stringify({
-            app_id: cfgItem.appId,
-            mid: others,
+            appid: cfgItem.appId,
+            umid: others,
             token: token,
             sig: sig
         });
@@ -55,19 +55,18 @@ DangleChannel.prototype.verifyLogin = function(wrapper, token, others, callback)
             req.log.warn({err: err}, 'request error');
             return callback(err);
         }
-        if (obj.error_code) {
+        if (obj.msg_code !== 2000) {
             req.log.debug({body: res.body}, "Fail to verify login");
             callback(null, {
-                code: self.mapError(obj.error_code),
-                msg: obj.error_msg
+                code: self.mapError(obj.msg_code),
+                msg: obj.msg_desc
             });
         } else {
             callback(null, {
                 code: 0,
                 loginInfo: {
-                   uid: obj.memberId.toString(),
-                   token: obj.token,
-                   name: obj.nickname,
+                   uid: others,
+                   token: token,
                    channel: wrapper.channelName
                 }
             });
@@ -100,26 +99,11 @@ DangleChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
     self._logger.debug({req: req}, 'recv callback from dangle');
     var params = req.params;
     try {
-        var customInfos = JSON.parse(params.ext);
-        var channel = customInfos.ch;
-        var orderId = customInfos.o;
-        if (!orderId || !channel) {
-            throw new Error('Fail to extract orderid or channel from ext: ' + params.ext);
-        }
-        if (!wrapper) {
-            wrapper.payFail(channel, orderId, ErrorCode.ERR_PAY_ILL_CHANNEL);
-            self.send(res, 'success');
-            return next();
-        }
-        if (!orderId) {
-            req.log.error("illegal rsp format from dangle, missing order no");
-            self.send(res, 'incorrect ext');
-            return next();
-        }
         var cfgItem = wrapper.cfg;
-        var success = 0;
+        var orderId = params.ext;
+        var success = ErrorCode.ERR_OK;
         if (params.result !== '1') {
-            success = -1;
+            success = ErrorCode.ERR_FAIL;
         }
         var money = Math.ceil(parseFloat(params.money) * 100);
         var channelOrderNo = params.order;
