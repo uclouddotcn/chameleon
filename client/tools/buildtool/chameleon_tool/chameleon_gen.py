@@ -35,7 +35,7 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, global
         #manifestInst.replaceEntryActivity(orientation, channel)
 
     #TODO replace the MainActivity to ChameleonMainActivity
-    manifestInst.replaceEntryActivityNew(orientation, channel, oldPkgName)
+    manifestInst.replaceEntryActivity(orientation, channel, oldPkgName)
     if sc is not None:
         manifestInst.addSplashScreenActivity(orientation)
 
