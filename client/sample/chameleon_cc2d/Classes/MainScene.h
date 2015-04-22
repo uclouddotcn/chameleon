@@ -7,7 +7,7 @@
 
 USING_NS_CC;
 USING_NS_CC_EXT;
-using namespace gui;
+using namespace cocos2d::ui;
 class MainScene : public cocos2d::CCLayer
 {
 public:
@@ -49,11 +49,11 @@ private:
     void onSwitchAccount(void * data);
     void onLogout(void * data);
 
-    UILayer * m_pLayer;
-    UILabel * m_uinLabel;
-    UILabel * m_sessionLabel;
-    UILabel * m_userInfoLabel;
-    UILabel * m_resultLabel;
+    Layer * m_pLayer;
+    Label * m_uinLabel;
+    Label * m_sessionLabel;
+    Label * m_userInfoLabel;
+    Label * m_resultLabel;
     bool m_isToolbarShown;
     struct CallbackHandle {
         int event;

@@ -1,0 +1,91 @@
+In file included from E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpClient.h:30:0,
+                 from jni/../../Classes/JsonHttpClient.h:9,
+                 from jni/../../Classes/JsonHttpClient.cpp:1:
+E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h: In member function 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::SEL_CallFuncND)':
+E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:185:66: warning: 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::network::SEL_HttpResponse)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:188) [-Wdeprecated-declarations]
+         setResponseCallback(pTarget, (SEL_HttpResponse) pSelector);
+                                                                  ^
+jni/../../Classes/JsonHttpClient.cpp: In destructor 'virtual JsonHttpClient::~JsonHttpClient()':
+jni/../../Classes/JsonHttpClient.cpp:21:97: warning: 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::network::SEL_HttpResponse)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:188) [-Wdeprecated-declarations]
+         mReq->setResponseCallback(NULL, httpresponse_selector(JsonHttpClient::CallbackForClient));
+                                                                                                 ^
+jni/../../Classes/JsonHttpClient.cpp: In member function 'int JsonHttpClient::post(const char*, const ReqParams*, std::vector<std::basic_string<char> >*, JsonHttpClient::ResponseFunc_t)':
+jni/../../Classes/JsonHttpClient.cpp:33:25: error: 'kHttpPost' is not a member of 'cocos2d::network::HttpRequest'
+     req->setRequestType(HttpRequest::kHttpPost);
+                         ^
+jni/../../Classes/JsonHttpClient.cpp:65:63: warning: 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::network::SEL_HttpResponse)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:188) [-Wdeprecated-declarations]
+       httpresponse_selector(JsonHttpClient::CallbackForClient));
+                                                               ^
+jni/../../Classes/JsonHttpClient.cpp: In member function 'int JsonHttpClient::post(const char*, const string&, std::vector<std::basic_string<char> >*, JsonHttpClient::ResponseFunc_t)':
+jni/../../Classes/JsonHttpClient.cpp:81:25: error: 'kHttpPost' is not a member of 'cocos2d::network::HttpRequest'
+     req->setRequestType(HttpRequest::kHttpPost);
+                         ^
+jni/../../Classes/JsonHttpClient.cpp:85:63: warning: 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::network::SEL_HttpResponse)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:188) [-Wdeprecated-declarations]
+       httpresponse_selector(JsonHttpClient::CallbackForClient));
+                                                               ^
+jni/../../Classes/JsonHttpClient.cpp: In member function 'int JsonHttpClient::get(const char*, const ReqParams*, std::vector<std::basic_string<char> >*, JsonHttpClient::ResponseFunc_t)':
+jni/../../Classes/JsonHttpClient.cpp:103:25: error: 'kHttpGet' is not a member of 'cocos2d::network::HttpRequest'
+     req->setRequestType(HttpRequest::kHttpGet);
+                         ^
+jni/../../Classes/JsonHttpClient.cpp:133:63: warning: 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::network::SEL_HttpResponse)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:188) [-Wdeprecated-declarations]
+       httpresponse_selector(JsonHttpClient::CallbackForClient));
+                                                               ^
+jni/../../Classes/JsonHttpClient.cpp: In member function 'void JsonHttpClient::CallbackForClient(cocos2d::network::HttpClient*, cocos2d::network::HttpResponse*)':
+jni/../../Classes/JsonHttpClient.cpp:151:74: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+         cocos2d::log("recv callback code %d", response->getResponseCode());
+                                                                          ^
+In file included from jni/../../Classes/HelloWorldScene.cpp:1:0:
+jni/../../Classes/HelloWorldScene.h:27:15: warning: 'LabelTTF' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../2d/CCLabelTTF.h:66) [-Wdeprecated-declarations]
+     LabelTTF* mLabel;
+               ^
+At global scope:
+cc1plus.exe: warning: unrecognized command line option "-Wno-extern-c-compat"
+cc1plus.exe: warning: unrecognized command line option "-Wno-extern-c-compat"
+make.exe: *** [obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/JsonHttpClient.o] Error 1
+make.exe: *** Waiting for unfinished jobs....
+In file included from E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpClient.h:30:0,
+                 from jni/../../Classes/JsonHttpClient.h:9,
+                 from jni/../../Classes/UserAccountMgr.h:7,
+                 from jni/../../Classes/HelloWorldScene.cpp:5:
+E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h: In member function 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::SEL_CallFuncND)':
+E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:185:66: warning: 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::network::SEL_HttpResponse)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:188) [-Wdeprecated-declarations]
+         setResponseCallback(pTarget, (SEL_HttpResponse) pSelector);
+                                                                  ^
+jni/../../Classes/HelloWorldScene.cpp: In member function 'virtual bool HelloWorld::init()':
+jni/../../Classes/HelloWorldScene.cpp:42:90: warning: 'static cocostudio::GUIReader* cocostudio::GUIReader::shareReader()' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/editor-support/cocostudio/prebuilt-mk/../../cocostudio/CCSGUIReader.h:58) [-Wdeprecated-declarations]
+     ui::Layout* m_pLayout = dynamic_cast<ui::Layout*>(cocostudio::GUIReader::shareReader()->widgetFromJsonFile("Welcome/Welcome.json"));
+                                                                                          ^
+jni/../../Classes/HelloWorldScene.cpp:50:45: warning: 'void cocos2d::ui::Widget::addTouchEventListener(cocos2d::Ref*, cocos2d::ui::SEL_TouchEvent)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../ui/UIWidget.h:239) [-Wdeprecated-declarations]
+   toucheventselector(HelloWorld::touchLogin));
+                                             ^
+jni/../../Classes/HelloWorldScene.cpp:55:35: error: invalid use of non-static member function
+        HelloWorld::touchLoginGuest);
+                                   ^
+jni/../../Classes/HelloWorldScene.cpp: At global scope:
+jni/../../Classes/HelloWorldScene.cpp:78:67: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+ void HelloWorld::touchLogin(CCObject *pSender, TouchEventType type) {
+                                                                   ^
+jni/../../Classes/HelloWorldScene.cpp:101:72: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+ void HelloWorld::touchLoginGuest(CCObject *pSender, TouchEventType type) {
+                                                                        ^
+jni/../../Classes/HelloWorldScene.cpp:124:53: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+ void HelloWorld::menuCloseCallback(CCObject* pSender)
+                                                     ^
+jni/../../Classes/HelloWorldScene.cpp:124:53: error: no 'void HelloWorld::menuCloseCallback(cocos2d::CCObject*)' member function declared in class 'HelloWorld'
+jni/../../Classes/HelloWorldScene.cpp: In member function 'void HelloWorld::onLogined(void*)':
+jni/../../Classes/HelloWorldScene.cpp:134:14: warning: 'cocos2d::CCScene' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h:688) [-Wdeprecated-declarations]
+     CCScene* pScene = MainScene::scene(); 
+              ^
+jni/../../Classes/HelloWorldScene.cpp:134:23: error: 'MainScene' has not been declared
+     CCScene* pScene = MainScene::scene(); 
+                       ^
+jni/../../Classes/HelloWorldScene.cpp:135:32: warning: 'static cocos2d::Director* cocos2d::Director::sharedDirector()' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCDirector.h:121) [-Wdeprecated-declarations]
+     CCDirector::sharedDirector()->replaceScene( pScene );
+                                ^
+jni/../../Classes/HelloWorldScene.cpp: At global scope:
+jni/../../Classes/HelloWorldScene.cpp:138:25: error: definition of implicitly-declared 'virtual HelloWorld::~HelloWorld()'
+ HelloWorld::~HelloWorld() {
+                         ^
+cc1plus.exe: warning: unrecognized command line option "-Wno-extern-c-compat"
+cc1plus.exe: warning: unrecognized command line option "-Wno-extern-c-compat"
+make.exe: *** [obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/HelloWorldScene.o] Error 1

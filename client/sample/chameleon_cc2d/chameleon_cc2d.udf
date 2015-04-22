@@ -1,0 +1,27 @@
+<UserData>
+  <OpenedDocuments>
+    <FilePathData Path="MainScene.csd" />
+  </OpenedDocuments>
+  <ActiveDocument Path="MainScene.csd" />
+  <Properties>
+    <Item Key="PackageParamsKey">
+      <Value ctype="PackageParams">
+        <LuaIsEncrypt Value="False" />
+        <LuaEncryptKey Value="" />
+        <LuaEncryptSign Value="" />
+        <Android_PackageName Value="org.cocos.chameleoncc2d" />
+        <AndroidkeyStore Value="" />
+        <AndroidVersion Value="" />
+        <iOS_Target Value="chameleon_cc2d iOS" />
+        <iOS_BundleID Value="" />
+        <Platform Value="Android" />
+        <PublishSetting Value="VS" />
+        <FrameworkVersion Value="cocos2d-x-3.4rc1" />
+        <IsDebugKeystore Value="True" />
+        <KeystorePassword Value="" />
+        <KeystoreAliasName Value="" />
+        <KeystoreAliasPassword Value="" />
+      </Value>
+    </Item>
+  </Properties>
+</UserData>

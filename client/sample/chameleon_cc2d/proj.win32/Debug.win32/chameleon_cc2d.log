@@ -1,0 +1,28 @@
+﻿Build started 2015/4/1 13:03:24.
+     1>Project "E:\Cocos\workspace\chameleon_cc2d\proj.win32\chameleon_cc2d.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\cocos\audio\include" /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\external" /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\external\chipmunk\include\chipmunk" /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\extensions" /I..\Classes /I.. /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\cocos\2d\..\..\cocos\editor-support" /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\cocos\2d\..\..\cocos" /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\cocos\2d\..\..\cocos\platform" /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\cocos\2d\..\..\cocos\platform\desktop" /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\cocos\2d\..\..\external\glfw3\include\win32" /I"E:\Cocos\frameworks\cocos2d-x-3.4rc1\cocos\2d\..\..\external\win32-specific\gles\include\OGLES" /ZI /nologo /W3 /WX- /MP /Od /Oy- /D WIN32 /D _WINDOWS /D _USE_MATH_DEFINES /D GL_GLEXT_PROTOTYPES /D CC_ENABLE_CHIPMUNK_INTEGRATION=1 /D COCOS2D_DEBUG=1 /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS /D _VARIADIC_MAX=10 /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc120.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt ..\Classes\AppDelegate.cpp ..\Classes\HelloWorldScene.cpp main.cpp
+         AppDelegate.cpp
+         HelloWorldScene.cpp
+         main.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Debug.win32\game.res" game.rc 
+       PreLinkEvent:
+         if not exist "E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\" mkdir "E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\"
+         xcopy /Y /Q "E:\Cocos\frameworks\cocos2d-x-3.4rc1\prebuilt\win32\*.*" "E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\"
+         
+         :VCEnd
+         复制了 49 个文件
+       Link:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\chameleon_cc2d.exe" /INCREMENTAL /NOLOGO /LIBPATH:E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\ /LIBPATH:E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\ opengl32.lib glew32.lib libzlib.lib libpng.lib libjpeg.lib libtiff.lib libwebp.lib libiconv.lib glfw3.lib freetype250.lib winmm.lib ws2_32.lib libchipmunk.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\chameleon_cc2d.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\chameleon_cc2d.lib" /MACHINE:X86 /SAFESEH Debug.win32\game.res
+         Debug.win32\AppDelegate.obj
+         Debug.win32\HelloWorldScene.obj
+         Debug.win32\main.obj
+     1>AppDelegate.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+            Creating library E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\chameleon_cc2d.lib and object E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\chameleon_cc2d.exp
+         chameleon_cc2d.vcxproj -> E:\Cocos\workspace\chameleon_cc2d\proj.win32\Debug.win32\chameleon_cc2d.exe
+     1>Done Building Project "E:\Cocos\workspace\chameleon_cc2d\proj.win32\chameleon_cc2d.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:09.93
