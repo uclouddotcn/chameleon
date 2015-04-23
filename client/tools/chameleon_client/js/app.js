@@ -595,7 +595,9 @@ chameleonApp = angular.module('chameleonApp', [
 
                         var path = node_path.join(chameleonPath.projectRoot, $scope.project.name, 'cfg', channel.channelName, 'res', 'icon.png');
                         saveImage(canvas, path);
+                        $scope.selectedChannel.config.icon.path = path;
                         ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
+                        $scope.selectedChannel.config.icon.path = path;
 
                         //if 'apply to all' is selected.
                         if($scope.applyPositionToAll){
