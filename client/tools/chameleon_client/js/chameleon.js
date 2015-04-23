@@ -378,6 +378,7 @@ ChameleonTool.prototype.generateProductForServer = function(project){
             config.sdks.push({
                 name: channel.channelName,
                 type: 'pay,user',
+                version: channel.meta.svrver,
                 cfg: channel.sdks[j].config
             });
         }

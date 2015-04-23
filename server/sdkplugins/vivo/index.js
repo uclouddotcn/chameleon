@@ -120,9 +120,9 @@ VivoChannel.prototype.pendingPay=function(wrapper, params, infoFromSDK, callback
         var money = (params.realPayMoney / 100).toString() + '.' + rest;
         var signParams = {
             version:'1.0.0',
-            storeId:wrapper.cfg.cpId,
+            cpId:wrapper.cfg.cpId,
             appId:wrapper.cfg.appId,
-            storeOrder: orderID,
+            cpOrderNumber: orderID,
             orderTime:time,
             orderAmount:money,
             orderTitle:params.productName||"游戏币",
@@ -137,7 +137,7 @@ VivoChannel.prototype.pendingPay=function(wrapper, params, infoFromSDK, callback
 
         signParams['signature'] = this.calcSign(signParams, wrapper.cfg.cpKeyMd5);
         signParams['signMethod'] = 'MD5';
-        this.client.pay.post('/vivoPay/getVivoOrderNum',signParams,function(err,req,res,data){
+        this.client.pay.post('/vcoin/trade',signParams,function(err,req,res,data){
             try {
                 var obj = JSON.parse(data);
                 if (err) {
@@ -166,7 +166,7 @@ VivoChannel.prototype.pendingPay=function(wrapper, params, infoFromSDK, callback
     }
 };
 
-VivoChannel.prototype.calcSign = function(paramList, key){
+VivoChannel.prototype.calcSign = function(paramList, cfgItem){
     var params = {};
 
     //remove null property
@@ -212,21 +212,29 @@ VivoChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
     }
     req.log.debug({req: req, params: params}, 'recv pay rsp');
     try {
+        if (params.cpId !== wrapper.cfg.cpId || params.appId !== wrapper.cfg.appId) {
+            self._logger.warn({params: params}, "unmatched app info");
+            return next(new restify.InvalidArgumentError("unmatched app info"));
+        }
         var expectSign = self.calcSign(params, wrapper.cfg.cpKeyMd5);
         if (expectSign !== sign) {
             self._logger.warn({req: req, params: params}, "unmatched sign");
-            return next(new restify.InvalidArgumentError("unmatched sign"));
+            return next(new restify.InvalidArgumentError("unmatched app info"));
         }
 
-        var other = {
-            channel:params.channel,
-            channelFee:params.channelFee
-        };
-        var status = params.respCode == '0000' ? 0 : 1;
+        var uid = params.uid;
+        var orderId = params.cpOrderNumber;
+        var amount = parseInt(params.orderAmount);
 
-        var amount = Math.round(parseFloat(params.orderAmount) * 100);
-        wrapper.userAction.pay(wrapper.channelName, null, null,
-            params.storeOrder, status,
+        var other = {
+            chOrderId: params.orderNumber,
+            tradeType: params.tradeType,
+            payTime: params.payTime
+        };
+        var status = (params.respCode === 200 && params.respCode == '0000') ? 0 : 1;
+
+        wrapper.userAction.pay(wrapper.channelName, uid, null,
+            orderId, status,
             null, null, amount, other,
             function (err, result) {
                 if (err) {
