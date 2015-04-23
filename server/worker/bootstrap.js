@@ -122,7 +122,6 @@ function bfs(p, callback) {
 }
 
 var basedir = process.argv[2];
-console.log(basedir)
 
 bfs(workdir, function (err) {
     if (err) {
