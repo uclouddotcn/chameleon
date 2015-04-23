@@ -17,11 +17,11 @@
         <activity
             android:name="com.ireadygo.sdk.ui.RgAccountActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/app_name"
+            android:label="test"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="adjustPan"
-            chameleon:replace="android:screenOrientation=%orientation%"
+            chameleon:replace="android:label=@string/app_name;;android:screenOrientation=%orientation%"
             >
         </activity>
         <activity
@@ -64,17 +64,18 @@
             android:name="com.unionpay.uppay.PayActivityEx"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
-            android:label="@string/app_name"
+            android:label="test"
             android:screenOrientation="portrait"
-            chameleon:replace="android:screenOrientation=%orientation%"
+            chameleon:replace="android:label=@string/app_name;;android:screenOrientation=%orientation%"
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name="com.unionpay.uppay.PayActivity"
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
             android:excludeFromRecents="true"
-            android:label="@string/app_name"
+            android:label="test"
             android:screenOrientation="portrait"
+            chameleon:replace="android:label=@string/app_name"
             android:theme="@style/AppTheme" >
         </activity>
 

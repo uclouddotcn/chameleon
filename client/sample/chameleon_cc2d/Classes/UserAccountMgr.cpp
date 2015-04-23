@@ -41,7 +41,7 @@ int GetJsonValue<int>(rapidjson::Value & obj, const char * name) {
 template <> 
 const char * GetJsonValue<const char*>(rapidjson::Value & obj, const char * name) {
     rapidjson::Value &  m = obj[name];
-    CCLog("get name %s", name);
+    cocos2d::log("get name %s", name);
     if (!m.IsString()) {
         throw JsonException(name, "not string");
     }
@@ -142,13 +142,13 @@ void UserAccountMgr::afterAccountSwitch(int code, const std::string * loginInfo)
 }
 
 void UserAccountMgr::onAccountLogout() {
-    CCLog("on user log out");
+    cocos2d::log("on user log out");
     setLogout();
 }
 
 void UserAccountMgr::onGuestBind(const std::string & loginInfo) {
     if (mLoginStatus != GUEST_LOGINED) {
-        CCLog("guest bind while not in guest mode...");
+        cocos2d::log("guest bind while not in guest mode...");
         return;
     }
     verifyLogin(loginInfo);
@@ -216,7 +216,7 @@ void UserAccountMgr::onBuy(int id, int code) {
 
 void UserAccountMgr::onSwitchAccount(int id, int code, const std::string * loginInfo) {
     if (code != CHAMELEON_ERR_OK) {
-        CCLog("receive switch account %d", code);
+        cocos2d::log("receive switch account %d", code);
         setLogined();
         return;
     }
@@ -228,7 +228,7 @@ void UserAccountMgr::onToolbar(int flag) {
 }
 
 void UserAccountMgr::onResume() {
-    CCLog("on resume");
+    cocos2d::log("on resume");
 }
 
 void UserAccountMgr::onAntiAddiction(int id, int code, int flag) {
@@ -297,7 +297,7 @@ int UserAccountMgr::Charge(int amount) {
 }
 
 int UserAccountMgr::HeartBeat() {
-    CCLog("send heart beat");
+    cocos2d::log("send heart beat");
     JsonHttpClientWrapper client;
     char tmp[32];
     JsonHttpClient::ReqParams reqParams;
@@ -382,8 +382,8 @@ int UserAccountMgr::RegistGuest() {
 }
 
 void UserAccountMgr::verifyLogin(const std::string & loginInfo) {
-    CCLog("fire the events");
-    CCLog("login info is  %s", loginInfo.c_str());
+    cocos2d::log("fire the events");
+    cocos2d::log("login info is  %s", loginInfo.c_str());
     setLogined();
     JsonHttpClientWrapper client;
     std::vector<std::string> customHeader;
@@ -410,7 +410,7 @@ void UserAccountMgr::ShowToolBar() {
     } else {
         int ret = ChameleonChannelAPI::createAndShowToolbar(0);
         if (ret != 0) {
-            CCLog("Fail to create tool bar %d", ret);
+            cocos2d::log("Fail to create tool bar %d", ret);
             return;
         }
         mIsToolbarCreated = true;
@@ -452,13 +452,13 @@ void UserAccountMgr::onHeartBeat(int code,
                                  JsonHttpClient * client ,
                                  const std::string & body) {
     if (code != 200) {
-        CCLog("Fail to verify_login");
+        cocos2d::log("Fail to verify_login");
         return;
     }
     try {
         int code = GetJsonValue<int>(*valueRoot, "code");
         if (code != 0) {
-            CCLog("Fail to login %d", code);
+            cocos2d::log("Fail to login %d", code);
             return;
         }
         rapidjson::Value & heartBeatInfo = 
@@ -476,7 +476,7 @@ void UserAccountMgr::onHeartBeat(int code,
             RespondsToEvents(event, info);
         }
     } catch (JsonException & e) {
-        CCLog("%s", e.mErrMsg.c_str());
+        cocos2d::log("%s", e.mErrMsg.c_str());
     }
     RemoveClient(client);
 }
@@ -485,7 +485,7 @@ void UserAccountMgr::RespondsToEvents(const std::string& event,
                                       rapidjson::Value & body) {
     auto it = mPlayerEventHandlers.find(event);
     if (it == mPlayerEventHandlers.end()) {
-        CCLog("unknown event %s", event.c_str());
+        cocos2d::log("unknown event %s", event.c_str());
         return;
     }
     it->second(body);
@@ -497,14 +497,14 @@ void UserAccountMgr::onExit(int code) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
 	CCMessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
 #else
-    CCLog("on exit");
+    cocos2d::log("on exit");
     CCDirector::sharedDirector()->end();
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
 #endif
     } else {
-        CCLog("user abort exit");
+        cocos2d::log("user abort exit");
     }
 }
 
@@ -516,16 +516,16 @@ void UserAccountMgr::onVerifyLogin(int code,
                                    rapidjson::Value * valueRoot, 
                                    JsonHttpClient * client, 
                                    const std::string & body) {
-    CCLog("on verify login");
+    cocos2d::log("on verify login");
     if (code != 200) {
-        CCLog("Fail to verify_login");
+        cocos2d::log("Fail to verify_login");
         setLogout();
         return;
     }
     try {
         int code = GetJsonValue<int>(*valueRoot, "code");
         if (code != 0) {
-            CCLog("Fail to login %d", code);
+            cocos2d::log("Fail to login %d", code);
             mEventEmitter.FireEvent(EVENT_LOGOUT, &code);
             return;
         }
@@ -540,12 +540,12 @@ void UserAccountMgr::onVerifyLogin(int code,
         std::string rsp = GetJsonValue<const char *>(loginInfo, "rsp");
         mExpiresIn = GetJsonValueDefault<int>(loginInfo, "expire_in", -1);
         if (!ChameleonChannelAPI::onLoginRsp(rsp)) {
-            CCLog("Fail to rsp rsp");
+            cocos2d::log("Fail to rsp rsp");
         }
         ChameleonChannelAPI::submitPlayerInfo("xxx", "yyy", "zzz", 10, "tttt");
         mEventEmitter.FireEvent(EVENT_LOGINED, NULL);
     } catch (JsonException & e) {
-        CCLog("exception %s", e.mErrMsg.c_str());
+        cocos2d::log("exception %s", e.mErrMsg.c_str());
     }
     RemoveClient(client);
 }
@@ -562,16 +562,16 @@ void UserAccountMgr::RemoveClient(JsonHttpClient * client) {
 void UserAccountMgr::onGetChargeInfo(int code, rapidjson::Value * valueRoot, JsonHttpClient * client, const std::string & body) {
     int idx = GetHttpWrapperIdx(client);
     if (idx < 0) {
-        CCLog("Fail to find wrapper");
+        cocos2d::log("Fail to find wrapper");
         return;
     }
     ChargeInfo * info = mHttpClients[idx].Data<ChargeInfo>();
     if (info == NULL) {
-        CCLog("charge info is NULL");
+        cocos2d::log("charge info is NULL");
         return;
     }
     if (code != 200) {
-        CCLog("Fail to get charge info");
+        cocos2d::log("Fail to get charge info");
         info->code = code;
         mEventEmitter.FireEvent(EVENT_CHARGING, info);
         return;
@@ -603,7 +603,7 @@ void UserAccountMgr::onGetChargeInfo(int code, rapidjson::Value * valueRoot, Jso
         } while (0);
         mEventEmitter.FireEvent(EVENT_CHARGING, info);
     } catch (JsonException & e) {
-        CCLog("%s", e.mErrMsg.c_str());
+        cocos2d::log("%s", e.mErrMsg.c_str());
         info->code = -1;
     }
     mEventEmitter.FireEvent(EVENT_CHARGING, info);
@@ -613,12 +613,12 @@ void UserAccountMgr::onGetChargeInfo(int code, rapidjson::Value * valueRoot, Jso
 void UserAccountMgr::onGetBuyInfo(int code, rapidjson::Value * valueRoot, JsonHttpClient * client, const std::string & body) {
     int idx = GetHttpWrapperIdx(client);
     if (idx < 0) {
-        CCLog("Fail to find wrapper");
+        cocos2d::log("Fail to find wrapper");
         return;
     }
     BuyInfo * info = mHttpClients[idx].Data<BuyInfo>();
     if (code != 200) {
-        CCLog("Fail to get charge info");
+        cocos2d::log("Fail to get charge info");
         info->code = -1;
         mEventEmitter.FireEvent(EVENT_BUYING, info);
         return;
@@ -648,7 +648,7 @@ void UserAccountMgr::onGetBuyInfo(int code, rapidjson::Value * valueRoot, JsonHt
         } while (0);
         mEventEmitter.FireEvent(EVENT_BUYING, info);
     } catch (JsonException & e) {
-        CCLog("%s", e.mErrMsg.c_str());
+        cocos2d::log("%s", e.mErrMsg.c_str());
     }
     RemoveClient(client);
 }
@@ -673,7 +673,7 @@ void UserAccountMgr::sendSDKCharge(UserAccountMgr::ChargeInfo* info) {
     if (ret == 0) {
         AddPendingChargeOrder(cmdSeq, info);
     } else {
-        CCLog("Fail to request buy %d", ret);
+        cocos2d::log("Fail to request buy %d", ret);
         return;
     }
 }
@@ -698,12 +698,12 @@ void UserAccountMgr::sendSDKBuy(UserAccountMgr::BuyInfo* info) {
     if (ret == 0) {
         AddPendingBuyOrder(cmdSeq, info);
     } else {
-        CCLog("Fail to request buy %d", ret);
+        cocos2d::log("Fail to request buy %d", ret);
         return;
     }
 }
 void UserAccountMgr::onInited(int ret, bool debug) {
-    CCLog("on inited from chameleon %d", ret);
+    cocos2d::log("on inited from chameleon %d", ret);
     if (ret != Chameleon::CHAMELEON_ERR_OK) {
         // init fails
         return;

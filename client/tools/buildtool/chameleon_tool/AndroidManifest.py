@@ -60,7 +60,7 @@ class AndroidManifestInst(object):
         else:
             self._applicationNode.setAttribute('android:name', 'prj.chameleon.channelapi.ChameleonApplication')
 
-    def replaceEntryActivityNew(self, orientation, channel, oldPkgName):
+    def replaceEntryActivity(self, orientation, channel, oldPkgName):
         entryActivityNode = self._findEntryActivity()
         if entryActivityNode is None:
             raise RuntimeError('Fail to find the start entry')
@@ -70,50 +70,13 @@ class AndroidManifestInst(object):
         newEntry = oldEntry[0:oldEntry.rfind('.')] + ".ChameleonMainActivity"
         entryActivityNode.setAttribute('android:name', newEntry)
         if channel == 'lenovo':
-            intentNode = AndroidManifestInst._getChildNS(entryActivityNode,
-                'intent-filter')
-            mainActionNode = AndroidManifestInst._getChildNS(intentNode,
-                    'action', [('android:name', 'android.intent.action.MAIN')])
-            launchCatNode = AndroidManifestInst._getChildNS(intentNode,
-                'category', [('android:name', 'android.intent.category.LAUNCHER')])
-            intentNode.removeChild(mainActionNode)
-            intentNode.removeChild(launchCatNode)
-            _addLenovoSplashScreenActivity(self.doc, intentNode, orientation)
+            _addLenovoMainAction(self.doc, entryActivityNode)
 
     #TODO add SplashScreenActivity
     def addSplashScreenActivity(self, orientation):
         splashActivity = self.doc.createElement('activity')
-        _fillSplashScreenActivityNew(self.doc, splashActivity, orientation)
+        _fillSplashScreenActivity(self.doc, splashActivity, orientation)
         self._applicationNode.appendChild(splashActivity)
-
-
-    def replaceEntryActivity(self, orientation, channel):
-        entryActivityNode = self._findEntryActivity()
-        if entryActivityNode is None:
-            raise RuntimeError('Fail to find the start entry')
-        oldEntry = entryActivityNode.getAttribute('android:name')
-        if oldEntry.startswith('.'):
-            oldEntry = self.getPkgName()+oldEntry
-        if oldEntry == 'prj.chameleon.channelapi.SplashScreenActivity':
-            return
-
-        intentNode = AndroidManifestInst._getChildNS(entryActivityNode,
-                'intent-filter')
-        mainActionNode = AndroidManifestInst._getChildNS(intentNode,
-                'action', [('android:name', 'android.intent.action.MAIN')])
-        launchCatNode = AndroidManifestInst._getChildNS(intentNode,
-                'category', [('android:name', 'android.intent.category.LAUNCHER')])
-
-        intentNode.removeChild(mainActionNode)
-        intentNode.removeChild(launchCatNode)
-        
-        if channel == 'lenovo':
-            _addLenovoSplashScreenActivity(self.doc, intentNode, orientation)
-        else:
-            splashActivity = self.doc.createElement('activity')
-            _fillSplashScreenActivity(self.doc, splashActivity, 
-                oldEntry, orientation)
-            self._applicationNode.appendChild(splashActivity)        
 
     def merge(self, that):
         self._mergePermissions(that)
@@ -332,51 +295,23 @@ def replaceNodeAttr(node, cfg):
             node.setAttribute(name, realv)
         node.removeAttribute("chameleon:replace")
 
-def _fillSplashScreenActivity(doc, splashActivity, oldEntryActivity, orientation):
-    splashActivity.setAttribute('android:name', 
-            'prj.chameleon.channelapi.SplashScreenActivity')
+# TODO add splash attribute rm intent-filter MAIN LAUNCHER
+def _fillSplashScreenActivity(doc, splashActivity, orientation):
+    splashActivity.setAttribute('android:name', 'prj.chameleon.channelapi.SplashScreenActivity')
 
     if orientation is not None:
         splashActivity.setAttribute('android:screenOrientation', orientation)
     splashActivity.setAttribute('android:noHistory', "true")
     splashActivity.setAttribute('android:stateNotNeeded', "true")
     splashActivity.setAttribute('android:launchMode', "singleTask")
-    splashActivity.setAttribute('android:theme', 
-            "@android:style/Theme.NoTitleBar.Fullscreen")
-    metaDataNode = doc.createElement('meta-data')
-    metaDataNode.setAttribute('android:name', "prj.chameleon.intent.main")
-    metaDataNode.setAttribute('android:value', oldEntryActivity)
-    splashActivity.appendChild(metaDataNode)
-    intentNode = doc.createElement('intent-filter')
-    mainActionNode = doc.createElement('action')
-    intentNode.appendChild(mainActionNode)
-    mainActionNode.setAttribute('android:name', "android.intent.action.MAIN")
-    splashActivity.appendChild(intentNode)
-    categoryNode = doc.createElement('category')
-    intentNode.appendChild(categoryNode)
-    categoryNode.setAttribute('android:name', "android.intent.category.LAUNCHER")
-# TODO add splash attribute
-def _fillSplashScreenActivityNew(doc, splashActivity, orientation):
-    splashActivity.setAttribute('android:name',
-            'prj.chameleon.channelapi.SplashScreenActivity')
-
-    if orientation is not None:
-        splashActivity.setAttribute('android:screenOrientation', orientation)
-    splashActivity.setAttribute('android:noHistory', "true")
-    splashActivity.setAttribute('android:stateNotNeeded', "true")
-    splashActivity.setAttribute('android:launchMode', "singleTask")
-    splashActivity.setAttribute('android:theme',
-            "@android:style/Theme.NoTitleBar.Fullscreen")
-    intentNode = doc.createElement('intent-filter')
-    mainActionNode = doc.createElement('action')
-    intentNode.appendChild(mainActionNode)
-    mainActionNode.setAttribute('android:name', "android.intent.action.MAIN")
-    splashActivity.appendChild(intentNode)
-    categoryNode = doc.createElement('category')
-    intentNode.appendChild(categoryNode)
-    categoryNode.setAttribute('android:name', "android.intent.category.LAUNCHER")
+    splashActivity.setAttribute('android:theme', "@android:style/Theme.NoTitleBar.Fullscreen")
 # TODO add lenovo main action
-def _addLenovoSplashScreenActivity(doc, intentNode, orientation):
+def _addLenovoMainAction(doc, entryActivityNode):
+    intentNode = AndroidManifestInst._getChildNS(entryActivityNode, 'intent-filter')
+    mainActionNode = AndroidManifestInst._getChildNS(intentNode, 'action', [('android:name', 'android.intent.action.MAIN')])
+    launchCatNode = AndroidManifestInst._getChildNS(intentNode, 'category', [('android:name', 'android.intent.category.LAUNCHER')])
+    intentNode.removeChild(mainActionNode)
+    intentNode.removeChild(launchCatNode)
     mainActionNode = doc.createElement('action')
     intentNode.appendChild(mainActionNode)
     mainActionNode.setAttribute('android:name', "lenovoid.MAIN")

@@ -21,6 +21,10 @@ import prj.chameleon.channelapi.IDispatcherCb;
 public class NativeChannelInterface {
 
     static {
+        //add test api group
+        if (ChameleonApplication.isTest) {
+            ChannelInterface.addTestApiGroup();
+        }
         ActivityInterface.registerCallback(new ActivityInterface.Callback() {
             @Override
             public void onInitFinished(int retCode) {
@@ -71,7 +75,7 @@ public class NativeChannelInterface {
         private RequestProxy(){
             //if application is load and activity oncreate then is not test
             mIsInited = ChameleonApplication.isTest ? true : false;
-            Log.e(Constants.TAG, "RequestProxy mIsInited = " + mIsInited);
+            Log.e(Constants.TAG, "NativeChannelInterface RequestProxy mIsInited = " + mIsInited);
         }
 
         // run on UI thread only
@@ -174,9 +178,6 @@ public class NativeChannelInterface {
                     @Override
                     public void run() {
                         try {
-                            if (ChameleonApplication.isTest) {
-                                ChannelInterface.addTestApiGroup();
-                            }
                             ChannelAPINative.init(mRetCode, ChannelInterface.isDebug(), getChannelName());
                         } catch (UnsupportedEncodingException e) {
                             Log.e(Constants.TAG, "Fail to encode to UTF-8???", e);

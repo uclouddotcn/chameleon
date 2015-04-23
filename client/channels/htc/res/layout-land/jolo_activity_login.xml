@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cmmn_black" >
+    android:background="@drawable/jolo_sdk_bg" >
 
     <!-- 账号 -->
 
@@ -18,13 +18,6 @@
         android:layout_marginLeft="80dp"
         android:layout_marginRight="80dp"
         >
-
-        <ImageView
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="6dp"
-	        android:background="@drawable/jolo_account" />
-        
         <EditText
             android:id="@+id/login_username_et"
             android:layout_width="0dp"
@@ -73,11 +66,6 @@
         android:orientation="horizontal"
         >
 
-        <ImageView
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="6dp"
-	        android:background="@drawable/jolo_pwd" />
 
         <EditText
             android:id="@+id/login_pwd_et"
@@ -119,7 +107,7 @@
 		    android:paddingLeft="20dp"
 		    android:textSize="14sp"
 		    android:text="@string/jolo_save_pwd"
-		    android:textColor="@color/jolo_white" />
+		    android:textColor="@color/cmmn_green" />
 		
 	
 		<TextView
@@ -131,7 +119,7 @@
 	        android:textSize="14sp"
 	        android:gravity="center"
 	        android:text="@string/jolo_modifypwd_title"
-	        android:textColor="@color/jolo_white" />
+	        android:textColor="@color/cmmn_green" />
 	    
 		<TextView
 		    android:id="@+id/forget_pwd_tv"
@@ -143,7 +131,7 @@
 	        android:gravity="right"
 	        android:onClick="forgetPwd"
 	        android:text="@string/jolo_forget_pwd"
-	        android:textColor="@color/jolo_white" />
+	        android:textColor="@color/cmmn_green" />
 	</LinearLayout>
 	
     <LinearLayout
@@ -158,11 +146,12 @@
         >
         
         <Button
+            android:id="@+id/register_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
             android:layout_weight="1"
-            android:background="@drawable/jolo_blue_bg"
+            android:background="@drawable/jolo_orange_bg"
             android:gravity="center"
             android:onClick="doRegister"
             android:paddingTop="8dp"
@@ -176,7 +165,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_weight="1"
-            android:background="@drawable/jolo_orange_bg"
+            android:background="@drawable/jolo_green_bg"
             android:gravity="center"
             android:onClick="doLogin"
             android:paddingTop="8dp"
@@ -191,7 +180,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_marginLeft="8dp"
 	        android:layout_weight="1"
-	        android:background="@drawable/jolo_trans_bg"
+	        android:background="@drawable/jolo_alpha_bg"
 	        android:layout_gravity="center_horizontal"
 	        android:gravity="center"
 	        android:paddingTop="8dp"

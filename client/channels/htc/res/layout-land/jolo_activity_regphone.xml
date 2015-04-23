@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cmmn_black"
+    android:background="@drawable/jolo_sdk_bg"
     android:orientation="vertical" >
 
     <TextView
@@ -13,7 +13,7 @@
         android:layout_marginLeft="80dp"
         android:layout_marginRight="80dp"
         android:text="@string/jolo_tip_reset_pwd"
-        android:textColor="@color/jolo_yellow"
+        android:textColor="@color/jolo_white"
         android:textSize="14sp"
         />
     <LinearLayout 
@@ -48,7 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_weight="0.4"
-            android:background="@drawable/jolo_blue_bg"
+            android:background="@drawable/jolo_green_bg"
             android:gravity="center"
             android:layout_marginLeft="5dp"
             android:text="@string/jolo_fetchcode"
@@ -125,7 +125,7 @@
         android:layout_marginLeft="80dp"
         android:layout_marginRight="80dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/jolo_orange_bg"
+        android:background="@drawable/jolo_green_bg"
         android:gravity="center"
         android:padding="7dp"
      	android:layout_gravity="center_horizontal"

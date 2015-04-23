@@ -54,6 +54,7 @@
 	<string name="jolopay_toast_net_error">网络连接失败，请检查网络</string>
 	<string name="jolopay_toast_gbao_error">您的余额不足，请选用其他支付方式</string>
 	<string name="jolopay_toast_pay_notenough">您选择的金额太小,不足支付</string>
+	<string name="jolopay_toast_pkcs8_error">支付参数sign为空，请检查私钥是否经过PKCS8转码</string>
 	
 	<string name="jolopay_channel_alipay">支付宝</string>
 	<string name="jolopay_channel_szx">神州行</string>
@@ -101,9 +102,9 @@
 	
 	<string name="jolopay_gbao_type">支付类型:</string>
 	<string name="jolopay_gbao_type_value">G宝支付</string>
-	<string name="jolopay_gbao_price">您的余额:</string>
+	<string name="jolopay_gbao_price">您的G宝余额:</string>
 	<string name="jolopay_gbao_note_title">G宝相关说明:</string>
-	<string name="jolopay_gbao_note_value">G宝为聚乐游戏中心虚拟币，1G宝等于1元，可以用户游戏币充值；系统会不定期给玩家派送G宝。</string>
-	
+	<string name="jolopay_gbao_note_value">1.G宝为支付中心虚拟币，1G宝等于1元，可以用于游戏充值或者购买道具。\n2.当充值卡金额大于商品金额时，会自动将多余金额充值到G宝。\n3.系统会不定期给玩家派送G宝。</string>
 	<string name="jolopay_gbao_value">%1$dG宝</string>
+	
 </resources>

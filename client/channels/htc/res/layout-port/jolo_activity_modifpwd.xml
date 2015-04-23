@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cmmn_black"
+    android:background="@drawable/jolo_sdk_bg"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:orientation="vertical" >
@@ -131,7 +131,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:background="@drawable/jolo_orange_bg"
+        android:background="@drawable/jolo_green_bg"
         android:onClick="doModify"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"

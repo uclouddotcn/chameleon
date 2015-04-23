@@ -4,16 +4,16 @@
     android:layout_height="wrap_content"   
     android:layout_marginLeft="25dp"
     android:layout_marginRight="25dp"
-    android:background="@drawable/jolo_dlgbg">
+    android:background="@drawable/jolo_tip_bg">
     
     <TextView
         android:id="@+id/toast_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="30dp"
+        android:padding="40dp"
         android:textSize="18sp"
         android:layout_centerInParent="true"
         android:text="@string/jolo_suc_fast_reg"
-        android:textColor="@color/cmmn_black" />
+        android:textColor="@color/jolo_white" />
 
 </RelativeLayout>

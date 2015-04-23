@@ -3,8 +3,13 @@
 #include <algorithm>
 
 #include "curl/curl.h"
+#include "network/HttpClient.h"
+#include "network/HttpRequest.h"
+#include "network/HttpResponse.h"
+
 USING_NS_CC;
 USING_NS_CC_EXT;
+using namespace std;
 
 JsonHttpClient::JsonHttpClient():
 mReq(NULL) {
@@ -24,8 +29,8 @@ int JsonHttpClient::post( const char * url,
                           std::vector<std::string> * customHeader,
                           ResponseFunc_t func) {
 
-    auto req = new CCHttpRequest;
-    req->setRequestType(CCHttpRequest::kHttpPost);
+    auto req = new HttpRequest;
+    req->setRequestType(HttpRequest::Type::POST);
     req->setUrl(url);
     if (postData != NULL && postData->size() > 0) {
         CURL * curl = curl_easy_init();
@@ -39,7 +44,7 @@ int JsonHttpClient::post( const char * url,
               (*postData)[i].value.c_str(), (*postData)[i].value.size());
             if (encodedParam == NULL) {
                 isOK = false;
-                CCLog("fail to url encode params");
+                cocos2d::log("fail to url encode params");
                 break;
             } else {
                 tmp += encodedParam;
@@ -48,7 +53,7 @@ int JsonHttpClient::post( const char * url,
             tmp += "&";
         }
         if (isOK) {
-            CCLog("post %s", tmp.c_str());
+            cocos2d::log("post %s", tmp.c_str());
             req->setRequestData(tmp.c_str(), tmp.size()-1);
             curl_easy_cleanup(curl);
         } else {
@@ -61,7 +66,7 @@ int JsonHttpClient::post( const char * url,
     if (customHeader) {
         req->setHeaders(*customHeader);
     }
-    CCHttpClient::getInstance()->send(req);
+    HttpClient::getInstance()->send(req);
     mReq = req;
     mFunc = func;
     return 0;
@@ -72,8 +77,8 @@ int JsonHttpClient::post( const char * url,
                           std::vector<std::string> * customHeader,
                           ResponseFunc_t func) {
 
-    auto req = new CCHttpRequest;
-    req->setRequestType(CCHttpRequest::kHttpPost);
+    auto req = new HttpRequest;
+    req->setRequestType(HttpRequest::Type::POST);
     req->setUrl(url);
     req->setRequestData(postData.c_str(), postData.size());
     req->setResponseCallback(this, 
@@ -81,7 +86,7 @@ int JsonHttpClient::post( const char * url,
     if (customHeader) {
         req->setHeaders(*customHeader);
     }
-    CCHttpClient::getInstance()->send(req);
+    HttpClient::getInstance()->send(req);
     mReq = req;
     mFunc = func;
     return 0;
@@ -94,8 +99,8 @@ int JsonHttpClient::get( const char * url,
                          std::vector<std::string> * customHeader,
                          ResponseFunc_t func) {
 
-    auto req = new CCHttpRequest;
-    req->setRequestType(CCHttpRequest::kHttpGet);
+    auto req = new HttpRequest;
+    req->setRequestType(HttpRequest::Type::GET);
     std::string tmp;
     tmp.reserve(1024);
     tmp += url;
@@ -110,7 +115,7 @@ int JsonHttpClient::get( const char * url,
               (*reqParams)[i].value.c_str(), (*reqParams)[i].value.size());
             if (encodedParam == NULL) {
                 isOK = false;
-                CCLog("fail to url encode params");
+                cocos2d::log("fail to url encode params");
                 break;
             } else {
                 tmp += encodedParam;
@@ -122,28 +127,28 @@ int JsonHttpClient::get( const char * url,
             return -1;
         }
     }
-    CCLog("get url %s", tmp.substr(0, tmp.size()-1).c_str());
+    cocos2d::log("get url %s", tmp.substr(0, tmp.size()-1).c_str());
     req->setUrl(tmp.substr(0, tmp.size()-1).c_str());
     req->setResponseCallback(this, 
       httpresponse_selector(JsonHttpClient::CallbackForClient));
     if (customHeader) {
         req->setHeaders(*customHeader);
     }
-    CCHttpClient::getInstance()->send(req);
+    HttpClient::getInstance()->send(req);
     mReq = req;
     mFunc = func;
     return 0;
 }
 
-void JsonHttpClient::CallbackForClient(CCHttpClient* client, 
-                                       CCHttpResponse* response) {
-    CCLog("recv callback");
+void JsonHttpClient::CallbackForClient(HttpClient* client, 
+                                       HttpResponse* response) {
+    cocos2d::log("recv callback");
     if (response == NULL) {
         mFunc(-1, NULL, this, "");
         return;
     }
     if (response->getResponseCode() != 200) {
-        CCLog("recv callback code %d", response->getResponseCode());
+        cocos2d::log("recv callback code %d", response->getResponseCode());
         mFunc(response->getResponseCode(), NULL, this, "");
         return;
     }
@@ -151,14 +156,14 @@ void JsonHttpClient::CallbackForClient(CCHttpClient* client,
     std::string body(response->getResponseData()->data(), 
       response->getResponseData()->size());
 
-    CCLog("recv callback body %s", body.c_str());
+    cocos2d::log("recv callback body %s", body.c_str());
     d.Parse<0>(body.c_str());
     if (d.HasParseError()) {
-        CCLog("parse json error %s", d.GetParseError());
+        cocos2d::log("parse json error %s", d.GetParseError());
         mFunc(-2, NULL, this, "");
         return; 
     }
-    CCLog("succeeded to parse json");
+    cocos2d::log("succeeded to parse json");
     // this function may destroy current instance, so it must the 
     // last clause
     mFunc(200, &d, this, body);

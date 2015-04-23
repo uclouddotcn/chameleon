@@ -295,6 +295,11 @@ chameleonApp = angular.module('chameleonApp', [
                     };
 
                     $scope.toggleSDK = function(event, sdk){
+                        if(!$scope.selectedChannel.channelName){
+                            $(event.target).prop({'checked':false});
+                            alert("请先选择一个渠道");
+                            return false;
+                        }
                         if(event.target.checked){
                             //refresh sdk config view.
                             sdk.config = {};
@@ -595,7 +600,9 @@ chameleonApp = angular.module('chameleonApp', [
 
                         var path = node_path.join(chameleonPath.projectRoot, $scope.project.name, 'cfg', channel.channelName, 'res', 'icon.png');
                         saveImage(canvas, path);
+                        $scope.selectedChannel.config.icon.path = path;
                         ProjectMgr.setChannel($scope.project, $scope.selectedChannel);
+                        $scope.selectedChannel.config.icon.path = path;
 
                         //if 'apply to all' is selected.
                         if($scope.applyPositionToAll){
@@ -805,19 +812,16 @@ chameleonApp = angular.module('chameleonApp', [
                             alert(" 请配置游戏在Server中的名称");
                             return;
                         }
+                        if(!project.config.payCallbackUrl){
+                            alert(" 请配置游戏回调地址");
+                            return;
+                        }
                         try{
-                            var zip = new AdmZip();
-                            var config = ProjectMgr.generateServerConfig($scope.project);
-                            for(var p in config){
-                                zip.addFile(id + '/' + p, new Buffer(JSON.stringify(config[p])), "");
-                            }
-                            zip.addFile('manifest.json', new Buffer(JSON.stringify({
-                                'product': id
-                            })));
+                            var config = ProjectMgr.generateProductForServer($scope.project);
                             fileDialog.saveAs(function(fileName){
-                                zip.writeZip(fileName + '.zip');
+                                fse.writeJSON(fileName, config);
                                 alert('保存成功');
-                            }, id + '.zip');
+                            }, $scope.project.name + '.json');
                         }catch(e){
                             console.log(e);
                             alert('导出失败： 未知错误');
@@ -851,7 +855,7 @@ chameleonApp = angular.module('chameleonApp', [
                         data: 'APKVersionList',
                         columnDefs: [
                             {
-                                displayName: '已解压APK版本',
+                                displayName: '请选择一个已解压的APK母包',
                                 width: '100%',
                                 field: 'version',
                                 resizable: false,

@@ -25,6 +25,11 @@
             "desc": "论坛ID",
             "name": "forumId",
             "type": "string"
+        },
+        {
+            "desc": "支付回调地址",
+            "name": "notifyUrl",
+            "type": "url"
         }
     ]
 }

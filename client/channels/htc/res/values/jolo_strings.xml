@@ -114,4 +114,7 @@
 	<string name="jolo_tel_land">官方客服：4006962896</string>
 	<string name="jolo_tel_port">官方客服：\n4006962896</string>
 	<string name="jolo_qq">活动Q群：</string>
+	
+	<string name="jolo_htc_account">HTC账号（推荐）</string>
+	<string name="jolo_account">游戏平台账号</string>
 </resources>

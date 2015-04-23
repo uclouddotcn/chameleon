@@ -1,0 +1,60 @@
+In file included from jni/../../Classes/HelloWorldScene.cpp:1:0:
+jni/../../Classes/HelloWorldScene.h:28:15: warning: 'LabelTTF' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../2d/CCLabelTTF.h:66) [-Wdeprecated-declarations]
+     LabelTTF* mLabel;
+               ^
+In file included from E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpClient.h:30:0,
+                 from jni/../../Classes/JsonHttpClient.h:9,
+                 from jni/../../Classes/UserAccountMgr.h:7,
+                 from jni/../../Classes/HelloWorldScene.cpp:5:
+E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h: In member function 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::SEL_CallFuncND)':
+E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:185:66: warning: 'void cocos2d::network::HttpRequest::setResponseCallback(cocos2d::Ref*, cocos2d::network::SEL_HttpResponse)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../network/HttpRequest.h:188) [-Wdeprecated-declarations]
+         setResponseCallback(pTarget, (SEL_HttpResponse) pSelector);
+                                                                  ^
+In file included from jni/../../Classes/HelloWorldScene.cpp:7:0:
+jni/../../Classes/MainScene.h: At global scope:
+jni/../../Classes/MainScene.h:22:36: warning: 'cocos2d::CCScene' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h:688) [-Wdeprecated-declarations]
+     static cocos2d::CCScene* scene();
+                                    ^
+jni/../../Classes/MainScene.h:28:69: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+     void OnTouchSwitchAccount(CCObject *pSender, TouchEventType type);
+                                                                     ^
+jni/../../Classes/MainScene.h:29:67: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+     void OnTouchRegistGuest(CCObject *pSender, TouchEventType type);
+                                                                   ^
+jni/../../Classes/MainScene.h:30:62: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+     void OnTouchCharge(CCObject *pSender, TouchEventType type);
+                                                              ^
+jni/../../Classes/MainScene.h:31:59: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+     void OnTouchBuy(CCObject *pSender, TouchEventType type);
+                                                           ^
+jni/../../Classes/MainScene.h:32:65: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+     void OnTouchSwitchBar(CCObject *pSender, TouchEventType type);
+                                                                 ^
+jni/../../Classes/MainScene.h:33:69: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+     void OnTouchAntiAddiction(CCObject *pSender, TouchEventType type);
+                                                                     ^
+jni/../../Classes/MainScene.h:34:62: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+     void OnTouchLogout(CCObject *pSender, TouchEventType type);
+                                                              ^
+jni/../../Classes/HelloWorldScene.cpp: In member function 'virtual bool HelloWorld::init()':
+jni/../../Classes/HelloWorldScene.cpp:47:45: warning: 'void cocos2d::ui::Widget::addTouchEventListener(cocos2d::Ref*, cocos2d::ui::SEL_TouchEvent)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../ui/UIWidget.h:239) [-Wdeprecated-declarations]
+   toucheventselector(HelloWorld::touchLogin));
+                                             ^
+jni/../../Classes/HelloWorldScene.cpp:52:50: warning: 'void cocos2d::ui::Widget::addTouchEventListener(cocos2d::Ref*, cocos2d::ui::SEL_TouchEvent)' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../ui/UIWidget.h:239) [-Wdeprecated-declarations]
+   toucheventselector(HelloWorld::touchLoginGuest));
+                                                  ^
+jni/../../Classes/HelloWorldScene.cpp: At global scope:
+jni/../../Classes/HelloWorldScene.cpp:75:67: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+ void HelloWorld::touchLogin(CCObject *pSender, TouchEventType type) {
+                                                                   ^
+jni/../../Classes/HelloWorldScene.cpp:98:72: warning: 'CCObject' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCRef.h:66) [-Wdeprecated-declarations]
+ void HelloWorld::touchLoginGuest(CCObject *pSender, TouchEventType type) {
+                                                                        ^
+jni/../../Classes/HelloWorldScene.cpp: In member function 'void HelloWorld::onLogined(void*)':
+jni/../../Classes/HelloWorldScene.cpp:127:32: warning: 'static cocos2d::Director* cocos2d::Director::sharedDirector()' is deprecated (declared at E:\Cocos\frameworks/cocos2d-x-3.4rc1/cocos/3d/prebuilt-mk/../../base/CCDirector.h:121) [-Wdeprecated-declarations]
+     CCDirector::sharedDirector()->replaceScene( pScene );
+                                ^
+At global scope:
+cc1plus.exe: warning: unrecognized command line option "-Wno-extern-c-compat"
+cc1plus.exe: warning: unrecognized command line option "-Wno-extern-c-compat"
+4587 KB/s (4202846 bytes in 0.894s)

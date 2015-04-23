@@ -21,6 +21,10 @@ import prj.chameleon.channelapi.IDispatcherCb;
 public class UnityChannelInterface {
 
     static {
+        //add test api group
+        if(ChameleonApplication.isTest){
+            ChannelInterface.addTestApiGroup();
+        }
         ActivityInterface.registerCallback(new ActivityInterface.Callback() {
             @Override
             public void onInitFinished(int retCode) {
@@ -44,7 +48,7 @@ public class UnityChannelInterface {
         private RequestProxy(){
             //if application is load and activity oncreate then is not test
             mIsInited = ChameleonApplication.isTest ? true : false;
-            Log.e(Constants.TAG, "RequestProxy mIsInited = " + mIsInited);
+            Log.e(Constants.TAG, "UnityChannelInterface RequestProxy mIsInited = " + mIsInited);
         }
 
         // run on UI thread only
@@ -96,9 +100,6 @@ public class UnityChannelInterface {
         mRequestProxy.request(new Runnable() {
             @Override
             public void run() {
-                if(ChameleonApplication.isTest){
-                    ChannelInterface.addTestApiGroup();
-                }
                 U3DHelper.SendMessage("onInited", mRetCode, null);
             }
         });

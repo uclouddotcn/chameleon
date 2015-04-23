@@ -5,8 +5,8 @@
 
     <TextView
         android:id="@+id/alipay_price_value"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginLeft="8.0dip" 
         android:layout_marginRight="8.0dip"
         android:layout_marginTop="3dip"

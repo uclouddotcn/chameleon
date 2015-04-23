@@ -73,19 +73,14 @@
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
-            android:name="com.unionpay.uppay.PayActivityEx"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:excludeFromRecents="true"
-            android:windowSoftInputMode="adjustResize" >
-        </activity>
-        <activity
             android:name="com.unionpay.uppay.PayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.UPPay" >
         </activity>
-
         <!-- 支付界面 End -->
+        <!-- HTC SDK 渠道号定义 -->
+        <meta-data android:name="HTC_CHANNEL" android:value="htc" />
         <!-- 请把以上内容 copy到游戏的AndroidManifest.xml -->
     </application>
 </manifest>
