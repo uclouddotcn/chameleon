@@ -295,8 +295,9 @@ chameleonApp = angular.module('chameleonApp', [
                     };
 
                     $scope.toggleSDK = function(event, sdk){
-                        if($scope.selectedChannels.length === 0){
+                        if(!$scope.selectedChannel.channelName){
                             $(event.target).prop({'checked':false});
+                            alert("请先选择一个渠道");
                             return false;
                         }
                         if(event.target.checked){
@@ -818,7 +819,7 @@ chameleonApp = angular.module('chameleonApp', [
                         try{
                             var config = ProjectMgr.generateProductForServer($scope.project);
                             fileDialog.saveAs(function(fileName){
-                                fse.writeJSON(config, fileName);
+                                fse.writeJSON(fileName, config);
                                 alert('保存成功');
                             }, $scope.project.name + '.json');
                         }catch(e){
