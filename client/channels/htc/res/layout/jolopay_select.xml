@@ -5,12 +5,12 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dip"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="3dip"  >
+        android:padding="3dip" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,12 +30,12 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dip"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="3dip"  >
+        android:padding="3dip" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
         android:textSize="16sp" />
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
@@ -71,7 +71,7 @@
 
     <com.jolo.jolopay.widget.FixGridView
         android:id="@+id/jolopay_type_gv"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dip"
         android:columnWidth="90dip"
@@ -84,5 +84,41 @@
         android:stretchMode="columnWidth"
         android:verticalSpacing="10dp"
         android:visibility="gone" />
+
+   <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="3dip" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dip"
+            android:text="@string/jolopay_gbao_price"
+            android:textColor="@color/jolopay_black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/jolopay_gbao_price_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dip"
+            android:textColor="@color/jolopay_orange"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/jolopay_gbao_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:text="@string/jolopay_gbao_note_value"
+        android:textColor="@color/jolopay_black"
+        android:textSize="14sp" />
 
 </LinearLayout>
