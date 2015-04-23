@@ -295,7 +295,8 @@ chameleonApp = angular.module('chameleonApp', [
                     };
 
                     $scope.toggleSDK = function(event, sdk){
-                        if(!$scope.selectedChannel){
+                        if($scope.selectedChannels.length === 0){
+                            $(event.target).prop({'checked':false});
                             return false;
                         }
                         if(event.target.checked){
