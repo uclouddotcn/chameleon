@@ -811,19 +811,16 @@ chameleonApp = angular.module('chameleonApp', [
                             alert(" 请配置游戏在Server中的名称");
                             return;
                         }
+                        if(!project.config.payCallbackUrl){
+                            alert(" 请配置游戏回调地址");
+                            return;
+                        }
                         try{
-                            var zip = new AdmZip();
-                            var config = ProjectMgr.generateServerConfig($scope.project);
-                            for(var p in config){
-                                zip.addFile(id + '/' + p, new Buffer(JSON.stringify(config[p])), "");
-                            }
-                            zip.addFile('manifest.json', new Buffer(JSON.stringify({
-                                'product': id
-                            })));
+                            var config = ProjectMgr.generateProductForServer($scope.project);
                             fileDialog.saveAs(function(fileName){
-                                zip.writeZip(fileName + '.zip');
+                                fse.writeJSON(config, fileName);
                                 alert('保存成功');
-                            }, id + '.zip');
+                            }, $scope.project.name + '.json');
                         }catch(e){
                             console.log(e);
                             alert('导出失败： 未知错误');
