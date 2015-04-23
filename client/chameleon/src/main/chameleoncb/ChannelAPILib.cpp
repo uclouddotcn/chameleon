@@ -175,6 +175,7 @@ JNIEXPORT void JNICALL Java_prj_chameleon_channelapi_cbinding_ChannelAPINative_a
     }
     if (code != 0) {
         g_apiLib.mCb->afterAccountSwitch(code, NULL); 
+        return;
     }
     std::string sLoginInfo = JniHelper::ConvertByteArray(env, loginInfo);
     g_apiLib.mCb->afterAccountSwitch(0, &sLoginInfo); 

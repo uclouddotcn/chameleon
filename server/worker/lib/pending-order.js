@@ -3,23 +3,28 @@ var util = require('util');
 var WError = require('verror').WError;
 var path = require('path');
 var FuncUnits = require('./functionunits');
+var env = require('./env');
 
 // API
 module.exports.createPendingOrderStore = function (options, logger) {
     return new PendingOrderStore(options, logger);
 };
 
+
+var DEFAULT_STORE_ENGINE = ['redis', 'leveldb'];
+
 var PendingOrderStore = function (options, logger) {
     if (!options || !options.type ) {
-        throw new Error("pending order config must have 'type' field");
+        throw new Error("Missing Pending order");
     }
     var self = this;
     self.logger = logger;
-    self.loadKvPlugin(options, logger);
+    self.client = null;
     self.ttl = options.ttl || 3600;
     self.status = {
         status: 'initing'
     };
+    self.loadKvPlugin(options, logger);
     EventEmitter.call(this);
     self.on('store-fail', function (msg) {
         self.status.status = 'fail';
@@ -140,14 +145,18 @@ function(orderId, callback) {
 
 PendingOrderStore.prototype.loadKvPlugin = function(option, logger) {
     var name = option.type;
-    var pluginPath = path.join(__dirname, 'otherplugins', 'kvstore', name);
+    var defaultIndex = DEFAULT_STORE_ENGINE.indexOf(name);
+    var moduleName = name;
+    if (defaultIndex >= 0) {
+        moduleName = './kvstore/'+moduleName;
+    }
     try {
-        var m = require(pluginPath);
+        var m = require(moduleName);
+        this.client = m.createClient(this, option, logger, env);
     } catch (e) {
         this.logger.error({err: e}, "Fail to load plugin");
-        throw new Error('Fail to load plugin at ' + pluginPath);
+        throw new Error('Fail to load store engine as ' + moduleName + '\n' +
+            'Please use check the config file!');
     }
-    this.client = m.createClient(this, option, logger);
 };
-
 

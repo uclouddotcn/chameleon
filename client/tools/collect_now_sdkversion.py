@@ -15,15 +15,18 @@ def flatten(seq):
     return l
 
 def collectClientVersion(f):
-    p = os.path.join(f, 'chameleon_build', 'cfg.json')
-    with codecs.open(p, 'r', 'utf8') as f:
-        obj = json.load(f)
-        return (obj['name'], obj['desc'], obj['version'])
+    try:
+        p = os.path.join(f, 'chameleon_build', 'cfg.json')
+        with codecs.open(p, 'r', 'utf8') as f:
+            obj = json.load(f)
+            return (obj['name'], obj['desc'], obj['version'])
+    except: 
+        return None
 
 def collectVersion():
     ds = [(x, os.path.join(CHANNEL_DIR, x)) for x in os.listdir(CHANNEL_DIR)]
     ds = filter(lambda x : os.path.isdir(x[1]) and os.path.exists(os.path.join(x[1], 'chameleon_build', 'cfg.json')), ds)
-    return [collectClientVersion(x[1]) for x in ds]
+    return filter(lambda x : x is not None, [collectClientVersion(x[1]) for x in ds])
 
 
 if __name__ == '__main__':

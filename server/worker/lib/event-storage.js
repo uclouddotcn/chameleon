@@ -38,7 +38,7 @@ EventStorage.prototype.loadSingleModule = function (option) {
         throw new Error('option must have name field: ' + JSON.stringify(option));
     }
     try {
-        var m = loadModule(['otherplugins', 'event-storage', option.name]);
+        var m = require(options.name);
         var obj = new m(option.cfg);
         this.storages.push(obj);
         this.logger.info('load event storage ' + option.name);

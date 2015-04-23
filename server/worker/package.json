@@ -19,6 +19,11 @@
         "levelup": "~0.18.2",
         "leveldown": "~0.10.2",
         "underscore": "*"
+    },
+    "optionalDependencies": {
+        "redis": "0.10.1",
+        "levelup": "0.18.2",
+        "leveldown": "0.10.2"
     }
 }
 

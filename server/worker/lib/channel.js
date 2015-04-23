@@ -64,6 +64,7 @@ Channel.prototype.pendingPay = function (params, infoFromSDK, callback) {
             params.singlePrice,
             params.ext,
             self.name,
+            params.channelExt,
             function (err, orderId)  {
                 callback(err, orderId, payInfo);
             });

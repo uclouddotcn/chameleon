@@ -73,12 +73,12 @@ exports.genDefaultWorkerCfg = function (version) {
     var versionCode = getVersionCode(version);
     return {
         version: version,
-        script: path.join(__dirname, '..', '..', 'worker', versionCode.toString(), "worker"),
+        script: path.join(__dirname, '..', '..', 'worker', versionCode.toString()),
         "args": [
             "./config/svr.json"
         ],
         "env": {
-            "NODE_PATH": "$CHAMELEON_WORKDIR/worker/"+versionCode.toString()+"/worker"+"/node_modules"
+            "NODE_PATH": "$CHAMELEON_WORKDIR/worker/"+versionCode.toString()+"/node_modules"
         }
     };
 };

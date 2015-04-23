@@ -12,12 +12,13 @@ function main(callback) {
     var workerzip = process.argv[2];
     var toInstallCfg = process.argv[3];
     var zipf = new AdmZip(workerzip);
-    var packageContent = JSON.parse(zipf.readAsText('worker/package.json'));
+    var packageContent = JSON.parse(zipf.readAsText('package.json'));
     var versionCode = toVersionCode(packageContent.version);
     var tmpFolder = path.join(workerDir, 'tmp-'+versionCode);
     var targetFolder = path.join(workerDir, versionCode.toString());
+    console.log('extrating worker to: ' + tmpFolder)
     zipf.extractAllTo(tmpFolder, true);
-    child_process.exec('node ' + path.join(tmpFolder, 'worker', 'bootstrap.js') + ' ' + baseDir, function (err, stdout, stderr) {
+    child_process.exec('node ' + path.join(tmpFolder, 'bootstrap.js') + ' ' + baseDir, function (err, stdout, stderr) {
         if (err) {
             console.error(stderr);
             console.error(err.stack);

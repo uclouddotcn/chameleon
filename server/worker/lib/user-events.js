@@ -331,11 +331,16 @@ UserAction.prototype.payDirect =
  *        match will be required when validating the order from channel
  *  @param {string} ext - it will return back to app untouched..
  *  @param {string} channel - the channel name
+ *  @param {object?} channelExt - the channel extension info
  *  @param {function} callback - function(err, orderId)
  */
 UserAction.prototype.pendingPay =
 function(orderId, m, uid, appUid, serverId, productId, productCount, 
-         realPayMoney, singlePrice, ext, channel, callback) {
+         realPayMoney, singlePrice, ext, channel, channelExt, callback) {
+    if (typeof channelExt === 'function') {
+        callback = channelExt;
+        channelExt = null;
+    }
     var self = this;
     var pendingOrderInfo = {
         product: self.productName,
@@ -349,7 +354,8 @@ function(orderId, m, uid, appUid, serverId, productId, productCount,
         count: productCount,
         rmb: realPayMoney,
         ext: ext,
-        sdk: m.name
+        sdk: m.name,
+        channelext: channelExt
     };
     addPendingOrder(self, orderId, pendingOrderInfo, callback);
 };

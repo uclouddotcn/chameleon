@@ -13,6 +13,24 @@ ADMIN_DEFAULT_CFG = {
     }
 }
 
+var BUILD_CFG = {
+    adminZip: 'admin.zip',
+    workerZip: 'worker.zip'
+};
+
+function prepareBuild() {
+    var listItem = fs.readdirSync(__dirname);
+    var adminRe = /chameleon-admin.+\.zip/;
+    var workerRe = /chameleon_worker.+\.zip/;
+    for (var i = 0; i < listItem.length; ++i) {
+        if (adminRe.exec(listItem[i])) {
+            BUILD_CFG.adminZip = listItem[i];
+        } else if (workerRe.exec(listItem[i])) {
+            BUILD_CFG.workerZip = listItem[i];
+        }
+    }
+}
+
 function ensureDirExists(p) {
     if (!fs.existsSync(p)) {
         fs.mkdirSync(p);
@@ -50,9 +68,9 @@ function installAdmin(installPath, callback) {
     if (!dstpath) {
         throw new Error("must provide dstpath");
     }
-    var adminPath = path.join(__dirname, 'admin.zip');
+    var adminPath = path.join(__dirname, BUILD_CFG.adminZip);
     var manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.json')));
-    var adminTargetPath = path.join(dstpath, 'admin-'+manifest.version);;
+    var adminTargetPath = path.join(dstpath, path.basename(adminTargetPath, '.zip'));;
     var productDir = path.join(dstpath, 'admin_production');
     var backupDir = path.join(dstpath, 'admin_last');
     series([
@@ -61,7 +79,7 @@ function installAdmin(installPath, callback) {
             if (fs.existsSync(adminTargetPath)) {
                 child_process.exec('rm -rf ' + adminTargetPath, function (err) {
                     cb(err);
-                })
+                });
             } else {
                 cb();
             }
@@ -74,12 +92,16 @@ function installAdmin(installPath, callback) {
         },
         function (cb) {
             console.log('install all dependant');
-            var childFolder = path.join(adminTargetPath, 'admin');
-            child_process.exec('npm install &> /dev/null', {
-                cwd: childFolder,
-            }, function (err, stdout, stderr) {
-                cb();
-            });
+            var childFolder = adminTargetPath;
+            if (!fs.existsSync(path.join(childFolder, 'release.json'))) {
+                child_process.exec('npm rebuild &> /dev/null', {
+                    cwd: childFolder,
+                }, function (err, stdout, stderr) {
+                    cb();
+                });
+            } else {
+                setImmediate(cb);
+            }
         },
         function (cb) {
             console.log('rename to production folder');
@@ -106,11 +128,10 @@ function installAdmin(installPath, callback) {
                 });
             }
             function renameTargetToProduction (cb) {
-                fs.rename(path.join(adminTargetPath, 'admin'), productDir, function (err) {
+                fs.rename(adminTargetPath, productDir, function (err) {
                     if (err) {
                         return cb(err);
                     }
-                    fs.rmdirSync(adminTargetPath);
                     cb();
                 })
             }
@@ -154,8 +175,9 @@ function installAdmin(installPath, callback) {
 }
 
 function installWorker(version, installPath, installcfg, callback) {
+    console.log('installing worker');
     var scriptPath = path.join(installPath, 'admin', 'script', 'installworker.js');
-    var workerPath = path.join(__dirname, 'worker_' + version.replace()+'.zip');
+    var workerPath = path.join(__dirname, BUILD_CFG.workerZip);
     var toInstallCfg = installcfg ? 'true' : 'false';
     child_process.exec('node ' + scriptPath + ' ' + workerPath + ' ' + toInstallCfg, {
     }, function (err, stdout, stderr) {
@@ -216,6 +238,7 @@ function createNew(installPath) {
 }
 
 function main() {
+    prepareBuild();
     program
         .usage('[options] bootstrapping chameleon')
 
