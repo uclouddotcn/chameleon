@@ -295,6 +295,9 @@ chameleonApp = angular.module('chameleonApp', [
                     };
 
                     $scope.toggleSDK = function(event, sdk){
+                        if(!$scope.selectedChannel){
+                            return false;
+                        }
                         if(event.target.checked){
                             //refresh sdk config view.
                             sdk.config = {};
@@ -853,7 +856,7 @@ chameleonApp = angular.module('chameleonApp', [
                         data: 'APKVersionList',
                         columnDefs: [
                             {
-                                displayName: '已解压APK版本',
+                                displayName: '请选择一个已解压的APK母包',
                                 width: '100%',
                                 field: 'version',
                                 resizable: false,
