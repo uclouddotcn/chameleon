@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+ 		android:layout_height="wrap_content"
+ 		android:orientation="vertical">
+	<RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="#db214c" >
+			<ImageView
+			    android:id="@+id/back"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:src="@drawable/rg_goback"
+			    android:layout_centerVertical="true"
+			    android:layout_marginLeft="14dp"/>
+		    <ImageView
+		        android:id="@+id/iv_goback"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:paddingBottom="8dp"
+		        android:paddingLeft="12dp"
+		        android:paddingRight="12dp"
+		        android:paddingTop="8dp"
+		        android:src="@drawable/rg_goback_game" />
+		    <TextView
+		        android:id="@+id/tv_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerInParent="true"
+		        android:text="账号"
+		        android:textColor="#ffffff"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:maxEms="20"
+		        android:textSize="18sp" />
+	</RelativeLayout>
+	<View android:layout_width="match_parent"
+	    android:layout_height="1dp"
+	    android:background="#dcdcdc"/>
+</LinearLayout>

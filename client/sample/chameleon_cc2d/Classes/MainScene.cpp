@@ -4,11 +4,13 @@
 #include "MainScene.h"
 #include "UserAccountMgr.h"
 #include "HelloWorldScene.h"
+#include "cocostudio/CocoStudio.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
-using namespace gui;
+using namespace cocos2d::ui;
 using namespace std;
+using namespace cocostudio;
 
 static std::string FormatTxt(const char * format, ...) {
     char tmp[2048];
@@ -42,57 +44,57 @@ bool MainScene::init() {
 
     CCSize size = CCDirector::sharedDirector()->getWinSize(); 
 
-    m_pLayer = UILayer::create();
+    m_pLayer = Layer::create();
     addChild(m_pLayer);
 
-    UILayout* m_pLayout = dynamic_cast<UILayout*>(GUIReader::shareReader()->widgetFromJsonFile("Welcome/Main.json"));
+    Layout* m_pLayout = dynamic_cast<Layout*>(GUIReader::shareReader()->widgetFromJsonFile("Welcome/Main.json"));
 
-    m_pLayer->addWidget(m_pLayout);
+    m_pLayer->addChild(m_pLayout);
 
-    m_uinLabel = dynamic_cast<UILabel*>(
-      m_pLayer->getWidgetByName("Uin_Label"));
+    m_uinLabel = dynamic_cast<Label*>(
+      m_pLayer->getChildByName("Uin_Label"));
 
-    m_sessionLabel = dynamic_cast<UILabel*>(
-      m_pLayer->getWidgetByName("Session_Label"));
+    m_sessionLabel = dynamic_cast<Label*>(
+      m_pLayer->getChildByName("Session_Label"));
     
-    m_userInfoLabel = dynamic_cast<UILabel*>(
-      m_pLayer->getWidgetByName("UserInfo_Label"));
+    m_userInfoLabel = dynamic_cast<Label*>(
+      m_pLayer->getChildByName("UserInfo_Label"));
 
-    m_resultLabel = dynamic_cast<UILabel*>(
-      m_pLayer->getWidgetByName("Result_Label"));
+    m_resultLabel = dynamic_cast<Label*>(
+      m_pLayer->getChildByName("Result_Label"));
 
-    UIButton * btnSwitchAccount = dynamic_cast<UIButton*>(
-      m_pLayer->getWidgetByName("SwitchAccount_Btn"));
+    Button * btnSwitchAccount = dynamic_cast<Button*>(
+      m_pLayer->getChildByName("SwitchAccount_Btn"));
     btnSwitchAccount->addTouchEventListener(this,
       toucheventselector(MainScene::OnTouchSwitchAccount));
 
-    UIButton * btnRegistGuest = dynamic_cast<UIButton*>(
-      m_pLayer->getWidgetByName("RegistGuest_Btn"));
+    Button * btnRegistGuest = dynamic_cast<Button*>(
+      m_pLayer->getChildByName("RegistGuest_Btn"));
     btnRegistGuest->addTouchEventListener(this,
       toucheventselector(MainScene::OnTouchRegistGuest));
 
-    UIButton * btnCharge = dynamic_cast<UIButton*>(
-      m_pLayer->getWidgetByName("Charge_Btn"));
+    Button * btnCharge = dynamic_cast<Button*>(
+      m_pLayer->getChildByName("Charge_Btn"));
     btnCharge->addTouchEventListener(this,
       toucheventselector(MainScene::OnTouchCharge));
 
-    UIButton * btnBuy = dynamic_cast<UIButton*>(
-      m_pLayer->getWidgetByName("Buy_Btn"));
+    Button * btnBuy = dynamic_cast<Button*>(
+      m_pLayer->getChildByName("Buy_Btn"));
     btnBuy->addTouchEventListener(this,
       toucheventselector(MainScene::OnTouchBuy));
 
-    UIButton * btnSwitchBar = dynamic_cast<UIButton*>(
-      m_pLayer->getWidgetByName("SwitchToolbar_Btn"));
+    Button * btnSwitchBar = dynamic_cast<Button*>(
+      m_pLayer->getChildByName("SwitchToolbar_Btn"));
     btnSwitchBar->addTouchEventListener(this,
       toucheventselector(MainScene::OnTouchSwitchBar));
 
-    UIButton * btnAntiAddiction = dynamic_cast<UIButton*>(
-      m_pLayer->getWidgetByName("AntiAddictin_Btn"));
+    Button * btnAntiAddiction = dynamic_cast<Button*>(
+      m_pLayer->getChildByName("AntiAddictin_Btn"));
     btnAntiAddiction->addTouchEventListener(this,
       toucheventselector(MainScene::OnTouchAntiAddiction));
 
-    UIButton * btnLogout = dynamic_cast<UIButton*>(
-      m_pLayer->getWidgetByName("Logout_Btn"));
+    Button * btnLogout = dynamic_cast<Button*>(
+      m_pLayer->getChildByName("Logout_Btn"));
     btnLogout->addTouchEventListener(this,
       toucheventselector(MainScene::OnTouchLogout));
 
@@ -196,7 +198,7 @@ void MainScene::Tick(float dt) {
 
 void MainScene::onLogined(void * data) {
     FillUserInfo();
-    m_resultLabel->setText("on logined");
+    m_resultLabel->setString("on logined");
 }
 
 
@@ -217,22 +219,22 @@ cocos2d::CCScene* MainScene::scene() {
 void MainScene::FillUserInfo() {
     switch (g_userAccountMgr.GetLoginStatus() ) {
     case UserAccountMgr::LOGIN_STATUS_LOGOUT:
-        m_uinLabel->setText("logout status");
-        m_sessionLabel->setText("");
-        m_userInfoLabel->setText("");
+        m_uinLabel->setString("logout status");
+        m_sessionLabel->setString("");
+        m_userInfoLabel->setString("");
         break;
     case UserAccountMgr::LOGIN_STATUS_LOGINGUEST:
-        m_uinLabel->setText("login as guest");
-        m_sessionLabel->setText("");
-        m_userInfoLabel->setText("");
+        m_uinLabel->setString("login as guest");
+        m_sessionLabel->setString("");
+        m_userInfoLabel->setString("");
         break;
     case UserAccountMgr::LOGIN_STATUS_LOGINED:
-        m_uinLabel->setText(g_userAccountMgr.GetUin().c_str());
-        m_sessionLabel->setText(g_userAccountMgr.GetSession().c_str());
-        m_resultLabel->setText(g_userAccountMgr.GetUserInfo().c_str());
+        m_uinLabel->setString(g_userAccountMgr.GetUin().c_str());
+        m_sessionLabel->setString(g_userAccountMgr.GetSession().c_str());
+        m_resultLabel->setString(g_userAccountMgr.GetUserInfo().c_str());
         break;
     default:
-        m_resultLabel->setText("error while get login status");
+        m_resultLabel->setString("error while get login status");
     }
 }
 
@@ -242,16 +244,16 @@ void MainScene::OnTouchSwitchAccount(CCObject *pSender, TouchEventType type) {
         case TOUCH_EVENT_ENDED:
             {
                 if (!g_userAccountMgr.IsSupportSwitchAccount()) {
-                    m_resultLabel->setText(
+                    m_resultLabel->setString(
                       "current platform not support switching account");
                 }
 
                 int ret = g_userAccountMgr.SwitchAccount();
                 if (ret == 0) {
-                    m_resultLabel->setText(
+                    m_resultLabel->setString(
                       "user switch acount, waiting for result");
                 } else {
-                    m_resultLabel->setText(
+                    m_resultLabel->setString(
                       FormatTxt("Fail to switch account %d", ret));
                 }
             }
@@ -266,10 +268,10 @@ void MainScene::OnTouchRegistGuest(CCObject *pSender, TouchEventType type) {
             {
                 int ret = g_userAccountMgr.RegistGuest();
                 if ( ret == 0) {
-                    m_resultLabel->setText(
+                    m_resultLabel->setString(
                       "user regist guest");
                 } else {
-                    m_resultLabel->setText(
+                    m_resultLabel->setString(
                       FormatTxt("Fail to regist guest, %d", ret));
                 }
             }
@@ -349,14 +351,14 @@ void MainScene::onCharged(void * data) {
     UserAccountMgr::ChargeResult & result = 
         *((UserAccountMgr::ChargeResult*)data);
     CCLog("main scene on charged");
-    m_userInfoLabel->setText(FormatTxt("charge done, status=%d, order id is %s," 
+    m_userInfoLabel->setString(FormatTxt("charge done, status=%d, order id is %s," 
           "amount=%d, total=%d", result.status, result.orderId.c_str(), 
           result.amount, result.total));
 }
 
 void MainScene::onCharging(void * data) {
     UserAccountMgr::ChargeInfo & result = *((UserAccountMgr::ChargeInfo*)data);
-    m_resultLabel->setText(FormatTxt(
+    m_resultLabel->setString(FormatTxt(
           "charge result, code is %d, user=%s : %s, realPayMoney=%d, rate=%d", 
           result.code, result.uidInGame.c_str(), result.userNameInGame.c_str(), 
           result.realPayMoney, result.rate));
@@ -367,7 +369,7 @@ void MainScene::onBought(void * data) {
     CCLog("main scene on bought");
     UserAccountMgr::BuyResult & result = 
         *((UserAccountMgr::BuyResult *)data);
-    m_userInfoLabel->setText(FormatTxt("buy done, status=%d, productid=%s,"
+    m_userInfoLabel->setString(FormatTxt("buy done, status=%d, productid=%s,"
           "order id is %s, amount=%d, total=%d", result.status, 
           result.productId.c_str(), result.orderId.c_str(), result.amount, 
           result.total));
@@ -376,7 +378,7 @@ void MainScene::onBought(void * data) {
 
 void MainScene::onBuying(void * data) {
     UserAccountMgr::BuyInfo & result = *((UserAccountMgr::BuyInfo*)data);
-    m_resultLabel->setText(FormatTxt(
+    m_resultLabel->setString(FormatTxt(
           "charge result, code is %d, user=%s : %s, realPayMoney=%d", 
           result.code, result.uidInGame.c_str(), result.userNameInGame.c_str(), 
           result.realPayMoney));
@@ -384,20 +386,20 @@ void MainScene::onBuying(void * data) {
 
 void MainScene::onAntiAddictionInfo(void * data) {
     int & flag = *((int*)data);
-    m_resultLabel->setText(FormatTxt("anti addiction, code is %d", flag));
+    m_resultLabel->setString(FormatTxt("anti addiction, code is %d", flag));
 }
 
 void MainScene::onSwitchAccount(void * data) {
     int & flag = *((int*)data);
-    m_resultLabel->setText(FormatTxt("switch account, code is %d", flag));
+    m_resultLabel->setString(FormatTxt("switch account, code is %d", flag));
 }
 
 void MainScene::onLogout(void * data) {
     CCLog("on logout from main scene");
     FillUserInfo();
-    m_resultLabel->setText("user logout");
+    m_resultLabel->setString("user logout");
     RemoveHandles();
-    CCScene* pScene = HelloWorld::scene(); 
+    CCScene* pScene = HelloWorld::createScene(); 
     CCDirector::sharedDirector()->replaceScene( pScene );
 }
 

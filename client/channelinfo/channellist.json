@@ -136,6 +136,11 @@
         "sdk": "mopo",
         "pkgsuffix": ".mopo$",
         "icon": "1"
+    },
+    "yuwan": {
+        "name": "鱼丸互动",
+        "sdk": "yuwan",
+        "pkgsuffix": ".yuwan$"
     }
 }
 

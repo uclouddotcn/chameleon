@@ -117,6 +117,8 @@ android {
         }
         mopo {
         }
+        yuwan {
+        }
         p_getui {
 
         }
@@ -184,6 +186,7 @@ dependencies {
     youlongCompile project(':channels:youlong')
     anfengCompile project(':channels:anfeng')
     mopoCompile project(':channels:mopo')
+    yuwanCompile project(':channels:yuwan')
     p_getuiCompile project(':channels:p_getui')
     p_jpushCompile project(':channels:p_jpush')
     p_umengCompile project(':channels:p_umeng')

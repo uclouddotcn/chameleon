@@ -1,7 +1,6 @@
 package prj.chameleon.htc;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,18 +61,14 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private final Jolo.onAccountResult joloLoginCb = new Jolo.onAccountResult() {
         @Override
         public void onAccount(int resultCode, Intent data) {
-            if (resultCode != Activity.RESULT_OK || data == null)
-                return;
-            onLoginResult(data);
+            onLoginResult(resultCode, data);
         }
     };
 
     private final JoloPay.onPayResult joloPayCb = new JoloPay.onPayResult() {
         @Override
         public void onPay(int resultCode, Intent data) {
-            if (resultCode != Activity.RESULT_OK || data == null)
-                return;
-            onPayResult(data);
+            onPayResult(resultCode, data);
         }
     };
 
@@ -119,11 +114,11 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             return;
         switch (requestCode) {
             case JoloSDK.ACCOUNT_REQUESTCODE: {
-                onLoginResult(data);
+                onLoginResult(resultCode, data);
             }
             break;
             case JoloSDK.PAY_REQUESTCODE: {
-                onPayResult(data);
+                onPayResult(resultCode, data);
             }
             break;
             default:
@@ -239,8 +234,12 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mPayCb = cb;
     }
 
-    private void onLoginResult(Intent data){
+    private void onLoginResult(int resultCode, Intent data){
         if (mLoginCb == null) {
+            return;
+        }
+        if (resultCode != Activity.RESULT_OK || data == null){
+            mLoginCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
             return;
         }
         UserInfo userInfo = new UserInfo();
@@ -260,8 +259,12 @@ public final class HtcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         mLoginCb = null;
     }
 
-    private void onPayResult(Intent data){
+    private void onPayResult(int resultCode, Intent data){
         if (mPayCb == null) {
+            return;
+        }
+        if (resultCode != Activity.RESULT_OK || data == null){
+            mPayCb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
             return;
         }
         ResultOrder resultOrder = new ResultOrder(data.getStringExtra(JoloSDK.PAY_RESP_ORDER));

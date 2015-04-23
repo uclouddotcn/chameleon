@@ -104,7 +104,6 @@ int callJniMethod(JNIEnv * env, int funcCode, T* result, ...) {
         LOGF("fail to find class");
         return -1;
     }
-    LOGE("call : %s", FUNC_TYPE[funcCode][0]);
     jmethodID mid = env->GetStaticMethodID(cplatformAPI, FUNC_TYPE[funcCode][0], FUNC_TYPE[funcCode][1]);
     if (mid == NULL) {
         LOGF("fail to find static method %s", FUNC_TYPE[funcCode][0]);

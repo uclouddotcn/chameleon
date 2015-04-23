@@ -29,14 +29,14 @@ int EventEmitter::AddListener(int eventType, EventEmitter::CallbackFunctor_t cb)
 }
 
 void EventEmitter::RemoveListener(int eventType, int handle) {
-    CCLog("try remove listener %d %d", eventType, handle);
+    cocos2d::log("try remove listener %d %d", eventType, handle);
     if (handle < 0 || eventType < 0 || eventType >= mEventCbs.size()) {
         return;
     }
     if (handle > mEventCbs[eventType].size()) {
         return;
     }
-    CCLog("remove listener %d %d", eventType, handle);
+    cocos2d::log("remove listener %d %d", eventType, handle);
     mEventCbs[eventType][handle] = CallbackFunctor_t();
 }
 
@@ -44,7 +44,7 @@ void EventEmitter::FireEvent(int eventType, void * data) {
     const SingleEventCallbacks_t & cbArray =  mEventCbs[eventType];
     for (size_t i = 0; i < cbArray.size(); ++i) {
         if (cbArray[i]) {
-            CCLog("call listener %d %d", eventType, i);
+            cocos2d::log("call listener %d %d", eventType, i);
             cbArray[i](data);
         }
     }

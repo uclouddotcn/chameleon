@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/cmmn_black" >
+    android:background="@drawable/jolo_sdk_bg" >
 
      <Button
          android:id="@+id/register_phone_btn"
@@ -12,7 +12,7 @@
          android:layout_marginRight="30dp"
          android:layout_marginLeft="30dp"
          android:layout_marginTop="30dp"
-         android:background="@drawable/jolo_blue_bg"
+         android:background="@drawable/jolo_orange_bg"
          android:gravity="center"
          android:paddingTop="8dp"
          android:layout_gravity="center_horizontal"
@@ -28,7 +28,7 @@
          android:layout_marginRight="30dp"
          android:layout_marginLeft="30dp"
          android:layout_marginTop="15dp"
-         android:background="@drawable/jolo_orange_bg"
+         android:background="@drawable/jolo_bluefreen_bg"
          android:layout_gravity="center_horizontal"
          android:gravity="center"
          android:paddingTop="8dp"
@@ -44,7 +44,7 @@
          android:layout_marginRight="30dp"
          android:layout_marginLeft="30dp"
          android:layout_marginTop="15dp"
-         android:background="@drawable/jolo_trans_bg"
+         android:background="@drawable/jolo_green_bg"
          android:layout_gravity="center_horizontal"
          android:gravity="center"
          android:paddingTop="8dp"
@@ -70,7 +70,7 @@
             android:checked="true"
             android:paddingLeft="20dp"
             android:text="@string/jolo_register_agree"
-            android:textColor="@color/jolo_white"
+            android:textColor="@color/cmmn_green"
             android:textSize="14sp" />
 
         <TextView
@@ -80,7 +80,7 @@
             android:clickable="true"
             android:onClick="goLink"
             android:text="@string/jolo_register_rule"
-            android:textColor="@color/jolo_white"
+            android:textColor="@color/cmmn_green"
             android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="title_bg">#f8f8f8</color>
+    <color name="app_background">#FFf5f5f5</color>
+    <color name="text_default">#FF333333</color>
+    <color name="edittext_hint_color_default">#FFb3b3b3</color>
+	<color name="input_text_color">#FF505050</color>
+    <color name="white">#ffffff</color>
+    <color name="main_bg">#f8f8f8</color>
+</resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_floatContent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rg_float_bg_left"
+    android:gravity="center_vertical"
+    android:paddingLeft="12dp"
+    android:paddingRight="2dp"
+    android:paddingTop="2dp" >
+
+    <ImageView
+        android:id="@+id/iv_account"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/rg_float_account_selector" />
+
+    <ImageView
+        android:id="@+id/iv_prefecture"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/rg_float_prefecture_selector" />
+
+    <ImageView
+        android:id="@+id/iv_service"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/rg_float_service_selector" />
+
+</LinearLayout>

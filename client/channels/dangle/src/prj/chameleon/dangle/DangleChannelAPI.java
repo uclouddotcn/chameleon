@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.downjoy.CallbackListener;
+import com.downjoy.CallbackStatus;
 import com.downjoy.Downjoy;
-import com.downjoy.DownjoyError;
+import com.downjoy.InitListener;
+import com.downjoy.LoginInfo;
+import com.downjoy.UserInfo;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import prj.chameleon.channelapi.ApiCommonCfg;
@@ -21,7 +23,7 @@ import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
 public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
-    private static class UserInfo {
+    private static class SDKUserInfo {
         public String mUid;
         public String mName;
         public String mNick;
@@ -34,7 +36,7 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private String mServerSeqNum;
     private String mAppKey;
     private Downjoy mDownJoy;
-    private UserInfo mUserInfo;
+    private SDKUserInfo mSDKUserInfo;
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mMerchantId = cfg.getString("merchantId");
@@ -51,28 +53,41 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      * @param cb       callback function when the request is finished, the JSON object is null
      */
     @Override
-    public void init(android.app.Activity activity,
+    public void init(final android.app.Activity activity,
                      final IDispatcherCb cb) {
-        mDownJoy = Downjoy.getInstance(activity, mMerchantId, mAppId, mServerSeqNum, mAppKey);
-        if (mDownJoy != null) {
-            cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-        } else {
-            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-        }
-    }
 
-    @Override
-    public void onResume(Activity activity, final IDispatcherCb cb) {
-        if (mDownJoy != null) {
-            mDownJoy.resume(activity);
-        }
-    }
+        InitListener initListener = new InitListener() {
 
-    @Override
-    public void onPause(Activity activity) {
-        if (mDownJoy != null) {
-            mDownJoy.pause();
-        }
+            @Override
+            public void onInitComplete() {
+                if(mDownJoy != null){
+                    mDownJoy.openLoginDialog(activity, new CallbackListener<LoginInfo>() {
+                        @Override
+                        public void callback(int status, LoginInfo data) {
+                            if (status == CallbackStatus.SUCCESS && data != null) {
+                                String memberId = data.getUmid();
+                                String username = data.getUserName();
+                                String nickname = data.getNickName();
+                                String token = data.getToken();
+                                Log.i(Constants.TAG, "mid:" + memberId + "\nusername:" + username + "\nnickname:" + nickname
+                                        + "\ntoken:" + token);
+                                cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                            } else if (status == CallbackStatus.FAIL && data != null) {
+                                Log.i(Constants.TAG, "onError:" + data.getMsg());
+                                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                            } else if (status == CallbackStatus.CANCEL && data != null) {
+                                Log.i(Constants.TAG, data.getMsg());
+                                cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                            }
+                        }
+                    });
+                }
+            }
+        };
+
+        // 获取当乐游戏中心的实例
+        mDownJoy = Downjoy.getInstance(activity, mMerchantId, mAppId, mServerSeqNum, mAppKey, initListener);
+
     }
 
 
@@ -88,9 +103,33 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void login(final android.app.Activity activity,
                       final IDispatcherCb cb,
-                      IAccountActionListener accountActionListener) {
-        doLogin(activity, cb);
-        mAccountActionListener = accountActionListener;
+                      final IAccountActionListener accountActionListener) {
+        mDownJoy.openLoginDialog(activity, new CallbackListener<LoginInfo>() {
+            @Override
+            public void callback(int status, LoginInfo data) {
+                if (status == CallbackStatus.SUCCESS && data != null) {
+                    SDKUserInfo sdkUserInfo = new SDKUserInfo();
+                    sdkUserInfo.mUid = data.getUmid();
+                    sdkUserInfo.mName = data.getUserName();
+                    sdkUserInfo.mNick = data.getNickName();
+                    sdkUserInfo.mToken = data.getToken();
+
+                    mSDKUserInfo = sdkUserInfo;
+                    mAccountActionListener = accountActionListener;
+
+                    JSONObject obj = JsonMaker.makeLoginResponse(mSDKUserInfo.mToken,
+                            mSDKUserInfo.mUid, mChannel);
+                    cb.onFinished(Constants.ErrorCode.ERR_OK, obj);
+                } else if (status == CallbackStatus.FAIL && data != null) {
+                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                } else if (status == CallbackStatus.CANCEL && data != null) {
+                    cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
+                } else {
+                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                }
+            }
+        });
+
     }
 
     /**
@@ -120,40 +159,16 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                        boolean allowUserChange,
                        final IDispatcherCb cb) {
         float money = ((float)realPayMoney) / 100;
-        try {
-            JSONObject obj = new JSONObject();
-            obj.put("o", orderId);
-            obj.put("ch", mChannel);
-            mDownJoy.openPaymentDialog(activity, money, currencyName, obj.toString(), new CallbackListener() {
-
-                @Override
-                public void onPaymentSuccess(java.lang.String orderNo) {
-                    Log.d(Constants.TAG, "Finish payment " + orderNo);
+        mDownJoy.openPaymentDialog(activity, money, currencyName, payInfo, orderId, new CallbackListener<String>() {
+            @Override
+            public void callback(int status, String data) {
+                if (status == CallbackStatus.SUCCESS) {
                     cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                }
-
-                @Override
-                public void onPaymentError(com.downjoy.DownjoyError downjoyError, java.lang.String s) {
-                    Log.d(Constants.TAG, "fail to pay " + downjoyError.getMErrorMessage());
-                    cb.onFinished(mapErrorCode(downjoyError.getMErrorCode()), null);
-                }
-
-
-                @Override
-                public void onError(Error error) {
-                    Log.d(Constants.TAG, "error to pay " + error.getMessage());
-                    cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
-                }
-            });
-        } catch (JSONException e) {
-            Log.e(Constants.TAG, "Fail to pay", e);
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+                } else if (status == CallbackStatus.FAIL) {
                     cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -183,41 +198,16 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     int realPayMoney,
                     final IDispatcherCb cb) {
         float money = ((float)realPayMoney) / 100;
-        try {
-            JSONObject obj = new JSONObject();
-            obj.put("o", orderId);
-            obj.put("p", productID);
-            obj.put("ch", mChannel);
-            mDownJoy.openPaymentDialog(activity, money, productName, obj.toString(), new CallbackListener() {
-
-                @Override
-                public void onPaymentSuccess(java.lang.String orderNo) {
-                    Log.d(Constants.TAG, "Finish payment " + orderNo);
+        mDownJoy.openPaymentDialog(activity, money, productName, payInfo, orderId, new CallbackListener<String>() {
+            @Override
+            public void callback(int status, String data) {
+                if (status == CallbackStatus.SUCCESS) {
                     cb.onFinished(Constants.ErrorCode.ERR_OK, null);
-                }
-
-                @Override
-                public void onPaymentError(com.downjoy.DownjoyError downjoyError, java.lang.String s) {
-                    Log.d(Constants.TAG, "fail to pay " + downjoyError.getMErrorMessage());
-                    cb.onFinished(mapErrorCode(downjoyError.getMErrorCode()), null);
-                }
-
-
-                @Override
-                public void onError(Error error) {
-                    Log.d(Constants.TAG, "error to pay " + error.getMessage());
-                    cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
-                }
-            });
-        } catch (JSONException e) {
-            Log.e(Constants.TAG, "Fail to pay", e);
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+                } else if (status == CallbackStatus.FAIL) {
                     cb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -233,30 +223,12 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void logout(Activity activity) {
-        mDownJoy.logout(activity, new CallbackListener() {
-        });
-        mUserInfo = null;
-    }
-
-    @Override
-    public boolean switchAccount(final Activity activity, final IDispatcherCb cb) {
-        mDownJoy.openMemberCenterDialog(activity, new CallbackListener() {
-            @Override
-            public void onError(Error error) {
-                cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
-            }
-
-            @Override
-            public void onSwitchAccountAndRestart() {
-                doLogin(activity, cb);
-            }
-        });
-        return true;
-    }
-
-    @Override
-    public boolean isSupportSwitchAccount() {
-        return true;
+        mDownJoy.logout(activity);
+        if(mAccountActionListener != null){
+            mAccountActionListener.onAccountLogout();
+            mAccountActionListener = null;
+        }
+        mSDKUserInfo = null;
     }
 
     /**
@@ -316,17 +288,87 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public String getUid() {
-        return mUserInfo.mUid;
+        return mSDKUserInfo.mUid;
     }
 
     @Override
     public String getToken() {
-        return mUserInfo.mToken;
+        return mSDKUserInfo.mToken;
     }
 
     @Override
     public boolean isLogined() {
-        return mUserInfo != null;
+        return mSDKUserInfo != null;
+    }
+
+    @Override
+    public boolean runProtocol(Activity activity, String protocol, String message, final IDispatcherCb cb) {
+        if (protocol.equals("dangle_getInfo")) {
+            mDownJoy.getInfo(activity, new CallbackListener<UserInfo>() {
+                @Override
+                public void callback(int status, UserInfo data) {
+                    if (status == CallbackStatus.SUCCESS) {
+                        String memberId = data.getUmid();
+                        String userName = data.getUserName();
+                        String phone = data.getPhone();
+                        String gender = data.getGender();
+                        String vip = data.getVip();
+                        String avatarUrl = data.getAvatarUrl();
+                        String security_num = data.getSecurity_num();
+
+                        JSONObject obj = new JSONObject();
+                        try {
+                            obj.put("memberId", memberId);
+                            obj.put("username", userName);
+                            obj.put("phone", phone);
+                            obj.put("gender", gender);
+                            obj.put("vip", vip);
+                            obj.put("avatarUrl", avatarUrl);
+                            obj.put("security_num", security_num);
+                            cb.onFinished(Constants.ErrorCode.ERR_OK, obj);
+                        } catch (Exception e) {
+                            Log.e(Constants.TAG, "Fail to run dangle_getInfo", e);
+                            cb.onFinished(Constants.ErrorCode.ERR_INTERNAL, null);
+                        }
+                    } else if (status == CallbackStatus.FAIL) {
+                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                    } else {
+                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
+                    }
+                }
+            });
+
+            return true;
+        } else if (protocol.equals("dangle_openMemberCenterDialog")) {
+            mDownJoy.openMemberCenterDialog(activity);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isSupportProtocol(String protocol) {
+        if (protocol.equals("dangle_getInfo")) {
+            return true;
+        } else if (protocol.equals("dangle_openMemberCenterDialog")) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onResume(Activity activity, final IDispatcherCb cb) {
+        if (mDownJoy != null) {
+            mDownJoy.resume(activity);
+        }
+        cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+    }
+
+    @Override
+    public void onPause(Activity activity) {
+        if (mDownJoy != null) {
+            mDownJoy.pause();
+        }
     }
 
     @Override
@@ -343,164 +385,15 @@ public final class DangleChannelAPI extends SingleSDKChannelAPI.SingleSDK {
      */
     @Override
     public void exit(Activity activity, final IDispatcherCb cb) {
-        activity.runOnUiThread(new Runnable() {
+        mDownJoy.openExitDialog(activity, new CallbackListener<String>() {
+
             @Override
-            public void run() {
-                cb.onFinished(Constants.ErrorCode.ERR_LOGIN_GAME_EXIT_NOCARE, null);
-            }
-        });
-    }
-
-    @Override
-    public boolean runProtocol(Activity activity, String protocol, String message, final IDispatcherCb cb) {
-        if (protocol.equals("dangle_getInfo")) {
-            mDownJoy.getInfo(activity, new CallbackListener() {
-                @Override
-                public void onInfoSuccess(Bundle bundle) {
-                    Long memberId = bundle.getLong(Downjoy.DJ_PREFIX_STR + "mid");
-                    String userName = bundle.getString(Downjoy.DJ_PREFIX_STR + "username");
-                    String nickName = bundle.getString(Downjoy.DJ_PREFIX_STR + "nickname");
-                    String gender = bundle.getString(Downjoy.DJ_PREFIX_STR + "gender");
-                    int level = bundle.getInt(Downjoy.DJ_PREFIX_STR + "level");
-                    String avatarUrl = bundle.getString(Downjoy.DJ_PREFIX_STR + "avatarUrl");
-                    long createDate = bundle.getLong(Downjoy.DJ_PREFIX_STR + "createDate");
-                    JSONObject obj = new JSONObject();
-                    try {
-                        obj.put("memberId", memberId);
-                        obj.put("username", userName);
-                        obj.put("nickName", nickName);
-                        obj.put("gender", gender);
-                        obj.put("level", level);
-                        obj.put("avatarUrl", avatarUrl);
-                        obj.put("createDate", createDate);
-                        cb.onFinished(Constants.ErrorCode.ERR_OK, obj);
-                    } catch (Exception e) {
-                        Log.e(Constants.TAG, "Fail to run dangle_getInfo", e);
-                        cb.onFinished(Constants.ErrorCode.ERR_INTERNAL, null);
-                    }
-                }
-
-                @Override
-                public void onInfoError(DownjoyError downjoyError) {
-                    Log.e(Constants.TAG, "Fail to run dangle_getInfo " + downjoyError.getMErrorMessage());
-                    cb.onFinished(mapErrorCode(downjoyError.getMErrorCode()), null);
-                }
-
-                @Override
-                public void onError(Error error) {
-                    Log.e(Constants.TAG, "Fail to run dangle_getInfo " + error.getMessage());
-                    cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
-                }
-            });
-            return true;
-        } else if (protocol.equals("dangle_openMemberCenterDialog")) {
-            mDownJoy.openMemberCenterDialog(activity, new CallbackListener() {
-                @Override
-                public void onMemberCenterBack() {
+            public void callback(int status, String data) {
+                if (CallbackStatus.SUCCESS == status) {
                     cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                } else if (CallbackStatus.CANCEL == status) {
+                    cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
                 }
-
-                @Override
-                public void onMemberCenterError(DownjoyError downjoyError) {
-                    cb.onFinished(mapErrorCode(downjoyError.getMErrorCode()), null);
-                }
-
-                @Override
-                public void onError(Error error) {
-                    cb.onFinished(Constants.ErrorCode.ERR_UNKNOWN, null);
-                }
-            });
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isSupportProtocol(String protocol) {
-        if (protocol.equals("dangle_getInfo")) {
-            return true;
-        } else if (protocol.equals("dangle_openMemberCenterDialog")) {
-            return true;
-        }
-        return false;
-    }
-
-    private int mapErrorCode(int code) {
-        switch (code) {
-            case 100:
-                return Constants.ErrorCode.ERR_CANCEL;
-            case 103:
-                return Constants.ErrorCode.ERR_PAY_CANCEL;
-            case 104:
-                return Constants.ErrorCode.ERR_PAY_FAIL;
-            case 201:
-                Log.e(Constants.TAG, "APP Id error");
-                return Constants.ErrorCode.ERR_INTERNAL;
-            case 210:
-                Log.e(Constants.TAG, "sig is empty");
-                return Constants.ErrorCode.ERR_INTERNAL;
-            case 220:
-                Log.e(Constants.TAG, "token is empty");
-                return Constants.ErrorCode.ERR_INTERNAL;
-            case 221:
-                Log.e(Constants.TAG, "token is error");
-                return Constants.ErrorCode.ERR_INTERNAL;
-            case 222:
-                Log.e(Constants.TAG, "token is error");
-                return Constants.ErrorCode.ERR_NO_LOGIN;
-            case 223:
-                Log.e(Constants.TAG, "mid is invalid");
-                return Constants.ErrorCode.ERR_UNKNOWN;
-            case 230:
-                Log.e(Constants.TAG, "money is invalid");
-                return Constants.ErrorCode.ERR_PAY_CANCEL;
-            case 231:
-                Log.e(Constants.TAG, "money is invalid");
-                return Constants.ErrorCode.ERR_PAY_CANCEL;
-            case 300:
-                Log.e(Constants.TAG, "no authroized, please contact DangLe");
-                return Constants.ErrorCode.ERR_INTERNAL;
-            default:
-                return Constants.ErrorCode.ERR_UNKNOWN;
-        }
-    }
-
-    private void doLogin(final android.app.Activity activity,
-                        final IDispatcherCb cb) {
-        mDownJoy.openLoginDialog(activity, new CallbackListener() {
-            @Override
-            public void onLoginSuccess(android.os.Bundle bundle) {
-                mUserInfo = new UserInfo();
-                mUserInfo.mUid = bundle.getString(Downjoy.DJ_PREFIX_STR+ "mid");
-                mUserInfo.mName = bundle.getString(Downjoy.DJ_PREFIX_STR+ "username");
-                mUserInfo.mNick = bundle.getString(Downjoy.DJ_PREFIX_STR+ "nickname");
-                mUserInfo.mToken = bundle.getString(Downjoy.DJ_PREFIX_STR+ "token");
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        JSONObject obj = JsonMaker.makeLoginResponse(mUserInfo.mToken,
-                                mUserInfo.mUid, mChannel);
-                        if (obj != null) {
-                            cb.onFinished(Constants.ErrorCode.ERR_OK, obj);
-                        } else {
-                            Log.e(Constants.TAG, "Fail to create login json");
-                            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onLoginError(com.downjoy.DownjoyError downjoyError) {
-                int errorCode = mapErrorCode(downjoyError.getMErrorCode());
-                Log.e(Constants.TAG, "Fail to login: " + downjoyError.getMErrorMessage());
-                cb.onFinished(errorCode, null);
-            }
-
-            @Override
-            public void onError(Error error) {
-                Log.e(Constants.TAG, "Fail to login: " + error.getMessage());
-                cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
             }
         });
     }

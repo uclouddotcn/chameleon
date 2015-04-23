@@ -8,11 +8,13 @@ CHAMELEON_MAINACTIVITY_SMALI = '''
 
 # direct methods
 .method static constructor <clinit>()V
-    .locals 4
+    .locals 5
 
     .prologue
     .line 16
-    const/4 v0, 0x0
+    const/4 v2, 0x0
+
+    move-object v0, v2
 
     .line 18
     .local v0, "cls":Ljava/lang/Class;, "Ljava/lang/Class<*>;"
@@ -23,35 +25,38 @@ CHAMELEON_MAINACTIVITY_SMALI = '''
     :try_end_0
     .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 
-    move-result-object v0
+    move-result-object v2
 
+    move-object v0, v2
+
+    .line 21
     .line 23
     :goto_0
-    if-eqz v0, :cond_0
+    move-object v2, v0
 
-    :try_start_1
-    invoke-virtual {v0}, Ljava/lang/Class;->isLocalClass()Z
-
-    move-result v2
-
-    if-nez v2, :cond_1
+    if-nez v2, :cond_0
 
     .line 24
-    :cond_0
+    :try_start_1
     const-string v2, "prj.chameleon.channelapi.cbinding.NativeChannelInterface"
 
     invoke-static {v2}, Ljava/lang/Class;->forName(Ljava/lang/String;)Ljava/lang/Class;
     :try_end_1
     .catch Ljava/lang/Exception; {:try_start_1 .. :try_end_1} :catch_1
 
+    move-result-object v2
+
+    .line 28
     .line 29
-    :cond_1
+    :cond_0
     :goto_1
     return-void
 
     .line 19
     :catch_0
-    move-exception v1
+    move-exception v2
+
+    move-object v1, v2
 
     .line 20
     .local v1, "e":Ljava/lang/Exception;
@@ -59,14 +64,20 @@ CHAMELEON_MAINACTIVITY_SMALI = '''
 
     const-string v3, "Fail to find UnityChannelInterface"
 
-    invoke-static {v2, v3, v1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    move-object v4, v1
+
+    invoke-static {v2, v3, v4}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+
+    move-result v2
 
     goto :goto_0
 
     .line 26
     .end local v1    # "e":Ljava/lang/Exception;
     :catch_1
-    move-exception v1
+    move-exception v2
+
+    move-object v1, v2
 
     .line 27
     .restart local v1    # "e":Ljava/lang/Exception;
@@ -74,17 +85,26 @@ CHAMELEON_MAINACTIVITY_SMALI = '''
 
     const-string v3, "Fail to find NativeChannelInterface"
 
-    invoke-static {v2, v3, v1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    move-object v4, v1
+
+    invoke-static {v2, v3, v4}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+
+    move-result v2
 
     goto :goto_1
 .end method
 
 .method public constructor <init>()V
-    .locals 0
+    .locals 2
 
     .prologue
     .line 13
-    invoke-direct {p0}, L%MainActivity%;-><init>()V
+    move-object v0, p0
+
+    .local v0, "this":L%package%/ChameleonMainActivity;
+    move-object v1, v0
+
+    invoke-direct {v1}, L%MainActivity%;-><init>()V
 
     return-void
 .end method
@@ -92,126 +112,215 @@ CHAMELEON_MAINACTIVITY_SMALI = '''
 
 # virtual methods
 .method protected onActivityResult(IILandroid/content/Intent;)V
-    .locals 0
-    .param p1, "requestCode"    # I
-    .param p2, "resultCode"    # I
-    .param p3, "data"    # Landroid/content/Intent;
+    .locals 8
 
     .prologue
     .line 70
-    invoke-super {p0, p1, p2, p3}, L%MainActivity%;->onActivityResult(IILandroid/content/Intent;)V
+    move-object v0, p0
+
+    .local v0, "this":L%package%/ChameleonMainActivity;
+    move v1, p1
+
+    .local v1, "requestCode":I
+    move v2, p2
+
+    .local v2, "resultCode":I
+    move-object v3, p3
+
+    .local v3, "data":Landroid/content/Intent;
+    move-object v4, v0
+
+    move v5, v1
+
+    move v6, v2
+
+    move-object v7, v3
+
+    invoke-super {v4, v5, v6, v7}, L%MainActivity%;->onActivityResult(IILandroid/content/Intent;)V
 
     .line 71
-    invoke-static {p0, p1, p2, p3}, Lprj/chameleon/channelapi/ActivityInterface;->onActivityResult(Landroid/app/Activity;IILandroid/content/Intent;)V
+    move-object v4, v0
+
+    move v5, v1
+
+    move v6, v2
+
+    move-object v7, v3
+
+    invoke-static {v4, v5, v6, v7}, Lprj/chameleon/channelapi/ActivityInterface;->onActivityResult(Landroid/app/Activity;IILandroid/content/Intent;)V
 
     .line 72
     return-void
 .end method
 
 .method protected onCreate(Landroid/os/Bundle;)V
-    .locals 0
-    .param p1, "savedInstanceState"    # Landroid/os/Bundle;
-%isStartSplash%
+    .locals 4
+
+    .prologue
+    .line 33
+    move-object v0, p0
+
+    .local v0, "this":L%package%/ChameleonMainActivity;
+    move-object v1, p1
+
+    .local v1, "savedInstanceState":Landroid/os/Bundle;
+    move-object v2, v0
+
+    %isStartSplash%
+
     .line 34
-    invoke-super {p0, p1}, L%MainActivity%;->onCreate(Landroid/os/Bundle;)V
+    move-object v2, v0
+
+    move-object v3, v1
+
+    invoke-super {v2, v3}, L%MainActivity%;->onCreate(Landroid/os/Bundle;)V
 
     .line 35
-    invoke-static {p0}, Lprj/chameleon/channelapi/ActivityInterface;->onCreate(Landroid/app/Activity;)V
+    move-object v2, v0
+
+    invoke-static {v2}, Lprj/chameleon/channelapi/ActivityInterface;->onCreate(Landroid/app/Activity;)V
 
     .line 36
     return-void
 .end method
 
 .method protected onDestroy()V
-    .locals 0
+    .locals 2
 
     .prologue
     .line 52
-    invoke-super {p0}, L%MainActivity%;->onDestroy()V
+    move-object v0, p0
+
+    .local v0, "this":L%package%/ChameleonMainActivity;
+    move-object v1, v0
+
+    invoke-super {v1}, L%MainActivity%;->onDestroy()V
 
     .line 53
-    invoke-static {p0}, Lprj/chameleon/channelapi/ActivityInterface;->onDestroy(Landroid/app/Activity;)V
+    move-object v1, v0
+
+    invoke-static {v1}, Lprj/chameleon/channelapi/ActivityInterface;->onDestroy(Landroid/app/Activity;)V
 
     .line 54
     return-void
 .end method
 
 .method protected onNewIntent(Landroid/content/Intent;)V
-    .locals 0
-    .param p1, "intent"    # Landroid/content/Intent;
+    .locals 4
 
     .prologue
     .line 76
-    invoke-super {p0, p1}, L%MainActivity%;->onNewIntent(Landroid/content/Intent;)V
+    move-object v0, p0
+
+    .local v0, "this":L%package%/ChameleonMainActivity;
+    move-object v1, p1
+
+    .local v1, "intent":Landroid/content/Intent;
+    move-object v2, v0
+
+    move-object v3, v1
+
+    invoke-super {v2, v3}, L%MainActivity%;->onNewIntent(Landroid/content/Intent;)V
 
     .line 77
-    invoke-static {p0, p1}, Lprj/chameleon/channelapi/ActivityInterface;->onNewIntent(Landroid/app/Activity;Landroid/content/Intent;)V
+    move-object v2, v0
+
+    move-object v3, v1
+
+    invoke-static {v2, v3}, Lprj/chameleon/channelapi/ActivityInterface;->onNewIntent(Landroid/app/Activity;Landroid/content/Intent;)V
 
     .line 78
     return-void
 .end method
 
 .method protected onPause()V
-    .locals 0
+    .locals 2
 
     .prologue
     .line 64
-    invoke-super {p0}, L%MainActivity%;->onPause()V
+    move-object v0, p0
+
+    .local v0, "this":L%package%/ChameleonMainActivity;
+    move-object v1, v0
+
+    invoke-super {v1}, L%MainActivity%;->onPause()V
 
     .line 65
-    invoke-static {p0}, Lprj/chameleon/channelapi/ActivityInterface;->onPause(Landroid/app/Activity;)V
+    move-object v1, v0
+
+    invoke-static {v1}, Lprj/chameleon/channelapi/ActivityInterface;->onPause(Landroid/app/Activity;)V
 
     .line 66
     return-void
 .end method
 
 .method protected onResume()V
-    .locals 0
+    .locals 2
 
     .prologue
     .line 58
-    invoke-super {p0}, L%MainActivity%;->onResume()V
+    move-object v0, p0
+
+    .local v0, "this":L%package%/ChameleonMainActivity;
+    move-object v1, v0
+
+    invoke-super {v1}, L%MainActivity%;->onResume()V
 
     .line 59
-    invoke-static {p0}, Lprj/chameleon/channelapi/ActivityInterface;->onResume(Landroid/app/Activity;)V
+    move-object v1, v0
+
+    invoke-static {v1}, Lprj/chameleon/channelapi/ActivityInterface;->onResume(Landroid/app/Activity;)V
 
     .line 60
     return-void
 .end method
 
 .method protected onStart()V
-    .locals 0
+    .locals 2
 
     .prologue
     .line 40
-    invoke-super {p0}, L%MainActivity%;->onStart()V
+    move-object v0, p0
+
+    .local v0, "this":L%package%/ChameleonMainActivity;
+    move-object v1, v0
+
+    invoke-super {v1}, L%MainActivity%;->onStart()V
 
     .line 41
-    invoke-static {p0}, Lprj/chameleon/channelapi/ActivityInterface;->onStart(Landroid/app/Activity;)V
+    move-object v1, v0
+
+    invoke-static {v1}, Lprj/chameleon/channelapi/ActivityInterface;->onStart(Landroid/app/Activity;)V
 
     .line 42
     return-void
 .end method
 
 .method protected onStop()V
-    .locals 0
+    .locals 2
 
     .prologue
     .line 46
-    invoke-super {p0}, L%MainActivity%;->onStop()V
+    move-object v0, p0
+
+    .local v0, "this":L%package%/ChameleonMainActivity;
+    move-object v1, v0
+
+    invoke-super {v1}, L%MainActivity%;->onStop()V
 
     .line 47
-    invoke-static {p0}, Lprj/chameleon/channelapi/ActivityInterface;->onStop(Landroid/app/Activity;)V
+    move-object v1, v0
+
+    invoke-static {v1}, Lprj/chameleon/channelapi/ActivityInterface;->onStop(Landroid/app/Activity;)V
 
     .line 48
     return-void
 .end method
+
 '''
 
 CHAMELEON_MAINACTIVITY_STARTSPLASH = '''
-    .prologue
-    .line 33
-    invoke-static {p0}, Lprj/chameleon/channelapi/ActivityInterface;->startSplash(Landroid/app/Activity;)V
+invoke-static {v2}, Lprj/chameleon/channelapi/ActivityInterface;->startSplash(Landroid/app/Activity;)V
 '''
 POSITION_HOLDER_PACKAGE = '%package%'
 POSITION_HOLDER_MAINACTIVITY = '%MainActivity%'

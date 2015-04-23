@@ -1,36 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dcn_select_account_item_selector"
     android:minHeight="60dp"
-    android:padding="0dp"
-    android:background="@drawable/dcn_select_account_item_selector">
+    android:padding="0dp" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dcn_name"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="false"
-        android:layout_marginLeft="20dp"
-        android:textSize="22sp"
-        android:singleLine="true" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="60dp"
-        android:minHeight="60dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/dcn_select_account_item_btn_selector"
-        android:gravity="center"
-        android:id="@+id/dcn_delete">
-
-        <ImageView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/dcn_select_account_item_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:src="@drawable/dcn_select_account_item_delete" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/dcn_select_account_passport"
+                    android:textColor="#464646"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/dcn_select_account_tv_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textColor="#ff7f21"
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/dcn_select_account_tv_mid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textColor="#acacac"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp" >
+
+                <TextView
+                    android:id="@+id/dcn_select_account_tv_last_app_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/dcn_select_account_last_app_label"
+                    android:textColor="#464646"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/dcn_select_account_tv_lastapp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/dcn_select_account_tv_last_app_label"
+                    android:singleLine="true"
+                    android:text="@string/dcn_select_account_last_app_none"
+                    android:textColor="#acacac"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/dcn_select_account_tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="right"
+                    android:singleLine="true"
+                    android:textColor="#acacac"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+
+            <com.downjoy.widget.DashedLine
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/dcn_select_account_tv_remark_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/dcn_select_account_remark_label"
+                    android:textColor="#464646"
+                    android:textSize="13sp" />
+
+                <LinearLayout
+                    android:id="@+id/dcn_select_account_ll_show_remark"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/dcn_select_account_tv_remark_content"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:text="@string/dcn_select_account_no_remark"
+                        android:textColor="#acacac"
+                        android:textSize="13sp" />
+
+                    <ImageView
+                        android:id="@+id/dcn_select_account_edit_iv"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:contentDescription="@null"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/dcn_select_account_edit" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dcn_select_account_ll_edit_remark"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/dcn_login_box_bg"
+                    android:orientation="horizontal"
+                    android:visibility="gone" >
+
+                    <EditText
+                        android:id="@+id/dcn_select_account_remarks"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="3dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:singleLine="true"
+                        android:textColor="#464646"
+                        android:textSize="13sp"
+                        android:textColorHint="#464646" />
+
+                    <TextView
+                        android:id="@+id/dcn_select_account_btn_ok"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/dcn_login_dropdown_selector"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="@android:string/ok"
+                        android:textColor="@color/dcn_light_black"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/dcn_select_account_default_radio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:button="@drawable/dcn_select_account_radio_selector"
+                    android:text="@string/dcn_select_account_radio_txt"
+                    android:textColor="@color/dcn_select_account_radio_txt_selector"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dcn_delete"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="@drawable/dcn_select_account_item_btn_selector"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:src="@drawable/dcn_select_account_item_delete" />
+        </LinearLayout>
+    </FrameLayout>
+
 </RelativeLayout>

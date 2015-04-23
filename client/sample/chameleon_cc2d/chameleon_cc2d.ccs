@@ -1,0 +1,12 @@
+<Solution>
+  <PropertyGroup Name="chameleon_cc2d" Version="2.2.1.0" Type="CocosStudio" />
+  <SolutionFolder>
+    <Group ctype="ResourceGroup">
+      <RootFolder Name=".">
+        <Project Name="MainScene.csd" Type="Scene" />
+        <Image Name="HelloWorld.png" />
+        <Image Name="button_n.png" />
+      </RootFolder>
+    </Group>
+  </SolutionFolder>
+</Solution>

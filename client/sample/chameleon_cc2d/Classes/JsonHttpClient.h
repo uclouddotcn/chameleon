@@ -6,10 +6,13 @@
 #include <vector>
 #include "cocos-ext.h"
 #include "cocos2d.h"
+#include "network/HttpClient.h"
+#include "network/HttpResponse.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
 
+using namespace network;
 
 class JsonHttpClient : public CCObject {
 public:
@@ -46,8 +49,8 @@ private:
     JsonHttpClient(const JsonHttpClient&) = delete;
     JsonHttpClient & operator=(JsonHttpClient& obj) = delete;
 private:
-    void CallbackForClient(CCHttpClient* client, CCHttpResponse* response);
-    CCHttpRequest * mReq;
+    void CallbackForClient(HttpClient* client, HttpResponse* response);
+    HttpRequest * mReq;
     ResponseFunc_t mFunc;
 };
 

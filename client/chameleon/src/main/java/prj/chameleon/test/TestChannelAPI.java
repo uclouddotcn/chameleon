@@ -216,6 +216,7 @@ public class TestChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                callback.onAction(-1, null);
                 dialog.dismiss();
             }
         });
