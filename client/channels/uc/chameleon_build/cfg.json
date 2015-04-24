@@ -1,11 +1,6 @@
 {
     "cfgitem": [
         {
-            "desc": "CP ID", 
-            "name": "cpId", 
-            "type": "int"
-        }, 
-        {
             "desc": "GAME ID", 
             "name": "gameId", 
             "type": "int"
@@ -14,6 +9,11 @@
             "desc": "API KEY", 
             "ignoreInA": 1, 
             "name": "apiKey", 
+            "type": "string"
+        },
+        {
+            "desc": "支付回调地址",
+            "name": "notifyUrl",
             "type": "string"
         }
     ], 

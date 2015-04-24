@@ -34,6 +34,10 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
-    compile fileTree(dir: "libs", includes: ["*.jar"])
+    compile fileTree(dir: 'libs', includes: ['*.jar'])
     compile project(':chameleon')
+    compile files('libs/alipaysdk.jar')
+    compile files('libs/MobileSecSdk.jar')
+    compile files('libs/UCGameSDK-3.5.3.1.jar')
+    compile files('libs/utdid4all-1.0.4.jar')
 }
