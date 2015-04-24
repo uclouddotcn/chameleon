@@ -33,8 +33,6 @@ android {
 
         }
         uc {
-<<<<<<< HEAD
-=======
             applicationId "com.xianyugame.sanguofire.uc"
         }
         oppo {
@@ -108,7 +106,6 @@ android {
 
         }
         p_umeng {
->>>>>>> e25aad234a3247473727d84d242044b8da67dc0e
 
         }
     }
