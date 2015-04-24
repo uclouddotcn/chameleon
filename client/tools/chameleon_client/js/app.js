@@ -694,7 +694,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 if(channel.config.icon && channel.config.icon.path){
                                     data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res', 'icon.png');
                                 }
-                                if(!data.channel.iconPath || !fso.existsSync(data.channel.iconPath)){
+                                if(!data.channel.iconPath && !fso.existsSync(data.channel.iconPath)){
                                     data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', 'icon.png');
                                 }
                                 if(channel.sdks && channel.sdks.length>0){
