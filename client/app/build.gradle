@@ -101,6 +101,7 @@ android {
         m4399 {
         }
         vivo {
+            applicationId "com.xianyugame.sanguofire.vivo"
         }
         dianxin {
             applicationId "com.xianyugame.sanguofire.dianxin"
