@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/giftcertificate_list_valid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:id="@+id/giftcertificate_list_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/giftcertificate_line_id"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/list_item_main_margin_top"
+                android:background="@drawable/giftcertificate_line_valid" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/giftcertificate_list_item_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/giftcertificate_list_layout"
+            android:layout_marginTop="@dimen/list_item_main_margin_top"
+            android:background="@drawable/giftcertificate_list_item_bg"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="left|top"
+                android:layout_toLeftOf="@+id/giftcertificate_item_state_valid_layout" >
+
+                <RelativeLayout
+                    android:id="@+id/ticket_title_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_gravity="left|top"
+                    android:layout_marginLeft="@dimen/vcoin_ticket_state_marginLeft"
+                    android:layout_marginTop="5dp" >
+
+                    <TextView
+                        android:id="@+id/ticket_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:maxLines="2"
+                        android:text="通用100元礼券"
+                        android:textColor="@color/TextColorBlack"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/giftcertificate_icon_invalid0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ticket_title_layout"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="@dimen/vcoin_ticket_state_marginLeft"
+                    android:layout_marginTop="@dimen/vcoin_ticket_state_marginTop3"
+                    android:background="@drawable/giftcertificate_item_invalid"
+                     />
+
+                <TextView
+                    android:id="@+id/ticket_context0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ticket_title_layout"
+                    android:layout_gravity="left"
+                    android:layout_toRightOf="@+id/giftcertificate_icon_invalid0"
+                    android:includeFontPadding="false"
+                    android:paddingLeft="@dimen/vcoin_ticket_state_marginLeft"
+                    android:paddingTop="2dp"
+                    android:singleLine="true"
+                    android:text="通用100元礼券111"
+                    android:textColor="@color/TextColorBlack"
+                    android:textSize="@dimen/ticket_size_small" />
+
+                <ImageView
+                    android:id="@+id/giftcertificate_icon_invalid1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ticket_context0"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="@dimen/vcoin_ticket_state_marginLeft"
+                    android:layout_marginTop="@dimen/vcoin_ticket_state_marginTop3"
+                    android:background="@drawable/giftcertificate_item_invalid"
+                    />
+
+                <TextView
+                    android:id="@+id/ticket_context1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ticket_context0"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="@dimen/vcoin_ticket_state_marginLeft"
+                    android:layout_toRightOf="@+id/giftcertificate_icon_invalid1"
+                    android:includeFontPadding="false"
+                    android:paddingTop="2dp"
+                    android:singleLine="true"
+                    android:text="通用100元礼券222"
+                    android:textColor="@color/TextColorBlack"
+                    android:textSize="@dimen/ticket_size_small" />
+
+                <ImageView
+                    android:id="@+id/giftcertificate_icon_invalid2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ticket_context1"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="@dimen/vcoin_ticket_state_marginLeft"
+                    android:layout_marginTop="@dimen/vcoin_ticket_state_marginTop3"
+                    android:background="@drawable/giftcertificate_item_invalid"
+                     />
+
+                <TextView
+                    android:id="@+id/ticket_context2" 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ticket_context1"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="@dimen/vcoin_ticket_state_marginLeft"
+                    android:layout_toRightOf="@+id/giftcertificate_icon_invalid2"
+                    android:includeFontPadding="false"
+                    android:paddingTop="2dp"
+                    android:singleLine="true"
+                    android:text="通用100元礼券333"
+                    android:textColor="@color/TextColorBlack"
+                    android:textSize="@dimen/ticket_size_small" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/giftcertificate_item_state_valid_layout"
+                android:layout_width="@dimen/bbk_tick_layout_width"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/giftcertificate_item_state_valid"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/ticket_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:layerType="software"
+                    android:singleLine="true"
+                    android:text="1"
+                    android:textColor="@color/bbk_TextColorWhite"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/vcoin_ticketamount_marginTop"
+                     android:layout_toRightOf="@+id/ticket_amount"
+                    android:text="元"
+                    android:textColor="@color/bbk_TextColorWhite"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/ticket_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@+id/ticket_amount"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dip"
+                    android:singleLine="true"
+                    android:text="@string/bbk_ticket_status_context1"
+                    android:textColor="@color/bbk_TextColorWhite"
+                    android:textSize="18sp"/>
+
+                <ImageView
+                    android:id="@+id/giftcertificate_state_flag_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/giftcertificate_item_valid_flag" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

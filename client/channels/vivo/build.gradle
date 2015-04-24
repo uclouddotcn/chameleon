@@ -35,6 +35,13 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
-    compile fileTree(dir: "libs", includes: ["*.jar"], exclude: 'android-support-v4.jar')
+    compile fileTree(dir: 'libs', exclude: 'android-support-v4.jar', includes: ['*.jar'])
     compile project(':chameleon')
+    compile files('libs/alipaysdk.jar')
+    compile files('libs/alipayutdid.jar')
+    compile files('libs/alipaysecsdk.jar')
+    compile files('libs/UPPayAssistEx.jar')
+    compile files('libs/UPPayPluginEx.jar')
+    compile files('libs/vivoAccountSDK_1.3.8.jar')
+    compile files('libs/vivoPaymentSDK_3.0.1.jar')
 }

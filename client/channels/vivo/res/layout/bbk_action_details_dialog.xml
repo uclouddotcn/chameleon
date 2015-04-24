@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/action_title_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+                    android:background="@drawable/bbk_dialog_title_bar">
+
+        <TextView
+            android:id="@+id/action_title_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:paddingLeft="50dip"
+            android:paddingRight="50dip"
+            android:singleLine="true"
+            android:text="@string/bbk_action_title"
+            android:textAppearance="?android:attr/textAppearanceMediumInverse"
+            android:textColor="@color/TextColorBlack"
+            android:textSize="@dimen/text_size_middle" />
+
+        <Button
+            android:id="@+id/action_cancel_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/bbk_action_cancel_id_marginRight"
+            android:background="@drawable/bbk_action_details_cancel" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/action_context_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bbk_dialog_content_bg" >
+
+        <RelativeLayout
+            android:id="@+id/action_context_date_id_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12.5dip"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="12.5dip" >
+
+            <TextView
+                android:id="@+id/action_context_date_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/bbk_action_context"
+                android:textColor="@color/TextColorBlack"
+                android:textSize="@dimen/text_size_small" />
+
+            <TextView
+                android:id="@+id/action_context_object_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/action_context_date_id"
+                android:layout_marginTop="5dip"
+                android:text="@string/bbk_action_context"
+                android:textColor="@color/TextColorBlack"
+                android:textSize="@dimen/text_size_small" />
+
+            <TextView
+                android:id="@+id/action_context_desc_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/action_context_object_id"
+                android:layout_marginTop="5dip"
+                android:text="@string/bbk_action_context"
+                android:textColor="@color/TextColorBlack"
+                android:textSize="@dimen/text_size_small" />
+
+            <CheckBox
+                android:id="@+id/action_read_and_accept_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/action_context_desc_id"
+                android:layout_marginTop="10dip"
+                android:layout_marginBottom="10dip"
+                android:button="@drawable/check_box_button"
+                android:checked="false"
+                android:paddingLeft="@dimen/bbk_action_paddingLeft"
+                android:text="@string/bbk_action_no_tip"
+                android:textColor="@color/TextColorBlack"
+                android:textSize="@dimen/text_size_small" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/action_context_layout"
+        android:background="@drawable/bbk_dialog_content_bottom" >
+
+        <Button
+            android:id="@+id/action_details_ok_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+			android:layout_centerInParent="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+
+            android:background="@drawable/bbk_action_dialog_button"
+            android:text="@string/bbk_action_diatails"
+            android:textColor="@color/bbk_TextColorWhite"
+            android:textSize="@dimen/text_size_small" />
+    </RelativeLayout>
+
+</LinearLayout>

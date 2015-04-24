@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="TextColorBlack">#ff000000</color>
+    <color name="TextColorBlack">#ff313131</color>
     <color name="bbk_TextColorWhite">#ffffffff</color>
-    <color name="TextColorRed">#ffe26926</color>
+    <color name="TextColorRed">#c8161d</color>
     <color name="black">#000000</color>
-    <color name="card_text">#535353</color>
+    <color name="card_text">#313131</color>
     <color name="card_text_tip">#949494</color>
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="list_item_pressed_color">#e5e5e5</color>
     <color name="list_item_bg">#fff4f4f4</color>
     <color name="bbk_product_name">#008be3</color>
-
+    <color name="bbk_ticket_color">#36a2dc</color>
+    
     <drawable name="preference_background_color">#F4F4F4</drawable>
     <drawable name="dialog_background_color">#F0F0EF</drawable>
     <drawable name="transparent">#00000000</drawable>
-
+    <color name="recharge_list_item_color">#008be3</color> 
+    <color name="preference_text_main_color">#393e41</color>   
+    <color name="preference_text_sub_color">#90969a</color>   
+     <color name="game_card_tip">#90969a</color>  
+     <color name="card_num_pwd_text">#313131</color>  
 </resources>

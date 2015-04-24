@@ -6,9 +6,12 @@
     <string name="bbk_cancel">取消</string>
     <string name="bbk_back">返回</string>
     <string name="bbk_submit">确定</string>
-    <string name="bbk_alipay">支付宝</string>
-    <string name="bbk_paytype_title">订单</string>
+    <string name="bbk_alipay">支付宝钱包</string>
+    <string name="bbk_alipay_title">V钻支付  |  支付宝钱包</string>
+    <string name="bbk_paytype_title">V钻支付</string>
+    <string name="bbk_ticket_title">选择礼券</string>
     <string name="bbk_uppay">银行卡</string>
+    <string name="bbk_uppay_title">V钻支付  |  银行卡</string>
     <string name="bbk_pay_invalid_param">支付参数不全，不能进行支付</string>
     <string name="bbk_pay_sys_error">支付系统出现异常，支付失败</string>
     <string name="bbk_pay_inipay_fail">初始化交易信息失败</string>
@@ -21,9 +24,31 @@
     <string name="bbk_self_update">支付服务正在进行升级操作</string>
     <string name="bbk_install_hint">安装提示</string>
     <string name="bbk_install_fail">安装支付控件失败</string>
-    <string name="bbk_pay_next_step">下一步</string>
-    <string name="bbk_order_title">"商        品："</string>
-    <string name="bbk_order_price">"金        额："</string>
+    <string name="bbk_pay_next_step">确认支付</string>
+    <string name="bbk_order_title">"商      品："</string>
+    <string name="bbk_order_price">"金      额："</string>
+    <string name="bbk_order_vcoin_balance">"V钻余额："</string>
+    <string name="bbk_order_vcoin_gift">"礼      券："</string>
+    <string name="bbk_vcoin_not_enough">"V钻不足，请点击以下方式充值"</string>
+    <string name="bbk_vcoin_title">"V钻"</string>
+    <string name="bbk_price_unit_title">"元"</string>    
+    <string name="bbk_loading_text_hint">正在加载...</string>
+    <string name="bbk_vcoin_change">请选择充值金额（￥1元=1V钻）</string>
+    <string name="bbk_vcoin_convert">1元=1V钻</string>
+    <string name="bbk_vcoin_1">10元</string>
+    <string name="bbk_vcoin_2">30元</string>
+    <string name="bbk_vcoin_3">50元</string>
+    <string name="bbk_vcoin_4">100元</string>
+    <string name="bbk_vcoin_5">200元</string>
+    <string name="bbk_vcoin_6">300元</string>
+    <string name="bbk_vcoin_7">500元</string>
+    <string name="bbk_vcoin_8">1000元</string>
+    <string name="bbk_vcoin_9">2000元</string>
+    <string name="bbk_vcoin_amount">金额（元）：</string>
+    <string name="bbk_vcoin_limit">请输入充值金额</string>
+    <string name="bbk_vcoin_pay">充值并支付</string>
+    <string name="bbk_vcoin_card_pay">立即充值</string>  
+    <string name="bbk_vcoin_promotions">您将获得XXV钻，完成支付需要YYV钻</string>
     <string name="bbk_order_desc">商品说明：</string>
     <string name="bbk_invalid_net_work_title">无法连接网络</string>
     <string name="bbk_invalid_net_work">您需要连接网络才能进行支付</string>
@@ -52,28 +77,47 @@
     <string name="bbk_paymethod_unsel">请选择支付方式</string>
     <string name="bbk_limit_pay_amount">交易金额较小，请选择其他支付方式</string>
     <string name="bbk_install_alipay">为保障您的支付安全，请先安装支付插件 </string>
+    <string name="bbk_action_title">活动</string>
+    <string name="bbk_action_context">活动内容 </string>  
+    <string name="bbk_action_diatails">查看详情 </string>        
+    <string name="bbk_action_no_tip">本次活动不再提示 </string>       
+    <string name="bbk_no_ticket_title">目前暂无可用礼券 </string> 
+    <string name="bbk_ticket_status_context1">正在使用</string>     
+    <string name="bbk_ticket_status_context2">点击使用</string>        
+    <string name="bbk_ticket_status_context3">无法使用</string>       
+    <string name="bbk_ticket_no_choice">不使用任何礼券 </string>  
+    <string name="bbk_visitor_tip">提示</string>        
+    <string name="bbk_visitor_context">您正使用游客帐号充值，无法参与任何充赠活动。为了您的帐号安全和利益，我们强烈建议您先升级成为vivo帐号。</string>       
+    <string name="bbk_visitor_upgrade">立即升级 </string> 
+    <string name="bbk_visitor_continue">以后再说</string>        
+    <string name="bbk_pay_tip_context">当前礼券面额超出订单金额（超出部分不会产生余额），是否确认使用该礼券支付？</string>   
+    <string name="bbk_pay_tip_ok">确认</string> 
+    <string name="bbk_pay_tip_cancel">取消</string> 
 
     <!-- 第二期 begin -->
     <string name="bbk_tencent">"财付通"</string>
-    <string name="bbk_card">"充值卡、点卡"</string>
+    <string name="bbk_tencent_title">"V钻支付  |  财付通"</string>
+    <string name="bbk_card_title">"V钻支付  |  手机充值卡"</string>
+    <string name="bbk_game_card_title">"V钻支付  |  骏卡"</string>
+    <string name="bbk_card">"手机充值卡"</string>
     <string name="bbk_phone_card">充值卡</string>
-    <string name="bbk_game_card">点卡</string>
+    <string name="bbk_game_card">骏卡</string>
     <string name="bbk_phone_card_yidong">移动</string>
     <string name="bbk_phone_card_liantong">联通</string>
     <string name="bbk_phone_card_dianxin">电信</string>
-    <string name="bbk_card_tip">请核对面值，选择错误可能导致资金损失</string>
+    <string name="bbk_card_tip">请核对面额，选择错误可能导致资金损失</string>
     <string name="bbk_game_card_support">目前支持骏网卡</string>
-    <string name="bbk_card_num_tip">卡号</string>
-    <string name="bbk_card_pwd_tip">密码</string>
-    <string name="bbk_card_amount_tip">面值</string>
+    <string name="bbk_card_num_tip">"卡  号："</string>
+    <string name="bbk_card_pwd_tip">"密  码："</string>
+    <string name="bbk_card_amount_tip">"面  额："</string>
     <string name="bbk_card_submit_fail">订单提交失败，请稍后重试！</string>
     <string name="bbk_detect_pay_result">订单提交成功，正在支付...</string>
     <string name="bbk_bank_tip">支持储蓄卡、信用卡</string>
-    <string name="bbk_card_le_price">面值不够本次消费</string>
-    <string name="bbk_card_amount_empty">请选择面值</string>
+    <string name="bbk_card_le_price">面额不够本次消费</string>
+    <string name="bbk_card_amount_empty">请选择面额</string>
     <string name="bbk_card_num_empty">请输入卡号</string>
     <string name="bbk_card_pwd_empty">请输入密码</string>
-    <string name="bbk_card_gt_price">面值超出商品金额的部分不予退补，确定继续？</string>
+    <string name="bbk_card_gt_price">面额超出商品金额的部分不予退补，确定继续？</string>
     <string name="bbk_card_succ_balance">交易成功，此卡余额###元可继续在vivo消费</string>
     <string name="bbk_card_succ_nobalance">交易成功，如果卡有余额可继续在vivo消费</string>
     <string name="bbk_card_succ">交易成功</string>
@@ -82,9 +126,36 @@
     <string name="bbk_card_pay_continue">继续</string>
     <string name="bbk_card_pay_submit">提交</string>
     <string name="bbk_card_service_refuse">系统暂停点卡支付</string>
-    <string name="bbk_card_num_le_len">卡号错误，请重新输入</string>
-    <string name="bbk_card_pwd_le_len">卡密错误，请重新输入</string>
+    <string name="bbk_card_num_le_len">卡号为%1$s位数字，请重新输入</string>
+    <string name="bbk_card_pwd_le_len">卡密为%1$s位数字，请重新输入</string>
     <string name="bbk_balance_invalid">暂不支持余额交易，请稍候再试</string>
+    <string name="bbk_topup_is_failure">充值失败</string>
+   <string name="bbk_topup_is_failure1">请重试</string>
+    <string name="bbk_rechange_pay_successful">充值并支付成功</string>
+    <string name="bbk_rechange_pay_succ_title">充值并支付成功</string>
+    <string name="bbk_rechange_pay_succ_content">本次消费%1$sV钻，%2$s元礼券</string>
+    <string name="bbk_rechange_pay_succ_content_no_ticket">本次消费%1$sV钻</string>      
+    <string name="bbk_rechange_pay_succ_content1">本次充值%1$sV钻，消费%2$sV钻，%3$s元礼券</string>
+    <string name="bbk_rechange_pay_succ_content_no_ticket1">本次充值%1$sV钻，消费%2$sV钻</string>         
+    <string name="bbk_pay_result_user_balance">当前账户余额：%1$sV钻</string>    
+    <string name="bbk_topup_success_back">返回游戏</string>
+    <string name="bbk_pay_continue">继续充值</string>
+    <string name="bbk_pay_retry">重试</string>
+    <string name="bbk_game_card_tip">骏卡充值为一次性充入，不支持分次</string>
+    <string name="bbk_card_tip1">1.手机充值卡均为一次性充入，不支持分次；</string>
+    <string name="bbk_card_tip2">2.请务必选择正确的所持充值卡面额，否则将导致支付不成功或者金额丢失；</string>
+    <string name="bbk_card_tip3">3.正确的卡号为%1$s位数字，密码为%2$s位数字；</string>
+    <string name="bbk_card_tip4">4.充值失败时请您稍后重试，不要频繁提交。您可拨打%1$s，确认卡内金额是否有效。</string>
+    <string name="bbk_client_server_yd">10086（移动客服）</string>
+    <string name="bbk_client_server_lt">10010（联通客服）</string>
+    <string name="bbk_client_server_dx">10000（电信客服）</string>
+    <string name="bbk_result_detecting">正在处理...</string>
+    <string name="bbk_result_detecting_tip">请稍候，成功支付后会在一分钟之内到账</string>
+    <string name="bbk_result_detecting_bt">处理中（%1$s秒）</string>
+    <string name="bbk_pay_fail_tip">充值成功 ，未完成支付</string>
+    <string name="bbk_pay_fail_content">本次充值%1$sV钻，完成支付还需要充值%2$sV钻</string>
+    <string name="bbk_detect_result_time_out">处理超时</string>
+    <string name="bbk_detect_result_time_out_content">没有查询到支付结果，如果发现已扣款但商品未到账，请及时联系游戏客服。</string>
 
     <string-array name="bbk_phone_card_type_yd">
         <item>"10元"</item>
@@ -92,20 +163,27 @@
         <item>"30元"</item>
         <item>"50元"</item>
         <item>"100元"</item>
+        <item>"200元"</item>
         <item>"300元"</item>
         <item>"500元"</item>
     </string-array>
     <string-array name="bbk_phone_card_type_lt">
+        <item>"10元"</item>
+        <item>"20元"</item>
+        <item>"30元"</item>
+        <item>"50元"</item>
+        <item>"100元"</item>
+        <item>"200元"</item>
+        <item>"300元"</item>
+        <item>"500元"</item>
+    </string-array>
+    <string-array name="bbk_phone_card_type_dx">
+        <item>"10元"</item>
         <item>"20元"</item>
         <item>"30元"</item>
         <item>"50元"</item>
         <item>"100元"</item>
         <item>"300元"</item>
-        <item>"500元"</item>
-    </string-array>
-    <string-array name="bbk_phone_card_type_dx">
-        <item>"50元"</item>
-        <item>"100元"</item>
     </string-array>
     <string-array name="bbk_game_card_type">
         <item>"10元"</item>
