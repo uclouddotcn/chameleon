@@ -1,26 +1,26 @@
 {
     "cfgitem": [
         {
-            "desc": "CP ID", 
-            "name": "cpId", 
+            "desc": "GAME ID",
+            "name": "gameId",
             "type": "int"
-        }, 
+        },
         {
-            "desc": "GAME ID", 
-            "name": "gameId", 
-            "type": "int"
-        }, 
+            "desc": "API KEY",
+            "ignoreInA": 1,
+            "name": "apiKey",
+            "type": "string"
+        },
         {
-            "desc": "API KEY", 
-            "ignoreInA": 1, 
-            "name": "apiKey", 
+            "desc": "支付回调地址",
+            "name": "notifyUrl",
             "type": "string"
         }
-    ], 
-    "chamversion": "1.3.3", 
-    "desc": "UC九游", 
-    "enableWrapPackage": 0, 
-    "name": "uc", 
-    "svrver": "1.4.1", 
-    "version": "3.4.15.3"
+    ],
+    "chamversion": "1.5.0",
+    "desc": "UC九游",
+    "enableWrapPackage": 0,
+    "name": "uc",
+    "svrver": "1.5.0",
+    "version": "3.5.3.1"
 }

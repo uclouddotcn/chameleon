@@ -183,7 +183,7 @@ chameleonApp = angular.module('chameleonApp', [
                             fileDialog.saveAs(function(fileName){
                                 zip.writeZip(fileName);
                                 alert('保存成功');
-                            }, $scope.project.name + '.zip');
+                            }, $scope.project.config.code + '.zip');
                         }catch (e){
                             console.log(e);
                             alert('导出失败： 未知错误');
@@ -312,6 +312,7 @@ chameleonApp = angular.module('chameleonApp', [
                                 name: sdk.name,
                                 version: sdk.version,
                                 desc: sdk.desc,
+                                svrver: sdk.svrver,
                                 config: {}
                             });
                             $scope.selectedSDKs = $scope.selectedChannel.sdks;
@@ -831,7 +832,7 @@ chameleonApp = angular.module('chameleonApp', [
                             fileDialog.saveAs(function(fileName){
                                 fse.writeJSON(fileName, config);
                                 alert('保存成功');
-                            }, $scope.project.name + '.json');
+                            }, $scope.project.config.code + '.json');
                         }catch(e){
                             console.log(e);
                             alert('导出失败： 未知错误');

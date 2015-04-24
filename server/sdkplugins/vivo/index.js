@@ -115,9 +115,7 @@ VivoChannel.prototype.pendingPay=function(wrapper, params, infoFromSDK, callback
     try {
         var time=formatTime(new Date());
         var orderID = wrapper.userAction.genOrderId();
-        var rest = params.realPayMoney % 100;
-        rest = rest<10 ? ('0'+rest) : rest.toString();
-        var money = (params.realPayMoney / 100).toString() + '.' + rest;
+        var money = params.realPayMoney;
         var signParams = {
             version:'1.0.0',
             cpId:wrapper.cfg.cpId,
@@ -126,7 +124,8 @@ VivoChannel.prototype.pendingPay=function(wrapper, params, infoFromSDK, callback
             orderTime:time,
             orderAmount:money,
             orderTitle:params.productName||"游戏币",
-            orderDesc:params.productDesc||"游戏币"
+            orderDesc:params.productDesc||"游戏币",
+            extInfo: 'xx'
         };
         if (wrapper.cfg.payUrl)signParams['notifyUrl'] = wrapper.cfg.payUrl;
         if (!wrapper.cfg.cpKeyMd5) {
@@ -146,8 +145,8 @@ VivoChannel.prototype.pendingPay=function(wrapper, params, infoFromSDK, callback
                 }
                 if (obj.respCode == '200') {
                     return callback(null, orderID, params, null, {
-                            sign: obj.vivoSignature,
-                            order: obj.vivoOrder,
+                            sign: obj.accessKey,
+                            order: obj.orderNumber,
                             title: signParams.orderTitle,
                             desc: signParams.orderDesc
                         });
@@ -166,7 +165,7 @@ VivoChannel.prototype.pendingPay=function(wrapper, params, infoFromSDK, callback
     }
 };
 
-VivoChannel.prototype.calcSign = function(paramList, cfgItem){
+VivoChannel.prototype.calcSign = function(paramList, key){
     var params = {};
 
     //remove null property
@@ -210,7 +209,7 @@ VivoChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
         md5.update(wrapper.cfg.cpKey, 'utf8');
         wrapper.cfg.cpKeyMd5 = md5.digest('hex').toLowerCase();
     }
-    req.log.debug({req: req, params: params}, 'recv pay rsp');
+    req.log.info({req: req, params: params}, 'recv pay rsp');
     try {
         if (params.cpId !== wrapper.cfg.cpId || params.appId !== wrapper.cfg.appId) {
             self._logger.warn({params: params}, "unmatched app info");
@@ -231,7 +230,7 @@ VivoChannel.prototype.respondsToPay = function (req, res, next,  wrapper) {
             tradeType: params.tradeType,
             payTime: params.payTime
         };
-        var status = (params.respCode === 200 && params.respCode == '0000') ? 0 : 1;
+        var status = (params.respCode === '200' && params.tradeStatus == '0000') ? 0 : 1;
 
         wrapper.userAction.pay(wrapper.channelName, uid, null,
             orderId, status,

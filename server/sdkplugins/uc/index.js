@@ -11,9 +11,8 @@ var _errorcode = commonLib.ErrorCode;
 var SDKPluginBase = commonLib.SDKPluginBase;
 
 var cfgDesc = {
-    cpId: 'integer',
     gameId: 'integer',
-    apiKey: 'string',
+    apiKey: 'string'
 };
 
 var UCChannel = function(logger, cfgChecker, debug) {
@@ -50,14 +49,11 @@ UCChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
             sid: token
         },
         game: {
-            cpId: wrapper.cfg.cpId,
             gameId: wrapper.cfg.gameId,
-            channelId: '2',
-            serverId: 0
         },
         sign: sign
     };
-    this.client.post('/ss', params, function (err, req, res, obj) {
+    this.client.post('/cp/account.verifySession', params, function (err, req, res, obj) {
         self._logger.debug({rsp: obj}, 'recv from uc');
         if (err) {
             req.log.warn({err: err}, 'fail to get rsp from remote');
@@ -66,11 +62,11 @@ UCChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
         }
         try {
             var result = null;
-            if (obj.state.code === 1) {
+            if (obj.state.code === 1 ) {
                 result = {
                     code: _errorcode.ERR_OK,
                     loginInfo: {
-                        uid: obj.data.ucid.toString(),
+                        uid: obj.data.accountId,
                         token: token,
                         name: obj.data.nickName
                     }
@@ -79,11 +75,13 @@ UCChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
                 if (obj.state.code === 10) {
                     req.log.warn({params: params}, 'param error');
                     result = {
-                        code: _errorcode.ERR_FAIL
+                        code: _errorcode.ERR_FAIL,
+                        msg: obj.state.msg
                     };
                 } else {
                     result = {
-                        code: _errorcode.ERR_LOGIN_SESSION_INVALID
+                        code: _errorcode.ERR_LOGIN_SESSION_INVALID,
+                        msg: obj.state.msg
                     }
                 }
             }
@@ -105,17 +103,17 @@ UCChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
         var customInfos = data.callbackInfo.split('|');
         var channel = customInfos[0];
         var cfgItem = wrapper.cfg;
-        var sign = this.calcSign(cfgItem.cpId+
+        var sign = this.calcSign( 
+            'accountId='+data.accountId+
             'amount='+data.amount+
             'callbackInfo='+data.callbackInfo+
             'cpOrderId='+data.cpOrderId+
+            'creator='+data.creator+
             'failedDesc='+data.failedDesc+
             'gameId='+data.gameId+
             'orderId='+data.orderId+
             'orderStatus='+data.orderStatus+
             'payWay='+data.payWay+
-            'serverId='+data.serverId+
-            'ucid='+data.ucid+
             cfgItem.apiKey);
         if (data.gameId != cfgItem.gameId) {
             result = false;
@@ -128,7 +126,8 @@ UCChannel.prototype.respondsToPay = function (req, res, next, wrapper) {
         var amount = Math.round(parseFloat(data.amount) * 100);
         var others = {
             serverId: data.serverId,
-            payWay: data.payWay
+            payWay: data.payWay,
+            chOrderId: data.orderId
         };
         wrapper.userAction.pay(wrapper.channelName, data.ucid, null,
             data.cpOrderId, getPayStatus(data.orderStatus),
