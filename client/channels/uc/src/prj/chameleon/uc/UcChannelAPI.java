@@ -7,8 +7,6 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import cn.uc.gamesdk.IUCBindGuest;
-import cn.uc.gamesdk.UCBindGuestResult;
 import cn.uc.gamesdk.UCCallbackListener;
 import cn.uc.gamesdk.UCCallbackListenerNullException;
 import cn.uc.gamesdk.UCGameSDK;
@@ -42,22 +40,6 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
     }
 
-    private class BindGuestListener implements IUCBindGuest {
-        @Override
-        public UCBindGuestResult bind(String sid) {
-            if (!isLoginedAsGuest) {
-                UCBindGuestResult bindResult = new UCBindGuestResult();
-                bindResult.setSuccess(false);
-                return bindResult;
-            }
-            JSONObject obj = getLoginInfo(sid);
-            mAccountActionListener.onGuestBind(obj);
-            UCBindGuestResult bindResult = new UCBindGuestResult();
-            bindResult.setSuccess(true);
-            return bindResult;
-        }
-    }
-
     private class LogoutListener implements UCCallbackListener<String> {
 
         @Override
@@ -80,12 +62,12 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     private IAccountActionListener mAccountActionListener;
-    private boolean isLoginedAsGuest = false;
     private boolean mIsDebug;
     private UCOrientation mOrientation;
-    private long mCpId;
     private long mGameID;
+    private String mNotifyUrl;
     private String mUid = "";
+    private String mUserName = "";
     private FloatBarInfo mFloatBarInfo = new FloatBarInfo();
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
@@ -95,7 +77,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         } else {
             mOrientation = UCOrientation.PORTRAIT;
         }
-        mCpId = Long.valueOf(cfg.getString("cpId"));
+        mNotifyUrl = cfg.getString("notifyUrl");
         mGameID = Long.valueOf(cfg.getString("gameId"));
         mChannel = commCfg.mChannel;
         mIsDebug = commCfg.mIsDebug;
@@ -112,15 +94,12 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                      final IDispatcherCb cb) {
 
         GameParamInfo gpi = new GameParamInfo();
-        gpi.setCpId((int) mCpId);
         gpi.setGameId((int) mGameID);
         gpi.setFeatureSwitch(new FeatureSwitch(true, true));
-        gpi.setServerId(0);
         UCLogLevel logLevel;
         boolean isDebug = mIsDebug;
         logLevel = UCLogLevel.DEBUG;
         try {
-            UCGameSDK.defaultSDK().setBindOperation(new BindGuestListener());
             UCGameSDK.defaultSDK().setOrientation(mOrientation);
             UCGameSDK.defaultSDK().setLogoutNotifyListener(new LogoutListener());
             UCGameSDK.defaultSDK().setLoginUISwitch(UCLoginFaceType.USE_WIDGET);
@@ -179,16 +158,17 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                         String sid = UCGameSDK.defaultSDK().getSid();
                         if (sid.length() == 0) {
                             cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
-                        } else {
                         }
 
                     } else {
+                        cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
                         Log.e(Constants.TAG, String.format("Fail to invoke uc login %d", i));
                     }
                 }
             });
         } catch (UCCallbackListenerNullException e) {
-            e.printStackTrace();
+            Log.e(Constants.TAG, "Fail to invoke uc login", e);
+            cb.onFinished(Constants.ErrorCode.ERR_FAIL, null);
         }
         mAccountActionListener = accountActionListener;
     }
@@ -225,9 +205,12 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             info.setAmount((float) (realPayMoney) / 100);
         }
         info.setRoleId(uidInGame);
+        info.setRoleName(mUserName);
         info.setTransactionNumCP(orderId);
         info.setCustomInfo(getCustomInfo());
-        info.setServerId(0);
+        if (mNotifyUrl != null && mNotifyUrl.length() != 0) {
+            info.setNotifyUrl(mNotifyUrl);
+        }
         final PayStatus status = new PayStatus();
         try {
             UCGameSDK.defaultSDK().pay(activity.getApplicationContext(), info, new UCCallbackListener<OrderInfo>() {
@@ -287,9 +270,12 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         info.setAllowContinuousPay(false);
         info.setAmount((float) (realPayMoney) / 100);
         info.setRoleId(uidInGame);
+        info.setRoleName(mUserName);
         info.setTransactionNumCP(orderId);
         info.setCustomInfo(getCustomInfo());
-        info.setServerId(0);
+        if (mNotifyUrl != null && mNotifyUrl.length() != 0) {
+            info.setNotifyUrl(mNotifyUrl);
+        }
         final PayStatus status = new PayStatus();
         try {
             UCGameSDK.defaultSDK().pay(activity.getApplicationContext(), info, new UCCallbackListener<OrderInfo>() {
@@ -498,6 +484,7 @@ public final class UcChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                                  int zoneId,
                                  String zoneName) {
         try {
+            mUserName = roleName;
             JSONObject obj = new JSONObject();
             obj.put("roleId", roleId);
             obj.put("roleName", roleName);
