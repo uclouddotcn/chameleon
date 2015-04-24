@@ -53,7 +53,7 @@ UCChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
         },
         sign: sign
     };
-    this.client.post('/account.verifySession', params, function (err, req, res, obj) {
+    this.client.post('/cp/account.verifySession', params, function (err, req, res, obj) {
         self._logger.debug({rsp: obj}, 'recv from uc');
         if (err) {
             req.log.warn({err: err}, 'fail to get rsp from remote');
