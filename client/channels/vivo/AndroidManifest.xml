@@ -72,6 +72,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/bbk_app_name"
             android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -80,6 +81,7 @@
         </activity>
         <activity
             android:name="com.bbk.payment.TicketActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -88,6 +90,7 @@
         </activity>
         <activity
             android:name="com.bbk.payment.CardActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -96,6 +99,7 @@
         </activity>
         <activity
             android:name="com.bbk.payment.RechargeChoiceActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -104,6 +108,7 @@
         </activity>
         <activity
             android:name="com.bbk.payment.PaySuccActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -112,6 +117,7 @@
         </activity>
         <activity
             android:name="com.bbk.payment.JCardActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -120,6 +126,7 @@
         </activity>
         <activity
             android:name="com.bbk.payment.DetectPayResultActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -128,6 +135,7 @@
         </activity>
         <activity
             android:name="com.bbk.payment.PayContinueActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -136,6 +144,7 @@
         </activity>
         <activity
             android:name="com.bbk.payment.RechargeFailActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -153,10 +162,12 @@
         </activity>
         <activity
             android:name="com.bbk.payment.PaymentDetailsActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.unionpay.uppay.PayActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
@@ -164,6 +175,7 @@
         </activity>
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -171,6 +183,7 @@
         </activity>
         <activity
             android:name="com.alipay.sdk.auth.AuthActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="portrait" >
