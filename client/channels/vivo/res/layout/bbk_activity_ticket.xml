@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffffff"
+    android:orientation="vertical" >
+
+    <include layout="@layout/bbk_payment_title" />
+
+    <ListView
+        android:id="@+id/ticket_list"
+        android:layout_width="wrap_content"
+        android:layout_height="0dip"
+        android:layout_marginLeft="@dimen/vcoin_gift_state_marginLeft"
+        android:layout_marginRight="@dimen/vcoin_gift_state_marginRight"
+        android:layout_weight="1"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/ticket_loading_box"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone" >
+
+        <include layout="@layout/bbk_loading_layout" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/no_ticket_box"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center" 
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ticket_background_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/bbk_no_ticket_layout_margintop"
+            android:src="@drawable/bbk_not_use_ticket" />
+
+        <TextView
+            android:id="@+id/ticket_failed_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ticket_background_id"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:textColor="@color/preference_text_sub_color"
+            android:textSize="@dimen/bbk_card_type_size" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/giftcertificate_button_id"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/giftcertificate_button"
+        android:text="@string/bbk_ticket_no_choice"
+        android:visibility="gone" />
+
+</LinearLayout>

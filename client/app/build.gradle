@@ -33,6 +33,82 @@ android {
 
         }
         uc {
+<<<<<<< HEAD
+=======
+            applicationId "com.xianyugame.sanguofire.uc"
+        }
+        oppo {
+            applicationId "com.sanguofire.nearme.gamecenter"
+        }
+        dangle {
+
+        }
+        qqmsdk {
+            applicationId "com.tencent.tmgp.sanguofire"
+            signingConfigs {
+                debug {
+                    storeFile file("../mykeystore")
+                    storePassword "a1988106"
+                    keyPassword "1988106"
+                    keyAlias "com.xianyugame.hxsg"
+                }
+            }
+        }
+        anzhi {
+
+        }
+        huawei {
+            applicationId "com.xianyugame.sanguofire.huawei"
+        }
+        meizu {
+
+        }
+        gfan {
+
+        }
+        lenovo {
+            applicationId "com.xianyugame.sanguofire.lenovo"
+        }
+        gionee {
+
+        }
+        htc {
+
+        }
+        coolpad {
+        }
+        muzhiwan {
+        }
+        m4399 {
+        }
+        vivo {
+            applicationId "com.xianyugame.sanguofire.vivo"
+        }
+        dianxin {
+            applicationId "com.xianyugame.sanguofire.dianxin"
+        }
+        youku {
+        }
+        ewan {
+        }
+        egame {
+        }
+        youlong {
+        }
+        anfeng {
+        }
+        mopo {
+        }
+        yuwan {
+        }
+        p_getui {
+
+        }
+        p_jpush {
+
+        }
+        p_umeng {
+>>>>>>> e25aad234a3247473727d84d242044b8da67dc0e
 
         }
     }

@@ -200,6 +200,23 @@ def cleanOldBuild(targetFolder):
                 print('now forcibly remove  %s ... ' %(rmPath))
                 shutil.rmtree(rmPath)
 
+def cleanChannelOldBuild(channelDir):
+    print("clean channel ant old build %s ..." %(channelDir))
+    if os.path.isdir(channelDir):
+        paths = os.listdir(channelDir)
+        for pathName in paths:
+            dirPath = os.path.join(channelDir, pathName)
+            print(dirPath)
+            if os.path.isdir(dirPath):
+                listPath = os.listdir(dirPath)
+                print(listPath)
+                for filePath in listPath:
+                    print(filePath)
+                    if filePath == 'bin' or filePath == 'gen' or filePath == 'smali' or filePath == 'build':
+                        print('------------------rm bin gen smali build---------------')
+                        binPath = os.path.join(dirPath, filePath)
+                        shutil.rmtree(binPath, True)
+
 def getversion():
     versionFolder = os.path.join(BASEDIR, '..', 'version')
     versionFile = os.path.join(versionFolder, 'version.txt')
@@ -309,6 +326,8 @@ def mergeToNodewebkit(targetFolder):
 def build():
     print('start syncing the server version')
     syncServerVer(os.path.join(BASEDIR, '..'))
+
+    cleanChannelOldBuild(CHANNEL_DIR)
 
     targetFolder = os.path.join(BASEDIR, 'chameleon_build')
     cleanOldBuild(targetFolder)

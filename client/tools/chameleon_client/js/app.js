@@ -163,7 +163,7 @@ chameleonApp = angular.module('chameleonApp', [
                         if($scope.project.config.icon){
                             var destiny =node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
                             fse.copySync($scope.project.config.icon, destiny);
-                            $scope.project.config.icon = destiny;
+                            $scope.project.config.icon = destiny + '?' + new Date().getTime();
                             $scope.projectIcon = $scope.project.config.icon;
                         }
                         var promise = ProjectMgr.updateProject($scope.project);
@@ -172,7 +172,8 @@ chameleonApp = angular.module('chameleonApp', [
                                 alert("Update project config failed.");
                             }
                             $scope.isProjectUnchanged = true;
-                            $scope.project.config.icon = node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png'));
+                            $scope.project.config.icon = node_path.join(chameleonPath.projectRoot, $scope.project.name, nodePath('/cfg/icon.png')) + '?' + new Date().getTime();
+                            $scope.projectIcon = $scope.project.config.icon;
                         });
                     };
                     $scope.outputConfig = function(){
@@ -479,12 +480,17 @@ chameleonApp = angular.module('chameleonApp', [
                             }
                             $scope.iconPosition = iconPosition();
                             if(channel.config.icon&&channel.config.icon.path){
+                                $scope.selectedChannel.config.icon.path = $scope.project.config.icon;
                                 $scope.pictureToDraw = {
                                     base: $scope.selectedChannel.config.icon.path,
                                     overlay: $scope.selectedChannel.config.icon.position
                                 }
                             }else{
-                                $scope.pictureToDraw = undefined;
+                                //$scope.pictureToDraw = undefined;
+                                $scope.pictureToDraw = {
+                                    base: $scope.project.config.icon,
+                                    overlay: null
+                                }
                             }
 
                             //empty file selection
@@ -612,9 +618,12 @@ chameleonApp = angular.module('chameleonApp', [
                                 var config = $scope.selectedChannels[i].config;
                                 if(config.icon){
                                     config.icon.position = position;
-                                    ProjectMgr.setChannel($scope.project, $scope.selectedChannels[i]);
+                                    //ProjectMgr.setChannel($scope.project, $scope.selectedChannels[i]);
                                     if(config.icon.path){
                                         var savePath = node_path.join(chameleonPath.projectRoot, $scope.project.name, 'cfg', $scope.selectedChannels[i].channelName, 'res', 'icon.png');
+                                        $scope.selectedChannels[i].config.icon.path = savePath;
+                                        ProjectMgr.setChannel($scope.project, $scope.selectedChannels[i]);
+                                        $scope.selectedChannels[i].config.icon.path = savePath;
                                         saveImageWithoutDisplay(canvas, config.icon.path, config.icon.position, savePath, $scope.selectedChannels[i]);
                                     }
                                 }
@@ -682,10 +691,10 @@ chameleonApp = angular.module('chameleonApp', [
                                     }
                                     //data.channel.splashPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res');
                                 }
+                                data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', 'icon.png');
                                 if(channel.config.icon && channel.config.icon.path){
                                     data.channel.iconPath = node_path.join(chameleonPath.projectRoot, project.name, 'cfg', channel.channelName, 'res', 'icon.png');
                                 }
-
                                 if(channel.sdks && channel.sdks.length>0){
                                     for(var i=0; i<channel.sdks.length; i++){
                                         var sdkConfig = {
@@ -1714,6 +1723,13 @@ chameleonApp = angular.module('chameleonApp', [
                     baseImage.src = base;
                     overlayImage.src = overlay;
                 }
+                var drawImageWithoutOverlay = function(canvas, base){
+                    var context = canvas.getContext('2d');
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    var baseImage = new Image();
+                    baseImage.src = base;
+                    context.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+                }
                 var getOverlayPath = function(position){
                     var path = 'icon-decor-';
                     if(position === 1) path += 'leftup';
@@ -1727,13 +1743,21 @@ chameleonApp = angular.module('chameleonApp', [
                     var context = canvas.getContext('2d');
                     context.clearRect(0, 0, canvas.width, canvas.height);
                     if(!scope.pictureToDraw ) return;
-                    if(!scope.pictureToDraw.base) return;
-                    if(!scope.pictureToDraw.overlay) return;
+                    if(!scope.pictureToDraw.base) {
+                        scope.pictureToDraw.base = scope.projectIcon;
+                    };
+                    //if(!scope.pictureToDraw.overlay) return;
                     var channel = scope.selectedChannel;
                     var base = scope.pictureToDraw.base;
-                    var overlay = pathLib.join(chameleonPath.configRoot, 'channelinfo', channel.channelName, 'drawable', 'drawable-xhdpi', getOverlayPath(scope.pictureToDraw.overlay));
-                    if(!fs.existsSync(overlay)) return;
-                    drawImage(canvas, base, overlay);
+                    if(scope.pictureToDraw.overlay){
+                        var overlay = pathLib.join(chameleonPath.configRoot, 'channelinfo', channel.channelName, 'drawable', 'drawable-xhdpi', getOverlayPath(scope.pictureToDraw.overlay));
+                        if(!fs.existsSync(overlay)) return;
+                    }
+                    if(!overlay){
+                        drawImageWithoutOverlay(canvas, base);
+                    }else{
+                        drawImage(canvas, base, overlay);
+                    }
                 }
                 scope.$watch('pictureToDraw', renderIcon);
             }

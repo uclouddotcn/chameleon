@@ -3,13 +3,10 @@ package prj.chameleon.vivo;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-import com.bbkmobile.iqoo.payment.PaymentActivity;
-import com.vivo.account.base.accounts.OnVivoAccountChangedListener;
-import com.vivo.account.base.accounts.VivoAccountManager;
+import com.bbk.payment.PaymentActionDetailsInit;
+import com.bbk.payment.PaymentActivity;
 import com.vivo.account.base.activity.LoginActivity;
 
 import org.json.JSONException;
@@ -31,8 +28,7 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     private static class Config {
-        public String mAppKey;
-        public String mCpId;
+        public String mAppId;
     }
 
     private Config mCfg;
@@ -42,19 +38,15 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private IAccountActionListener mAccountActionListener;
     private int REQUEST_CODE_LOGIN = 0;
     private int REQUEST_CODE_PAY = 1;
-    private VivoAccountManager mVivoAccountManager;
-    private Handler mHandler = new Handler();
 
     public void initCfg(ApiCommonCfg commCfg, Bundle cfg) {
         mCfg = new Config();
-        mCfg.mAppKey = cfg.getString("appId");
-        mCfg.mCpId = cfg.getString("cpId");
+        mCfg.mAppId = cfg.getString("appId");
         mChannel = commCfg.mChannel;
     }
 
     @Override
     public void init(Activity activity, IDispatcherCb cb) {
-        mVivoAccountManager = VivoAccountManager.getInstance(activity);
         cb.onFinished(Constants.ErrorCode.ERR_OK, null);
     }
 
@@ -66,18 +58,6 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         }
         Intent loginIntent = new Intent(activity, LoginActivity.class);
         activity.startActivityForResult(loginIntent, REQUEST_CODE_LOGIN);
-        /*activity.startActivity(loginIntent);
-        mVivoAccountManager.registeListener(new OnVivoAccountChangedListener() {
-            @Override
-            public void onAccountLogin(String name, String openid, String authtoken) {
-                cb.onFinished(Constants.ErrorCode.ERR_OK, JsonMaker.makeLoginResponse(authtoken, openid, mChannel));
-            }
-
-            //第三方游戏不需要使用此回调
-            @Override
-            public void onAccountRemove(boolean isRemoved) {
-            }
-        });*/
         mLoginCb = cb;
         mAccountActionListener = accountActionListener;
     }
@@ -99,7 +79,7 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     }
 
     @Override
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final Activity activity, int requestCode, int resultCode, Intent data) {
         super.onActivityResult(activity, requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_LOGIN) {
             if (resultCode == Activity.RESULT_OK && mLoginCb != null) {
@@ -112,6 +92,9 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                     userInfo.mUserName = loginResultObj.getString("name");
                     userInfo.mUserToken = loginResultObj.getString("authtoken");
                     mUserInfo = userInfo;
+
+                    new PaymentActionDetailsInit(activity, mCfg.mAppId);// appid为vivo开发者平台中生成的App ID；方法原型PaymentActionDetailsInit(Context context, String appId)
+
                     mLoginCb.onFinished(Constants.ErrorCode.ERR_OK,
                             JsonMaker.makeLoginResponse(mUserInfo.mUserToken, mUserInfo.mUserId, mChannel));
                 } catch (JSONException e) {
@@ -126,7 +109,12 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
                 boolean pay_result = extras.getBoolean("pay_result");
                 String res_code = extras.getString("result_code");
                 String pay_msg = extras.getString("pay_msg");
-                mPayCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                Log.i("VivoChannelAPI", "trans_no = " + trans_no +" pay_result = " + pay_result +" res_code = " + res_code +" pay_msg = " + pay_msg);
+                if(pay_result){
+                    mPayCb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                }else {
+                    mPayCb.onFinished(Constants.ErrorCode.ERR_PAY_FAIL, null);
+                }
             }
             mPayCb = null;
         }
@@ -135,9 +123,6 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public void logout(Activity activity) {
-        if (mVivoAccountManager != null){
-            mVivoAccountManager.removeAccount();
-        }
         if (mAccountActionListener != null) {
             mAccountActionListener.onAccountLogout();
         }
@@ -160,7 +145,7 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
             return;
         }
-        startPay(activity, (double) realPayMoney, orderId, payInfo);
+        startPay(activity, (long) realPayMoney, orderId, payInfo);
         mPayCb = cb;
     }
 
@@ -180,7 +165,7 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
             cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
             return;
         }
-        startPay(activity, (double) realPayMoney, orderId, payInfo);
+        startPay(activity, (long) realPayMoney, orderId, payInfo);
         mPayCb = cb;
     }
 
@@ -225,24 +210,14 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     @Override
     public void onDestroy(Activity activity) {
         super.onDestroy(activity);
-        if (mVivoAccountManager != null){
-            mVivoAccountManager.unRegistListener(new OnVivoAccountChangedListener() {
-                @Override
-                public void onAccountLogin(String name, String openid, String authtoken) {
-                }
-                //第三方游戏不需要使用此回调
-                @Override
-                public void onAccountRemove(boolean isRemoved) {
-                }
-            });
-        }
     }
 
     //以下为辅助方法
-    private void startPay(Activity activity, Double price, String vivoOrder, String payInfo) {
+    private void startPay(Activity activity, Long price, String vivoOrder, String payInfo) {
+
+        Log.i("VivoChannelAPI", payInfo);
 
         String vivoSignature = "";
-        ;
         String productName = "";
         String productDes = "";
 
@@ -257,15 +232,24 @@ public final class VivoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
         Bundle localBundle = new Bundle();
         localBundle.putString("transNo", vivoOrder);// 交易流水号，由订单推送接口返回
-        localBundle.putString("signature", vivoSignature);// 签名信息，由订单推送接口返回
-        localBundle.putString("package", activity.getPackageName()); //在开发者平台创建应用时填写的包名，务必一致，否则SDK界面不会被唤起
-        localBundle.putString("useMode", "00");//固定值
+        localBundle.putString("accessKey", vivoSignature);// 由订单推送接口返回
         localBundle.putString("productName", productName);//商品名称
         localBundle.putString("productDes", productDes);//商品描述
-        localBundle.putDouble("price", price/100);//价格
-        localBundle.putString("userId", mUserInfo.mUserId);//ivo账户id，不允许为空
-        Intent payIntent = new Intent(activity, PaymentActivity.class);
-        payIntent.putExtra("payment_params", localBundle);
-        activity.startActivityForResult(payIntent, REQUEST_CODE_PAY);
+        localBundle.putLong("price", price);//价格,单位为分（1000即10.00元）
+        localBundle.putString("appId", mCfg.mAppId);// appid为vivo开发者平台中生成的App ID
+
+        // 以下为可选参数，能收集到务必填写，如未填写，掉单、用户密码找回等问题可能无法解决。
+        /*localBundle.putString("blance", "100元宝");//100元宝
+        localBundle.putString("vip", "vip2");//vip2
+        localBundle.putInt("level", 35);//35
+        localBundle.putString("party", "工会");//工会
+        localBundle.putString("roleId", "角色id");//角色id
+        localBundle.putString("roleName", "角色名称");//角色名称
+        localBundle.putString("serverName", "区服信息");//区服信息
+        localBundle.putString("extInfo", "扩展参数");//扩展参数*/
+        localBundle.putBoolean("logOnOff", false);
+        Intent target = new Intent(activity, PaymentActivity.class);
+        target.putExtra("payment_params", localBundle);
+        activity.startActivityForResult(target, REQUEST_CODE_PAY);
     }
 }

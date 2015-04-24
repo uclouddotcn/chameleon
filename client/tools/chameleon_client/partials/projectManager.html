@@ -24,7 +24,7 @@
                                     <label>游戏名称</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <label>{{project.name}}</label>
+                                    <input type="text" ng-model="project.name" />
                                 </div>
                                 <label class="control-label col-md-3">方向</label>
                                 <div class="btn-group col-md-3">
@@ -223,23 +223,23 @@
                                     <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="4" ng-hide="!iconPosition.rightDown" >右下</label>
                                 </div>
                             </div>
-                            <div class="row" style="width: 200px;">
+                            <!--<div class="row">
                                 <label>图片选择</label>
                                 <label class="shortText">{{selectedChannel.config.icon.path}}</label>
                             </div>
                             <div class="row">
                                 <input type="file" fileread="selectedChannel.config.icon.path" name="icon" class="custom-file-input"/>
-                            </div>
+                            </div>-->
                             <div class="row" ng-hide="!hasIcon()">
                                 <canvas width="96", height="96" drawing-icon id="drawingIcon"></canvas>
                             </div>
                             <div class="row" ng-hide="hasIcon()">
                                 <image width="96", height="96" ng-src={{projectIcon}} id="projectIcon"></image>
                             </div>
-                            <div class="row" ng-hide="!hasIcon()">
+                            <!--<div class="row" ng-hide="!hasIcon()">
                                 <label>应用到全部</label>
                                 <input type="checkbox" ng-model="applyPositionToAll">
-                            </div>
+                            </div>-->
                             <div>
                                 <button class="btn-large btn-success has-spinner" ng-click="saveIcon()">保存</button>
                             </div>
@@ -248,7 +248,11 @@
                 </div>
                 <div class="tab-pane fade" id="APKPicker" role="tabpanel">
                     <div class="row">
-                        <label>解压新母包</label><input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/><label class="shortText">{{apkFilePath}}</label>
+                        <label>选择APK母包</label>
+                    </div>
+                    <div class="row">
+                        <label>添加新母包</label><input type="file" accept="apk/*" fileread="apkFilePath" name="apk" class="custom-file-input"/>
+                        <label class="shortText">{{apkFilePath}}</label>
                     </div>
                     <div class="row">
                         <label style="margin-left: 10px; color: red;">{{installAPKMessage}}</label>
