@@ -11,9 +11,8 @@ var _errorcode = commonLib.ErrorCode;
 var SDKPluginBase = commonLib.SDKPluginBase;
 
 var cfgDesc = {
-    cpId: 'integer',
     gameId: 'integer',
-    apiKey: 'string',
+    apiKey: 'string'
 };
 
 var UCChannel = function(logger, cfgChecker, debug) {
