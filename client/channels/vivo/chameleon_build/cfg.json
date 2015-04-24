@@ -2,8 +2,7 @@
     "cfgitem": [
         {
             "desc": "APP ID", 
-            "ignoreInA": 1, 
-            "name": "appId", 
+            "name": "appId",
             "type": "string"
         }, 
         {
@@ -29,5 +28,5 @@
     "desc": "VIVO", 
     "name": "vivo", 
     "svrver": "1.4.1", 
-    "version": "V2.1.0"
+    "version": "V3.1.0"
 }

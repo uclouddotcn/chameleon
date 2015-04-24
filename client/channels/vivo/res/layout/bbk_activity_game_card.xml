@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget32"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/preference_background_color" >
+
+    <include
+        android:id="@+id/bbk_payment_title"
+        layout="@layout/bbk_payment_title" />
+
+    <LinearLayout
+        android:id="@+id/bbk_game_card_num_ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bbk_payment_title"
+        android:layout_marginLeft="@dimen/order_top_bar_spacing"
+        android:layout_marginRight="@dimen/order_top_bar_spacing"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bbk_edittext_sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+
+        <TextView
+            android:id="@+id/bbk_game_card_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/bbk_pay_type_left"
+            android:text="@string/bbk_card_num_tip"
+            android:textColor="@color/card_text"
+            android:textSize="@dimen/bbk_card_type_size" />
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:orientation="vertical"
+            android:scrollbars="vertical" >
+
+            <EditText
+                android:id="@+id/card_number"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:background="@null"
+                android:inputType="number"
+                android:maxLength="24"
+                android:textColor="@color/card_text"
+                android:textSize="@dimen/bbk_card_type_size" />
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bbk_gane_card_pwd_ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bbk_game_card_num_ll"
+        android:layout_marginLeft="@dimen/order_top_bar_spacing"
+        android:layout_marginRight="@dimen/order_top_bar_spacing"
+        android:background="@drawable/bbk_edittext_sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+
+        <TextView
+            android:id="@+id/bbk_gane_card_pwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/bbk_pay_type_left"
+            android:text="@string/bbk_card_pwd_tip"
+            android:textColor="@color/card_text"
+            android:textSize="@dimen/bbk_card_type_size" />
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:orientation="vertical"
+            android:scrollbars="vertical" >
+
+            <EditText
+                android:id="@+id/card_passwd"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:background="@null"
+                android:inputType="numberPassword"
+                android:maxLength="24"
+                android:textColor="@color/card_text"
+                android:textSize="@dimen/bbk_card_type_size" />
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bbk_gane_card_tip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bbk_gane_card_pwd_ll"
+        android:layout_marginLeft="@dimen/order_top_bar_spacing"
+        android:layout_marginRight="@dimen/order_top_bar_spacing"
+        android:layout_marginTop="@dimen/bbk_paytype_tip_text_size"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bbk_game_card_tip"
+            android:textColor="@color/card_text"
+            android:textSize="@dimen/bbk_card_support_size" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/bbk_gane_card_sbt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="20dp" >
+
+        <Button
+            android:id="@+id/submit_game_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/order_top_bar_spacing"
+            android:layout_marginRight="@dimen/order_top_bar_spacing"
+            android:background="@drawable/bbk_btn_default"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/bbk_vcoin_card_pay"
+            android:textColor="@color/bbk_TextColorWhite"
+            android:textSize="@dimen/bbk_card_type_size" />
+    </RelativeLayout>
+
+</RelativeLayout>

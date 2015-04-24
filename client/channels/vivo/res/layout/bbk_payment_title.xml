@@ -13,22 +13,14 @@
         android:layout_centerVertical="true" 
         android:src="@drawable/bbk_next_arrow"
         android:clickable="true"/>
-     <ImageView
-         android:layout_toRightOf="@id/title_back"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginLeft="25dp"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/bbk_divider"/>
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="100dp"
+        android:singleLine="true"
         android:text="@string/bbk_paytype_title"
         android:textSize="@dimen/card_pay_title_size" 
         android:textColor="@color/TextColorBlack"

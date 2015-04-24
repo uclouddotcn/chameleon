@@ -89,5 +89,28 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
     </style>
+    
+<!-- V begin -->
+	<style name="pop_view" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@drawable/popup_top_dark</item>	
+	</style>        
+	<style name="edit_container_base_style">
+	    <item name="android:layout_width">match_parent</item>
+	    <item name="android:layout_height">wrap_content</item>
+	    <item name="android:paddingLeft">20dip</item>
+	    <item name="android:paddingRight">20dip</item>
+	    <item name="android:gravity">center_vertical</item>
+	</style>
 
+	
+	<style name="edit_container_top_round" parent="edit_container_base_style">
+	    <item name="android:background">@drawable/preference_top_selector</item>
+	</style>
+	<style name="edit_container_no_round" parent="edit_container_base_style">
+	    <item name="android:background">@drawable/preference_middle</item>
+	</style>
+
+	<style name="edit_container_bottom_round" parent="edit_container_base_style">
+	    <item name="android:background">@drawable/preference_bottom_selector</item>
+	</style>
 </resources>

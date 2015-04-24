@@ -2,83 +2,180 @@
     xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
     package="prj.chameleon.vivo">
 
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+
     <application>
-        <!-- vivo activity begin -->
-        <activity
-            android:name="com.vivo.account.base.activity.LoginActivity"
+        <!-- vivo activity begin acivity是支持横竖屏切换的 -->
+        <activity android:name="com.vivo.account.base.activity.LoginActivity"
             android:label="@string/vivo_app_name"
             chameleon:replace="android:screenOrientation=%orientation%"
-            android:theme="@android:style/Theme.NoTitleBar">
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.vivo.account.base.activity.RegisterActivity"
+        <activity android:name="com.vivo.account.base.activity.RegisterActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            chameleon:replace="android:screenOrientation=%orientation%"
+            android:theme="@android:style/Theme.NoTitleBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.vivo.account.base.activity.VerifyPhoneNumActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            chameleon:replace="android:screenOrientation=%orientation%">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.vivo.account.base.activity.VerifyPhoneNumActivity"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:theme="@android:style/Theme.NoTitleBar">
+        <activity android:name="com.vivo.account.base.activity.FindPasswordActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.vivo.account.base.activity.FindPasswordActivity"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:theme="@android:style/Theme.NoTitleBar">
+        <activity android:name="com.vivo.account.base.activity.SetPassWordActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.vivo.account.base.activity.SetPassWordActivity"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:theme="@android:style/Theme.NoTitleBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <activity android:name="com.vivo.account.base.activity.RegisterProtocolActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            chameleon:replace="android:screenOrientation=%orientation%">
         </activity>
-        <activity
-            android:name="com.vivo.account.base.activity.RegisterProtocolActivity"
-            chameleon:replace="android:screenOrientation=%orientation%"
-            android:theme="@android:style/Theme.NoTitleBar"/>
         <!-- vivo activity end -->
-        <activity  android:name="com.bbkmobile.iqoo.payment.PaymentActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.bbkmobile.iqoo.payment.CardActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
 
+        <!-- vivo pay begin  目录支付界面只支持竖屏 -->
+        <activity
+            android:name="com.bbk.payment.PaymentActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/bbk_app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.TicketActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.CardActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.RechargeChoiceActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.PaySuccActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.JCardActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.DetectPayResultActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.PayContinueActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.RechargeFailActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.PaymentActionActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/pop_view" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bbk.payment.PaymentDetailsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.unionpay.uppay.PayActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- vivo pay end-->
 
     </application>
 </manifest>

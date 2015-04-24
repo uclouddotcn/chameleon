@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget32"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/preference_background_color" >
+
+    <LinearLayout
+        android:id="@+id/topup_succ_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" >
+
+        <include layout="@layout/bbk_payment_title" />
+
+        <ImageView
+            android:id="@+id/bbk_pay_result_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dip"
+             />
+
+        <TextView
+            android:id="@+id/bbk_pay_result_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginLeft="13dip"
+            android:layout_marginRight="13dip"
+            android:layout_marginTop="20dip"
+            android:text="@string/bbk_result_detecting"
+            android:textColor="@color/preference_text_main_color"
+            android:textSize="@dimen/text_size_middle" />
+
+        <TextView
+            android:id="@+id/bbk_pay_result_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginLeft="13dip"
+            android:layout_marginRight="13dip"
+            android:layout_marginTop="20dip"
+            android:text="@string/bbk_result_detecting_tip"
+            android:textColor="@color/preference_text_main_color"
+            android:textSize="@dimen/text_size_small" />
+
+        <TextView
+            android:id="@+id/bbk_pay_result_user_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginLeft="13dip"
+            android:layout_marginRight="13dip"
+            android:layout_marginTop="10dip"
+            android:text="@string/bbk_pay_result_user_balance"
+            android:textColor="@color/preference_text_main_color"
+            android:textSize="@dimen/text_size_small"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp" >
+
+        <Button
+            android:id="@+id/bbk_pay_result_btn2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bbk_pay_result_btn1"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="13dip"
+            android:layout_marginRight="13dip"
+            android:textSize="@dimen/bbk_card_type_size"
+            android:textColor="@color/bbk_ticket_color"
+            android:background="@drawable/bbk_btn_back_game"
+            android:text="@string/bbk_topup_success_back" 
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/bbk_pay_result_btn1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="13dip"
+            android:layout_marginRight="13dip"
+            android:layout_marginTop="10dip"
+            android:textSize="@dimen/bbk_card_type_size"
+            android:textColor="@color/bbk_TextColorWhite"
+            android:background="@drawable/bbk_btn_default"
+            android:text="@string/bbk_pay_continue" />
+    </RelativeLayout>
+
+</RelativeLayout>

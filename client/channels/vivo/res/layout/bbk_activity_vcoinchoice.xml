@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget32"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/preference_background_color" >
+
+    <include
+        android:id="@+id/bbk_payment_title"
+        layout="@layout/bbk_payment_title" />
+
+    <LinearLayout
+        android:id="@+id/widget40"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bbk_payment_title"
+        android:layout_marginLeft="@dimen/bbk_rechargeamount_margin_left_right"
+        android:layout_marginRight="@dimen/bbk_rechargeamount_margin_left_right"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical|left"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/widget41"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bbk_vcoin_change"
+            android:textColor="@color/TextColorBlack"
+            android:textSize="@dimen/bbk_rechargeamount_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widget_layout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/widget40" >
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+        <TextView
+            android:id="@+id/widget10"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/bbk_rechargeamount_text_bg"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/bbk_vcoin_1"
+            android:textColor="@color/black" />
+            </LinearLayout>        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+        <TextView
+            android:id="@+id/widget50"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/widget10"
+            android:background="@drawable/bbk_rechargeamount_text_bg"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/bbk_vcoin_3"
+            android:textColor="@color/black" />
+          </LinearLayout>  
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+        <TextView
+            android:id="@+id/widget100"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@+id/widget50"
+            android:background="@drawable/bbk_rechargeamount_text_bg2"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/bbk_vcoin_4"
+            android:textColor="@color/black" />
+        </LinearLayout>    
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widget_layout3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/widget_layout1" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/widget500"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/bbk_rechargeamount_text_bg3"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/bbk_vcoin_7"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/widget1000"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bbk_rechargeamount_text_bg3"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/bbk_vcoin_8"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/widget2000"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/bbk_rechargeamount_text_bg4"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/bbk_vcoin_9"
+                android:textColor="@color/black" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/inputamount_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/widget_layout3"
+        android:layout_marginLeft="@dimen/bbk_rechargeamount_margin_left_right"
+        android:layout_marginRight="@dimen/bbk_rechargeamount_margin_left_right"
+        android:background="@drawable/bbk_edittext_sp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" 
+                android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:layout_marginLeft="10dip"
+            android:text="@string/bbk_vcoin_amount"
+            android:textColor="@color/black"
+            android:textSize="@dimen/bbk_rechargeamount_text_size" />
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:orientation="vertical"
+            android:scrollbars="vertical" >
+
+            <EditText
+                android:id="@+id/inputamountedittext"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/bbk_rechargeamount_margin_left_right"
+                android:background="@null"
+                android:hint="@string/bbk_vcoin_limit"
+                android:numeric="decimal"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:maxLength="7"
+                android:textSize="@dimen/bbk_rechargeamount_text_size" />
+        </ScrollView>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/inputamount_layout"
+        android:layout_marginTop="@dimen/bbk_rechargeamount_text_margin_top" >
+
+<!--         <TextView -->
+<!--             android:id="@+id/recharge_promotions" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_gravity="center_vertical|left" -->
+<!--             android:layout_marginLeft="@dimen/bbk_rechargeamount_margin_left_right" -->
+<!--             android:layout_marginRight="@dimen/bbk_rechargeamount_margin_left_right" -->
+<!--             android:layout_marginTop="@dimen/bbk_rechargeamount_text_margin_top" -->
+<!--             android:text="@string/bbk_vcoin_promotions" -->
+<!--             android:textColor="@color/black" -->
+<!--             android:textSize="@dimen/bbk_rechargeamount_text_tip" /> -->
+
+        <Button
+            android:id="@+id/submit_game_card"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/vcoin_gift_state_marginLeft"
+            android:layout_marginRight="@dimen/vcoin_gift_state_marginRight"
+            android:background="@drawable/bbk_btn_default"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/bbk_vcoin_card_pay"
+            android:textColor="@color/bbk_TextColorWhite"
+            android:textSize="@dimen/bbk_card_type_size" />
+    </RelativeLayout>
+
+</RelativeLayout>
