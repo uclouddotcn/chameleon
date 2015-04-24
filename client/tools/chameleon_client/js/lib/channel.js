@@ -8,7 +8,6 @@ function ChannelMeta(name, metaInfo) {
     this.sdkName = metaInfo.sdk;
     this.channelName = name;
     this.desc = metaInfo.name;
-    this.svrver = metaInfo.svrver;
 }
 
 ChannelMeta.prototype.checkPackageName = function (pkgName) {
