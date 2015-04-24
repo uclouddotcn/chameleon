@@ -17,10 +17,10 @@
             "type": "string"
         }
     ], 
-    "chamversion": "1.3.3", 
+    "chamversion": "1.5.0",
     "desc": "UC九游", 
     "enableWrapPackage": 0, 
     "name": "uc", 
     "svrver": "1.4.1", 
-    "version": "3.4.15.3"
+    "version": "3.5.3.1"
 }

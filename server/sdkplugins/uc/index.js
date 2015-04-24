@@ -63,7 +63,7 @@ UCChannel.prototype.verifyLogin = function(wrapper, token, others, callback) {
         }
         try {
             var result = null;
-            if (obj.state.code === 1 && obj.data.accountId !== others) {
+            if (obj.state.code === 1 ) {
                 result = {
                     code: _errorcode.ERR_OK,
                     loginInfo: {
