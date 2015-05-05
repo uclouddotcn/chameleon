@@ -26,6 +26,7 @@
     <string name="rg_save_change">保存修改</string>
     <string name="rg_accounts_register">账号：</string>
     <string name="rg_hint_register">数字字母组合</string>
+    <string name="rg_pwd_accounts">账号：</string>
     <string name="rg_pwd_register">密码：</string>
     <string name="rg_pwd_register_confim">6-18位字符</string>
     <string name="re_title">标题</string>

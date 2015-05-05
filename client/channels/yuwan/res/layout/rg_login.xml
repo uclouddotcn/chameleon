@@ -53,7 +53,7 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
-                    android:hint="请输入账号" />
+                    android:hint="@string/rg_input_accounts" />
                 <Button
                     android:id="@+id/open_poupwindow"
                     android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:hint="请输入密码"
+                    android:hint="@string/rg_input_pwd"
                     android:inputType="textPassword" />
 
                 <TextView
@@ -83,7 +83,7 @@
                     android:layout_gravity="right|center_vertical"
                     android:layout_marginLeft="5dp"
                     android:gravity="center"
-                    android:text="找回密码"
+                    android:text="@string/rg_find_pwd"
                     android:textStyle="normal" />
             </LinearLayout>
         </LinearLayout>

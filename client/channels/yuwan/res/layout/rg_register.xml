@@ -61,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="账号："
+                    android:text="@string/rg_pwd_accounts"
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
 
@@ -72,7 +72,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:hint="数字字母组合" />
+                    android:hint="@string/rg_hint_register" />
             </LinearLayout>
 
             <LinearLayout
@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="密码："
+                    android:text="@string/rg_pwd_register"
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
 
@@ -95,7 +95,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:hint="6-18位字符"
+                    android:hint="@string/rg_pwd_register_confim"
                     android:inputType="textPassword" />
             </LinearLayout>
         </LinearLayout>
