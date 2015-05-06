@@ -61,7 +61,7 @@ public class ChameleonApplication extends Application {
             JSONObject sdkObject = JsonTools.getJsonObject(sdkArray, i);
 
             String apiName = JsonTools.getStringByKey(sdkObject, "apiName");
-            Class<?> cls = Class.forName("prj.chameleon." + commCfg.mChannel + "." + apiName);
+            Class<?> cls = Class.forName(apiName);
             IAPIBase api = (IAPIBase) cls.newInstance();
 
             JSONObject sdkCfg = JsonTools.getJsonObject(sdkObject, "sdkCfg");

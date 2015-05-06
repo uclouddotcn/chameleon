@@ -16,16 +16,16 @@ android {
         }
     }
     packagingOptions {
-            exclude 'META-INF/DEPENDENCIES.txt'
-            exclude 'META-INF/LICENSE.txt'
-            exclude 'META-INF/NOTICE.txt'
-            exclude 'META-INF/NOTICE'
-            exclude 'META-INF/LICENSE'
-            exclude 'META-INF/DEPENDENCIES'
-            exclude 'META-INF/notice.txt'
-            exclude 'META-INF/license.txt'
-            exclude 'META-INF/dependencies.txt'
-            exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
     }
 
     productFlavors {
@@ -39,6 +39,9 @@ android {
             applicationId "com.sanguofire.nearme.gamecenter"
         }
         dangle {
+
+        }
+        qihu {
 
         }
         qqmsdk {
@@ -74,6 +77,12 @@ android {
 
         }
         coolpad {
+        }
+        wandoujia {
+        }
+        xiaomi {
+        }
+        baidumg {
         }
         muzhiwan {
         }
@@ -137,8 +146,43 @@ android {
 dependencies {
     compile files('libs/android-async-http-1.4.4.jar')
     compile project(':chameleon')
+    dangleCompile project(':channels:dangle')
+    baidumgCompile project(':channels:baidumg')
+    oppoCompile project(':channels:oppo')
+    qihuCompile project(':channels:qihu')
     ucCompile project(':channels:uc')
-}
+    qqmsdkCompile project(':channels:qqmsdk')
+    anzhiCompile project(':channels:anzhi')
+    wandoujiaCompile project(':channels:wandoujia')
+    xiaomiCompile project(':channels:xiaomi')
+    huaweiCompile project(':channels:huawei')
+    meizuCompile project(':channels:meizu')
+    gfanCompile project(':channels:gfan')
+    lenovoCompile project(':channels:lenovo')
+    gioneeCompile project(':channels:gionee')
+    htcCompile project(':channels:htc')
+    coolpadCompile project(':channels:coolpad')
+    m4399Compile project(':channels:m4399')
+    muzhiwanCompile  project(':channels:muzhiwan')
+    vivoCompile project(':channels:vivo')
+    dianxinCompile project(':channels:dianxin')
+    youkuCompile project(':channels:youku')
+    ewanCompile project(':channels:ewan')
+    coolpadCompile project(':channels:coolpad')
+    youlongCompile project(':channels:youlong')
+    anfengCompile project(':channels:anfeng')
+    mopoCompile project(':channels:mopo')
+    yuwanCompile project(':channels:yuwan')
+    p_getuiCompile project(':channels:p_getui')
+    p_jpushCompile project(':channels:p_jpush')
+    p_umengCompile project(':channels:p_umeng')
+    // generate the compile dependency
 
+    /*
+            platformFlavors.each {x ->
+                "${x.productFlavor}Compile" project(":channels:${x.productFlavor}")
+            }
+            */
+}
 
 
