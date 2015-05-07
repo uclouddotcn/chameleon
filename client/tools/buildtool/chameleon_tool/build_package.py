@@ -378,6 +378,8 @@ def procSplashIcon(channelPath, globalcfg):
             os.makedirs(drawablePath)
         shutil.copy(icon, os.path.join(drawablePath, ICON_NAME))
     if splash is not None:
+        if len(splash) == 0:
+            return
         splashPath = os.path.join(channelPath, 'assets', 'chameleon')
         if not os.path.exists(splashPath):
             os.makedirs(splashPath)
@@ -480,7 +482,7 @@ def main():
     if options.version is not None:
         unpackDest = os.path.join(unpackDest, options.version)
 
-    #TODO 编译前执行
+    #TODO 编译前执行 script build
     clientRoot = os.path.join(channelRoot, '..')
     chameleon_script.preBuild(channel, options.projectRoot, clientRoot)
 

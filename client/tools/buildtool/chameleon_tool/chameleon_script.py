@@ -2,11 +2,11 @@ __author__ = 'Jerry'
 import os, imp
 
 def preBuild(channel, project, client):
-    path = os.path.join(client, 'channelinfo', channel)
-    if not os.path.exists(os.path.join(path, 'script.py')):
+    path = os.path.join(client, 'channelinfo', channel, 'script')
+    if not os.path.exists(os.path.join(path, 'build.py')):
         pass
     else:
-        fp, pathname, description = imp.find_module('script', [path])
+        fp, pathname, description = imp.find_module('build', [path])
         try:
             m = imp.load_module('build', fp, pathname, description)
             f = m.__dict__.get('preBuild')

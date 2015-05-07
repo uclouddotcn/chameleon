@@ -5,7 +5,6 @@ import zipfile, sys, os, shutil
 from optparse import OptionParser
 
 BASEDIR = os.path.split(os.path.realpath(__file__))[0]
-#TOOL_PATH = os.path.join(BASEDIR, 'buildtool', 'chameleon_tool')
 APK_TOOL_PATH = os.path.join(BASEDIR, 'apktool')
 DIFF_TOOL_PATH = os.path.join(BASEDIR, 'diff_file.py')
 
