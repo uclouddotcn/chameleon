@@ -319,9 +319,16 @@ def transformCfg(channelPath, globalcfg):
     sdks = list()
     for item in globalcfg['channel']['sdks']:
         sdk = dict()
-        sdk['apiName'] = item['name'].capitalize()+'ChannelAPI'
+        sdk['apiName'] = 'prj.chameleon.'+globalcfg['channel']['channelName'].capitalize()+'.'+item['name'].capitalize()+'ChannelAPI'
         sdk['type'] = sum([SDK_TYPES[k] for k in str(item['type']).lower().split(',')])
-        sdk['sdkCfg'] = item['config']
+
+        #TODO ignoreFiles
+        ignoreFields = item['ignoreFields']
+        sdk['sdkCfg'] = dict()
+        for con in item['config']:
+            if con not in ignoreFields:
+                sdk['sdkCfg'][con] = item['config'][con]
+
         sdks.append(sdk)
     p['sdks'] = sdks
     if not os.path.exists(os.path.join(channelPath, 'assets', 'chameleon')):
