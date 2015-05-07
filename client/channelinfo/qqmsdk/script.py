@@ -10,21 +10,26 @@ MSDK_URL=http://opensdk.tencent.com
 [dev.g domains end]
 """
 
-def preBuild(binfo):
-    p = os.path.join(binfo.buildpath)
-    realp = os.path.join(binfo.prjpath, p, 'assets')
+def preBuild(channel, project):
+    jsonf = os.path.join(project, 'cfg', channel, 'config.json')
+    realp = os.path.join(project, 'build', channel, 'assets')
     if os.path.exists(realp):
         shutil.rmtree(realp)
     try:
         os.makedirs(realp)
     except:
         pass
-    if binfo.cfg.get('env') == 'test':
+    text = open(jsonf, 'r', encoding='utf-8').read()
+    if len(text) == 0:
+        return False
+
+    config = json.loads(text)
+
+    if config['channel']['sdks'][0]['config']['test']:
         with open(os.path.join(realp, 'msdkconfig.ini'), 'w') as f:
             f.write(MSDK_DEBUG)
+        return True
     else:
         with open(os.path.join(realp, 'msdkconfig.ini'), 'w') as f:
             f.write(MSDK_RELEASE)
-    binfo.assets.append(p)
-
-
+        return True

@@ -6,6 +6,8 @@ from optparse import OptionParser
 import zipfile
 import modifyWx
 import modifyMainActivity
+import diff_file
+import chameleon_script
 
 CHANNEL_ROOT = ''
 
@@ -60,6 +62,9 @@ def unpackAPK(apkPath, destPath):
     paras.append(('-o', destPath))
     paras.append(('-f', ''))
     cmd = genCmd(paras)
+
+    diff_file.init(fullPath, destPath)#TODO diff files for apktool
+
     LOG_FD.write(cmd+"\n")
     u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if u != 0:
@@ -475,6 +480,10 @@ def main():
     if options.version is not None:
         unpackDest = os.path.join(unpackDest, options.version)
 
+    #TODO 编译前执行
+    clientRoot = os.path.join(channelRoot, '..')
+    chameleon_script.preBuild(channel, options.projectRoot, clientRoot)
+
     channelPath = os.path.join(proj, channel)
 
     manifestFilePathOrig = os.path.join(unpackDest, MANIFEST_FILE_NAME)
@@ -486,7 +495,7 @@ def main():
     #TODO 检查packageName是不是.开头
     if globalcfg["channel"]["packageName"].startswith('.'):
         globalcfg["channel"]["packageName"] = manifest.getPkgName() + globalcfg["channel"]["packageName"]
-        print(globalcfg["channel"]["packageName"])
+        #print(globalcfg["channel"]["packageName"])
 
     libs = getDependLibs(proj, globalcfg)
 

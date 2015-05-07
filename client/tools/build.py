@@ -69,7 +69,7 @@ def collectChannelInfo(channelParentFolder):
 def packChannels(channelParentFolder, targetParentFolder):
     channelInfos = collectChannelInfo(channelParentFolder)
     build_channel_path = os.path.join(BUILD_TOOL_DIR, 'chameleon_tool')
-    build_channel = os.path.join(build_channel_path, 'build_channel.py')
+    build_channel = os.path.join(build_channel_path, 'build_channel_new.py')
     print(build_channel)
     print('*********************start build channels**************************')
     for ci in channelInfos:
