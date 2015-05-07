@@ -44,8 +44,6 @@ var chameleonDirectives = angular.module('chameleonDirectives', [
             },
             templateUrl: 'partials/cham_icon.html',
             link: function (scope, element, attrs) {
-                console.log(element)
-                console.log(scope)
                 var state = {
                     index: -1,
                     images: null

@@ -362,24 +362,6 @@ chameleonControllers
             $scope.watchPackage = function () {
                 $scope.vForm.vPackage.$dirty = true;
             }
-            $scope.saveChannel = function () {
-                try {
-                    $scope.channel.payLib = $scope.channel.sdk;
-                    $scope.channel.userLib = $scope.channel.sdk;
-                    var promise = ProjectMgr.setChannel(
-                        project, $scope.channel.data, $scope.channel);
-                    promise = WaitingDlg.wait(promise, '更新配置中');
-                    promise.then(function (newcfg) {
-                        delete $scope.channel.isdirty;
-                        $scope.disable = true;
-                        $scope.vForm.vPackage.$dirty = false;
-                    }, function (e) {
-                        alert(e.message);
-                    });
-                } catch (e) {
-                    alert(e.message);
-                }
-            }
 
             $scope.selectChannelSDK = function () {
                 var instance = $modal.open({

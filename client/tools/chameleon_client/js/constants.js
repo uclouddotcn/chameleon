@@ -8,4 +8,4 @@ function windowsHome(){
 }
 module.exports = {
     chameleonHome: path.join(windowsHome(), '.chameleon')
-}
+};

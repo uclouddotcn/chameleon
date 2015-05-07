@@ -37,8 +37,8 @@
                                     <label>选择icon</label>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="shortText">{{project.config.icon}}</label>
-                                    <input type="file" accept="image/png" fileread="project.config.icon" name="projectIcon" class="custom-file-input"/>
+                                    <label class="shortText">{{project.icon}}</label>
+                                    <input type="file" accept="image/png" fileread="project.icon" name="projectIcon" class="custom-file-input"/>
                                 </div>
                                 <div class="col-md-3">
                                     <label>游戏在server中的英文代号</label>
@@ -217,10 +217,10 @@
                             <div class="row" ng-hide="!hasIcon()">
                                 <label>角标位置</label>
                                 <div class="btn-group" >
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="1" ng-hide="!iconPosition.leftUp" >左上</label>
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="2" ng-hide="!iconPosition.leftDown" >左下</label>
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="3" ng-hide="!iconPosition.rightUp" >右上</label>
-                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="4" ng-hide="!iconPosition.rightDown" >右下</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="1" ng-hide="!iconPosition.leftUp" ng-change="onOverlayChange(1)">左上</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="2" ng-hide="!iconPosition.leftDown" ng-change="onOverlayChange(2)">左下</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="3" ng-hide="!iconPosition.rightUp" ng-change="onOverlayChange(3)">右上</label>
+                                    <label class="btn btn-primary" ng-model="selectedChannel.config.icon.position" btn-radio="4" ng-hide="!iconPosition.rightDown" ng-change="onOverlayChange(4)">右下</label>
                                 </div>
                             </div>
                             <!--<div class="row">
