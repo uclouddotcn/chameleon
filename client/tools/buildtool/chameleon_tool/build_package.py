@@ -6,6 +6,8 @@ from optparse import OptionParser
 import zipfile
 import modifyWx
 import modifyMainActivity
+import diff_file
+import chameleon_script
 
 CHANNEL_ROOT = ''
 
@@ -60,6 +62,9 @@ def unpackAPK(apkPath, destPath):
     paras.append(('-o', destPath))
     paras.append(('-f', ''))
     cmd = genCmd(paras)
+
+    diff_file.init(fullPath, destPath)#TODO diff files for apktool
+
     LOG_FD.write(cmd+"\n")
     u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if u != 0:
@@ -314,9 +319,16 @@ def transformCfg(channelPath, globalcfg):
     sdks = list()
     for item in globalcfg['channel']['sdks']:
         sdk = dict()
-        sdk['apiName'] = item['name'].capitalize()+'ChannelAPI'
+        sdk['apiName'] = 'prj.chameleon.'+globalcfg['channel']['channelName'].capitalize()+'.'+item['name'].capitalize()+'ChannelAPI'
         sdk['type'] = sum([SDK_TYPES[k] for k in str(item['type']).lower().split(',')])
-        sdk['sdkCfg'] = item['config']
+
+        #TODO ignoreFiles
+        ignoreFields = item['ignoreFields']
+        sdk['sdkCfg'] = dict()
+        for con in item['config']:
+            if con not in ignoreFields:
+                sdk['sdkCfg'][con] = item['config'][con]
+
         sdks.append(sdk)
     p['sdks'] = sdks
     if not os.path.exists(os.path.join(channelPath, 'assets', 'chameleon')):
@@ -373,6 +385,8 @@ def procSplashIcon(channelPath, globalcfg):
             os.makedirs(drawablePath)
         shutil.copy(icon, os.path.join(drawablePath, ICON_NAME))
     if splash is not None:
+        if len(splash) == 0:
+            return
         splashPath = os.path.join(channelPath, 'assets', 'chameleon')
         if not os.path.exists(splashPath):
             os.makedirs(splashPath)
@@ -475,6 +489,10 @@ def main():
     if options.version is not None:
         unpackDest = os.path.join(unpackDest, options.version)
 
+    #TODO 编译前执行 script build
+    clientRoot = os.path.join(channelRoot, '..')
+    chameleon_script.preBuild(channel, options.projectRoot, clientRoot)
+
     channelPath = os.path.join(proj, channel)
 
     manifestFilePathOrig = os.path.join(unpackDest, MANIFEST_FILE_NAME)
@@ -486,7 +504,7 @@ def main():
     #TODO 检查packageName是不是.开头
     if globalcfg["channel"]["packageName"].startswith('.'):
         globalcfg["channel"]["packageName"] = manifest.getPkgName() + globalcfg["channel"]["packageName"]
-        print(globalcfg["channel"]["packageName"])
+        #print(globalcfg["channel"]["packageName"])
 
     libs = getDependLibs(proj, globalcfg)
 

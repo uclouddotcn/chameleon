@@ -343,13 +343,13 @@ def makeMainActivity(smaliRoot, manifest, globalcfg):
     superMain = oldMainArray[0]
     for x in oldMainArray[1:]:
         superMain+='/'+x
-    print(superMain)
+    #print(superMain)
 
     #get the package name
     oldPackage = oldMainArray[0]
     for x in oldMainArray[1:len(oldMainArray)-1]:
         oldPackage+='/'+x
-    print(oldPackage)
+    #print(oldPackage)
 
     #get the splashPath
     obj = globalcfg.get("channel")
@@ -368,7 +368,7 @@ def makeMainActivity(smaliRoot, manifest, globalcfg):
     #new package
     smaliPath = os.path.join(smaliRoot, *oldMainArray[0:len(oldMainArray)-1])
 
-    print('this dir will be make：' + smaliPath)
+    #print('this dir will be make：' + smaliPath)
 
     #if the path is not exists then makedirs
     if not os.path.exists(smaliPath):

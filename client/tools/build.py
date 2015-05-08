@@ -69,7 +69,7 @@ def collectChannelInfo(channelParentFolder):
 def packChannels(channelParentFolder, targetParentFolder):
     channelInfos = collectChannelInfo(channelParentFolder)
     build_channel_path = os.path.join(BUILD_TOOL_DIR, 'chameleon_tool')
-    build_channel = os.path.join(build_channel_path, 'build_channel.py')
+    build_channel = os.path.join(build_channel_path, 'build_channel_new.py')
     print(build_channel)
     print('*********************start build channels**************************')
     for ci in channelInfos:
@@ -209,11 +209,10 @@ def cleanChannelOldBuild(channelDir):
             print(dirPath)
             if os.path.isdir(dirPath):
                 listPath = os.listdir(dirPath)
-                print(listPath)
+                print('>>>', listPath)
                 for filePath in listPath:
-                    print(filePath)
                     if filePath == 'bin' or filePath == 'gen' or filePath == 'smali' or filePath == 'build':
-                        print('------------------rm bin gen smali build---------------')
+                        print('------------------rm %s---------------'%filePath)
                         binPath = os.path.join(dirPath, filePath)
                         shutil.rmtree(binPath, True)
 
@@ -242,9 +241,11 @@ def exportChamleonClient(clientZipTarget):
         raise RuntimeError('fail to export chameleon_client')
 
 def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
-    os.mkdir(targetFolder)
     clientPath = os.path.join(targetFolder, 'chameleon_client')
-    os.mkdir(clientPath)
+    if not os.path.exists(clientPath):
+        os.makedirs(clientPath)
+    else:
+        cleanOldBuild(clientPath)
     unzipFiles(zf, os.path.join(targetFolder, 'chameleon_client'))
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon_client',  'chameleon'))
     downloadDependency(os.path.join(targetFolder, 'chameleon_client'))
@@ -266,19 +267,26 @@ def buildChameleonClient(zf, chameleonFolder, targetFolder, place):
         place(os.path.join(targetFolder, 'nw'))
 
 def buildChameleonClientMacOS(zf, chameleonFolder, targetFolder, place):
-    os.mkdir(targetFolder)
     clientPath = os.path.join(targetFolder, 'chameleon_client')
-    os.mkdir(clientPath)
+    if not os.path.exists(clientPath):
+        os.makedirs(clientPath)
+    else:
+        cleanOldBuild(clientPath)
     unzipFiles(zf, os.path.join(targetFolder, 'chameleon_client'))
     shutil.copytree(chameleonFolder, os.path.join(targetFolder, 'chameleon'))
     downloadDependency(os.path.join(targetFolder, 'chameleon_client'))
 
-    print('unzip sqlite3')
-    clientPath = os.path.join(targetFolder, 'chameleon_client')
+    print('unzip custom_modules')
     sqlitePath = os.path.join(clientPath, 'node_modules', 'sqlite3')
+    admZipPath = os.path.join(clientPath, 'node_modules', 'adm-zip')
     if os.path.exists(sqlitePath):
         cleanOldBuild(sqlitePath)
-    unzipFiles(os.path.join(clientPath, 'sqlite', 'macos', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
+    if os.path.exists(admZipPath):
+        cleanOldBuild(admZipPath)
+    unzipFiles(os.path.join(clientPath, 'custom_modules', 'macos', 'sqlite3.zip'), os.path.join(clientPath, 'node_modules'))
+    print('unzip sqlite3 done')
+    unzipFiles(os.path.join(clientPath, 'custom_modules', 'macos', 'adm-zip.zip'), os.path.join(clientPath, 'node_modules'))
+    print('unzip adm-zip done')
 
     if place is not None:
         place(targetFolder)
