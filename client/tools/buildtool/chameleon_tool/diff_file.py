@@ -35,13 +35,15 @@ def init(path1, path2):
     print(path1, path2)
     if os.path.isdir(path1):
         diff(path1, path2)
+        return
     if zipfile.is_zipfile(path1):
         print('this is a zip file, now unzip...')
         filename = os.path.splitext(os.path.basename(path1))[0]
         path3 =  os.path.join(os.path.dirname(path1), filename)
         with zipfile.ZipFile(path1) as zipf:
-            zipf.extractall(filename)
+            zipf.extractall(path3)
         diff(path3, path2)
+        shutil.rmtree(path3)
     else:
         print('can not diff file ...')
 

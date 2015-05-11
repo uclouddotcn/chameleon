@@ -63,8 +63,6 @@ def unpackAPK(apkPath, destPath):
     paras.append(('-f', ''))
     cmd = genCmd(paras)
 
-    diff_file.init(fullPath, destPath)#TODO diff files for apktool
-
     LOG_FD.write(cmd+"\n")
     u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if u != 0:
@@ -468,6 +466,9 @@ def main():
         LOG_FD = open(os.path.join(proj, 'log.txt'), "w", buffering=1)
         tempUnpackDest = os.path.join(unpackDest, '__TempUnpack__')
         u = unpackAPK(options.package, tempUnpackDest)
+
+        diff_file.init(options.package, tempUnpackDest)#TODO diff files for apktool
+
         manifest = loadManifest(os.path.join(tempUnpackDest, MANIFEST_FILE_NAME))
         versionName = manifest.getPkgVersionName()
         unpackDest = os.path.join(unpackDest, versionName)
