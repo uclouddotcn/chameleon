@@ -460,27 +460,37 @@ chameleonApp = angular.module('chameleonApp', [
                                 cellTemplate: '<div ng-class="ngCellText">{{row.getProperty(col.field)}}</div>'
                             },
                             {
-                                cellTemplate: '<div class="progress"><div class="progress-bar" role="progressbar" style="width:0%;"></div></div>'
+                                field: 'packingProgress',
+                                displayName: '进度',
+                                cellTemplate: '<progressbar class="ng-class: getPackingProgessBarClass(row)" value="row.getProperty(col.field)"></progressbar>'
                             },
                             {
-                                field: 'packingMessage',
+                                field: 'packingResult',
+                                displayName: '结果',
                                 width: '20%',
-                                cellTemplate: '<div ng-class="ngCellText" class="message">{{row.getProperty(col.field)}}</div>'
+                                cellTemplate: '<div ng-class="ngCellText" ng-style="{\'color\': row.getProperty(col.field)===2?\'red\':\'green\'}">{{row.getProperty(col.field) === 1 ? "打包成功" : (row.getProperty(col.field) === 2 ? "打包失败" : "")}}</div>'
                             }
                         ]
                     };
+                    $scope.getPackingProgessBarClass = function (row) {
+                        var res = "progress-striped ";
+                        if (row.entity['packingResult'] === 0) {
+                            res += ' active '
+                        } else if (row.entity['packingResult'] === 2) {
+                            res += ' danger '
+                        }
+                        return res;
+                    };
+
                     $scope.isPackDisabled = false;
 
                     $scope.pack = function(){
                         var channelToPack = $scope.gridOptions9.$gridScope.selectedItems;
-                        $('.progress-bar').css({'width': '0%'});
 
                         _.each($scope.selectedChannels, function(element, index){
-                            element.index = index;
-                            element.packingMessage = '';
+                            element.packingResult = 0;
+                            element.packingProgress = 0;
                         });
-
-                        APKVersion = "1.0";
 
                         if(!APKVersion){
                             alert('请先选择APK母包');
@@ -497,14 +507,13 @@ chameleonApp = angular.module('chameleonApp', [
                             ProjectMgr.packChannel(project, channel, data, APKVersion,
                                 function (err) {
                                     if (err) {
-                                        channel.packingMessage = '打包失败';
-                                        $($('.message')[channel.index]).css({'color': 'red'});
+                                        channel.packingResult = 2;
+                                        channel.packingProgress = 100;
                                         $scope.$apply();
                                         return callback(null);
                                     }
-                                    $($('.progress-bar')[channel.index]).css({'width': '100%'});
-                                    channel.packingMessage = '打包成功';
-                                    $($('.message')[channel.index]).css({'color': 'green'});
+                                    channel.packingProgress = 100;
+                                    channel.packingResult = 1;
                                     $scope.$apply();
                                     callback(null);
                                 },
@@ -513,8 +522,8 @@ chameleonApp = angular.module('chameleonApp', [
                                         var reg = new RegExp("$", "g");
                                         var num = data.match(reg).length;
 
-                                        channel.progress += 10 * num;
-                                        $($('.progress-bar')[channel.index]).css({'width': channel.progress + '%'});
+                                        channel.packingProgress += 10 * num;
+                                        $scope.$digest();
                                     }
                                 }
                             );
@@ -527,7 +536,7 @@ chameleonApp = angular.module('chameleonApp', [
                                     data: datas[i]
                                 });
                             }
-                            console.log(JSON.stringify(datas));
+                            console.log(datas.length);
                             async.eachLimit(input, 5, packChannel, function (err) {
                                 $scope.isPackDisabled = false;
                             });
@@ -538,7 +547,7 @@ chameleonApp = angular.module('chameleonApp', [
                     };
                     $scope.openOutputFolder = function(){
                         require('nw.gui').Shell.openItem(node_path.join(chameleonPath.projectRoot, project.name, 'output'));
-                    }
+                    };
                     $scope.dumpServerConfig = function(){
                         var id = $scope.project.config.code;
                         if(!id){
