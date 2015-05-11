@@ -296,7 +296,7 @@ def replaceNodeAttr(node, cfg):
         node.removeAttribute("chameleon:replace")
 
 # TODO add splash attribute rm intent-filter MAIN LAUNCHER
-def _fillSplashScreenActivity(splashActivity, orientation):
+def _fillSplashScreenActivity(doc, splashActivity, orientation):
     splashActivity.setAttribute('android:name', 'prj.chameleon.channelapi.SplashScreenActivity')
 
     if orientation is not None:
