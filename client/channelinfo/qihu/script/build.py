@@ -7,7 +7,6 @@ def md5(str):
 
 def preBuild(channel, project):
     jsonf = os.path.join(project, 'cfg', channel, 'config.json')
-    print(jsonf)
     #with open(jsonf, 'r') as f:
     #    text = f.read()
     text = open(jsonf, 'r', encoding='utf-8').read()

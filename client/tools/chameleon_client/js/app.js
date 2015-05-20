@@ -462,7 +462,7 @@ chameleonApp = angular.module('chameleonApp', [
                             {
                                 field: 'packingProgress',
                                 displayName: '进度',
-                                cellTemplate: '<progressbar class="ng-class: getPackingProgessBarClass(row)" value="row.getProperty(col.field)"></progressbar>'
+                                cellTemplate: '<progressbar class="ng-class: getPackingProgessBarClass(row)" value="row.getProperty(col.field) || 0"></progressbar>'
                             },
                             {
                                 field: 'packingResult',

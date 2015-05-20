@@ -63,8 +63,6 @@ def unpackAPK(apkPath, destPath):
     paras.append(('-f', ''))
     cmd = genCmd(paras)
 
-    diff_file.init(fullPath, destPath)#TODO diff files for apktool
-
     LOG_FD.write(cmd+"\n")
     u = subprocess.call(cmd, stdout=LOG_FD, stderr=LOG_FD, shell=False)
     if u != 0:
@@ -267,18 +265,19 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
     # create a temp lib dir for aapt add
     tempLibDir = os.path.join(channelPath, 'lib')
-    if os.path.exists(tempLibDir):
-        shutil.rmtree(tempLibDir)
-    os.makedirs(tempLibDir)
+    if not os.path.exists(tempLibDir):
+        os.makedirs(tempLibDir)
 
     # copy lib files of the target apk file to the temp lib dir
     p = os.path.join(targetPath, 'lib')
     relateCopy(p, tempLibDir, '.*(\.jar)$')
 
-    # copy lib files of the channel to the temp lib dir
+    # copy lib or libs files of the channel to the temp lib dir
     for sdkPath in sdkPaths:
-        p = os.path.join(sdkPath, 'libs')
-        relateCopy(p, tempLibDir, '.*(\.jar)$')
+        plibs = os.path.join(sdkPath, 'libs')
+        relateCopy(plibs, tempLibDir, '.*(\.jar)$')
+        plib = os.path.join(sdkPath, 'lib')
+        relateCopy(plib, tempLibDir, '.*(\.jar)$')
 
     pwd = os.getcwd()
 
@@ -468,6 +467,9 @@ def main():
         LOG_FD = open(os.path.join(proj, 'log.txt'), "w", buffering=1)
         tempUnpackDest = os.path.join(unpackDest, '__TempUnpack__')
         u = unpackAPK(options.package, tempUnpackDest)
+
+        diff_file.init(options.package, tempUnpackDest)#TODO diff files for apktool
+
         manifest = loadManifest(os.path.join(tempUnpackDest, MANIFEST_FILE_NAME))
         versionName = manifest.getPkgVersionName()
         unpackDest = os.path.join(unpackDest, versionName)

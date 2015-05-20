@@ -66,7 +66,7 @@ def buildChannel(channel, channelPath, output):
         if os.path.isdir(os.path.join(os.getcwd(), f)):
             for dirpath, dirnames, filenames in os.walk(f):
                 for filename in filenames:
-                    if filename == 'public.xml' or filename == 'R.smali' or filename.startswith('R$'):
+                    if filename == 'public.xml' or filename == 'R.smali' or filename.startswith('R$') or filename == 'BuildConfig.smali':
                         print('------', os.path.join(dirpath, filename))
                     else:
                         print('++++++', os.path.join(dirpath, filename))
