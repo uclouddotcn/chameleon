@@ -2,7 +2,6 @@
     xmlns:chameleon="http://schemas.ucloud.cn/chameleon"
     package="prj.chameleon.qihu">
 
-    <!-- 添加360SDK必需要的权限。 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,7 +12,6 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
 
     <!-- payment -->
@@ -23,11 +21,11 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RESTART_PACKAGES" />
-    <!-- float sdk -->
+    <!-- 浮窗 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <!-- weixin -->
+    <!-- 微信分享相关 -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application>
@@ -36,7 +34,8 @@
         <activity
             android:name="com.qihoo.gamecenter.sdk.activity.ContainerActivity"
             android:configChanges="fontScale|orientation|keyboardHidden|locale|navigation|screenSize|uiMode"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:exported="true">
         </activity>
 
         <!-- payment activities begin -->
@@ -57,6 +56,11 @@
 
 
         <!-- payment activities end -->
+
+        <meta-data android:name="QHOPENSDK_APPID" android:value="201392056" chameleon:replace="android:value=%appId%"/>
+        <meta-data android:name="QHOPENSDK_APPKEY" android:value="21e398e6d73b83aba8cb2fce1d4ca71b"  chameleon:replace="android:value=%appKey%"/>
+        <meta-data android:name="QHOPENSDK_PRIVATEKEY" android:value="8aa53aaca2febbb059fccb4a1abc88a1"  chameleon:replace="android:value=%appPrivateKey%"/>
+        <meta-data android:name="QHOPENSDK_CHANNEL" android:value="default"/>
 
         <!-- 如下是360游戏实时推送SDK必要声明，不可修改 -->
         <receiver
@@ -94,25 +98,6 @@
         </service>
         <!-- 推送SDK end -->
 
-
-        <!-- 微信SDK -->
-        <!-- 微信相关的activity，如果游戏接入微信分享需要在游戏工程内实现这个activity，请直接使用demo中的代码实现，并放在游戏的工程的对应路径下。 -->
-        <activity
-            android:name="com.xianyugame.sanguofire.qh.wxapi.WXEntryActivity"
-            android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            chameleon:replace="android:name=%packageId%.wxapi.WXEntryActivity"/>
-
-        <!-- 从微信开放平台申请的appid，游戏需要去申请自己的appid -->
-        <meta-data
-            android:name="QHOPENSDK_WEIXIN_APPID" android:value="wx02faa6a503e262e5" chameleon:replace="android:value=%weixinAppid%" >
-        </meta-data>
-        <!-- 微信SDK end -->
-
-        <meta-data android:name="QHOPENSDK_APPID" android:value="201392056" chameleon:replace="android:value=%appId%"/>
-        <meta-data android:name="QHOPENSDK_APPKEY" android:value="21e398e6d73b83aba8cb2fce1d4ca71b"  chameleon:replace="android:value=%appKey%"/>
-        <meta-data android:name="QHOPENSDK_PRIVATEKEY" android:value="8aa53aaca2febbb059fccb4a1abc88a1"  chameleon:replace="android:value=%appPrivateKey%"/>
-        <meta-data android:name="QHOPENSDK_CHANNEL" android:value="default"/>
 
     </application>
 
