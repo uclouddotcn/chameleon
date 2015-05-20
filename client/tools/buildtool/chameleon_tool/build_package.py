@@ -265,18 +265,19 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
     # create a temp lib dir for aapt add
     tempLibDir = os.path.join(channelPath, 'lib')
-    if os.path.exists(tempLibDir):
-        shutil.rmtree(tempLibDir)
-    os.makedirs(tempLibDir)
+    if not os.path.exists(tempLibDir):
+        os.makedirs(tempLibDir)
 
     # copy lib files of the target apk file to the temp lib dir
     p = os.path.join(targetPath, 'lib')
     relateCopy(p, tempLibDir, '.*(\.jar)$')
 
-    # copy lib files of the channel to the temp lib dir
+    # copy lib or libs files of the channel to the temp lib dir
     for sdkPath in sdkPaths:
-        p = os.path.join(sdkPath, 'libs')
-        relateCopy(p, tempLibDir, '.*(\.jar)$')
+        plibs = os.path.join(sdkPath, 'libs')
+        relateCopy(plibs, tempLibDir, '.*(\.jar)$')
+        plib = os.path.join(sdkPath, 'lib')
+        relateCopy(plib, tempLibDir, '.*(\.jar)$')
 
     pwd = os.getcwd()
 
