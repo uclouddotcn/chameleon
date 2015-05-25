@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:background="@drawable/rg_annoucement_notice_bg">
+
+    <TextView
+        android:layout_gravity="center_vertical"
+        android:id="@+id/tv_annoucement_notice"
+        android:gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:textColor="@color/white"
+        android:padding="3dp"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:maxEms="24"
+        android:focusable="true"
+        android:clickable="true"
+        android:text="公告" />
+
+    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/iv_annoucement_back"
+        android:layout_gravity="center_vertical"
+        android:layout_width="45dp"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        android:focusable="true"
+        android:clickable="true"
+        android:src="@drawable/rg_annoucement_back" />
+</LinearLayout>

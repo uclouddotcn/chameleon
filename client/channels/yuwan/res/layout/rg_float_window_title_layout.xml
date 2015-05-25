@@ -30,7 +30,7 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_centerInParent="true"
-		        android:text="@string/rg_accounts"
+		        android:text="账号"
 		        android:textColor="#ffffff"
                 android:singleLine="true"
                 android:ellipsize="end"

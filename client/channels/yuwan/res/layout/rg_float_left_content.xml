@@ -7,27 +7,50 @@
     android:gravity="center_vertical"
     android:paddingLeft="12dp"
     android:paddingRight="2dp"
-    android:paddingTop="2dp" >
+    android:paddingTop="13dp"
+    android:paddingBottom="13dp">
 
     <ImageView
         android:id="@+id/iv_account"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp"
+        android:paddingTop="5dp"
         android:src="@drawable/rg_float_account_selector" />
 
     <ImageView
         android:id="@+id/iv_prefecture"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:paddingTop="5dp"
         android:src="@drawable/rg_float_prefecture_selector" />
 
     <ImageView
         android:id="@+id/iv_service"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:paddingTop="5dp"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp"
         android:src="@drawable/rg_float_service_selector" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="18dp">
+        <ImageView
+            android:id="@+id/iv_message"
+            android:paddingTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/rg_float_message_selector" />
+        <ImageView
+            android:id="@+id/red_dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/red_dot"
+            android:layout_gravity="right"/>
+    </FrameLayout>
 
 </LinearLayout>

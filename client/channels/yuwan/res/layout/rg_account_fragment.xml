@@ -49,27 +49,23 @@
             android:textColor="#565656"
             android:textSize="18sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#b5b5b5" />
 
-        <TextView
-            android:id="@+id/tv_myMsg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:drawableLeft="@drawable/rg_my_message_icon"
-            android:drawablePadding="10dp"
-            android:drawableRight="@drawable/rg_account_arrows"
-            android:gravity="center_vertical"
-            android:paddingBottom="@dimen/account_item_pading"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:paddingTop="@dimen/account_item_pading"
-            android:text="@string/rg_my_message"
-            android:textColor="#565656"
-            android:textSize="18sp" />
+        <!--<TextView-->
+            <!--android:id="@+id/tv_myMsg"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:drawableLeft="@drawable/rg_my_message_icon"-->
+            <!--android:drawablePadding="10dp"-->
+            <!--android:drawableRight="@drawable/rg_account_arrows"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:paddingBottom="@dimen/account_item_pading"-->
+            <!--android:paddingLeft="30dp"-->
+            <!--android:paddingRight="30dp"-->
+            <!--android:paddingTop="@dimen/account_item_pading"-->
+            <!--android:text="@string/rg_my_message"-->
+            <!--android:textColor="#565656"-->
+            <!--android:textSize="18sp" />-->
 
         <View
             android:layout_width="match_parent"
