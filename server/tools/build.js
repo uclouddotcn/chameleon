@@ -10,8 +10,8 @@ var npm  = require('npm');
 var PROJ_PATH = path.join(__dirname, '..');
 
 function Build() {
-    this.tempDir = path.join(process.cwd(), '.chameleon_build');
-    this.outputDir = path.join(process.cwd(), 'chameleon_build')
+    this.tempDir = path.join(process.cwd(), '.build');
+    this.outputDir = path.join(process.cwd(), 'output')
     this.buildFull = false;
     if (fs.existsSync(this.tempDir)) {
         // removing the directory
