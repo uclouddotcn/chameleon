@@ -1,7 +1,29 @@
-# ChameleonSDK server
+#Chameleon服务器端
 
-Chameleon SDK的后端服务器，用来处理用户鉴权，以及支付发起和确认的功能
+##开发准备
+###开发工具
+* nodejs > v0.10
 
-## Chameleon SDK的产品管理方式
+###子模块
+Chameleon服务端有三个子模块组成，分别为
 
-Chameleon SDK的后端服务器可以同时服务多个产品，因
+1. admin
+
+用来作为管理端，启停工作进程，处理管理端命令
+
+
+2. work
+
+具体响应游戏登录和支付请求的进程，读取插件等
+
+
+3. sdkplugins
+没一个渠道的处理都是单独的一个插件, 参见代码中的sdk plugin中的注释
+
+
+###编译
+
+使用```tools/build.js```用来编译整个发布包或者单独的子模块
+
+
+
