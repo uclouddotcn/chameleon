@@ -19,11 +19,14 @@ import prj.chameleon.channelapi.IAPIBase;
 import prj.chameleon.channelapi.JsonTools;
 
 public class Application extends BDGameApplication {
+    public static boolean isTest = true;
+
     private void loadInit() {
         try {
             loadConfig();
         } catch (Exception e) {
-            Log.e(Constants.TAG, "Fail to find api or config", e);
+            Log.e(Constants.TAG, "Fail to find api, use test channel instead", e);
+            ChannelInterface.addTestApiGroup();
         }
     }
 
@@ -37,6 +40,7 @@ public class Application extends BDGameApplication {
 
     @Override
     public void onCreate() {
+        isTest = false;
         ChannelInterface.onApplicationEvent(Constants.ApplicationEvent.BEFORE_ON_CREATE, this);
         super.onCreate();
         ChannelInterface.onApplicationEvent(Constants.ApplicationEvent.AFTER_ON_CREATE, this);
@@ -64,7 +68,7 @@ public class Application extends BDGameApplication {
             JSONObject sdkObject = JsonTools.getJsonObject(sdkArray, i);
 
             String apiName = JsonTools.getStringByKey(sdkObject, "apiName");
-            Class<?> cls = Class.forName("prj.chameleon." + commCfg.mChannel + "." + apiName);
+            Class<?> cls = Class.forName(apiName);
             IAPIBase api = (IAPIBase) cls.newInstance();
 
             JSONObject sdkCfg = JsonTools.getJsonObject(sdkObject, "sdkCfg");
@@ -81,4 +85,5 @@ public class Application extends BDGameApplication {
         }
 
     }
+
 }
