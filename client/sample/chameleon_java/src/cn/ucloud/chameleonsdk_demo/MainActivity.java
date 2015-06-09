@@ -44,14 +44,6 @@ public class MainActivity extends Activity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // init ChannelAPI
-        ChannelInterface.init(this, true, new IDispatcherCb() {
-            @Override
-            public void onFinished(int arg0, JSONObject arg1) {
-                // TODO Auto-generated method stub
-                Log.i(TAG, "init() finished.");
-            }
-        });
     }
 
 	/*
@@ -283,59 +275,6 @@ public class MainActivity extends Activity {
                 }
             }
         });
-    }
-	
-	
-	/*
-	 * 以下是activity生命周期各方法的回调
-	 */
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        // TODO Auto-generated method stub
-        super.onNewIntent(intent);
-        ChannelInterface.onNewIntent(this, intent);
-    }
-
-    @Override
-    protected void onStart() {
-        // TODO Auto-generated method stub
-        super.onStart();
-        ChannelInterface.onStart(this);
-    }
-
-    @Override
-    protected void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-        // 启动时这里抛异常 null point
-        ChannelInterface.onResume(this, new IDispatcherCb() {
-            @Override
-            public void onFinished(int arg0, JSONObject arg1) {
-                // TODO Auto-generated method stub
-            }
-        });
-    }
-
-    @Override
-    protected void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-        ChannelInterface.onPause(this);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
-        ChannelInterface.onActivityResult(this, requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onStop() {
-        // TODO Auto-generated method stub
-        super.onStop();
-        ChannelInterface.onStop(this);
     }
 
 }

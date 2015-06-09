@@ -265,19 +265,18 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
     # create a temp lib dir for aapt add
     tempLibDir = os.path.join(channelPath, 'lib')
-    if not os.path.exists(tempLibDir):
-        os.makedirs(tempLibDir)
+    if os.path.exists(tempLibDir):
+        shutil.rmtree(tempLibDir)
+    os.makedirs(tempLibDir)
 
     # copy lib files of the target apk file to the temp lib dir
     p = os.path.join(targetPath, 'lib')
     relateCopy(p, tempLibDir, '.*(\.jar)$')
 
-    # copy lib or libs files of the channel to the temp lib dir
+    # copy lib files of the channel to the temp lib dir
     for sdkPath in sdkPaths:
-        plibs = os.path.join(sdkPath, 'libs')
-        relateCopy(plibs, tempLibDir, '.*(\.jar)$')
-        plib = os.path.join(sdkPath, 'lib')
-        relateCopy(plib, tempLibDir, '.*(\.jar)$')
+        p = os.path.join(sdkPath, 'libs')
+        relateCopy(p, tempLibDir, '.*(\.jar)$')
 
     pwd = os.getcwd()
 
@@ -318,7 +317,7 @@ def transformCfg(channelPath, globalcfg):
     sdks = list()
     for item in globalcfg['channel']['sdks']:
         sdk = dict()
-        sdk['apiName'] = 'prj.chameleon.'+globalcfg['channel']['channelName'].capitalize()+'.'+item['name'].capitalize()+'ChannelAPI'
+        sdk['apiName'] = 'prj.chameleon.'+globalcfg['channel']['channelName']+'.'+item['name'].capitalize()+'ChannelAPI'
         sdk['type'] = sum([SDK_TYPES[k] for k in str(item['type']).lower().split(',')])
 
         #TODO ignoreFiles
@@ -384,7 +383,7 @@ def procSplashIcon(channelPath, globalcfg):
             os.makedirs(drawablePath)
         shutil.copy(icon, os.path.join(drawablePath, ICON_NAME))
     if splash is not None:
-        if splash:
+        if type(splash) == bool:
             return
         splashPath = os.path.join(channelPath, 'assets', 'chameleon')
         if not os.path.exists(splashPath):
@@ -503,10 +502,12 @@ def main():
     globalcfg = getCommCfg(os.path.join(options.projectRoot, 'cfg', channel))
 
     manifest = loadManifest(manifestFilePathOrig)
-    #TODO 检查packageName是不是.开头
+    #TODO 检查packageName是不是.开头 或者以.结尾
     if globalcfg["channel"]["packageName"].startswith('.'):
         globalcfg["channel"]["packageName"] = manifest.getPkgName() + globalcfg["channel"]["packageName"]
         #print(globalcfg["channel"]["packageName"])
+    if globalcfg["channel"]["packageName"].endswith('.'):
+        globalcfg["channel"]["packageName"] = globalcfg["channel"]["packageName"] + manifest.getPkgName()
 
     libs = getDependLibs(proj, globalcfg)
 
