@@ -48,7 +48,7 @@
          application and should be checked into Version Control Systems. -->
     <loadproperties srcFile="project.properties" />
 
-    <property name="java.compiler.classpath" value="../../chameleon/chameleon_build/chameleon.jar" />
+    <property name="java.compiler.classpath" value="../../chameleon_build/lib/chameleon.jar" />
     <!-- quick check on sdk.dir -->
     <fail
             message="sdk.dir is missing. Make sure to generate local.properties using 'android update project' or to inject it through the ANDROID_HOME environment variable."
