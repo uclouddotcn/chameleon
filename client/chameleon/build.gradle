@@ -16,6 +16,20 @@ android {
     }
 }
 
+//定义一个函数，target是生成jar包的文件名，classDir是class文件所在的文件夹
+def makeJar(String target,String classDir){
+    exec{
+        executable "jar"   //调用jar
+        args "cvf",target
+        args "-C", classDir
+        args "","."
+    }
+}
+
+task buildjar(dependsOn:['build'])<<{
+    makeJar("build/chameleon.jar","build/intermediates/classes/release")
+}
+
 android.libraryVariants.all { variant ->
     def name = variant.buildType.name
     def task = project.tasks.create "jar${name.capitalize()}", Jar
@@ -25,5 +39,5 @@ android.libraryVariants.all { variant ->
 }
 
 dependencies {
-    //compile 'com.android.support:appcompat-v7:19.1.0'
+    compile 'com.android.support:appcompat-v7:19.1.0'
 }

@@ -44,6 +44,28 @@ public class MainActivity extends Activity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // init ChannelAPI
+        ChannelInterface.init(this, true, new IDispatcherCb() {
+            @Override
+            public void onFinished(int arg0, JSONObject arg1) {
+                // TODO Auto-generated method stub
+                Log.i(TAG, "init() finished.");
+            }
+        });
+    }
+
+
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        // 启动时这里抛异常 null point
+        ChannelInterface.onResume(this, new IDispatcherCb() {
+            @Override
+            public void onFinished(int arg0, JSONObject arg1) {
+                // TODO Auto-generated method stub
+            }
+        });
     }
 
 	/*

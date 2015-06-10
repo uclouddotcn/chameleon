@@ -1,5 +1,6 @@
 include ':app'
 include 'chameleon'
+include ':chameleon_native'
 include ':chameleon_unity'
 include ':channels:dangle'
 include ':channels:baidumg'

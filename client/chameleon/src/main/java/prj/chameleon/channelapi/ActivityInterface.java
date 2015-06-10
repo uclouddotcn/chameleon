@@ -19,24 +19,30 @@ public class ActivityInterface {
     }
 
     public static void onCreate(Activity activity) {
-        prj.chameleon.channelapi.ChannelInterface.init(activity, true, new IDispatcherCb() {
-            @Override
-            public void onFinished(int retCode, JSONObject data) {
-                callback.onInitFinished(retCode);
-            }
-        });
+        if(callback != null){
+            prj.chameleon.channelapi.ChannelInterface.init(activity, true, new IDispatcherCb() {
+                @Override
+                public void onFinished(int retCode, JSONObject data) {
+                    callback.onInitFinished(retCode);
+                }
+            });
+        }
+
     }
 
     /**
      * notify the platform we are coming back from a pause
      */
     public static void onResume(final Activity activity) {
-        prj.chameleon.channelapi.ChannelInterface.onResume(activity, new IDispatcherCb() {
-            @Override
-            public void onFinished(int retCode, JSONObject data) {
-                callback.onResumeFinished(retCode);
-            }
-        });
+        if (callback != null){
+            prj.chameleon.channelapi.ChannelInterface.onResume(activity, new IDispatcherCb() {
+                @Override
+                public void onFinished(int retCode, JSONObject data) {
+                    callback.onResumeFinished(retCode);
+                }
+            });
+        }
+
     }
 
     /**

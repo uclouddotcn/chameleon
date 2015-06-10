@@ -36,15 +36,13 @@ def updateJar(String target,String classDir){
 }
 
 task buildjar(dependsOn:['build'])<<{
-    makeJar("build/chameleon_unity.jar","build/intermediates/classes/release")
-    updateJar("build/chameleon_unity.jar","../chameleon/build/intermediates/classes/release")
+    makeJar("build/chameleon_native.jar","build/intermediates/classes/release")
+    updateJar("build/chameleon_native.jar","../chameleon/build/intermediates/classes/release")
 }
-
 
 android.libraryVariants.all { variant ->
     def name = variant.buildType.name
     def task = project.tasks.create "jar${name.capitalize()}", Jar
-    print "jar${name.capitalize()}"
     task.dependsOn variant.javaCompile
     task.from variant.javaCompile.destinationDir
     artifacts.add('archives', task);
@@ -55,4 +53,3 @@ dependencies {
     compile project(':chameleon')
     compile fileTree(dir: "libs", includes: ["*.jar"])
 }
-
