@@ -1,12 +1,12 @@
 __author__ = 'Jerry'
 
-import os, sys, shutil, zipfile
+import os, sys, shutil, zipfile, re
 from optparse import OptionParser
 
 def merge(dir1, dir2, difflist):
     print('difflist: ', difflist)
     for d in difflist:
-        if d.endswith('v4') or d.endswith('v13') or d.endswith('.dex') or d.endswith('.arsc'):
+        if d.endswith('.dex') or d.endswith('.arsc'):
             return
         joind1 = os.path.join(dir1, d)
         joind2 = os.path.join(dir2, d)
@@ -16,8 +16,12 @@ def merge(dir1, dir2, difflist):
             shutil.copy(joind1, joind2)
 
 def diff(dir1, dir2):
-    d1 = set(os.listdir(dir1))
-    d2 = set(os.listdir(dir2))
+    #d1 = set(os.listdir(dir1))
+    #d2 = set(os.listdir(dir2))
+    #过滤掉所有以v开头的不处理 re.IGNORECASE忽略大小写
+    refil = re.compile("[^v*\d]$", re.IGNORECASE)
+    d1 = set(filter(refil.search, os.listdir(dir1)))
+    d2 = set(filter(refil.search, os.listdir(dir2)))
     difflist = list(d1.difference(d2))#d1中有 d2中没有的
     merge(dir1, dir2, difflist)
 
@@ -43,7 +47,7 @@ def init(path1, path2):
         with zipfile.ZipFile(path1) as zipf:
             zipf.extractall(path3)
         diff(path3, path2)
-        shutil.rmtree(path3)
+        #shutil.rmtree(path3)
     else:
         print('can not diff file ...')
 

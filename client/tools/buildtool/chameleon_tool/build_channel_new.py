@@ -79,10 +79,10 @@ def buildChannel(channel, channelPath, output):
                     if filename == 'public.xml':
                         print('------', os.path.join(dirpath, filename))
                     else:
-                        print('++++++', os.path.join(dirpath, filename))
+                        #print('++++++', os.path.join(dirpath, filename))
                         zipf.write(os.path.join(dirpath, filename))
         else:
-            print('++++++', f)
+            #print('++++++', f)
             zipf.write(f)
     zipf.close()
 
