@@ -52,6 +52,13 @@ public class MainActivity extends Activity {
                 Log.i(TAG, "init() finished.");
             }
         });
+        ChannelInterface.runProtocol(this, "qqmsdk_setplat", "qq", new IDispatcherCb() {
+            @Override
+            public void onFinished(int arg0, JSONObject arg1) {
+                // TODO Auto-generated method stub
+                Log.i(TAG, "runProtocol() finished.");
+            }
+        });
     }
 
 
@@ -130,7 +137,7 @@ public class MainActivity extends Activity {
             @Override
             public void onFinished(int retCode, JSONObject data) {
                 if (retCode == Constants.ErrorCode.ERR_OK) {
-                    MainActivity.this.finish();
+
                 }
             }
         });
