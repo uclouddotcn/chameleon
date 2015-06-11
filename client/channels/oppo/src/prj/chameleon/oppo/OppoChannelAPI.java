@@ -399,7 +399,7 @@ public final class OppoChannelAPI extends SingleSDKChannelAPI.SingleSDK {
 
     @Override
     public boolean isLogined() {
-        return GameCenterSDK.getInstance().doGetAccessToken().length() < 0;
+        return GameCenterSDK.getInstance().doGetAccessToken() != null;
     }
 
     /**

@@ -1,9 +1,11 @@
 package prj.chameleon.baidumg;
 
 import android.app.Activity;
+import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.baidu.bdgame.sdk.obf.e;
 import com.baidu.gamesdk.ActivityAdPage;
 import com.baidu.gamesdk.ActivityAnalytics;
 import com.baidu.gamesdk.BDGameSDK;
@@ -24,6 +26,7 @@ import prj.chameleon.channelapi.SingleSDKChannelAPI;
 
 public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
     private IAccountActionListener mAccountListener;
+
     private static class Cfg {
         public int mAppID;
         public String mAppKey;
@@ -317,5 +320,16 @@ public class BaidumgChannelAPI extends SingleSDKChannelAPI.SingleSDK {
         builder.append('|');
         builder.append(productId);
         return builder.toString();
+
+    }
+
+    @Override
+    public void onApplicationEvent(int event, Object... arguments) {
+        switch (event) {
+            case Constants.ApplicationEvent.BEFORE_ON_CREATE:
+                Application app = (Application) arguments[0];
+                e.a(app);
+                break;
+        }
     }
 }
