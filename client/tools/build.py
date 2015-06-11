@@ -162,28 +162,37 @@ def compileAllChannels(channels):
 def buildChameleonLib():
     olddir = os.getcwd()
     os.chdir(BASEDIR)
+
+    chameleonLibPath = os.path.join("chameleon_build", "lib")
+    if not os.path.exists(chameleonLibPath):
+        os.makedirs(chameleonLibPath)
+
     try:
         gradleCmd = os.path.join(BASEDIR, GRADLE_CWD)
+
         ret = subprocess.check_call([gradleCmd, 'chameleon:clean'])
         if ret != 0:
             raise RuntimeError('Fail to clean the chameleon sdk')
+
+        ret = subprocess.check_call([gradleCmd, 'chameleon_native:clean'])
+        if ret != 0:
+            raise RuntimeError('Fail to clean the chameleon sdk')
+
         ret = subprocess.check_call([gradleCmd, 'chameleon_unity:clean'])
         if ret != 0:
             raise RuntimeError('Fail to clean the chameleon unity sdk')
-        ret = subprocess.check_call([gradleCmd, 'chameleon:assembleRelease'])
+
+        ret = subprocess.check_call([gradleCmd, 'chameleon:buildjar'])
         if ret != 0:
             raise RuntimeError('Fail to assemble the chameleon sdk')
-        ret = subprocess.check_call([gradleCmd, 'chameleon_unity:assembleRelease'])
+
+        ret = subprocess.check_call([gradleCmd, 'chameleon_native:buildjar'])
+        if ret != 0:
+            raise RuntimeError('Fail to assemble the chameleon native sdk')
+
+        ret = subprocess.check_call([gradleCmd, 'chameleon_unity:buildjar'])
         if ret != 0:
             raise RuntimeError('Fail to assemble the chameleon unity sdk')
-
-        chameleonLibPath = os.path.join("chameleon", "chameleon_build")
-        if not os.path.exists(chameleonLibPath):
-            os.makedirs(chameleonLibPath)
-        shutil.copy2(os.path.join("chameleon", "build", "intermediates", "bundles", "release", "classes.jar"),
-            os.path.join(chameleonLibPath, 'chameleon.jar'))
-        shutil.copy2(os.path.join("chameleon_unity", "build", "intermediates", "bundles", "release", "classes.jar"),
-            os.path.join(chameleonLibPath, 'chameleon_unity.jar'))
     finally:
         os.chdir(olddir)
 

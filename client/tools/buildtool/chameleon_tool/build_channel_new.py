@@ -30,8 +30,12 @@ def buildChannel(channel, channelPath, output):
     print('*****************  ant build  *****************')
     os.chdir(channelPath)
     print(os.getcwd())
-    os.system('ant clean')
-    os.system('ant release')
+    cleanResult = os.system('ant clean')
+    if cleanResult != 0:
+        return
+    buildResult = os.system('ant release')
+    if buildResult != 0:
+        return
 
     os.chdir(os.path.join(channelPath, 'bin'))
     print(os.getcwd())
@@ -39,19 +43,25 @@ def buildChannel(channel, channelPath, output):
     print(apkfile)
 
     print('*****************  apktool build  *****************')
+    print(APK_TOOL_PATH)
     apktoolParas = []
     apktoolParas.append((APK_TOOL_PATH, ''))
     apktoolParas.append(('d', apkfile))
     apktoolParas.append(('-o', apktoolPath))
     apktoolParas.append(('-f', ''))
-    genCmd(apktoolParas)
+    print(apktoolParas)
+    apktoolResult = genCmd(apktoolParas)
+    if apktoolResult != 0:
+        return
 
     print('*****************  diff  *****************')
     difftoolParas = []
     difftoolParas.append(('python', DIFF_TOOL_PATH))
     difftoolParas.append(('-p', apkfile))
     difftoolParas.append(('-c', apktoolPath))
-    genCmd(difftoolParas)
+    difftoolResult = genCmd(difftoolParas)
+    if difftoolResult != 0:
+        return
 
     print('*****************  zip channel  *****************')
     os.chdir(os.path.join(os.getcwd(), apktoolPath))

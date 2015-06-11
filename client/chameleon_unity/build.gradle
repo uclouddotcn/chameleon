@@ -36,8 +36,8 @@ def updateJar(String target,String classDir){
 }
 
 task buildjar(dependsOn:['build'])<<{
-    makeJar("build/chameleon_unity.jar","build/intermediates/classes/release")
-    updateJar("build/chameleon_unity.jar","../chameleon/build/intermediates/classes/release")
+    makeJar("../chameleon_build/lib/chameleon_unity.jar","build/intermediates/classes/release")
+    updateJar("../chameleon_build/lib/chameleon_unity.jar","../chameleon/build/intermediates/classes/release")
 }
 
 

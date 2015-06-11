@@ -202,12 +202,13 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
     if os.path.exists(manifestPath):
         paras.append(('-M', manifestPath))
 
+    #TODO target res first
+    if os.path.exists(targetRes):
+        paras.append(('-S', targetRes))
+
     for channelRes in channelReses:
         if os.path.exists(channelRes):
             paras.append(('-S', channelRes))
-
-    if os.path.exists(targetRes):
-        paras.append(('-S', targetRes))
 
     if os.path.exists(assetsPath):
         paras.append(('-A', assetsPath))
@@ -260,11 +261,11 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
     buildDex([os.path.join(tempRPath, 'classes'), os.path.join(tempRPath, 'smali')], channelPath)
 
-    shutil.rmtree(tempRPath)
+    #shutil.rmtree(tempRPath)
 
 
     # create a temp lib dir for aapt add
-    tempLibDir = os.path.join(channelPath, 'lib')
+    tempLibDir = os.path.join(channelPath, '_temp_lib')
     if os.path.exists(tempLibDir):
         shutil.rmtree(tempLibDir)
     os.makedirs(tempLibDir)
@@ -275,7 +276,7 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
 
     # copy lib files of the channel to the temp lib dir
     for sdkPath in sdkPaths:
-        p = os.path.join(sdkPath, 'libs')
+        p = os.path.join(sdkPath, 'lib')
         relateCopy(p, tempLibDir, '.*(\.jar)$')
 
     pwd = os.getcwd()
@@ -288,7 +289,7 @@ def aaptPack(channelName, sdkPaths, genPkgName, targetPath, desDir = ''):
             pkgfile.write(os.path.join(x, y))
 
         os.chdir(pwd)
-        shutil.rmtree(tempLibDir)
+        #shutil.rmtree(tempLibDir)
 
         os.chdir(desDir)
         pkgfile.write('classes.dex')
@@ -526,6 +527,10 @@ def main():
             sdkFile.extractall(sdkinfo.path)
             sdkFile.close()
 
+    #TODO afterUnzipSDK执行 script build
+    clientRoot = os.path.join(channelRoot, '..')
+    chameleon_script.afterUnzipSDK(channel, options.projectRoot, clientRoot)
+
     u = modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, globalcfg)
     if u != 0 and u is not None:
         print(u)
@@ -533,7 +538,7 @@ def main():
         print(ERR_MSG[u])
         return u
 
-#   add an additional class for some special sdk.
+    #   add an additional class for some special sdk.
     #TODO make WXEntryActivity MainActivity
     modifyWx.makeWXEntryActivity(os.path.join(channelPath, 'smali'), channel, globalcfg["channel"]["packageName"])
     modifyMainActivity.makeMainActivity(os.path.join(channelPath, 'smali'), manifest, globalcfg)

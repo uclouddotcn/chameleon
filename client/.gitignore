@@ -18,3 +18,4 @@ bin
 gen
 smali
 chameleon_build
+node_modules

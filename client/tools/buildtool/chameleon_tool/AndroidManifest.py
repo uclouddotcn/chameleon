@@ -53,12 +53,8 @@ class AndroidManifestInst(object):
             targetNode = children[0] 
         targetNode.setAttribute('android:targetSdkVersion', target)
 
-    def replaceApplication(self, channel):
-        if channel == 'baidumg':
-            self._applicationNode.setAttribute('android:name', 'prj.chameleon.channelapi.baidumg.Application')
-            self.replaceTargetSDK('15')
-        else:
-            self._applicationNode.setAttribute('android:name', 'prj.chameleon.channelapi.ChameleonApplication')
+    def replaceApplication(self):
+        self._applicationNode.setAttribute('android:name', 'prj.chameleon.channelapi.ChameleonApplication')
 
     def replaceEntryActivity(self, orientation, channel, oldPkgName):
         entryActivityNode = self._findEntryActivity()

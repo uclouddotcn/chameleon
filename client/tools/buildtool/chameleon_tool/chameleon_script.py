@@ -17,3 +17,20 @@ def preBuild(channel, project, client):
             # Since we may exit via an exception, close fp explicitly.
             if fp:
                 fp.close()
+
+def afterUnzipSDK(channel, project, client):
+    path = os.path.join(client, 'channelinfo', channel, 'script')
+    if not os.path.exists(os.path.join(path, 'aftersdk.py')):
+        pass
+    else:
+        fp, pathname, description = imp.find_module('aftersdk', [path])
+        try:
+            m = imp.load_module('aftersdk', fp, pathname, description)
+            f = m.__dict__.get('preBuild')
+            if f:
+                result = f(channel, project)
+                return result
+        finally:
+            # Since we may exit via an exception, close fp explicitly.
+            if fp:
+                fp.close()

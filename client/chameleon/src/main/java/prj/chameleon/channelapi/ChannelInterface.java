@@ -643,7 +643,7 @@ public class ChannelInterface {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    cb.onFinished(Constants.ErrorCode.ERR_OK, null);
+                    cb.onFinished(Constants.ErrorCode.ERR_CANCEL, null);
                 }
             });
             builder.create().show();

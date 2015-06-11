@@ -6,7 +6,7 @@ from optparse import OptionParser
 def merge(dir1, dir2, difflist):
     print('difflist: ', difflist)
     for d in difflist:
-        if d.endswith('v4') or d.endswith('.dex') or d.endswith('.arsc'):
+        if d.endswith('v4') or d.endswith('v13') or d.endswith('.dex') or d.endswith('.arsc'):
             return
         joind1 = os.path.join(dir1, d)
         joind2 = os.path.join(dir2, d)

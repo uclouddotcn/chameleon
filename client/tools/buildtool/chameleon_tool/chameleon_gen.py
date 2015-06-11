@@ -44,7 +44,7 @@ def modifyManifest(channel, libs, manifestFilePathOrig, manifestFilePath, global
 
     applicationName = manifestInst._applicationNode.getAttribute('android:name')
     if applicationName is "":
-        manifestInst.replaceApplication(channel)
+        manifestInst.replaceApplication()
 
     return manifestInst.safeDump(manifestFilePath)
 

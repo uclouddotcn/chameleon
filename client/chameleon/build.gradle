@@ -27,7 +27,7 @@ def makeJar(String target,String classDir){
 }
 
 task buildjar(dependsOn:['build'])<<{
-    makeJar("build/chameleon.jar","build/intermediates/classes/release")
+    makeJar("../chameleon_build/lib/chameleon.jar","build/intermediates/classes/release")
 }
 
 android.libraryVariants.all { variant ->
